@@ -1,6 +1,25 @@
 /* ===== AURA CSS MVP – WITH ENHANCEMENTS ===== */
 @layer reset, tokens, defaults, layouts, components, utilities, print;
 
+/* Register key theme tokens so runtime theme updates animate predictably. */
+@property --hue-primary {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 260;
+}
+
+@property --primary-c {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0.15;
+}
+
+@property --primary-l {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 55%;
+}
+
 /* ---------- RESET ---------- */
 @layer reset {
   *, *::before, *::after { box-sizing: border-box; }
@@ -109,7 +128,7 @@
   }
 
   /* Dark theme */
-  [data-theme*="dark"] {
+  [data-theme~="dark"] {
     --bg: var(--gray-12);
     --text: var(--gray-1);
     --text-muted: var(--gray-6);
@@ -123,14 +142,16 @@
   }
 
   /* High contrast */
-  [data-theme*="high-contrast"] {
+  [data-contrast="more"],
+  [data-theme~="high-contrast"] {
     --border: var(--text);
     --border-strong: var(--text);
     --text-muted: var(--text);
   }
 
   /* Reduce motion */
-  [data-theme*="reduce-motion"] {
+  [data-motion="reduce"],
+  [data-theme~="reduce-motion"] {
     --transition-fast: 0s;
     --transition-base: 0s;
   }
@@ -148,6 +169,20 @@
       --link: oklch(70% 0.15 var(--hue-primary));
       --link-visited: oklch(70% 0.1 var(--hue-secondary));
       --shadow-sm: 0 1px 3px 0 rgb(255 255 255 / 0.05);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    :root:not([data-motion]) {
+      --transition-fast: 0s;
+      --transition-base: 0s;
+    }
+  }
+
+  @supports (color: color-mix(in oklch, black, white)) {
+    :root {
+      --primary-hover: color-mix(in oklch, var(--primary) 88%, black);
+      --primary-subtle: color-mix(in oklch, var(--primary) 20%, white);
     }
   }
 }
@@ -193,6 +228,11 @@
   a:visited { color: var(--link-visited); }
   a:hover { color: var(--primary-hover); }
 
+  :where(a, button, input, select, textarea):focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+
   /* Forms */
   button, input[type="button"], input[type="submit"] {
     background-color: var(--primary);
@@ -204,6 +244,14 @@
     transition: background-color var(--transition-fast);
   }
   button:hover { background-color: var(--primary-hover); }
+  button:disabled,
+  input[type="button"]:disabled,
+  input[type="submit"]:disabled,
+  [role="button"][aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
 
   input:not([type="button"]):not([type="submit"]), textarea, select {
     background-color: var(--surface);
@@ -212,6 +260,9 @@
     padding: var(--space-2) var(--space-3);
     border-radius: var(--radius-sm);
     width: 100%;
+  }
+  :where(input, textarea, select):user-invalid {
+    border-color: var(--color-error);
   }
 
   table {
@@ -249,29 +300,47 @@
 
 /* ---------- LAYOUT ATTRIBUTE ---------- */
 @layer layouts {
-  [data-layout] {
+  :where([data-layout]) {
     display: flex;
     flex-wrap: wrap;
   }
-  [data-layout*="row"] { flex-direction: row; }
-  [data-layout*="col"] { flex-direction: column; }
-  [data-layout*="grid"] {
+  :where([data-layout~="row"]) { flex-direction: row; }
+  :where([data-layout~="col"]) { flex-direction: column; }
+  :where([data-layout~="grid"]) {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--grid-min, 250px)), 1fr));
   }
-  /* Alignment combos */
-  [data-layout*="center"] { align-items: center; justify-content: center; }
-  [data-layout*="center-between"] { align-items: center; justify-content: space-between; }
-  [data-layout*="center-start"] { align-items: center; justify-content: flex-start; }
-  [data-layout*="stretch"] { align-items: stretch; }
+  /* New orthogonal alignment API */
+  [data-align="start"] { align-items: flex-start; }
+  [data-align="center"] { align-items: center; }
+  [data-align="end"] { align-items: flex-end; }
+  [data-align="stretch"] { align-items: stretch; }
 
-  /* Gap */
-  [data-layout*="gap-2"] { gap: var(--space-2); }
-  [data-layout*="gap-4"] { gap: var(--space-4); }
-  [data-layout*="gap-6"] { gap: var(--space-6); }
+  [data-justify="start"] { justify-content: flex-start; }
+  [data-justify="center"] { justify-content: center; }
+  [data-justify="end"] { justify-content: flex-end; }
+  [data-justify="between"] { justify-content: space-between; }
+  [data-justify="around"] { justify-content: space-around; }
+  [data-justify="evenly"] { justify-content: space-evenly; }
+
+  [data-gap="1"] { gap: var(--space-1); }
+  [data-gap="2"] { gap: var(--space-2); }
+  [data-gap="3"] { gap: var(--space-3); }
+  [data-gap="4"] { gap: var(--space-4); }
+  [data-gap="6"] { gap: var(--space-6); }
+  [data-gap="8"] { gap: var(--space-8); }
+
+  /* Legacy layout token combinations (kept for compatibility) */
+  :where([data-layout~="center"]) { align-items: center; justify-content: center; }
+  :where([data-layout~="center-between"]) { align-items: center; justify-content: space-between; }
+  :where([data-layout~="center-start"]) { align-items: center; justify-content: flex-start; }
+  :where([data-layout~="stretch"]) { align-items: stretch; }
+  :where([data-layout~="gap-2"]) { gap: var(--space-2); }
+  :where([data-layout~="gap-4"]) { gap: var(--space-4); }
+  :where([data-layout~="gap-6"]) { gap: var(--space-6); }
 
   /* Container */
-  [data-layout*="container"] {
+  :where([data-layout~="container"]) {
     display: block;
     max-width: var(--container-max);
     margin-inline: auto;
@@ -281,6 +350,7 @@
 
 /* ---------- COMPONENTS (contextual enhancements) ---------- */
 @layer components {
+  [data-ui~="site-header"],
   header:has(nav) {
     display: flex;
     align-items: center;
@@ -290,6 +360,7 @@
     padding-block: var(--space-4);
   }
 
+  [data-surface="card"],
   main article {
     border-radius: var(--radius-md);
     padding: var(--space-6);
@@ -297,9 +368,16 @@
     box-shadow: var(--shadow-sm);
   }
 
+  [data-nav="inline"] > ul,
   nav ul {
     display: flex;
     gap: var(--space-4);
+  }
+
+  [aria-current="page"] {
+    font-weight: 600;
+    text-underline-offset: 0.3em;
+    text-decoration-thickness: 0.12em;
   }
 
   /* Form validation */
@@ -318,7 +396,8 @@
     top: 0;
     z-index: 10;
   }
-  [data-visually-hidden] {
+  [data-visually-hidden],
+  [data-sr-only] {
     position: absolute;
     width: 1px; height: 1px;
     padding: 0; margin: -1px;
@@ -415,28 +494,4 @@
       }
     }
   }
-}
-
-/* ---------- DEMO-SPECIFIC STYLES (not part of Aura) ---------- */
-.demo-controls {
-  margin-block: var(--space-8);
-  padding: var(--space-4);
-  background: var(--surface);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-}
-.theme-badge {
-  display: inline-block;
-  background: var(--primary-subtle);
-  color: var(--text);
-  padding: var(--space-1) var(--space-3);
-  border-radius: var(--radius-full);
-  font-size: var(--text-sm);
-}
-.demo-box {
-  background: var(--surface-raised);
-  border: 1px solid var(--border);
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  text-align: center;
 }

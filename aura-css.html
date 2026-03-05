@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aura CSS · Enhanced MVP Demo</title>
   <link rel="stylesheet" href="aura-css.css">
+  <link rel="stylesheet" href="aura-demo.css">
 </head>
 <body data-layout="container">
-  <header>
+  <header data-ui="site-header">
     <h1>🌀 Aura CSS <span style="font-size:0.6em; background:var(--primary-subtle); padding:0.2rem 0.8rem; border-radius:var(--radius-full);">Enhanced MVP</span></h1>
-    <nav>
+    <nav data-nav="inline">
       <ul>
-        <li><a href="#classless">Classless</a></li>
+        <li><a href="#classless" aria-current="page">Classless</a></li>
         <li><a href="#layout">Layout</a></li>
         <li><a href="#themes">Themes</a></li>
         <li><a href="#forms">Forms</a></li>
@@ -25,8 +26,8 @@
     <p>This page is styled entirely by Aura CSS. No utility classes—just semantic HTML and a few <code>data-*</code> attributes. Click the buttons below to switch themes and see Aura’s token‑based system in action.</p>
 
     <!-- Theme controls -->
-    <div class="demo-controls" data-layout="row center-start gap-4">
-      <span class="theme-badge">Current theme: <span id="theme-indicator">light</span></span>
+    <div class="demo-controls" data-layout="row" data-align="center" data-justify="start" data-gap="4">
+      <span class="theme-badge">Current settings: <span id="theme-indicator">light</span></span>
       <button id="toggle-dark">🌙 Toggle dark</button>
       <button id="toggle-high-contrast">👁️ Toggle high contrast</button>
       <button id="reset-themes">⟲ Reset</button>
@@ -67,7 +68,7 @@
       <p>Structure your page without utility classes.</p>
 
       <h3>Grid example</h3>
-      <div data-layout="grid gap-4">
+      <div data-layout="grid" data-gap="4">
         <div class="demo-box">Item 1</div>
         <div class="demo-box">Item 2</div>
         <div class="demo-box">Item 3</div>
@@ -75,19 +76,19 @@
       </div>
 
       <h3>Flex row with gap and alignment</h3>
-      <div data-layout="row center-between gap-4">
+      <div data-layout="row" data-align="center" data-justify="between" data-gap="4">
         <span>Left item</span>
         <span>Center item</span>
         <span>Right item</span>
       </div>
 
       <h3>Nested layouts</h3>
-      <div data-layout="col gap-4">
-        <header data-layout="row center-between gap-2">
+      <div data-layout="col" data-gap="4">
+        <header data-layout="row" data-align="center" data-justify="between" data-gap="2">
           <span>Header inside column</span>
           <button>Action</button>
         </header>
-        <div data-layout="grid gap-4" style="--grid-min: 200px;">
+        <div data-layout="grid" data-gap="4" style="--grid-min: 200px;">
           <div class="demo-box">Cell 1</div>
           <div class="demo-box">Cell 2</div>
           <div class="demo-box">Cell 3</div>
@@ -98,7 +99,7 @@
     <!-- ========== THEMES ========== -->
     <section id="themes">
       <h2>Composable themes</h2>
-      <p>The <code>data-theme</code> attribute can combine multiple tokens. Try it with the buttons above.</p>
+      <p>Use <code>data-theme</code> for color themes and <code>data-contrast</code> for contrast preferences.</p>
       <blockquote>
         <p>“Design tokens update instantly—no rebuild needed.”</p>
         <footer>— Aura’s token system</footer>
@@ -135,7 +136,7 @@
     <section id="media">
       <h2>Aspect ratio & fit utilities</h2>
       <p>Use <code>data-aspect</code> and <code>data-fit</code> for responsive media.</p>
-      <div data-layout="grid gap-4" style="--grid-min: 200px;">
+      <div data-layout="grid" data-gap="4" style="--grid-min: 200px;">
         <figure>
           <div data-aspect="16/9" style="background: var(--primary-subtle);">
             <img src="https://picsum.photos/400/225" data-fit="cover" alt="Demo" style="width:100%; height:100%;">
@@ -175,7 +176,7 @@
   </main>
 
   <footer data-layout="container" style="margin-top: var(--space-12); border-top: 1px solid var(--border); padding-block: var(--space-6);">
-    <p data-layout="row center-between">
+    <p data-layout="row" data-align="center" data-justify="between">
       <span>🌀 Aura CSS – Enhanced MVP</span>
       <span>Built with modern CSS &hearts;</span>
     </p>
@@ -187,33 +188,55 @@
       const root = document.documentElement;
       const indicator = document.getElementById('theme-indicator');
 
+      function getThemeTokens() {
+        const value = root.getAttribute('data-theme');
+        return value ? value.split(/\s+/).filter(Boolean) : [];
+      }
+
+      function setThemeTokens(tokens) {
+        if (tokens.length > 0) {
+          root.setAttribute('data-theme', tokens.join(' '));
+          return;
+        }
+        root.removeAttribute('data-theme');
+      }
+
+      function toggleThemeToken(token) {
+        const tokens = new Set(getThemeTokens());
+        if (tokens.has(token)) {
+          tokens.delete(token);
+        } else {
+          tokens.add(token);
+        }
+        setThemeTokens(Array.from(tokens));
+      }
+
       function updateIndicator() {
         const theme = root.getAttribute('data-theme') || 'light (default)';
-        indicator.textContent = theme;
+        const contrast = root.getAttribute('data-contrast') || 'normal';
+        const motion = root.getAttribute('data-motion') || 'normal';
+        indicator.textContent = `theme=${theme} contrast=${contrast} motion=${motion}`;
       }
 
       document.getElementById('toggle-dark').addEventListener('click', () => {
-        const current = root.getAttribute('data-theme') || '';
-        if (current.includes('dark')) {
-          root.setAttribute('data-theme', current.replace('dark', '').trim());
-        } else {
-          root.setAttribute('data-theme', (current + ' dark').trim());
-        }
+        toggleThemeToken('dark');
         updateIndicator();
       });
 
       document.getElementById('toggle-high-contrast').addEventListener('click', () => {
-        const current = root.getAttribute('data-theme') || '';
-        if (current.includes('high-contrast')) {
-          root.setAttribute('data-theme', current.replace('high-contrast', '').trim());
+        const current = root.getAttribute('data-contrast');
+        if (current === 'more') {
+          root.removeAttribute('data-contrast');
         } else {
-          root.setAttribute('data-theme', (current + ' high-contrast').trim());
+          root.setAttribute('data-contrast', 'more');
         }
         updateIndicator();
       });
 
       document.getElementById('reset-themes').addEventListener('click', () => {
         root.removeAttribute('data-theme');
+        root.removeAttribute('data-contrast');
+        root.removeAttribute('data-motion');
         updateIndicator();
       });
 
