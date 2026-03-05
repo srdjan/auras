@@ -45,14 +45,14 @@
     --font-mono: 'SF Mono', Monaco, Consolas, monospace;
 
     /* Fluid type scale */
-    --text-xs: clamp(0.75rem, 0.7cqi, 0.875rem);
-    --text-sm: clamp(0.875rem, 0.8cqi, 1rem);
-    --text-base: clamp(1rem, 1cqi, 1.125rem);
-    --text-md: clamp(1.125rem, 1.2cqi, 1.25rem);
-    --text-lg: clamp(1.25rem, 1.5cqi, 1.5rem);
-    --text-xl: clamp(1.5rem, 2cqi, 1.875rem);
-    --text-2xl: clamp(1.875rem, 2.5cqi, 2.25rem);
-    --text-3xl: clamp(2.25rem, 3cqi, 3rem);
+    --text-xs: clamp(0.75rem, 0.6rem + 0.2vw, 0.875rem);
+    --text-sm: clamp(0.875rem, 0.8rem + 0.2vw, 1rem);
+    --text-base: clamp(1rem, 0.9rem + 0.25vw, 1.125rem);
+    --text-md: clamp(1.125rem, 1rem + 0.3vw, 1.25rem);
+    --text-lg: clamp(1.25rem, 1rem + 0.5vw, 1.5rem);
+    --text-xl: clamp(1.5rem, 1.1rem + 0.8vw, 1.875rem);
+    --text-2xl: clamp(1.875rem, 1.3rem + 1.2vw, 2.25rem);
+    --text-3xl: clamp(2.25rem, 1.5rem + 1.5vw, 3rem);
 
     /* Line heights */
     --leading-tight: 1.25;
@@ -116,7 +116,10 @@
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 
     /* Semantic colors */
-    --color-error: oklch(55% 0.2 25);
+    --color-error:   oklch(55% 0.2 25);
+    --color-warning: oklch(70% 0.15 80);
+    --color-success: oklch(60% 0.15 145);
+    --color-info:    oklch(60% 0.1 240);
     --text-on-primary: white;
 
     /* Layout */
@@ -197,6 +200,8 @@
     background-color: var(--bg);
     padding: var(--space-4);
 
+    overflow-x: clip;
+
     /* Enhancement: font-size-adjust for better fallbacks */
     font-size-adjust: 0.5;
   }
@@ -269,6 +274,12 @@
     width: 100%;
     border-collapse: collapse;
   }
+  @media (max-width: 640px) {
+    table {
+      display: block;
+      overflow-x: auto;
+    }
+  }
   th, td {
     padding: var(--space-2) var(--space-3);
     border-bottom: 1px solid var(--border);
@@ -281,13 +292,30 @@
     background-color: var(--surface-raised);
     border-radius: var(--radius-sm);
   }
-  code { padding: 0.2em 0.4em; }
+  code { padding: 0.2em 0.4em; overflow-wrap: anywhere; }
   pre { padding: var(--space-4); overflow-x: auto; }
 
   hr {
     border: none;
     border-top: 1px solid var(--border);
     margin-block: var(--space-8);
+  }
+
+  dialog {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-lg);
+  }
+  dialog::backdrop {
+    background: oklch(0% 0 0 / 0.5);
+  }
+
+  details > summary {
+    cursor: pointer;
+    font-weight: 600;
   }
 
   /* Variable font support (optional enhancement) */
@@ -330,14 +358,15 @@
   [data-gap="6"] { gap: var(--space-6); }
   [data-gap="8"] { gap: var(--space-8); }
 
-  /* Legacy layout token combinations (kept for compatibility) */
-  :where([data-layout~="center"]) { align-items: center; justify-content: center; }
-  :where([data-layout~="center-between"]) { align-items: center; justify-content: space-between; }
-  :where([data-layout~="center-start"]) { align-items: center; justify-content: flex-start; }
-  :where([data-layout~="stretch"]) { align-items: stretch; }
-  :where([data-layout~="gap-2"]) { gap: var(--space-2); }
-  :where([data-layout~="gap-4"]) { gap: var(--space-4); }
-  :where([data-layout~="gap-6"]) { gap: var(--space-6); }
+  /* Grid min-width presets */
+  [data-grid-min="sm"]  { --grid-min: 150px; }
+  [data-grid-min="md"]  { --grid-min: 250px; }
+  [data-grid-min="lg"]  { --grid-min: 350px; }
+
+  /* Responsive stack: row on desktop, column on mobile */
+  @media (max-width: 640px) {
+    [data-stack="mobile"] { flex-direction: column; }
+  }
 
   /* Container */
   :where([data-layout~="container"]) {
@@ -371,6 +400,7 @@
   [data-nav="inline"] > ul,
   nav ul {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--space-4);
   }
 
@@ -408,6 +438,12 @@
   }
   [data-smooth] { scroll-behavior: smooth; overflow-y: auto; }
   @media (max-width: 640px) { [data-hide="mobile"] { display: none; } }
+
+  /* Status colors */
+  [data-status="error"]   { color: var(--color-error); }
+  [data-status="warning"] { color: var(--color-warning); }
+  [data-status="success"] { color: var(--color-success); }
+  [data-status="info"]    { color: var(--color-info); }
 
   /* ===== NEW ENHANCEMENTS ===== */
   /* Aspect ratios */
