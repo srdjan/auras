@@ -1,0 +1,47 @@
+/* Sample Aura brand pack. Load this on top of aura-css.css to opt into a
+   branded design system while keeping the headless core unchanged. */
+@layer brands {
+  [data-brand="aura"] {
+    --primary-l: 55%;
+    --primary-c: 0.15;
+    --primary: oklch(var(--primary-l) var(--primary-c) var(--hue-primary));
+    --primary-hover: oklch(
+      calc(var(--primary-l) - 5%)
+      var(--primary-c)
+      var(--hue-primary)
+    );
+    --primary-subtle: oklch(
+      calc(var(--primary-l) + 20%)
+      0.05
+      var(--hue-primary)
+    );
+
+    --secondary-l: 60%;
+    --secondary-c: 0.1;
+    --secondary: oklch(
+      var(--secondary-l)
+      var(--secondary-c)
+      var(--hue-secondary)
+    );
+    --secondary-hover: oklch(
+      calc(var(--secondary-l) - 5%)
+      var(--secondary-c)
+      var(--hue-secondary)
+    );
+
+    --link: var(--primary);
+    --link-visited: var(--secondary);
+    --focus-ring: var(--primary);
+    --button-solid-bg: var(--primary);
+    --button-soft-bg: var(--primary-subtle);
+    --page-padding-block: var(--space-4);
+    --card-shadow: var(--shadow-sm);
+  }
+
+  @supports (color: color-mix(in oklch, black, white)) {
+    [data-brand="aura"] {
+      --primary-hover: color-mix(in oklch, var(--primary) 88%, black);
+      --primary-subtle: color-mix(in oklch, var(--primary) 20%, white);
+    }
+  }
+}
