@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura CSS Demo</title>
+    <link rel="stylesheet" href="aura-css.css">
+  </head>
+  <body data-layout="container">
+    <div data-layout="stack" data-gap="8">
+      <header data-ui="site-header" data-surface="card">
+        <div data-layout="stack" data-gap="2">
+          <p><strong>Aura CSS</strong></p>
+          <p>
+            Single-file demo using only <code>aura-css.css</code>. It starts in
+            headless mode and can switch into the sample Aura design system.
+          </p>
+        </div>
+        <nav data-nav="inline">
+          <ul>
+            <li><a href="#controls" aria-current="page">Controls</a></li>
+            <li><a href="#headless">Headless</a></li>
+            <li><a href="#layout">Layout</a></li>
+            <li><a href="#components">Components</a></li>
+            <li><a href="#forms">Forms</a></li>
+            <li><a href="#media">Media</a></li>
+            <li><a href="#print">Print</a></li>
+          </ul>
+        </nav>
+      </header>
+
+      <main data-layout="stack" data-gap="8">
+        <section
+          id="controls"
+          data-surface="card"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <div>
+            <h1>Aura CSS</h1>
+            <p>
+              Headless by default, semantic by design, and able to opt into a
+              sample brand without any extra stylesheet.
+            </p>
+          </div>
+
+          <div
+            data-layout="cluster"
+            data-gap="2"
+            data-align="center"
+            data-stack="mobile"
+          >
+            <button id="toggle-brand" type="button" data-variant="solid">
+              Enable sample theme
+            </button>
+            <button id="toggle-dark" type="button" data-variant="soft">
+              Toggle dark
+            </button>
+            <button id="toggle-contrast" type="button">
+              Enable high contrast
+            </button>
+            <button id="toggle-motion" type="button">
+              Use reduced motion
+            </button>
+            <button id="reset-demo" type="button" data-variant="ghost">
+              Reset
+            </button>
+          </div>
+
+          <p>
+            <strong>Current mode:</strong>
+            <code id="state-output"
+            >brand=headless theme=light contrast=normal motion=normal</code>
+          </p>
+
+          <pre><code>&lt;body data-brand="aura" data-theme="dark" data-contrast="more"&gt;...&lt;/body&gt;</code></pre>
+        </section>
+
+        <section
+          id="headless"
+          data-surface="card"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <div>
+            <h2>Headless foundation</h2>
+            <p>
+              These defaults are intentionally restrained: readable typography,
+              sensible spacing, semantic lists, links, code, tables, and
+              surfaces that do not force a visual language.
+            </p>
+          </div>
+
+          <article data-surface="card">
+            <h3>Opt-in surface</h3>
+            <p>
+              An <code>&lt;article&gt;</code> stays plain until you opt into
+              <code>data-surface="card"</code>.
+            </p>
+            <p>
+              <a href="#forms">Jump to the form demo</a>, inspect
+              <strong>strong text</strong>, and compare
+              <code>inline code</code> against regular copy.
+            </p>
+          </article>
+
+          <blockquote>
+            <p>
+              "Headless mode should give structure without pretending to be a
+              finished design system."
+            </p>
+            <footer>Aura demo note</footer>
+          </blockquote>
+
+          <hr>
+
+          <div data-layout="grid" data-gap="4" data-grid-min="md">
+            <div>
+              <h3>Lists</h3>
+              <ul>
+                <li>Unordered items keep native markers.</li>
+                <li>Nested links remain readable.</li>
+                <li>Spacing stays light.</li>
+              </ul>
+              <ol>
+                <li>Start with semantic HTML.</li>
+                <li>Add Aura attributes only where needed.</li>
+                <li>Layer on a brand later.</li>
+              </ol>
+            </div>
+
+            <div>
+              <h3>Table</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Alex</td>
+                    <td>Developer</td>
+                    <td>Active</td>
+                  </tr>
+                  <tr>
+                    <td>Jamie</td>
+                    <td>Designer</td>
+                    <td>Reviewing</td>
+                  </tr>
+                  <tr>
+                    <td>Sam</td>
+                    <td>Writer</td>
+                    <td>Drafting</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <pre>
+<code>&lt;section data-surface="card"&gt;
+  &lt;h2&gt;Headless by default&lt;/h2&gt;
+  &lt;p&gt;Add attributes only when you want stronger behavior.&lt;/p&gt;
+&lt;/section&gt;</code></pre>
+        </section>
+
+        <section
+          id="layout"
+          data-surface="card"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <div>
+            <h2>Layout primitives</h2>
+            <p>
+              Aura supports directional layouts, semantic aliases like
+              <code>stack</code> and <code>cluster</code>, alignment,
+              justification, gaps, grid sizing presets, and responsive stacking.
+            </p>
+          </div>
+
+          <div
+            data-layout="row"
+            data-align="center"
+            data-justify="between"
+            data-gap="4"
+            data-stack="mobile"
+            data-surface="card"
+          >
+            <span>row</span>
+            <span>align center</span>
+            <span>justify between</span>
+          </div>
+
+          <div
+            data-layout="cluster"
+            data-gap="2"
+            data-align="center"
+            data-stack="mobile"
+          >
+            <div data-surface="card">
+              <strong>cluster</strong>
+              <p>Wrap-friendly horizontal grouping.</p>
+            </div>
+            <div data-surface="card">
+              <strong>gap</strong>
+              <p>Spacing comes from tokens.</p>
+            </div>
+            <div data-surface="card">
+              <strong>stack on mobile</strong>
+              <p>Resize the page to see it collapse.</p>
+            </div>
+          </div>
+
+          <div data-layout="grid" data-gap="4" data-grid-min="sm">
+            <div data-surface="card" data-layout="stack" data-gap="2">
+              <strong>grid</strong>
+              <p>Automatic columns with <code>data-grid-min="sm"</code>.</p>
+            </div>
+            <div data-surface="card" data-layout="stack" data-gap="2">
+              <strong>stack</strong>
+              <p>Vertical rhythm via <code>data-layout="stack"</code>.</p>
+            </div>
+            <div data-surface="card" data-layout="stack" data-gap="2">
+              <strong>container</strong>
+              <p>
+                The page itself is using <code>data-layout="container"</code>.
+              </p>
+            </div>
+            <div data-surface="card" data-layout="stack" data-gap="2">
+              <strong>tokens</strong>
+              <p>
+                Gap, padding, and radius all resolve through custom properties.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="components"
+          data-surface="card"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <div>
+            <h2>Components and semantic states</h2>
+            <p>
+              Buttons, nav, cards, status colors, disclosures, dialogs, and ARIA
+              states are driven by semantics or lightweight attributes.
+            </p>
+          </div>
+
+          <div
+            data-layout="cluster"
+            data-gap="2"
+            data-align="center"
+            data-stack="mobile"
+          >
+            <button type="button">Default button</button>
+            <button type="button" data-variant="solid">Solid</button>
+            <button type="button" data-variant="soft">Soft</button>
+            <button type="button" data-variant="ghost">Ghost</button>
+            <a href="#forms" role="button">Role button</a>
+          </div>
+
+          <div data-layout="grid" data-gap="4" data-grid-min="sm">
+            <div data-surface="card">
+              <p data-status="info">Informational status text.</p>
+            </div>
+            <div data-surface="card">
+              <p data-status="success">Success status text.</p>
+            </div>
+            <div data-surface="card">
+              <p data-status="warning">Warning status text.</p>
+            </div>
+            <div data-surface="card">
+              <p data-status="error">Error status text.</p>
+            </div>
+          </div>
+
+          <details data-surface="card">
+            <summary>Open disclosure primitive</summary>
+            <p>
+              This block demonstrates the built-in styling for
+              <code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code>.
+            </p>
+          </details>
+
+          <div data-layout="cluster" data-gap="2" data-align="center">
+            <button id="open-dialog" type="button" data-variant="soft">
+              Open dialog
+            </button>
+            <button type="button" disabled>Disabled button</button>
+          </div>
+
+          <dialog id="capability-dialog">
+            <h3>Dialog primitive</h3>
+            <p>
+              Dialogs inherit the active tokens, so switching the sample theme
+              updates this surface too.
+            </p>
+            <div data-layout="cluster" data-gap="2" data-justify="end">
+              <button id="close-dialog" type="button" data-variant="ghost">
+                Close
+              </button>
+              <button type="button" data-variant="solid">Primary action</button>
+            </div>
+          </dialog>
+        </section>
+
+        <section
+          id="forms"
+          data-surface="card"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <div>
+            <h2>Forms and validation</h2>
+            <p>
+              Text fields, select menus, accent-colored native controls,
+              required-field markers, disabled states, and validation are all
+              covered by the base library.
+            </p>
+          </div>
+
+          <form data-layout="stack" data-gap="4">
+            <fieldset data-layout="stack" data-gap="3">
+              <legend>Profile</legend>
+
+              <label for="full-name">Full name</label>
+              <input
+                id="full-name"
+                type="text"
+                required
+                placeholder="Ada Lovelace"
+              >
+
+              <label for="email">Email address</label>
+              <input
+                id="email"
+                type="email"
+                required
+                placeholder="ada@example.com"
+              >
+
+              <label for="country">Country</label>
+              <select id="country" required>
+                <option value="">Choose one</option>
+                <option value="uk">United Kingdom</option>
+                <option value="rs">Serbia</option>
+                <option value="us">United States</option>
+              </select>
+
+              <label for="notes">Notes</label>
+              <textarea
+                id="notes"
+                rows="4"
+                placeholder="Use semantic HTML first."
+              ></textarea>
+
+              <label for="invalid-field">ARIA invalid example</label>
+              <input
+                id="invalid-field"
+                type="text"
+                aria-invalid="true"
+                value="Needs correction"
+              >
+
+              <div data-layout="grid" data-gap="4" data-grid-min="sm">
+                <div data-layout="stack" data-gap="2">
+                  <p><strong>Choices</strong></p>
+                  <label><input type="checkbox" checked> Email updates</label>
+                  <label><input type="radio" name="plan" checked> Starter
+                    plan</label>
+                  <label><input type="radio" name="plan"> Pro plan</label>
+                </div>
+
+                <div data-layout="stack" data-gap="2">
+                  <label for="volume">Volume</label>
+                  <input id="volume" type="range" value="55">
+                  <p><strong>Progress</strong></p>
+                  <progress value="64" max="100">64%</progress>
+                </div>
+              </div>
+
+              <div
+                data-layout="cluster"
+                data-gap="2"
+                data-align="center"
+                data-stack="mobile"
+              >
+                <button type="submit" data-variant="solid">Submit</button>
+                <button type="button">Secondary</button>
+                <button type="button" disabled>Disabled</button>
+              </div>
+            </fieldset>
+          </form>
+        </section>
+
+        <section
+          id="media"
+          data-surface="card"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <div>
+            <h2>Media and utilities</h2>
+            <p>
+              Aspect ratios, object fit, sticky positioning, hidden accessible
+              text, smooth scrolling regions, and responsive visibility helpers
+              are all available without extra CSS.
+            </p>
+          </div>
+
+          <div data-layout="grid" data-gap="4" data-grid-min="sm">
+            <figure>
+              <div data-aspect="16/9" style="background: var(--surface-raised)">
+                <img
+                  src="https://picsum.photos/500/320"
+                  alt="Cover fit example"
+                  data-fit="cover"
+                  style="width: 100%; height: 100%"
+                >
+              </div>
+              <figcaption>
+                <code>data-aspect="16/9"</code> and
+                <code>data-fit="cover"</code>
+              </figcaption>
+            </figure>
+
+            <figure>
+              <div data-aspect="1/1" style="background: var(--surface-raised)">
+                <img
+                  src="https://picsum.photos/500/320"
+                  alt="Contain fit example"
+                  data-fit="contain"
+                  style="width: 100%; height: 100%"
+                >
+              </div>
+              <figcaption>
+                <code>data-aspect="1/1"</code> and
+                <code>data-fit="contain"</code>
+              </figcaption>
+            </figure>
+
+            <figure>
+              <div data-aspect="4/3" style="background: var(--surface-raised)">
+                <img
+                  src="https://picsum.photos/500/320"
+                  alt="Fill fit example"
+                  data-fit="fill"
+                  style="width: 100%; height: 100%"
+                >
+              </div>
+              <figcaption>
+                <code>data-aspect="4/3"</code> and
+                <code>data-fit="fill"</code>
+              </figcaption>
+            </figure>
+
+            <figure>
+              <div data-aspect="21/9" style="background: var(--surface-raised)">
+                <img
+                  src="https://picsum.photos/500/320"
+                  alt="Scale-down fit example"
+                  data-fit="scale-down"
+                  style="width: 100%; height: 100%"
+                >
+              </div>
+              <figcaption>
+                <code>data-aspect="21/9"</code> and
+                <code>data-fit="scale-down"</code>
+              </figcaption>
+            </figure>
+          </div>
+
+          <div data-layout="grid" data-gap="4" data-grid-min="md">
+            <div data-surface="card" data-layout="stack" data-gap="3">
+              <h3>Sticky and smooth region</h3>
+              <div
+                id="smooth-region"
+                data-smooth
+                style="max-height: 14rem; border: 1px solid var(--border); padding: var(--space-3)"
+              >
+                <p
+                  data-sticky
+                  style="--sticky-top: var(--space-2); background: var(--surface); border: 1px solid var(--border); padding: var(--space-2)"
+                >
+                  Sticky note inside a smooth scroll region.
+                </p>
+                <p>
+                  This box demonstrates <code>data-smooth</code> and
+                  <code>data-sticky</code> together.
+                </p>
+                <p>
+                  Use the buttons below to scroll the region without custom
+                  layout CSS.
+                </p>
+                <p>
+                  Aura leaves the look neutral by default and lets tokens
+                  control the final character.
+                </p>
+                <p>
+                  The same markup becomes more branded as soon as the sample
+                  theme is enabled.
+                </p>
+                <p id="smooth-region-end">
+                  End of the smooth scrolling demo.
+                </p>
+              </div>
+
+              <div data-layout="cluster" data-gap="2" data-align="center">
+                <button id="scroll-region-top" type="button">
+                  Scroll to top
+                </button>
+                <button id="scroll-region-end-button" type="button">
+                  Scroll to end
+                </button>
+                <button type="button" data-hide="mobile">
+                  Hidden on mobile
+                </button>
+              </div>
+
+              <p>
+                <span data-visually-hidden
+                >Screen-reader-only introduction.</span>
+                This sentence includes hidden accessible text.
+              </p>
+            </div>
+
+            <div data-surface="card" data-layout="stack" data-gap="3">
+              <h3>Status colors</h3>
+              <p data-status="info">Informational message.</p>
+              <p data-status="success">Success message.</p>
+              <p data-status="warning">Warning message.</p>
+              <p data-status="error">Error message.</p>
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="print"
+          data-surface="card"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <div>
+            <h2>Print behavior</h2>
+            <p>
+              Print mode resets colors, hides buttons and navigation, expands
+              links, and honors <code>data-hide-print</code>.
+            </p>
+          </div>
+          <p>
+            Open print preview to see this
+            <a href="#print">link expanded in print output</a>.
+          </p>
+          <p data-hide-print>
+            This note is hidden in print because it uses
+            <code>data-hide-print</code>.
+          </p>
+        </section>
+      </main>
+
+      <footer data-surface="card">
+        <p>
+          Aura is headless by default. Turn on
+          <code>data-brand="aura"</code> when you want a sample design system.
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        const root = document.documentElement;
+        const body = document.body;
+        const stateOutput = document.getElementById("state-output");
+        const brandButton = document.getElementById("toggle-brand");
+        const contrastButton = document.getElementById(
+          "toggle-contrast",
+        );
+        const motionButton = document.getElementById("toggle-motion");
+        const dialog = document.getElementById("capability-dialog");
+        const smoothRegion = document.getElementById("smooth-region");
+
+        function getThemeTokens() {
+          const value = root.getAttribute("data-theme");
+          return value ? value.split(/\s+/).filter(Boolean) : [];
+        }
+
+        function setThemeTokens(tokens) {
+          if (tokens.length > 0) {
+            root.setAttribute("data-theme", tokens.join(" "));
+            return;
+          }
+          root.removeAttribute("data-theme");
+        }
+
+        function toggleThemeToken(token) {
+          const tokens = new Set(getThemeTokens());
+          if (tokens.has(token)) {
+            tokens.delete(token);
+          } else {
+            tokens.add(token);
+          }
+          setThemeTokens(Array.from(tokens));
+        }
+
+        function toggleAttribute(node, name, value) {
+          if (node.getAttribute(name) === value) {
+            node.removeAttribute(name);
+          } else {
+            node.setAttribute(name, value);
+          }
+        }
+
+        function updateState() {
+          const brand = body.getAttribute("data-brand") || "headless";
+          const theme = root.getAttribute("data-theme") || "light";
+          const contrast = root.getAttribute("data-contrast") ||
+            "normal";
+          const motion = root.getAttribute("data-motion") || "normal";
+
+          stateOutput.textContent =
+            `brand=${brand} theme=${theme} contrast=${contrast} motion=${motion}`;
+
+          brandButton.textContent = brand === "aura"
+            ? "Disable sample theme"
+            : "Enable sample theme";
+          contrastButton.textContent = contrast === "more"
+            ? "Disable high contrast"
+            : "Enable high contrast";
+          motionButton.textContent = motion === "reduce"
+            ? "Use normal motion"
+            : "Use reduced motion";
+        }
+
+        brandButton.addEventListener("click", () => {
+          toggleAttribute(body, "data-brand", "aura");
+          updateState();
+        });
+
+        document.getElementById("toggle-dark").addEventListener(
+          "click",
+          () => {
+            toggleThemeToken("dark");
+            updateState();
+          },
+        );
+
+        contrastButton.addEventListener("click", () => {
+          toggleAttribute(root, "data-contrast", "more");
+          updateState();
+        });
+
+        motionButton.addEventListener("click", () => {
+          toggleAttribute(root, "data-motion", "reduce");
+          updateState();
+        });
+
+        document.getElementById("reset-demo").addEventListener(
+          "click",
+          () => {
+            body.removeAttribute("data-brand");
+            root.removeAttribute("data-theme");
+            root.removeAttribute("data-contrast");
+            root.removeAttribute("data-motion");
+            updateState();
+          },
+        );
+
+        document.getElementById("open-dialog").addEventListener(
+          "click",
+          () => {
+            if (typeof dialog.showModal === "function") {
+              dialog.showModal();
+            } else {
+              dialog.setAttribute("open", "");
+            }
+          },
+        );
+
+        document.getElementById("close-dialog").addEventListener(
+          "click",
+          () => {
+            if (typeof dialog.close === "function") {
+              dialog.close();
+            } else {
+              dialog.removeAttribute("open");
+            }
+          },
+        );
+
+        document.getElementById("scroll-region-top").addEventListener(
+          "click",
+          () => {
+            smoothRegion.scrollTo({ top: 0 });
+          },
+        );
+
+        document.getElementById("scroll-region-end-button")
+          .addEventListener(
+            "click",
+            () => {
+              smoothRegion.scrollTo({ top: smoothRegion.scrollHeight });
+            },
+          );
+
+        updateState();
+      })();
+    </script>
+  </body>
+</html>
