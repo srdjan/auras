@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura CSS · Enhanced MVP Demo</title>
+  <style>
+    /* ===== AURA CSS MVP – WITH ENHANCEMENTS ===== */
+    @layer reset, tokens, defaults, layouts, components, utilities, print;
+
+    /* ---------- RESET ---------- */
+    @layer reset {
+      *, *::before, *::after { box-sizing: border-box; }
+      body, h1, h2, h3, h4, p, ul, ol, dl, figure, blockquote, fieldset {
+        margin: 0;
+      }
+      ul, ol { list-style: none; padding: 0; }
+      input, button, textarea, select { font: inherit; }
+      img, picture, video, canvas, svg { display: block; max-width: 100%; }
+    }
+
+    /* ---------- DESIGN TOKENS ---------- */
+    @layer tokens {
+      :root {
+        /* Spacing */
+        --space-1: 0.25rem;  --space-2: 0.5rem;  --space-3: 0.75rem;
+        --space-4: 1rem;     --space-6: 1.5rem;  --space-8: 2rem;
+        --space-10: 2.5rem;  --space-12: 3rem;   --space-16: 4rem;
+
+        /* Fonts */
+        --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        --font-serif: Georgia, serif;
+        --font-mono: 'SF Mono', Monaco, Consolas, monospace;
+
+        /* Fluid type scale */
+        --text-xs: clamp(0.75rem, 0.7cqi, 0.875rem);
+        --text-sm: clamp(0.875rem, 0.8cqi, 1rem);
+        --text-base: clamp(1rem, 1cqi, 1.125rem);
+        --text-md: clamp(1.125rem, 1.2cqi, 1.25rem);
+        --text-lg: clamp(1.25rem, 1.5cqi, 1.5rem);
+        --text-xl: clamp(1.5rem, 2cqi, 1.875rem);
+        --text-2xl: clamp(1.875rem, 2.5cqi, 2.25rem);
+        --text-3xl: clamp(2.25rem, 3cqi, 3rem);
+
+        /* Line heights */
+        --leading-tight: 1.25;
+        --leading-normal: 1.5;
+        --leading-relaxed: 1.625;
+
+        /* OKLCH base hues */
+        --hue-primary: 260;
+        --hue-secondary: 200;
+        --hue-accent: 20;
+        --hue-neutral: 0;
+
+        /* Primary */
+        --primary-l: 55%;
+        --primary-c: 0.15;
+        --primary: oklch(var(--primary-l) var(--primary-c) var(--hue-primary));
+        --primary-hover: oklch(calc(var(--primary-l) - 5%) var(--primary-c) var(--hue-primary));
+        --primary-subtle: oklch(calc(var(--primary-l) + 20%) 0.05 var(--hue-primary));
+
+        /* Secondary */
+        --secondary-l: 60%;
+        --secondary-c: 0.1;
+        --secondary: oklch(var(--secondary-l) var(--secondary-c) var(--hue-secondary));
+        --secondary-hover: oklch(calc(var(--secondary-l) - 5%) var(--secondary-c) var(--hue-secondary));
+
+        /* Neutral grays */
+        --gray-0: oklch(98% 0.005 var(--hue-neutral));
+        --gray-1: oklch(95% 0.008 var(--hue-neutral));
+        --gray-2: oklch(92% 0.01 var(--hue-neutral));
+        --gray-3: oklch(88% 0.012 var(--hue-neutral));
+        --gray-4: oklch(82% 0.015 var(--hue-neutral));
+        --gray-5: oklch(72% 0.018 var(--hue-neutral));
+        --gray-6: oklch(62% 0.02 var(--hue-neutral));
+        --gray-7: oklch(52% 0.022 var(--hue-neutral));
+        --gray-8: oklch(42% 0.024 var(--hue-neutral));
+        --gray-9: oklch(32% 0.026 var(--hue-neutral));
+        --gray-10: oklch(22% 0.028 var(--hue-neutral));
+        --gray-11: oklch(15% 0.03 var(--hue-neutral));
+        --gray-12: oklch(10% 0.032 var(--hue-neutral));
+
+        /* Semantic aliases (light mode) */
+        --bg: var(--gray-0);
+        --text: var(--gray-12);
+        --text-muted: var(--gray-7);
+        --link: var(--primary);
+        --link-visited: var(--secondary);
+        --border: var(--gray-3);
+        --border-strong: var(--gray-5);
+        --focus-ring: var(--primary);
+        --surface: white;
+        --surface-raised: var(--gray-0);
+
+        /* Borders & shadows */
+        --radius-sm: 0.25rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 1rem;
+        --radius-full: 9999px;
+
+        --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+        /* Transitions */
+        --transition-fast: 150ms ease;
+        --transition-base: 250ms ease;
+      }
+
+      /* Dark theme */
+      [data-theme*="dark"] {
+        --bg: var(--gray-12);
+        --text: var(--gray-1);
+        --text-muted: var(--gray-6);
+        --surface: var(--gray-11);
+        --surface-raised: var(--gray-10);
+        --border: var(--gray-8);
+        --border-strong: var(--gray-6);
+        --link: oklch(70% 0.15 var(--hue-primary));
+        --link-visited: oklch(70% 0.1 var(--hue-secondary));
+        --shadow-sm: 0 1px 3px 0 rgb(255 255 255 / 0.05);
+      }
+
+      /* High contrast */
+      [data-theme*="high-contrast"] {
+        --border: var(--text);
+        --border-strong: var(--text);
+        --text-muted: var(--text);
+      }
+
+      /* Reduce motion */
+      [data-theme*="reduce-motion"] {
+        --transition-fast: 0s;
+        --transition-base: 0s;
+      }
+
+      /* Respect user preference if no theme set */
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme]) { --bg: var(--gray-12); --text: var(--gray-1); /* etc. */ }
+      }
+    }
+
+    /* ---------- DEFAULTS (classless) ---------- */
+    @layer defaults {
+      body {
+        font-family: var(--font-sans);
+        font-size: var(--text-base);
+        line-height: var(--leading-normal);
+        color: var(--text);
+        background-color: var(--bg);
+        padding: var(--space-4);
+
+        /* Enhancement: font-size-adjust for better fallbacks */
+        font-size-adjust: 0.5;
+      }
+
+      /* Enhancement: text-wrap for headings and paragraphs */
+      h1, h2, h3, h4, h5, h6 {
+        font-weight: 600;
+        line-height: var(--leading-tight);
+        margin-block: 0.5em 0.25em;
+        text-wrap: balance; /* avoid awkward line breaks */
+      }
+      p, li, blockquote, figcaption {
+        text-wrap: pretty;  /* minimize orphans */
+      }
+
+      h1 { font-size: var(--text-3xl); }
+      h2 { font-size: var(--text-2xl); }
+      h3 { font-size: var(--text-xl); }
+      h4 { font-size: var(--text-lg); }
+
+      p, ul, ol, dl, blockquote { margin-block: 0 1rem; }
+
+      a {
+        color: var(--link);
+        text-decoration: underline;
+        text-underline-offset: 0.2em;
+        transition: color var(--transition-fast);
+      }
+      a:visited { color: var(--link-visited); }
+      a:hover { color: var(--primary-hover); }
+
+      /* Forms */
+      button, input[type="button"], input[type="submit"] {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: var(--space-2) var(--space-4);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+        transition: background-color var(--transition-fast);
+      }
+      button:hover { background-color: var(--primary-hover); }
+
+      input:not([type="button"]):not([type="submit"]), textarea, select {
+        background-color: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+        padding: var(--space-2) var(--space-3);
+        border-radius: var(--radius-sm);
+        width: 100%;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: var(--space-2) var(--space-3);
+        border-bottom: 1px solid var(--border);
+        text-align: left;
+      }
+      th { font-weight: 600; }
+
+      code, pre {
+        font-family: var(--font-mono);
+        background-color: var(--surface-raised);
+        border-radius: var(--radius-sm);
+      }
+      code { padding: 0.2em 0.4em; }
+      pre { padding: var(--space-4); overflow-x: auto; }
+
+      hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin-block: var(--space-8);
+      }
+
+      /* Variable font support (optional enhancement) */
+      @supports (font-variation-settings: normal) {
+        body {
+          font-optical-sizing: auto;
+        }
+      }
+    }
+
+    /* ---------- LAYOUT ATTRIBUTE ---------- */
+    @layer layouts {
+      [data-layout] {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      [data-layout*="row"] { flex-direction: row; }
+      [data-layout*="col"] { flex-direction: column; }
+      [data-layout*="grid"] {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+      }
+      /* Alignment combos */
+      [data-layout*="center"] { align-items: center; justify-content: center; }
+      [data-layout*="center-between"] { align-items: center; justify-content: space-between; }
+      [data-layout*="center-start"] { align-items: center; justify-content: flex-start; }
+      [data-layout*="stretch"] { align-items: stretch; }
+
+      /* Gap */
+      [data-layout*="gap-2"] { gap: var(--space-2); }
+      [data-layout*="gap-4"] { gap: var(--space-4); }
+      [data-layout*="gap-6"] { gap: var(--space-6); }
+
+      /* Container */
+      [data-layout*="container"] {
+        display: block;
+        max-width: 80rem;
+        margin-inline: auto;
+        padding-inline: var(--space-4);
+      }
+    }
+
+    /* ---------- COMPONENTS (contextual enhancements) ---------- */
+    @layer components {
+      header:has(nav) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: var(--space-4);
+        padding-block: var(--space-4);
+      }
+
+      main article {
+        border-radius: var(--radius-md);
+        padding: var(--space-6);
+        background-color: var(--surface);
+        box-shadow: var(--shadow-sm);
+      }
+
+      nav ul {
+        display: flex;
+        gap: var(--space-4);
+        list-style: none;
+        padding-left: 0;
+      }
+
+      /* Form validation */
+      fieldset:has(:invalid) { border-color: #d00; }
+
+      label:has(+ input:required)::after {
+        content: " *";
+        color: #d00;
+      }
+    }
+
+    /* ---------- UTILITIES ---------- */
+    @layer utilities {
+      [data-sticky] {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+      [data-visually-hidden] {
+        position: absolute;
+        width: 1px; height: 1px;
+        padding: 0; margin: -1px;
+        overflow: hidden;
+        clip: rect(0,0,0,0);
+        white-space: nowrap;
+        border: 0;
+      }
+      [data-smooth] { scroll-behavior: smooth; overflow-y: auto; }
+      @media (max-width: 640px) { [data-hide="mobile"] { display: none; } }
+
+      /* ===== NEW ENHANCEMENTS ===== */
+      /* Aspect ratios */
+      [data-aspect="16/9"] { aspect-ratio: 16 / 9; }
+      [data-aspect="4/3"]  { aspect-ratio: 4 / 3; }
+      [data-aspect="1/1"]  { aspect-ratio: 1 / 1; }
+      [data-aspect="3/2"]  { aspect-ratio: 3 / 2; }
+      [data-aspect="21/9"] { aspect-ratio: 21 / 9; }
+
+      /* Object fit */
+      [data-fit="cover"]   { object-fit: cover; }
+      [data-fit="contain"] { object-fit: contain; }
+      [data-fit="fill"]    { object-fit: fill; }
+      [data-fit="scale-down"] { object-fit: scale-down; }
+
+      /* Accessibility media queries */
+      @media (forced-colors: active) {
+        :root {
+          --primary: CanvasText;
+          --border: CanvasText;
+          --border-strong: CanvasText;
+        }
+        button, [role="button"], [data-layout] {
+          border: 2px solid CanvasText;
+        }
+      }
+
+      @media (prefers-contrast: high) {
+        :root {
+          --text: oklch(10% 0 0);
+          --border-strong: oklch(20% 0 0);
+        }
+      }
+
+      @media (prefers-contrast: less) {
+        :root {
+          --text-muted: oklch(45% 0.01 0);
+          --shadow-sm: none; /* reduce glare */
+        }
+      }
+    }
+
+    /* ---------- PRINT STYLES ---------- */
+    @layer print {
+      @media print {
+        /* Reset for print */
+        body {
+          background: white;
+          color: black;
+          font-size: 12pt;
+          line-height: 1.5;
+          padding: 0.5in;
+        }
+
+        /* Hide interactive/non‑essential elements */
+        nav, button, [data-hide-print] {
+          display: none !important;
+        }
+
+        /* Expand links */
+        a[href]::after {
+          content: " (" attr(href) ")";
+          font-size: 0.9em;
+          word-break: break-word;
+        }
+
+        /* Page breaks */
+        article, section {
+          page-break-inside: avoid;
+          break-inside: avoid;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+          page-break-after: avoid;
+        }
+
+        /* Page margins and footer */
+        @page {
+          margin: 1in;
+          @bottom-center {
+            content: "Page " counter(page);
+            font-size: 9pt;
+          }
+        }
+      }
+    }
+
+    /* ---------- DEMO-SPECIFIC STYLES (not part of Aura) ---------- */
+    .demo-controls {
+      margin-block: var(--space-8);
+      padding: var(--space-4);
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+    }
+    .theme-badge {
+      display: inline-block;
+      background: var(--primary-subtle);
+      color: var(--text);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+    }
+    .demo-box {
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      text-align: center;
+    }
+  </style>
+</head>
+<body data-layout="container">
+  <header>
+    <h1>🌀 Aura CSS <span style="font-size:0.6em; background:var(--primary-subtle); padding:0.2rem 0.8rem; border-radius:var(--radius-full);">Enhanced MVP</span></h1>
+    <nav>
+      <ul>
+        <li><a href="#classless">Classless</a></li>
+        <li><a href="#layout">Layout</a></li>
+        <li><a href="#themes">Themes</a></li>
+        <li><a href="#forms">Forms</a></li>
+        <li><a href="#media">Media</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Meet Aura: the intelligent, semantic CSS library</h2>
+    <p>This page is styled entirely by Aura CSS. No utility classes—just semantic HTML and a few <code>data-*</code> attributes. Click the buttons below to switch themes and see Aura’s token‑based system in action.</p>
+
+    <!-- Theme controls -->
+    <div class="demo-controls" data-layout="row center-start gap-4">
+      <span class="theme-badge">Current theme: <span id="theme-indicator">light</span></span>
+      <button id="toggle-dark">🌙 Toggle dark</button>
+      <button id="toggle-high-contrast">👁️ Toggle high contrast</button>
+      <button id="reset-themes">⟲ Reset</button>
+    </div>
+
+    <!-- ========== CLASSLESS SEMANTICS ========== -->
+    <section id="classless">
+      <h2>Classless semantics</h2>
+      <p>Raw HTML elements are beautifully styled out of the box.</p>
+
+      <article>
+        <h3>Article card (contextual)</h3>
+        <p>Any <code>&lt;article&gt;</code> inside <code>&lt;main&gt;</code> gets a card appearance automatically.</p>
+        <p><a href="#">This is a link</a> and <strong>strong text</strong> and <code>inline code</code>.</p>
+      </article>
+
+      <hr>
+
+      <h3>Lists & tables</h3>
+      <ul>
+        <li>Unordered list item one</li>
+        <li>Item two with a <a href="#">nested link</a></li>
+        <li>Item three</li>
+      </ul>
+
+      <table>
+        <thead><tr><th>Name</th><th>Role</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Alex</td><td>Developer</td><td>Active</td></tr>
+          <tr><td>Jamie</td><td>Designer</td><td>Active</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ========== LAYOUT ATTRIBUTES ========== -->
+    <section id="layout">
+      <h2>Layout via <code>data-layout</code></h2>
+      <p>Structure your page without utility classes.</p>
+
+      <h3>Grid example</h3>
+      <div data-layout="grid gap-4">
+        <div class="demo-box">Item 1</div>
+        <div class="demo-box">Item 2</div>
+        <div class="demo-box">Item 3</div>
+        <div class="demo-box">Item 4</div>
+      </div>
+
+      <h3>Flex row with gap and alignment</h3>
+      <div data-layout="row center-between gap-4">
+        <span>Left item</span>
+        <span>Center item</span>
+        <span>Right item</span>
+      </div>
+
+      <h3>Nested layouts</h3>
+      <div data-layout="col gap-4">
+        <header data-layout="row center-between gap-2">
+          <span>Header inside column</span>
+          <button>Action</button>
+        </header>
+        <div data-layout="grid gap-4" style="--grid-min: 200px;">
+          <div class="demo-box">Cell 1</div>
+          <div class="demo-box">Cell 2</div>
+          <div class="demo-box">Cell 3</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== THEMES ========== -->
+    <section id="themes">
+      <h2>Composable themes</h2>
+      <p>The <code>data-theme</code> attribute can combine multiple tokens. Try it with the buttons above.</p>
+      <blockquote>
+        <p>“Design tokens update instantly—no rebuild needed.”</p>
+        <footer>— Aura’s token system</footer>
+      </blockquote>
+    </section>
+
+    <!-- ========== FORMS ========== -->
+    <section id="forms">
+      <h2>Forms & validation</h2>
+      <form>
+        <fieldset>
+          <legend>Personal info</legend>
+
+          <label for="name">Full name</label>
+          <input type="text" id="name" required>
+
+          <label for="email">Email address</label>
+          <input type="email" id="email" required>
+
+          <label for="country">Country</label>
+          <select id="country">
+            <option>Choose</option>
+            <option>Earth</option>
+            <option>Mars</option>
+          </select>
+
+          <button type="submit">Submit form</button>
+        </fieldset>
+      </form>
+      <p><small>Notice the required fields have a <code>*</code> automatically, and the fieldset border changes when invalid.</small></p>
+    </section>
+
+    <!-- ========== NEW MEDIA UTILITIES ========== -->
+    <section id="media">
+      <h2>Aspect ratio & fit utilities</h2>
+      <p>Use <code>data-aspect</code> and <code>data-fit</code> for responsive media.</p>
+      <div data-layout="grid gap-4" style="--grid-min: 200px;">
+        <figure>
+          <div data-aspect="16/9" style="background: var(--primary-subtle);">
+            <img src="https://picsum.photos/400/225" data-fit="cover" alt="Demo" style="width:100%; height:100%;">
+          </div>
+          <figcaption><code>data-aspect="16/9" data-fit="cover"</code></figcaption>
+        </figure>
+        <figure>
+          <div data-aspect="1/1" style="background: var(--primary-subtle);">
+            <img src="https://picsum.photos/200/200" data-fit="cover" alt="Demo" style="width:100%; height:100%;">
+          </div>
+          <figcaption><code>data-aspect="1/1" data-fit="cover"</code></figcaption>
+        </figure>
+        <figure>
+          <div data-aspect="4/3" style="background: var(--primary-subtle);">
+            <img src="https://picsum.photos/400/300" data-fit="contain" alt="Demo" style="width:100%; height:100%; background:var(--border);">
+          </div>
+          <figcaption><code>data-aspect="4/3" data-fit="contain"</code></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ========== PRINT DEMO ========== -->
+    <section>
+      <h2>Print styles</h2>
+      <p>This <button>button</button> and <a href="#">this link</a> will be hidden or expanded when printed. Use <code>data-hide-print</code> to hide any element.</p>
+      <p data-hide-print>This paragraph has <code>data-hide-print</code> and will disappear in print preview.</p>
+    </section>
+
+    <!-- ========== UTILITIES ========== -->
+    <section>
+      <h2>Minimal utilities</h2>
+      <p><code>data-sticky</code>, <code>data-visually-hidden</code>, and responsive <code>data-hide</code> are available.</p>
+      <div data-sticky style="background: var(--surface); padding: var(--space-2); border: 1px solid var(--border);">I'm sticky (demo, but works).</div>
+      <p><span data-visually-hidden>This text is visually hidden but accessible.</span> (hidden text above)</p>
+      <button data-hide="mobile">This button hides on mobile (resize browser).</button>
+    </section>
+  </main>
+
+  <footer data-layout="container" style="margin-top: var(--space-12); border-top: 1px solid var(--border); padding-block: var(--space-6);">
+    <p data-layout="row center-between">
+      <span>🌀 Aura CSS – Enhanced MVP</span>
+      <span>Built with modern CSS &hearts;</span>
+    </p>
+  </footer>
+
+  <!-- Simple theme switcher (for demo) -->
+  <script>
+    (function() {
+      const root = document.documentElement;
+      const indicator = document.getElementById('theme-indicator');
+
+      function updateIndicator() {
+        const theme = root.getAttribute('data-theme') || 'light (default)';
+        indicator.textContent = theme;
+      }
+
+      document.getElementById('toggle-dark').addEventListener('click', () => {
+        const current = root.getAttribute('data-theme') || '';
+        if (current.includes('dark')) {
+          root.setAttribute('data-theme', current.replace('dark', '').trim());
+        } else {
+          root.setAttribute('data-theme', (current + ' dark').trim());
+        }
+        updateIndicator();
+      });
+
+      document.getElementById('toggle-high-contrast').addEventListener('click', () => {
+        const current = root.getAttribute('data-theme') || '';
+        if (current.includes('high-contrast')) {
+          root.setAttribute('data-theme', current.replace('high-contrast', '').trim());
+        } else {
+          root.setAttribute('data-theme', (current + ' high-contrast').trim());
+        }
+        updateIndicator();
+      });
+
+      document.getElementById('reset-themes').addEventListener('click', () => {
+        root.removeAttribute('data-theme');
+        updateIndicator();
+      });
+
+      updateIndicator();
+    })();
+  </script>
+</body>
+</html>
