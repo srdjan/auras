@@ -39,8 +39,8 @@
           <div>
             <h1>Aura CSS</h1>
             <p>
-              Headless by default, semantic by design, and able to opt into a
-              sample brand from a plug-in stylesheet.
+              Headless by default, semantic by design, and able to opt into
+              sample design systems from pluggable stylesheets.
             </p>
           </div>
 
@@ -50,8 +50,14 @@
             data-align="center"
             data-stack="mobile"
           >
-            <button id="toggle-brand" type="button" data-variant="solid">
-              Enable sample theme
+            <button id="use-headless" type="button" data-variant="solid">
+              Headless core
+            </button>
+            <button id="use-aura-brand" type="button">
+              Aura pack
+            </button>
+            <button id="use-editorial-brand" type="button">
+              Editorial pack
             </button>
             <button id="toggle-dark" type="button" data-variant="soft">
               Toggle dark
@@ -76,7 +82,8 @@
           <pre><code>&lt;body data-brand="aura" data-theme="dark" data-contrast="more"&gt;...&lt;/body&gt;</code></pre>
           <pre>
 <code>&lt;link rel="stylesheet" href="aura-css.css"&gt;
-&lt;link rel="stylesheet" href="aura-brand-aura.css"&gt; &lt;!-- optional brand pack --&gt;</code></pre>
+&lt;link rel="stylesheet" href="aura-brand-aura.css"&gt; &lt;!-- optional brand pack --&gt;
+&lt;link rel="stylesheet" href="aura-brand-editorial.css"&gt; &lt;!-- optional brand pack --&gt;</code></pre>
         </section>
 
         <section
@@ -570,8 +577,8 @@
 
       <footer data-surface="card">
         <p>
-          Aura is headless by default. Turn on
-          <code>data-brand="aura"</code> when you want a sample design system.
+          Aura is headless by default. Turn on <code>data-brand</code> when you
+          want a sample design system pack.
         </p>
       </footer>
     </div>
@@ -581,26 +588,40 @@
         const root = document.documentElement;
         const body = document.body;
         const stateOutput = document.getElementById("state-output");
-        const brandButton = document.getElementById("toggle-brand");
+        const headlessButton = document.getElementById("use-headless");
+        const auraBrandButton = document.getElementById(
+          "use-aura-brand",
+        );
+        const editorialBrandButton = document.getElementById(
+          "use-editorial-brand",
+        );
         const contrastButton = document.getElementById(
           "toggle-contrast",
         );
         const motionButton = document.getElementById("toggle-motion");
         const dialog = document.getElementById("capability-dialog");
         const smoothRegion = document.getElementById("smooth-region");
-        const brandStylesheetId = "aura-brand-pack";
-        const brandStylesheetHref = "aura-brand-aura.css";
+        const brandStylesheetByName = {
+          aura: "aura-brand-aura.css",
+          editorial: "aura-brand-editorial.css",
+        };
 
-        function ensureBrandStylesheet() {
-          let link = document.getElementById(brandStylesheetId);
+        function ensureBrandStylesheet(brand) {
+          const href = brandStylesheetByName[brand];
+          if (!href) {
+            return null;
+          }
+
+          const linkId = `aura-brand-pack-${brand}`;
+          let link = document.getElementById(linkId);
           if (link) {
             return link;
           }
 
           link = document.createElement("link");
-          link.id = brandStylesheetId;
+          link.id = linkId;
           link.rel = "stylesheet";
-          link.href = brandStylesheetHref;
+          link.href = href;
           document.head.appendChild(link);
           return link;
         }
@@ -636,6 +657,36 @@
           }
         }
 
+        function setBrand(brand) {
+          if (brand === "headless") {
+            body.removeAttribute("data-brand");
+          } else {
+            ensureBrandStylesheet(brand);
+            body.setAttribute("data-brand", brand);
+          }
+          updateState();
+        }
+
+        function syncBrandButtons(activeBrand) {
+          const buttons = [
+            [headlessButton, "headless"],
+            [auraBrandButton, "aura"],
+            [editorialBrandButton, "editorial"],
+          ];
+
+          buttons.forEach(([button, brand]) => {
+            if (!button) {
+              return;
+            }
+
+            if (brand === activeBrand) {
+              button.setAttribute("data-variant", "solid");
+            } else {
+              button.setAttribute("data-variant", "ghost");
+            }
+          });
+        }
+
         function updateState() {
           const brand = body.getAttribute("data-brand") || "headless";
           const theme = root.getAttribute("data-theme") || "light";
@@ -646,22 +697,27 @@
           stateOutput.textContent =
             `brand=${brand} theme=${theme} contrast=${contrast} motion=${motion}`;
 
-          brandButton.textContent = brand === "aura"
-            ? "Disable sample theme"
-            : "Enable sample theme";
           contrastButton.textContent = contrast === "more"
             ? "Disable high contrast"
             : "Enable high contrast";
           motionButton.textContent = motion === "reduce"
             ? "Use normal motion"
             : "Use reduced motion";
+          syncBrandButtons(brand);
         }
 
-        brandButton.addEventListener("click", () => {
-          ensureBrandStylesheet();
-          toggleAttribute(body, "data-brand", "aura");
-          updateState();
-        });
+        headlessButton.addEventListener(
+          "click",
+          () => setBrand("headless"),
+        );
+        auraBrandButton.addEventListener(
+          "click",
+          () => setBrand("aura"),
+        );
+        editorialBrandButton.addEventListener(
+          "click",
+          () => setBrand("editorial"),
+        );
 
         document.getElementById("toggle-dark").addEventListener(
           "click",
