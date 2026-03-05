@@ -2,8 +2,8 @@
 
 A headless-first CSS framework built on semantic HTML and `data-*` attributes.
 No classes, no build step, no JavaScript required. One file gives you
-typography, layout, forms, theming, accessibility, and print styles. Opt into
-a brand pack when you want a visual identity.
+typography, layout, forms, theming, accessibility, and print styles. Opt into a
+brand pack when you want a visual identity.
 
 ## Quick start
 
@@ -19,7 +19,7 @@ When you are ready for a branded look, add the brand pack and a data attribute:
 
 ```html
 <link rel="stylesheet" href="aura-css.css">
-<link rel="stylesheet" href="aura-brand-aura.css">
+<link rel="stylesheet" href="aura-brand.css">
 
 <body data-brand="aura">
 ```
@@ -32,66 +32,64 @@ Aura uses CSS `@layer` ordering to keep specificity predictable:
 reset > tokens > brands > defaults > layouts > components > utilities > print
 ```
 
-**Headless core** (`aura-css.css`) ships with near-neutral colors
-(chroma 0.03), transparent bordered buttons, and no card shadows. It
-provides structure without forcing a visual language.
+**Headless core** (`aura-css.css`) ships with near-neutral colors (chroma 0.03),
+transparent bordered buttons, and no card shadows. It provides structure without
+forcing a visual language.
 
-**Brand packs** (e.g. `aura-brand-aura.css`) live in the `brands` layer
-and override token values when a `data-brand` attribute is present. This
-keeps the core cacheable and lets you swap brands without touching the
-framework.
+**Brand packs** (e.g. `aura-brand.css`) live in the `brands` layer and override
+token values when a `data-brand` attribute is present. This keeps the core
+cacheable and lets you swap brands without touching the framework.
 
 ## Design tokens
 
-All visual values flow through CSS custom properties on `:root`. Override
-any token to customize without fighting specificity.
+All visual values flow through CSS custom properties on `:root`. Override any
+token to customize without fighting specificity.
 
 ### Spacing
 
-| Token | Value |
-|-------|-------|
-| `--space-1` | 0.25rem |
-| `--space-2` | 0.5rem |
-| `--space-3` | 0.75rem |
-| `--space-4` | 1rem |
-| `--space-6` | 1.5rem |
-| `--space-8` | 2rem |
-| `--space-10` | 2.5rem |
-| `--space-12` | 3rem |
-| `--space-16` | 4rem |
+| Token        | Value   |
+| ------------ | ------- |
+| `--space-1`  | 0.25rem |
+| `--space-2`  | 0.5rem  |
+| `--space-3`  | 0.75rem |
+| `--space-4`  | 1rem    |
+| `--space-6`  | 1.5rem  |
+| `--space-8`  | 2rem    |
+| `--space-10` | 2.5rem  |
+| `--space-12` | 3rem    |
+| `--space-16` | 4rem    |
 
 ### Type scale (fluid)
 
 Each step uses `clamp()` with a `vw` component for smooth scaling:
 
-| Token | Range |
-|-------|-------|
-| `--text-xs` | 0.75rem - 0.875rem |
-| `--text-sm` | 0.875rem - 1rem |
-| `--text-base` | 1rem - 1.125rem |
-| `--text-md` | 1.125rem - 1.25rem |
-| `--text-lg` | 1.25rem - 1.5rem |
-| `--text-xl` | 1.5rem - 1.875rem |
-| `--text-2xl` | 1.875rem - 2.25rem |
-| `--text-3xl` | 2.25rem - 3rem |
+| Token         | Range              |
+| ------------- | ------------------ |
+| `--text-xs`   | 0.75rem - 0.875rem |
+| `--text-sm`   | 0.875rem - 1rem    |
+| `--text-base` | 1rem - 1.125rem    |
+| `--text-md`   | 1.125rem - 1.25rem |
+| `--text-lg`   | 1.25rem - 1.5rem   |
+| `--text-xl`   | 1.5rem - 1.875rem  |
+| `--text-2xl`  | 1.875rem - 2.25rem |
+| `--text-3xl`  | 2.25rem - 3rem     |
 
 ### Colors
 
 Colors use OKLCH with configurable hue angles:
 
-| Token | Purpose |
-|-------|---------|
-| `--hue-primary` | Primary hue (default 260) |
-| `--hue-secondary` | Secondary hue (default 200) |
-| `--hue-accent` | Accent hue (default 20) |
-| `--hue-neutral` | Gray hue rotation (default 0) |
-| `--primary` | Primary color |
-| `--secondary` | Secondary color |
-| `--gray-0` through `--gray-12` | Neutral scale (0 = lightest) |
+| Token                          | Purpose                       |
+| ------------------------------ | ----------------------------- |
+| `--hue-primary`                | Primary hue (default 260)     |
+| `--hue-secondary`              | Secondary hue (default 200)   |
+| `--hue-accent`                 | Accent hue (default 20)       |
+| `--hue-neutral`                | Gray hue rotation (default 0) |
+| `--primary`                    | Primary color                 |
+| `--secondary`                  | Secondary color               |
+| `--gray-0` through `--gray-12` | Neutral scale (0 = lightest)  |
 
-Semantic aliases like `--bg`, `--text`, `--surface`, `--border`, `--link`,
-and `--focus-ring` are derived from the palette and swap automatically in
-dark mode.
+Semantic aliases like `--bg`, `--text`, `--surface`, `--border`, `--link`, and
+`--focus-ring` are derived from the palette and swap automatically in dark mode.
 
 ### Component hooks
 
@@ -127,12 +125,18 @@ Layout is controlled through `data-layout` and orthogonal modifier attributes.
 ### Directions
 
 ```html
-<div data-layout="row">...</div>     <!-- horizontal flex -->
-<div data-layout="col">...</div>     <!-- vertical flex -->
-<div data-layout="stack">...</div>   <!-- alias for col -->
-<div data-layout="cluster">...</div> <!-- alias for row -->
-<div data-layout="grid">...</div>    <!-- auto-fit grid -->
-<div data-layout="container">...</div> <!-- centered max-width block -->
+<div data-layout="row">...</div>
+<!-- horizontal flex -->
+<div data-layout="col">...</div>
+<!-- vertical flex -->
+<div data-layout="stack">...</div>
+<!-- alias for col -->
+<div data-layout="cluster">...</div>
+<!-- alias for row -->
+<div data-layout="grid">...</div>
+<!-- auto-fit grid -->
+<div data-layout="container">...</div>
+<!-- centered max-width block -->
 ```
 
 ### Alignment, justification, and gap
@@ -143,11 +147,11 @@ These work on any `data-layout` element:
 <div data-layout="row" data-align="center" data-justify="between" data-gap="4">
 ```
 
-| Attribute | Values |
-|-----------|--------|
-| `data-align` | `start`, `center`, `end`, `stretch` |
+| Attribute      | Values                                                  |
+| -------------- | ------------------------------------------------------- |
+| `data-align`   | `start`, `center`, `end`, `stretch`                     |
 | `data-justify` | `start`, `center`, `end`, `between`, `around`, `evenly` |
-| `data-gap` | `1`, `2`, `3`, `4`, `6`, `8` (maps to spacing tokens) |
+| `data-gap`     | `1`, `2`, `3`, `4`, `6`, `8` (maps to spacing tokens)   |
 
 ### Grid sizing
 
@@ -179,11 +183,11 @@ Theme axes are independent and composable via data attributes on `<html>`:
 <html data-theme="dark" data-contrast="more" data-motion="reduce">
 ```
 
-| Attribute | Values | Effect |
-|-----------|--------|--------|
-| `data-theme` | `dark` | Dark color scheme |
-| `data-contrast` | `more` | Stronger borders and text |
-| `data-motion` | `reduce` | Disables transitions |
+| Attribute       | Values   | Effect                    |
+| --------------- | -------- | ------------------------- |
+| `data-theme`    | `dark`   | Dark color scheme         |
+| `data-contrast` | `more`   | Stronger borders and text |
+| `data-motion`   | `reduce` | Disables transitions      |
 
 When no attributes are set, Aura respects `prefers-color-scheme` and
 `prefers-reduced-motion` from the operating system.
@@ -238,8 +242,7 @@ alternatives:
 
 ## Forms
 
-Text inputs, selects, and textareas are styled automatically. No classes
-needed:
+Text inputs, selects, and textareas are styled automatically. No classes needed:
 
 ```html
 <form>
@@ -262,16 +265,16 @@ Features included out of the box:
 
 ## Utilities
 
-| Attribute | Effect |
-|-----------|--------|
-| `data-sticky` | `position: sticky; top: 0`. Override offset with `--sticky-top`. |
-| `data-visually-hidden` / `data-sr-only` | Screen-reader-only text |
-| `data-smooth` | Smooth scroll with `overflow-y: auto` |
-| `data-hide="mobile"` | Hidden below 640px |
-| `data-hide-print` | Hidden in print output |
-| `data-status="error\|warning\|success\|info"` | Semantic status color |
-| `data-aspect="16/9\|4/3\|1/1\|3/2\|21/9"` | Aspect ratio |
-| `data-fit="cover\|contain\|fill\|scale-down"` | Object fit |
+| Attribute                                     | Effect                                                           |
+| --------------------------------------------- | ---------------------------------------------------------------- |
+| `data-sticky`                                 | `position: sticky; top: 0`. Override offset with `--sticky-top`. |
+| `data-visually-hidden` / `data-sr-only`       | Screen-reader-only text                                          |
+| `data-smooth`                                 | Smooth scroll with `overflow-y: auto`                            |
+| `data-hide="mobile"`                          | Hidden below 640px                                               |
+| `data-hide-print`                             | Hidden in print output                                           |
+| `data-status="error\|warning\|success\|info"` | Semantic status color                                            |
+| `data-aspect="16/9\|4/3\|1/1\|3/2\|21/9"`     | Aspect ratio                                                     |
+| `data-fit="cover\|contain\|fill\|scale-down"` | Object fit                                                       |
 
 ## Accessibility
 
@@ -322,8 +325,8 @@ Load it alongside the core:
 <body data-brand="custom">
 ```
 
-The included `aura-brand-aura.css` serves as both a working brand and a
-template for creating your own.
+The included `aura-brand.css` serves as both a working brand and a template for
+creating your own.
 
 ## Browser support
 
@@ -338,11 +341,11 @@ Aura targets modern evergreen browsers. Key features and their support:
 
 ## Files
 
-| File | Purpose |
-|------|---------|
-| `aura-css.css` | Headless core: reset, tokens, defaults, layout, components, utilities, print |
-| `aura-brand-aura.css` | Sample brand pack that activates with `data-brand="aura"` |
-| `index.html` | Interactive demo exercising all features |
+| File             | Purpose                                                                      |
+| ---------------- | ---------------------------------------------------------------------------- |
+| `aura-css.css`   | Headless core: reset, tokens, defaults, layout, components, utilities, print |
+| `aura-brand.css` | Sample brand pack that activates with `data-brand="aura"`                    |
+| `index.html`     | Interactive demo exercising all features                                     |
 
 ## License
 
