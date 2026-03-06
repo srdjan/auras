@@ -12,7 +12,7 @@
         <div data-layout="stack" data-gap="2">
           <p><strong>Aura CSS</strong></p>
           <p>
-            Single-file demo using only <code>aura-css.css</code>. It starts in
+            Single-file demo using only <code>aura.css</code>. It starts in
             headless mode and can switch into the sample Aura design system.
           </p>
         </div>
@@ -81,7 +81,7 @@
 
           <pre><code>&lt;body data-brand="aura" data-theme="dark" data-contrast="more"&gt;...&lt;/body&gt;</code></pre>
           <pre>
-<code>&lt;link rel="stylesheet" href="aura-css.css"&gt;
+<code>&lt;link rel="stylesheet" href="aura.css"&gt;
 &lt;link rel="stylesheet" href="aura-brand.css"&gt; &lt;!-- optional brand pack --&gt;
 &lt;link rel="stylesheet" href="aura-brand-editorial.css"&gt; &lt;!-- optional brand pack --&gt;</code></pre>
         </section>
@@ -258,8 +258,8 @@
           <div>
             <h2>Components and semantic states</h2>
             <p>
-              Buttons, nav, cards, status colors, disclosures, dialogs, and ARIA
-              states are driven by semantics or lightweight attributes.
+              Buttons, notices, accordions, dialogs, and ARIA states are driven
+              by semantics or lightweight attributes.
             </p>
           </div>
 
@@ -277,27 +277,61 @@
           </div>
 
           <div data-layout="grid" data-gap="4" data-grid-min="sm">
-            <div data-surface="card">
-              <p data-status="info">Informational status text.</p>
-            </div>
-            <div data-surface="card">
-              <p data-status="success">Success status text.</p>
-            </div>
-            <div data-surface="card">
-              <p data-status="warning">Warning status text.</p>
-            </div>
-            <div data-surface="card">
-              <p data-status="error">Error status text.</p>
-            </div>
+            <aside data-surface="notice" data-status="info">
+              <strong>Info notice</strong>
+              <p>
+                Aura can now turn semantic status intent into a token-driven
+                notice surface.
+              </p>
+            </aside>
+            <aside data-surface="notice" data-status="success">
+              <strong>Success notice</strong>
+              <p>
+                Use the existing <code>data-status</code> vocabulary instead of
+                introducing a second tone API.
+              </p>
+            </aside>
+            <aside role="alert" data-surface="notice" data-status="warning">
+              <strong>Warning notice</strong>
+              <p>
+                Pair <code>role="alert"</code> with
+                <code>data-surface="notice"</code> when the message is urgent.
+              </p>
+            </aside>
+            <aside role="alert" data-surface="notice" data-status="error">
+              <strong>Error notice</strong>
+              <p>
+                Borders and subtle backgrounds still resolve through the active
+                theme tokens.
+              </p>
+            </aside>
           </div>
 
-          <details data-surface="card">
-            <summary>Open disclosure primitive</summary>
-            <p>
-              This block demonstrates the built-in styling for
-              <code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code>.
-            </p>
-          </details>
+          <section data-ui="accordion" aria-label="Capability accordion">
+            <details name="component-capabilities" open>
+              <summary>Accordion item one</summary>
+              <p>
+                Aura now has an opt-in accordion wrapper that styles native
+                <code>&lt;details&gt;</code> without requiring classes or
+                script.
+              </p>
+            </details>
+            <details name="component-capabilities">
+              <summary>Accordion item two</summary>
+              <p>
+                Keep semantic markup, group items with the native
+                <code>name</code> attribute, and let tokens handle the visual
+                treatment.
+              </p>
+            </details>
+            <details name="component-capabilities">
+              <summary>Accordion item three</summary>
+              <p>
+                The same pattern can be branded later by overriding only the
+                accordion tokens in a brand pack.
+              </p>
+            </details>
+          </section>
 
           <div data-layout="cluster" data-gap="2" data-align="center">
             <button id="open-dialog" type="button" data-variant="soft">
@@ -330,9 +364,9 @@
           <div>
             <h2>Forms and validation</h2>
             <p>
-              Text fields, select menus, accent-colored native controls,
-              required-field markers, disabled states, and validation are all
-              covered by the base library.
+              Text fields, select menus, switches, custom progress bars, meter
+              elements, required-field markers, disabled states, and validation
+              are all covered by the base library.
             </p>
           </div>
 
@@ -386,6 +420,11 @@
                   <label><input type="radio" name="plan" checked> Starter
                     plan</label>
                   <label><input type="radio" name="plan"> Pro plan</label>
+                  <p><strong>Switches</strong></p>
+                  <label><input type="checkbox" role="switch" checked> Public
+                    profile</label>
+                  <label><input type="checkbox" role="switch"> Weekly digest
+                    reminders</label>
                 </div>
 
                 <div data-layout="stack" data-gap="2">
@@ -393,6 +432,20 @@
                   <input id="volume" type="range" value="55">
                   <p><strong>Progress</strong></p>
                   <progress value="64" max="100">64%</progress>
+                  <progress data-status="warning" value="32" max="100">
+                    32%
+                  </progress>
+                  <p><strong>Health meter</strong></p>
+                  <meter
+                    min="0"
+                    max="100"
+                    low="35"
+                    high="75"
+                    optimum="90"
+                    value="78"
+                  >
+                    78%
+                  </meter>
                 </div>
               </div>
 

@@ -8,7 +8,7 @@ brand pack when you want a visual identity.
 ## Quick start
 
 ```html
-<link rel="stylesheet" href="aura-css.css">
+<link rel="stylesheet" href="aura.css">
 ```
 
 That single line gives you a fully functional, classless foundation: readable
@@ -18,7 +18,7 @@ accessible focus rings, responsive tables, and form validation states.
 When you are ready for a branded look, add the brand pack and a data attribute:
 
 ```html
-<link rel="stylesheet" href="aura-css.css">
+<link rel="stylesheet" href="aura.css">
 <link rel="stylesheet" href="aura-brand.css">
 
 <body data-brand="aura">
@@ -32,7 +32,7 @@ Aura uses CSS `@layer` ordering to keep specificity predictable:
 reset > tokens > brands > defaults > layouts > components > utilities > print
 ```
 
-**Headless core** (`aura-css.css`) ships with near-neutral colors (chroma 0.03),
+**Headless core** (`aura.css`) ships with near-neutral colors (chroma 0.03),
 transparent bordered buttons, and no card shadows. It provides structure without
 forcing a visual language.
 
@@ -216,6 +216,26 @@ alternatives:
 </div>
 ```
 
+### Notices
+
+```html
+<aside data-surface="notice" data-status="warning" role="alert">
+  <strong>Heads up</strong>
+  <p>This message uses Aura's status tokens without introducing classes.</p>
+</aside>
+```
+
+### Accordions
+
+```html
+<section data-ui="accordion">
+  <details name="faq" open>
+    <summary>What is Aura?</summary>
+    <p>Aura is a headless-first CSS framework for semantic HTML.</p>
+  </details>
+</section>
+```
+
 ### Site header
 
 ```html
@@ -260,7 +280,8 @@ Features included out of the box:
 - Required field markers (`*` appended via CSS)
 - `:user-invalid` and `aria-invalid="true"` border color
 - Fieldset error borders when children are invalid
-- `accent-color` on checkboxes, radios, range inputs, and progress bars
+- Styled `role="switch"` checkboxes, `progress`, and `meter` elements
+- `accent-color` on checkboxes, radios, and range inputs
 - Disabled state styling
 
 ## Utilities
@@ -320,7 +341,7 @@ A brand pack is a standalone CSS file that overrides tokens inside a
 Load it alongside the core:
 
 ```html
-<link rel="stylesheet" href="aura-css.css">
+<link rel="stylesheet" href="aura.css">
 <link rel="stylesheet" href="aura-brand-custom.css">
 <body data-brand="custom">
 ```
@@ -343,7 +364,7 @@ Aura targets modern evergreen browsers. Key features and their support:
 
 | File             | Purpose                                                                      |
 | ---------------- | ---------------------------------------------------------------------------- |
-| `aura-css.css`   | Headless core: reset, tokens, defaults, layout, components, utilities, print |
+| `aura.css`       | Headless core: reset, tokens, defaults, layout, components, utilities, print |
 | `aura-brand.css` | Sample brand pack that activates with `data-brand="aura"`                    |
 | `index.html`     | Interactive demo exercising all features                                     |
 

@@ -10,8 +10,8 @@ step.
 1. Run a local static server from the repo root:
 
 ```sh
-cd /Users/srdjans/Code/metador.aura
-python3 -m http.server 8000
+cd /Users/srdjans/Code/MetadorHome/metador.aura
+deno run --allow-net --allow-read jsr:@std/http/file-server .
 ```
 
 2. Open `http://localhost:8000/index.html`.
@@ -19,7 +19,7 @@ python3 -m http.server 8000
 3. Add the core stylesheet to any HTML page:
 
 ```html
-<link rel="stylesheet" href="aura-css.css">
+<link rel="stylesheet" href="aura.css">
 ```
 
 4. When you want a branded look, load a brand pack and set `data-brand`:
@@ -30,7 +30,7 @@ python3 -m http.server 8000
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="aura-css.css">
+    <link rel="stylesheet" href="aura.css">
     <link rel="stylesheet" href="aura-brand.css">
     <title>Aura Example</title>
   </head>
@@ -47,7 +47,7 @@ python3 -m http.server 8000
 
 ## Mental Model
 
-- `aura-css.css` is the headless core. It gives you reset, tokens, typography,
+- `aura.css` is the headless core. It gives you reset, tokens, typography,
   layout primitives, components, utilities, accessibility defaults, and print
   styles.
 - Start with semantic HTML. Add `data-*` attributes only when you want layout,
@@ -115,6 +115,22 @@ Opt into stronger component styling with attributes, not classes:
 </section>
 ```
 
+Notices and accordions use the same headless pattern:
+
+```html
+<aside data-surface="notice" data-status="warning" role="alert">
+  <strong>Heads up</strong>
+  <p>This message is token-driven and brandable.</p>
+</aside>
+
+<section data-ui="accordion">
+  <details name="faq" open>
+    <summary>What changed?</summary>
+    <p>Aura can now style grouped accordions without classes.</p>
+  </details>
+</section>
+```
+
 ### Forms
 
 Native elements are styled automatically:
@@ -145,8 +161,8 @@ Included behaviors:
 
 - Required field markers
 - Validation styling through `:user-invalid` and `aria-invalid="true"`
-- Styled fieldsets, selects, textareas, checkboxes, radios, range inputs, and
-  progress bars
+- Styled fieldsets, selects, textareas, checkboxes, radios, range inputs,
+  switches, progress bars, and meter elements
 - Disabled state styling
 
 ### Utilities
@@ -206,9 +222,10 @@ Then load it after the core stylesheet and set `data-brand="custom"` on
 The demo also exercises:
 
 - Layout primitives
-- Card surfaces and button variants
-- Dialog and disclosure styling
+- Card, notice, and accordion surfaces
+- Button variants and dialog styling
 - Form validation states
+- Switch, progress, and meter styling
 - Status colors
 - Aspect ratios and object fit
 - Sticky regions and smooth scrolling
@@ -218,7 +235,7 @@ The demo also exercises:
 
 | File                       | Purpose                     |
 | -------------------------- | --------------------------- |
-| `aura-css.css`             | Headless core framework     |
+| `aura.css`                 | Headless core framework     |
 | `aura-brand.css`           | Sample Aura brand pack      |
 | `aura-brand-editorial.css` | Sample editorial brand pack |
 | `index.html`               | Interactive demo page       |
@@ -229,8 +246,8 @@ The demo also exercises:
 Run these checks after changes:
 
 ```sh
-cd /Users/srdjans/Code/metador.aura
-python3 -m http.server 8000
+cd /Users/srdjans/Code/MetadorHome/metador.aura
+deno run --allow-net --allow-read jsr:@std/http/file-server .
 ```
 
 Then verify:
@@ -238,7 +255,9 @@ Then verify:
 1. Open `http://localhost:8000/index.html`.
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
-4. Submit the form with empty required fields and confirm validation styles.
-5. Open the dialog and test the smooth-scroll buttons.
-6. Open print preview and confirm buttons/nav are hidden and print-only rules
+4. Review the notice and accordion examples in the components section.
+5. Submit the form with empty required fields and confirm validation, switch,
+   progress, and meter styles.
+6. Open the dialog and test the smooth-scroll buttons.
+7. Open print preview and confirm buttons/nav are hidden and print-only rules
    apply.
