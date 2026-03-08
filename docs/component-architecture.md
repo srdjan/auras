@@ -69,7 +69,7 @@ Rules:
 
 ### 3. Components
 
-`jsr:@aura/components`
+`jsr:@aura/components`, `jsr:@aura/diagram`
 
 Responsibility:
 
@@ -78,6 +78,7 @@ Responsibility:
 
 Examples:
 
+- diagram controller
 - master-detail controller
 - light data grid
 - tree
@@ -101,6 +102,10 @@ Recommended package boundaries:
 /aura-brand-editorial.css
 
 /packages/composites/aura-composites.css
+/packages/diagram/jsr.json
+/packages/diagram/README.md
+/packages/diagram/mod.ts
+/packages/diagram/src/aura-diagram.ts
 /packages/components/jsr.json
 /packages/components/README.md
 /packages/components/mod.ts
@@ -115,11 +120,16 @@ Recommended publishing shape:
 
 - `aura.css`: Elements layer stylesheet
 - `@aura/composites`: optional CSS-only higher-level patterns
+- `jsr:@aura/diagram`: optional Deno-first interactive diagram package
 - `jsr:@aura/components`: optional Deno-first light-DOM interactive components
 
 Current repo structure:
 
 - `aura-composites.css` still stands in for the future `@aura/composites`
+- `packages/diagram/mod.ts` is the Deno-first TypeScript surface for the
+  diagram package
+- `aura-diagram.js` is a browser-friendly no-build entrypoint for the demo and
+  plain browser usage
 - `packages/components/mod.ts` is the Deno-first TypeScript package surface
 - `aura-components.js` is a browser-friendly no-build entrypoint for the demo
   and plain browser usage
@@ -137,10 +147,35 @@ Examples:
 - `card`: composites
 - `notice`: composites
 - `diagram` layout shell: composites
+- `diagram` interaction controller: specialized package
 - `master-detail` layout shell: composites
 - `master-detail` selection controller: components
 - `data-grid`: components
 - `tree`: components
+
+## Specialized Packages
+
+Some interactions are still light-DOM components, but distinct enough to live
+outside the general-purpose Components package.
+
+`aura-diagram` v1 is one of those packages.
+
+It should do exactly this:
+
+- coordinate one active diagram node
+- expose that active value through a host attribute
+- support spatial arrow-key navigation between nodes
+- support manual or auto activation
+- optionally reveal a linked detail panel
+
+It should not do this in v1:
+
+- auto-layout
+- edge routing
+- zooming or panning
+- drag and drop editing
+- canvas rendering
+- graph data fetching
 
 ## Light DOM Contract
 

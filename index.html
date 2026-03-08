@@ -83,6 +83,7 @@
           <pre>
 <code>&lt;link rel="stylesheet" href="aura.css"&gt;
 &lt;link rel="stylesheet" href="aura-composites.css"&gt; &lt;!-- optional composites layer --&gt;
+&lt;script type="module" src="aura-diagram.js"&gt;&lt;/script&gt; &lt;!-- optional diagram package --&gt;
 &lt;script type="module" src="aura-components.js"&gt;&lt;/script&gt; &lt;!-- optional components layer --&gt;
 &lt;link rel="stylesheet" href="aura-brand.css"&gt; &lt;!-- optional brand pack --&gt;
 &lt;link rel="stylesheet" href="aura-brand-editorial.css"&gt; &lt;!-- optional brand pack --&gt;</code></pre>
@@ -396,12 +397,13 @@
           data-gap="4"
         >
           <div>
-            <h2>Composite: diagram</h2>
+            <h2>Diagram composite and component</h2>
             <p>
               <code>data-ui="diagram"</code> turns semantic content plus
               explicit CSS Grid placement into static flow and architecture
-              diagrams. Layout stays CSS-only; connectors stay author-owned
-              markup.
+              diagrams. Add the optional <code>aura-diagram</code> package when
+              those nodes need keyboard navigation, active state, and linked
+              detail panels.
             </p>
           </div>
 
@@ -485,6 +487,144 @@
             </div>
           </figure>
 
+          <div data-layout="stack" data-gap="3">
+            <p>
+              <strong>Optional package:</strong>
+              <code id="diagram-selection">received</code>
+            </p>
+            <p>
+              This interactive diagram uses
+              <code>aura-diagram.js</code>. Arrow keys move spatially across the
+              grid; manual activation keeps selection separate from focus until
+              you press <kbd>Enter</kbd> or <kbd>Space</kbd>.
+            </p>
+
+            <aura-diagram
+              id="diagram-pilot"
+              value="received"
+              activation="manual"
+              aria-label="Interactive order flow"
+              style="--diagram-columns: 11; --diagram-min-inline-size: 46rem"
+            >
+              <p data-part="caption">
+                Interactive order flow with a linked detail panel.
+              </p>
+
+              <div data-part="canvas">
+                <button
+                  type="button"
+                  data-part="node"
+                  data-kind="input"
+                  data-value="received"
+                  style="--diagram-column: 1 / span 3; --diagram-row: 1"
+                >
+                  <strong>Order received</strong>
+                  <p>Incoming payload from checkout or API.</p>
+                </button>
+
+                <div
+                  data-part="connector"
+                  aria-hidden="true"
+                  style="--diagram-column: 4; --diagram-row: 1"
+                >
+                  <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+                    <path d="M4 20 H108" />
+                    <path data-marker="arrow" d="M108 12 L116 20 L108 28 Z" />
+                  </svg>
+                </div>
+
+                <button
+                  type="button"
+                  data-part="node"
+                  data-kind="process"
+                  data-value="validate"
+                  style="--diagram-column: 5 / span 3; --diagram-row: 1"
+                >
+                  <strong>Validate</strong>
+                  <p>Checks stock, address, and payment status.</p>
+                </button>
+
+                <div
+                  data-part="connector"
+                  aria-hidden="true"
+                  style="--diagram-column: 8; --diagram-row: 1"
+                >
+                  <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+                    <path d="M4 20 H108" />
+                    <path data-marker="arrow" d="M108 12 L116 20 L108 28 Z" />
+                  </svg>
+                </div>
+
+                <button
+                  type="button"
+                  data-part="node"
+                  data-kind="output"
+                  data-value="fulfill"
+                  style="--diagram-column: 9 / span 3; --diagram-row: 1"
+                >
+                  <strong>Fulfill</strong>
+                  <p>Warehouse picks, packs, and ships the order.</p>
+                </button>
+
+                <div
+                  data-part="connector"
+                  aria-hidden="true"
+                  style="--diagram-column: 6; --diagram-row: 2"
+                >
+                  <svg viewBox="0 0 40 120" preserveAspectRatio="none">
+                    <path d="M20 4 V108" />
+                    <path data-marker="arrow" d="M12 108 L20 116 L28 108 Z" />
+                  </svg>
+                </div>
+
+                <button
+                  type="button"
+                  data-part="node"
+                  data-kind="decision"
+                  data-value="review"
+                  style="--diagram-column: 5 / span 3; --diagram-row: 3"
+                >
+                  <strong>Manual review</strong>
+                  <p>Fallback path for payment or address mismatches.</p>
+                </button>
+              </div>
+
+              <section data-part="panels">
+                <article data-part="panel" data-value="received">
+                  <h3>Order received</h3>
+                  <p>
+                    Capture the inbound payload and normalize it before any
+                    downstream validation starts.
+                  </p>
+                </article>
+
+                <article data-part="panel" data-value="validate" hidden>
+                  <h3>Validate</h3>
+                  <p>
+                    Sync inventory, verify payment state, and run address
+                    quality checks before fulfillment.
+                  </p>
+                </article>
+
+                <article data-part="panel" data-value="fulfill" hidden>
+                  <h3>Fulfill</h3>
+                  <p>
+                    Once validation passes, hand the job to warehouse and
+                    shipping systems.
+                  </p>
+                </article>
+
+                <article data-part="panel" data-value="review" hidden>
+                  <h3>Manual review</h3>
+                  <p>
+                    Send risky or contradictory orders to a human queue instead
+                    of silently failing the flow.
+                  </p>
+                </article>
+              </section>
+            </aura-diagram>
+          </div>
+
           <pre>
 <code>&lt;figure data-ui="diagram" style="--diagram-columns: 11"&gt;
   &lt;figcaption&gt;Order flow&lt;/figcaption&gt;
@@ -503,7 +643,16 @@
       &lt;svg&gt;...&lt;/svg&gt;
     &lt;/div&gt;
   &lt;/div&gt;
-&lt;/figure&gt;</code></pre>
+&lt;/figure&gt;
+
+&lt;aura-diagram value="received" activation="manual"&gt;
+  &lt;div data-part="canvas"&gt;
+    &lt;button type="button" data-part="node" data-value="received"&gt;...&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;section data-part="panels"&gt;
+    &lt;article data-part="panel" data-value="received"&gt;...&lt;/article&gt;
+  &lt;/section&gt;
+&lt;/aura-diagram&gt;</code></pre>
         </section>
 
         <section
@@ -1176,6 +1325,7 @@
       </footer>
     </div>
 
+    <script type="module" src="aura-diagram.js"></script>
     <script type="module" src="aura-components.js"></script>
     <script>
       (function () {
@@ -1377,6 +1527,7 @@
           "manual-master-detail-selection",
           "elements",
         );
+        bindSelectionOutput("diagram-pilot", "diagram-selection", "received");
         bindSelectionOutput("tabs-auto-pilot", "tabs-selection", "overview");
         bindSelectionOutput(
           "tabs-manual-pilot",

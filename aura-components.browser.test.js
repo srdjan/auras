@@ -67,69 +67,87 @@ function startStaticServer(rootDir) {
   });
 }
 
-Deno.test("browser smoke test upgrades components and syncs demo state", async () => {
-  const rootDir = Deno.cwd();
-  const browserExecutable = await resolveBrowserExecutable();
-  const server = startStaticServer(rootDir);
-
-  try {
-    const browser = await chromium.launch({
-      executablePath: browserExecutable,
-      headless: true,
-    });
+Deno.test(
+  "browser smoke test upgrades optional packages and syncs demo state",
+  async () => {
+    const rootDir = Deno.cwd();
+    const browserExecutable = await resolveBrowserExecutable();
+    const server = startStaticServer(rootDir);
 
     try {
-      const page = await browser.newPage();
-      const origin = `http://127.0.0.1:${server.addr.port}`;
+      const browser = await chromium.launch({
+        executablePath: browserExecutable,
+        headless: true,
+      });
 
-      await page.goto(`${origin}/index.html`);
+      try {
+        const page = await browser.newPage();
+        const origin = `http://127.0.0.1:${server.addr.port}`;
 
-      await page.waitForSelector("aura-master-detail");
-      await page.waitForSelector("aura-tabs");
+        await page.goto(`${origin}/index.html`);
 
-      await expectText(page, "#master-detail-selection", "elements");
-      await expectText(page, "#manual-master-detail-selection", "elements");
-      await expectText(page, "#tabs-selection", "overview");
-      await expectText(page, "#manual-tabs-selection", "overview");
+        await page.waitForSelector("aura-diagram");
+        await page.waitForSelector("aura-master-detail");
+        await page.waitForSelector("aura-tabs");
 
-      await page.locator(
-        '#layer-pilot [data-part="trigger"][data-value="elements"]',
-      ).focus();
-      await page.keyboard.press("ArrowDown");
-      await expectText(page, "#master-detail-selection", "composites");
+        await expectText(page, "#diagram-selection", "received");
+        await expectText(page, "#master-detail-selection", "elements");
+        await expectText(page, "#manual-master-detail-selection", "elements");
+        await expectText(page, "#tabs-selection", "overview");
+        await expectText(page, "#manual-tabs-selection", "overview");
 
-      await page.locator(
-        '#tabs-auto-pilot [data-part="trigger"][data-value="overview"]',
-      ).focus();
-      await page.keyboard.press("ArrowRight");
-      await expectText(page, "#tabs-selection", "tokens");
+        await page
+          .locator('#diagram-pilot [data-part="node"][data-value="received"]')
+          .focus();
+        await page.keyboard.press("ArrowRight");
+        await expectText(page, "#diagram-selection", "received");
+        await page.keyboard.press("Enter");
+        await expectText(page, "#diagram-selection", "validate");
 
-      await page.locator(
-        '#tabs-manual-pilot [data-part="trigger"][data-value="overview"]',
-      ).focus();
-      await page.keyboard.press("ArrowRight");
-      await expectText(page, "#manual-tabs-selection", "overview");
-      await page.keyboard.press("Enter");
-      await expectText(page, "#manual-tabs-selection", "tokens");
+        await page
+          .locator('#layer-pilot [data-part="trigger"][data-value="elements"]')
+          .focus();
+        await page.keyboard.press("ArrowDown");
+        await expectText(page, "#master-detail-selection", "composites");
 
-      const activeTabValue = await page.locator(
-        '#tabs-manual-pilot [data-part="trigger"][data-active]',
-      ).getAttribute("data-value");
+        await page
+          .locator(
+            '#tabs-auto-pilot [data-part="trigger"][data-value="overview"]',
+          )
+          .focus();
+        await page.keyboard.press("ArrowRight");
+        await expectText(page, "#tabs-selection", "tokens");
 
-      assertEquals(activeTabValue, "tokens");
+        await page
+          .locator(
+            '#tabs-manual-pilot [data-part="trigger"][data-value="overview"]',
+          )
+          .focus();
+        await page.keyboard.press("ArrowRight");
+        await expectText(page, "#manual-tabs-selection", "overview");
+        await page.keyboard.press("Enter");
+        await expectText(page, "#manual-tabs-selection", "tokens");
+
+        const activeTabValue = await page
+          .locator('#tabs-manual-pilot [data-part="trigger"][data-active]')
+          .getAttribute("data-value");
+
+        assertEquals(activeTabValue, "tokens");
+      } finally {
+        await browser.close();
+      }
     } finally {
-      await browser.close();
+      await server.shutdown();
     }
-  } finally {
-    await server.shutdown();
-  }
-});
+  },
+);
 
 async function expectText(page, selector, expectedText) {
   await page.waitForFunction(
     ({ selector, expectedText }) => {
-      return document.querySelector(selector)?.textContent?.trim() ===
-        expectedText;
+      return (
+        document.querySelector(selector)?.textContent?.trim() === expectedText
+      );
     },
     { selector, expectedText },
   );

@@ -50,6 +50,7 @@ deno task dev
 ```html
 <link rel="stylesheet" href="aura.css" />
 <link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-diagram.js"></script>
 <script type="module" src="aura-components.js"></script>
 ```
 
@@ -67,8 +68,9 @@ deno task dev
   - `data-theme="dark"`, `data-contrast="more"`, and `data-motion="reduce"` go
     on `<html>`.
 - The framework does not require JavaScript. The JS in `index.html` and
-  `aura-components.js` only powers the optional interactive layer and the demo
-  controls. The reusable package modules live under `packages/components`.
+  `aura-diagram.js` / `aura-components.js` only power the optional interactive
+  layer and the demo controls. The reusable package modules live under
+  `packages/diagram` and `packages/components`.
 
 ## Common Patterns
 
@@ -191,6 +193,52 @@ stay CSS-only:
 
 Placement is explicit through custom properties on each node or connector, so
 the pattern stays inspectable and easy to override.
+
+### Diagram component
+
+If the same diagram needs selection state and keyboard movement, add the
+separate optional `aura-diagram` package:
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-diagram.js"></script>
+
+<aura-diagram value="received" activation="manual" aria-label="Order flow">
+  <p data-part="caption">Interactive flow</p>
+
+  <div data-part="canvas">
+    <button
+      type="button"
+      data-part="node"
+      data-value="received"
+      style="--diagram-column: 1 / span 3; --diagram-row: 1"
+    >
+      Received
+    </button>
+    <button
+      type="button"
+      data-part="node"
+      data-value="validate"
+      style="--diagram-column: 5 / span 3; --diagram-row: 1"
+    >
+      Validate
+    </button>
+  </div>
+
+  <section data-part="panels">
+    <article data-part="panel" data-value="received">...</article>
+    <article data-part="panel" data-value="validate" hidden>...</article>
+  </section>
+</aura-diagram>
+```
+
+`aura-diagram` keeps the authored diagram markup in light DOM and adds only:
+
+- active node state
+- roving focus
+- spatial arrow-key navigation
+- optional linked panels
 
 ### Master-detail pilot
 
@@ -370,23 +418,29 @@ The demo also exercises:
 
 ## File Map
 
-| File                              | Purpose                                 |
-| --------------------------------- | --------------------------------------- |
-| `aura.css`                        | Elements layer framework                |
-| `aura-composites.css`             | Optional Composites layer               |
-| `aura-components.js`              | Browser-friendly no-build entrypoint    |
-| `aura-components.browser.test.js` | Browser smoke coverage for Components   |
-| `packages/components/mod.ts`      | Deno-first Components package surface   |
-| `packages/components/jsr.json`    | JSR package metadata                    |
-| `packages/components/README.md`   | Package-level usage note                |
-| `packages/components/src/`        | Shared logic plus per-component modules |
-| `aura-components.test.js`         | Deno behavioral coverage for Components |
-| `aura-brand.css`                  | Sample Aura brand pack                  |
-| `aura-brand-editorial.css`        | Sample editorial brand pack             |
-| `deno.lock`                       | Locked JSR and npm test dependencies    |
-| `index.html`                      | Interactive demo page                   |
-| `docs/component-architecture.md`  | Architecture note for the next layers   |
-| `docs/user-guide.md`              | This user guide                         |
+| File                              | Purpose                                          |
+| --------------------------------- | ------------------------------------------------ |
+| `aura.css`                        | Elements layer framework                         |
+| `aura-composites.css`             | Optional Composites layer                        |
+| `aura-diagram.js`                 | Browser-friendly no-build diagram entrypoint     |
+| `aura-components.js`              | Browser-friendly no-build entrypoint             |
+| `aura-components.browser.test.js` | Browser smoke coverage for the optional packages |
+| `aura-diagram.test.js`            | Deno behavioral coverage for `aura-diagram`      |
+| `packages/diagram/mod.ts`         | Deno-first diagram package surface               |
+| `packages/diagram/jsr.json`       | JSR package metadata for `@aura/diagram`         |
+| `packages/diagram/README.md`      | Package-level usage note for `@aura/diagram`     |
+| `packages/diagram/src/`           | Diagram package runtime module                   |
+| `packages/components/mod.ts`      | Deno-first Components package surface            |
+| `packages/components/jsr.json`    | JSR package metadata                             |
+| `packages/components/README.md`   | Package-level usage note                         |
+| `packages/components/src/`        | Shared logic plus per-component modules          |
+| `aura-components.test.js`         | Deno behavioral coverage for Components          |
+| `aura-brand.css`                  | Sample Aura brand pack                           |
+| `aura-brand-editorial.css`        | Sample editorial brand pack                      |
+| `deno.lock`                       | Locked JSR and npm test dependencies             |
+| `index.html`                      | Interactive demo page                            |
+| `docs/component-architecture.md`  | Architecture note for the next layers            |
+| `docs/user-guide.md`              | This user guide                                  |
 
 ## Verification
 
@@ -397,6 +451,7 @@ cd /Users/srdjans/Code/MetadorHome/metador.aura
 deno task check
 deno task test
 deno task test:browser
+deno task publish:diagram:dry-run
 deno task publish:components:dry-run
 deno task dev
 ```
@@ -409,18 +464,21 @@ Then verify:
 1. Open `http://127.0.0.1:8000/index.html`.
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
-4. Review the prose, diagram, notice, accordion, master-detail, and tabs pilot
-   examples.
-5. Use arrow keys inside the auto-activation master-detail pilot and confirm the
+4. Review the prose, static diagram, interactive diagram, notice, accordion,
+   master-detail, and tabs pilot examples.
+5. Use arrow keys inside the interactive diagram and confirm focus moves across
+   the grid; in manual activation, `Enter` or `Space` should update the detail
+   panel.
+6. Use arrow keys inside the auto-activation master-detail pilot and confirm the
    detail panel follows the active trigger.
-6. Use arrow keys inside the manual-activation master-detail pilot and confirm
+7. Use arrow keys inside the manual-activation master-detail pilot and confirm
    focus moves first, then `Enter` or `Space` updates the detail panel.
-7. Use arrow keys inside the auto-activation tabs pilot and confirm the active
+8. Use arrow keys inside the auto-activation tabs pilot and confirm the active
    tab and visible panel stay in sync.
-8. Use arrow keys inside the manual-activation tabs pilot and confirm focus
+9. Use arrow keys inside the manual-activation tabs pilot and confirm focus
    moves first, then `Enter` or `Space` updates the panel.
-9. Open the dialog and confirm the backdrop and page scroll lock.
-10. Submit the form with empty required fields and confirm validation, busy
+10. Open the dialog and confirm the backdrop and page scroll lock.
+11. Submit the form with empty required fields and confirm validation, busy
     states, select chevrons, progress, and meter styles.
-11. Open print preview and confirm buttons/nav are hidden and print-only rules
+12. Open print preview and confirm buttons/nav are hidden and print-only rules
     apply.
