@@ -14,7 +14,7 @@ cd /Users/srdjans/Code/MetadorHome/metador.aura
 deno task dev
 ```
 
-2. Open `http://localhost:8000/index.html`.
+2. Open `http://127.0.0.1:8000/index.html`.
 
 3. Add the core stylesheet to any HTML page:
 
@@ -325,7 +325,7 @@ deno task dev
 
 Then verify:
 
-1. Open `http://localhost:8000/index.html`.
+1. Open `http://127.0.0.1:8000/index.html`.
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
 4. Review the prose, notice, accordion, and master-detail pilot examples.
