@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aura CSS Demo</title>
-    <link rel="stylesheet" href="aura.css">
+    <link rel="stylesheet" href="aura.css" />
   </head>
   <body data-layout="container">
     <div data-layout="stack" data-gap="8">
@@ -53,9 +53,7 @@
             <button id="use-headless" type="button" data-variant="solid">
               Headless core
             </button>
-            <button id="use-aura-brand" type="button">
-              Aura pack
-            </button>
+            <button id="use-aura-brand" type="button">Aura pack</button>
             <button id="use-editorial-brand" type="button">
               Editorial pack
             </button>
@@ -65,9 +63,7 @@
             <button id="toggle-contrast" type="button">
               Enable high contrast
             </button>
-            <button id="toggle-motion" type="button">
-              Use reduced motion
-            </button>
+            <button id="toggle-motion" type="button">Use reduced motion</button>
             <button id="reset-demo" type="button" data-variant="ghost">
               Reset
             </button>
@@ -76,7 +72,8 @@
           <p>
             <strong>Current mode:</strong>
             <code id="state-output"
-            >brand=headless theme=light contrast=normal motion=normal</code>
+              >brand=headless theme=light contrast=normal motion=normal</code
+            >
           </p>
 
           <pre><code>&lt;body data-brand="aura" data-theme="dark" data-contrast="more"&gt;...&lt;/body&gt;</code></pre>
@@ -114,6 +111,35 @@
             </p>
           </article>
 
+          <article data-surface="card" data-ui="prose">
+            <hgroup>
+              <p>Long-form primitive</p>
+              <h3>Readable editorial rhythm without classes</h3>
+              <p>
+                Use <code>data-ui="prose"</code> when content needs a tighter
+                reading measure, calmer spacing, and stronger heading rhythm.
+              </p>
+            </hgroup>
+            <p>
+              This keeps application chrome separate from article copy while
+              preserving Aura's semantic, attribute-first model.
+            </p>
+            <ul>
+              <li>Headings and lead copy gain clearer spacing.</li>
+              <li>Lists become easier to scan in long-form content.</li>
+              <li>
+                Blockquotes and figure captions inherit the active tokens.
+              </li>
+            </ul>
+            <blockquote>
+              <p>
+                Scoped prose is one of the most transferable ideas from the
+                external UI repo because it improves readability without forcing
+                a new class-heavy component model.
+              </p>
+            </blockquote>
+          </article>
+
           <blockquote>
             <p>
               "Headless mode should give structure without pretending to be a
@@ -122,7 +148,7 @@
             <footer>Aura demo note</footer>
           </blockquote>
 
-          <hr>
+          <hr />
 
           <div data-layout="grid" data-gap="4" data-grid-min="md">
             <div>
@@ -258,7 +284,7 @@
           <div>
             <h2>Components and semantic states</h2>
             <p>
-              Buttons, notices, accordions, dialogs, and ARIA states are driven
+              Buttons, notices, accordions, dialogs, and busy states are driven
               by semantics or lightweight attributes.
             </p>
           </div>
@@ -273,6 +299,9 @@
             <button type="button" data-variant="solid">Solid</button>
             <button type="button" data-variant="soft">Soft</button>
             <button type="button" data-variant="ghost">Ghost</button>
+            <button type="button" data-variant="solid" aria-busy="true">
+              Publishing
+            </button>
             <a href="#forms" role="button">Role button</a>
           </div>
 
@@ -343,8 +372,8 @@
           <dialog id="capability-dialog">
             <h3>Dialog primitive</h3>
             <p>
-              Dialogs inherit the active tokens, so switching the sample theme
-              updates this surface too.
+              Dialogs inherit the active tokens, lock page scroll while open,
+              and use a small motion-safe entry transition.
             </p>
             <div data-layout="cluster" data-gap="2" data-justify="end">
               <button id="close-dialog" type="button" data-variant="ghost">
@@ -364,9 +393,9 @@
           <div>
             <h2>Forms and validation</h2>
             <p>
-              Text fields, select menus, switches, custom progress bars, meter
-              elements, required-field markers, disabled states, and validation
-              are all covered by the base library.
+              Text fields, native select menus, switches, custom progress bars,
+              meter elements, required-field markers, disabled states, and
+              validation are all covered by the base library.
             </p>
           </div>
 
@@ -380,7 +409,7 @@
                 type="text"
                 required
                 placeholder="Ada Lovelace"
-              >
+              />
 
               <label for="email">Email address</label>
               <input
@@ -388,7 +417,7 @@
                 type="email"
                 required
                 placeholder="ada@example.com"
-              >
+              />
 
               <label for="country">Country</label>
               <select id="country" required>
@@ -411,30 +440,37 @@
                 type="text"
                 aria-invalid="true"
                 value="Needs correction"
-              >
+              />
 
               <div data-layout="grid" data-gap="4" data-grid-min="sm">
                 <div data-layout="stack" data-gap="2">
                   <p><strong>Choices</strong></p>
-                  <label><input type="checkbox" checked> Email updates</label>
-                  <label><input type="radio" name="plan" checked> Starter
-                    plan</label>
-                  <label><input type="radio" name="plan"> Pro plan</label>
+                  <label><input type="checkbox" checked /> Email updates</label>
+                  <label
+                    ><input type="radio" name="plan" checked /> Starter
+                    plan</label
+                  >
+                  <label><input type="radio" name="plan" /> Pro plan</label>
                   <p><strong>Switches</strong></p>
-                  <label><input type="checkbox" role="switch" checked> Public
-                    profile</label>
-                  <label><input type="checkbox" role="switch"> Weekly digest
-                    reminders</label>
+                  <label
+                    ><input type="checkbox" role="switch" checked /> Public
+                    profile</label
+                  >
+                  <label
+                    ><input type="checkbox" role="switch" /> Weekly digest
+                    reminders</label
+                  >
                 </div>
 
                 <div data-layout="stack" data-gap="2">
                   <label for="volume">Volume</label>
-                  <input id="volume" type="range" value="55">
+                  <input id="volume" type="range" value="55" />
                   <p><strong>Progress</strong></p>
                   <progress value="64" max="100">64%</progress>
                   <progress data-status="warning" value="32" max="100">
                     32%
                   </progress>
+                  <progress aria-label="Background sync in progress"></progress>
                   <p><strong>Health meter</strong></p>
                   <meter
                     min="0"
@@ -486,7 +522,7 @@
                   alt="Cover fit example"
                   data-fit="cover"
                   style="width: 100%; height: 100%"
-                >
+                />
               </div>
               <figcaption>
                 <code>data-aspect="16/9"</code> and
@@ -501,7 +537,7 @@
                   alt="Contain fit example"
                   data-fit="contain"
                   style="width: 100%; height: 100%"
-                >
+                />
               </div>
               <figcaption>
                 <code>data-aspect="1/1"</code> and
@@ -516,7 +552,7 @@
                   alt="Fill fit example"
                   data-fit="fill"
                   style="width: 100%; height: 100%"
-                >
+                />
               </div>
               <figcaption>
                 <code>data-aspect="4/3"</code> and
@@ -531,7 +567,7 @@
                   alt="Scale-down fit example"
                   data-fit="scale-down"
                   style="width: 100%; height: 100%"
-                >
+                />
               </div>
               <figcaption>
                 <code>data-aspect="21/9"</code> and
@@ -546,11 +582,20 @@
               <div
                 id="smooth-region"
                 data-smooth
-                style="max-height: 14rem; border: 1px solid var(--border); padding: var(--space-3)"
+                style="
+                  max-height: 14rem;
+                  border: 1px solid var(--border);
+                  padding: var(--space-3);
+                "
               >
                 <p
                   data-sticky
-                  style="--sticky-top: var(--space-2); background: var(--surface); border: 1px solid var(--border); padding: var(--space-2)"
+                  style="
+                    --sticky-top: var(--space-2);
+                    background: var(--surface);
+                    border: 1px solid var(--border);
+                    padding: var(--space-2);
+                  "
                 >
                   Sticky note inside a smooth scroll region.
                 </p>
@@ -570,9 +615,7 @@
                   The same markup becomes more branded as soon as the sample
                   theme is enabled.
                 </p>
-                <p id="smooth-region-end">
-                  End of the smooth scrolling demo.
-                </p>
+                <p id="smooth-region-end">End of the smooth scrolling demo.</p>
               </div>
 
               <div data-layout="cluster" data-gap="2" data-align="center">
@@ -589,7 +632,8 @@
 
               <p>
                 <span data-visually-hidden
-                >Screen-reader-only introduction.</span>
+                  >Screen-reader-only introduction.</span
+                >
                 This sentence includes hidden accessible text.
               </p>
             </div>
@@ -642,15 +686,11 @@
         const body = document.body;
         const stateOutput = document.getElementById("state-output");
         const headlessButton = document.getElementById("use-headless");
-        const auraBrandButton = document.getElementById(
-          "use-aura-brand",
-        );
+        const auraBrandButton = document.getElementById("use-aura-brand");
         const editorialBrandButton = document.getElementById(
           "use-editorial-brand",
         );
-        const contrastButton = document.getElementById(
-          "toggle-contrast",
-        );
+        const contrastButton = document.getElementById("toggle-contrast");
         const motionButton = document.getElementById("toggle-motion");
         const dialog = document.getElementById("capability-dialog");
         const smoothRegion = document.getElementById("smooth-region");
@@ -743,42 +783,30 @@
         function updateState() {
           const brand = body.getAttribute("data-brand") || "headless";
           const theme = root.getAttribute("data-theme") || "light";
-          const contrast = root.getAttribute("data-contrast") ||
-            "normal";
+          const contrast = root.getAttribute("data-contrast") || "normal";
           const motion = root.getAttribute("data-motion") || "normal";
 
-          stateOutput.textContent =
-            `brand=${brand} theme=${theme} contrast=${contrast} motion=${motion}`;
+          stateOutput.textContent = `brand=${brand} theme=${theme} contrast=${contrast} motion=${motion}`;
 
-          contrastButton.textContent = contrast === "more"
-            ? "Disable high contrast"
-            : "Enable high contrast";
-          motionButton.textContent = motion === "reduce"
-            ? "Use normal motion"
-            : "Use reduced motion";
+          contrastButton.textContent =
+            contrast === "more"
+              ? "Disable high contrast"
+              : "Enable high contrast";
+          motionButton.textContent =
+            motion === "reduce" ? "Use normal motion" : "Use reduced motion";
           syncBrandButtons(brand);
         }
 
-        headlessButton.addEventListener(
-          "click",
-          () => setBrand("headless"),
-        );
-        auraBrandButton.addEventListener(
-          "click",
-          () => setBrand("aura"),
-        );
-        editorialBrandButton.addEventListener(
-          "click",
-          () => setBrand("editorial"),
+        headlessButton.addEventListener("click", () => setBrand("headless"));
+        auraBrandButton.addEventListener("click", () => setBrand("aura"));
+        editorialBrandButton.addEventListener("click", () =>
+          setBrand("editorial"),
         );
 
-        document.getElementById("toggle-dark").addEventListener(
-          "click",
-          () => {
-            toggleThemeToken("dark");
-            updateState();
-          },
-        );
+        document.getElementById("toggle-dark").addEventListener("click", () => {
+          toggleThemeToken("dark");
+          updateState();
+        });
 
         contrastButton.addEventListener("click", () => {
           toggleAttribute(root, "data-contrast", "more");
@@ -790,53 +818,43 @@
           updateState();
         });
 
-        document.getElementById("reset-demo").addEventListener(
-          "click",
-          () => {
-            body.removeAttribute("data-brand");
-            root.removeAttribute("data-theme");
-            root.removeAttribute("data-contrast");
-            root.removeAttribute("data-motion");
-            updateState();
-          },
-        );
+        document.getElementById("reset-demo").addEventListener("click", () => {
+          body.removeAttribute("data-brand");
+          root.removeAttribute("data-theme");
+          root.removeAttribute("data-contrast");
+          root.removeAttribute("data-motion");
+          updateState();
+        });
 
-        document.getElementById("open-dialog").addEventListener(
-          "click",
-          () => {
-            if (typeof dialog.showModal === "function") {
-              dialog.showModal();
-            } else {
-              dialog.setAttribute("open", "");
-            }
-          },
-        );
+        document.getElementById("open-dialog").addEventListener("click", () => {
+          if (typeof dialog.showModal === "function") {
+            dialog.showModal();
+          } else {
+            dialog.setAttribute("open", "");
+          }
+        });
 
-        document.getElementById("close-dialog").addEventListener(
-          "click",
-          () => {
+        document
+          .getElementById("close-dialog")
+          .addEventListener("click", () => {
             if (typeof dialog.close === "function") {
               dialog.close();
             } else {
               dialog.removeAttribute("open");
             }
-          },
-        );
+          });
 
-        document.getElementById("scroll-region-top").addEventListener(
-          "click",
-          () => {
+        document
+          .getElementById("scroll-region-top")
+          .addEventListener("click", () => {
             smoothRegion.scrollTo({ top: 0 });
-          },
-        );
+          });
 
-        document.getElementById("scroll-region-end-button")
-          .addEventListener(
-            "click",
-            () => {
-              smoothRegion.scrollTo({ top: smoothRegion.scrollHeight });
-            },
-          );
+        document
+          .getElementById("scroll-region-end-button")
+          .addEventListener("click", () => {
+            smoothRegion.scrollTo({ top: smoothRegion.scrollHeight });
+          });
 
         updateState();
       })();

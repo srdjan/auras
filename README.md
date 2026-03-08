@@ -8,7 +8,7 @@ brand pack when you want a visual identity.
 ## Quick start
 
 ```html
-<link rel="stylesheet" href="aura.css">
+<link rel="stylesheet" href="aura.css" />
 ```
 
 That single line gives you a fully functional, classless foundation: readable
@@ -18,10 +18,10 @@ accessible focus rings, responsive tables, and form validation states.
 When you are ready for a branded look, add the brand pack and a data attribute:
 
 ```html
-<link rel="stylesheet" href="aura.css">
-<link rel="stylesheet" href="aura-brand.css">
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-brand.css" />
 
-<body data-brand="aura">
+<body data-brand="aura"></body>
 ```
 
 ## Architecture
@@ -144,7 +144,12 @@ Layout is controlled through `data-layout` and orthogonal modifier attributes.
 These work on any `data-layout` element:
 
 ```html
-<div data-layout="row" data-align="center" data-justify="between" data-gap="4">
+<div
+  data-layout="row"
+  data-align="center"
+  data-justify="between"
+  data-gap="4"
+></div>
 ```
 
 | Attribute      | Values                                                  |
@@ -156,15 +161,19 @@ These work on any `data-layout` element:
 ### Grid sizing
 
 ```html
-<div data-layout="grid" data-grid-min="sm">  <!-- 150px min columns -->
-<div data-layout="grid" data-grid-min="md">  <!-- 250px min columns -->
-<div data-layout="grid" data-grid-min="lg">  <!-- 350px min columns -->
+<div data-layout="grid" data-grid-min="sm">
+  <!-- 150px min columns -->
+  <div data-layout="grid" data-grid-min="md">
+    <!-- 250px min columns -->
+    <div data-layout="grid" data-grid-min="lg"><!-- 350px min columns --></div>
+  </div>
+</div>
 ```
 
 Or set the column minimum directly:
 
 ```html
-<div data-layout="grid" style="--grid-min: 200px">
+<div data-layout="grid" style="--grid-min: 200px"></div>
 ```
 
 ### Responsive stacking
@@ -180,7 +189,7 @@ Or set the column minimum directly:
 Theme axes are independent and composable via data attributes on `<html>`:
 
 ```html
-<html data-theme="dark" data-contrast="more" data-motion="reduce">
+<html data-theme="dark" data-contrast="more" data-motion="reduce"></html>
 ```
 
 | Attribute       | Values   | Effect                    |
@@ -236,6 +245,19 @@ alternatives:
 </section>
 ```
 
+### Prose
+
+```html
+<article data-ui="prose">
+  <hgroup>
+    <p>Long-form content</p>
+    <h2>Readable measure and calmer spacing</h2>
+    <p>Use this wrapper for articles, docs, and rich editorial copy.</p>
+  </hgroup>
+  <p>Aura keeps the global defaults restrained and lets prose be opt-in.</p>
+</article>
+```
+
 ### Site header
 
 ```html
@@ -262,14 +284,15 @@ alternatives:
 
 ## Forms
 
-Text inputs, selects, and textareas are styled automatically. No classes needed:
+Text inputs, single-select menus, and textareas are styled automatically. No
+classes needed:
 
 ```html
 <form>
   <fieldset>
     <legend>Profile</legend>
     <label for="name">Name</label>
-    <input id="name" type="text" required>
+    <input id="name" type="text" required />
     <button type="submit" data-variant="solid">Save</button>
   </fieldset>
 </form>
@@ -281,6 +304,7 @@ Features included out of the box:
 - `:user-invalid` and `aria-invalid="true"` border color
 - Fieldset error borders when children are invalid
 - Styled `role="switch"` checkboxes, `progress`, and `meter` elements
+- Native chevrons for single-select menus and animated indeterminate progress
 - `accent-color` on checkboxes, radios, and range inputs
 - Disabled state styling
 
@@ -306,6 +330,7 @@ Aura includes several accessibility defaults:
 - `prefers-contrast: high` and `prefers-contrast: less` adaptations
 - `forced-colors: active` support for Windows High Contrast Mode
 - `color-scheme: light dark` declared on `:root`
+- `aria-busy="true"` surfaces receive a lightweight spinner without extra markup
 - `aria-current="page"` styling for navigation
 - `aria-invalid="true"` as a fallback for `:user-invalid`
 
@@ -341,9 +366,9 @@ A brand pack is a standalone CSS file that overrides tokens inside a
 Load it alongside the core:
 
 ```html
-<link rel="stylesheet" href="aura.css">
-<link rel="stylesheet" href="aura-brand-custom.css">
-<body data-brand="custom">
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-brand-custom.css" />
+<body data-brand="custom"></body>
 ```
 
 The included `aura-brand.css` serves as both a working brand and a template for

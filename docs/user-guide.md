@@ -19,7 +19,7 @@ deno run --allow-net --allow-read jsr:@std/http/file-server .
 3. Add the core stylesheet to any HTML page:
 
 ```html
-<link rel="stylesheet" href="aura.css">
+<link rel="stylesheet" href="aura.css" />
 ```
 
 4. When you want a branded look, load a brand pack and set `data-brand`:
@@ -28,10 +28,10 @@ deno run --allow-net --allow-read jsr:@std/http/file-server .
 <!DOCTYPE html>
 <html lang="en" data-theme="dark" data-contrast="more">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="aura.css">
-    <link rel="stylesheet" href="aura-brand.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="aura.css" />
+    <link rel="stylesheet" href="aura-brand.css" />
     <title>Aura Example</title>
   </head>
   <body data-brand="aura">
@@ -131,6 +131,22 @@ Notices and accordions use the same headless pattern:
 </section>
 ```
 
+### Prose
+
+Use `data-ui="prose"` when a section contains article-style content instead of
+application chrome:
+
+```html
+<article data-ui="prose">
+  <hgroup>
+    <p>Documentation</p>
+    <h2>Readable measure and stronger rhythm</h2>
+    <p>Ideal for guides, release notes, and editorial content.</p>
+  </hgroup>
+  <p>Aura keeps this behavior opt-in so general UI stays restrained.</p>
+</article>
+```
+
 ### Forms
 
 Native elements are styled automatically:
@@ -141,10 +157,10 @@ Native elements are styled automatically:
     <legend>Profile</legend>
 
     <label for="name">Name</label>
-    <input id="name" type="text" required>
+    <input id="name" type="text" required />
 
     <label for="email">Email</label>
-    <input id="email" type="email" required>
+    <input id="email" type="email" required />
 
     <label for="country">Country</label>
     <select id="country" required>
@@ -163,6 +179,7 @@ Included behaviors:
 - Validation styling through `:user-invalid` and `aria-invalid="true"`
 - Styled fieldsets, selects, textareas, checkboxes, radios, range inputs,
   switches, progress bars, and meter elements
+- Native chevrons for single-select menus and animated indeterminate progress
 - Disabled state styling
 
 ### Utilities
@@ -174,7 +191,7 @@ Aura also exposes small, semantic helpers:
 
 <figure>
   <div data-aspect="16/9">
-    <img src="/hero.jpg" alt="Hero image" data-fit="cover">
+    <img src="/hero.jpg" alt="Hero image" data-fit="cover" />
   </div>
 </figure>
 
@@ -222,8 +239,9 @@ Then load it after the core stylesheet and set `data-brand="custom"` on
 The demo also exercises:
 
 - Layout primitives
+- Long-form prose styling
 - Card, notice, and accordion surfaces
-- Button variants and dialog styling
+- Button variants, busy states, and dialog styling
 - Form validation states
 - Switch, progress, and meter styling
 - Status colors
@@ -255,9 +273,9 @@ Then verify:
 1. Open `http://localhost:8000/index.html`.
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
-4. Review the notice and accordion examples in the components section.
-5. Submit the form with empty required fields and confirm validation, switch,
-   progress, and meter styles.
-6. Open the dialog and test the smooth-scroll buttons.
+4. Review the prose, notice, and accordion examples.
+5. Open the dialog and confirm the backdrop and page scroll lock.
+6. Submit the form with empty required fields and confirm validation, busy
+   states, select chevrons, progress, and meter styles.
 7. Open print preview and confirm buttons/nav are hidden and print-only rules
    apply.
