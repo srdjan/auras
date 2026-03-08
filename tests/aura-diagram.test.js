@@ -20,7 +20,7 @@ Object.assign(globalThis, {
   Event: testWindow.Event,
 });
 
-const { registerAuraDiagram } = await import("./packages/diagram/mod.ts");
+const { registerAuraDiagram } = await import("../packages/diagram/mod.ts");
 
 registerAuraDiagram();
 

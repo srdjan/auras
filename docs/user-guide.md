@@ -14,7 +14,7 @@ cd /Users/srdjans/Code/MetadorHome/metador.aura
 deno task dev
 ```
 
-2. Open `http://127.0.0.1:8000/index.html`.
+2. Open `http://127.0.0.1:8000/showcase/index.html`.
 
 3. Add the core stylesheet to any HTML page:
 
@@ -67,7 +67,7 @@ deno task dev
   - `data-brand` goes on `<body>` in the current examples.
   - `data-theme="dark"`, `data-contrast="more"`, and `data-motion="reduce"` go
     on `<html>`.
-- The framework does not require JavaScript. The JS in `index.html` and
+- The framework does not require JavaScript. The JS in `showcase/index.html` and
   `aura-diagram.js` / `aura-components.js` only power the optional interactive
   layer and the demo controls. The reusable package modules live under
   `packages/diagram` and `packages/components`.
@@ -390,7 +390,7 @@ Then load it after the core stylesheet and set `data-brand="custom"` on
 
 ## Demo Page Guide
 
-`index.html` is the fastest way to validate the framework:
+`showcase/index.html` is the fastest way to validate the framework:
 
 - `Headless core`: removes `data-brand`
 - `Aura pack`: loads `aura-brand.css` and sets `data-brand="aura"`
@@ -418,29 +418,29 @@ The demo also exercises:
 
 ## File Map
 
-| File                              | Purpose                                          |
-| --------------------------------- | ------------------------------------------------ |
-| `aura.css`                        | Elements layer framework                         |
-| `aura-composites.css`             | Optional Composites layer                        |
-| `aura-diagram.js`                 | Browser-friendly no-build diagram entrypoint     |
-| `aura-components.js`              | Browser-friendly no-build entrypoint             |
-| `aura-components.browser.test.js` | Browser smoke coverage for the optional packages |
-| `aura-diagram.test.js`            | Deno behavioral coverage for `aura-diagram`      |
-| `packages/diagram/mod.ts`         | Deno-first diagram package surface               |
-| `packages/diagram/jsr.json`       | JSR package metadata for `@aura/diagram`         |
-| `packages/diagram/README.md`      | Package-level usage note for `@aura/diagram`     |
-| `packages/diagram/src/`           | Diagram package runtime module                   |
-| `packages/components/mod.ts`      | Deno-first Components package surface            |
-| `packages/components/jsr.json`    | JSR package metadata                             |
-| `packages/components/README.md`   | Package-level usage note                         |
-| `packages/components/src/`        | Shared logic plus per-component modules          |
-| `aura-components.test.js`         | Deno behavioral coverage for Components          |
-| `aura-brand.css`                  | Sample Aura brand pack                           |
-| `aura-brand-editorial.css`        | Sample editorial brand pack                      |
-| `deno.lock`                       | Locked JSR and npm test dependencies             |
-| `index.html`                      | Interactive demo page                            |
-| `docs/component-architecture.md`  | Architecture note for the next layers            |
-| `docs/user-guide.md`              | This user guide                                  |
+| File                                    | Purpose                                          |
+| --------------------------------------- | ------------------------------------------------ |
+| `aura.css`                              | Elements layer framework                         |
+| `aura-composites.css`                   | Optional Composites layer                        |
+| `aura-diagram.js`                       | Browser-friendly no-build diagram entrypoint     |
+| `aura-components.js`                    | Browser-friendly no-build entrypoint             |
+| `tests/aura-components.browser.test.js` | Browser smoke coverage for the optional packages |
+| `tests/aura-diagram.test.js`            | Deno behavioral coverage for `aura-diagram`      |
+| `tests/aura-components.test.js`         | Deno behavioral coverage for Components          |
+| `packages/diagram/mod.ts`               | Deno-first diagram package surface               |
+| `packages/diagram/jsr.json`             | JSR package metadata for `@aura/diagram`         |
+| `packages/diagram/README.md`            | Package-level usage note for `@aura/diagram`     |
+| `packages/diagram/src/`                 | Diagram package runtime module                   |
+| `packages/components/mod.ts`            | Deno-first Components package surface            |
+| `packages/components/jsr.json`          | JSR package metadata                             |
+| `packages/components/README.md`         | Package-level usage note                         |
+| `packages/components/src/`              | Shared logic plus per-component modules          |
+| `aura-brand.css`                        | Sample Aura brand pack                           |
+| `aura-brand-editorial.css`              | Sample editorial brand pack                      |
+| `deno.lock`                             | Locked JSR and npm test dependencies             |
+| `showcase/index.html`                   | Interactive demo page                            |
+| `docs/component-architecture.md`        | Architecture note for the next layers            |
+| `docs/user-guide.md`                    | This user guide                                  |
 
 ## Verification
 
@@ -461,7 +461,7 @@ If Chrome is not installed at the default macOS path, set
 
 Then verify:
 
-1. Open `http://127.0.0.1:8000/index.html`.
+1. Open `http://127.0.0.1:8000/showcase/index.html`.
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
 4. Review the prose, static diagram, interactive diagram, notice, accordion,

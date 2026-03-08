@@ -573,27 +573,28 @@ Aura targets modern evergreen browsers. Key features and their support:
 
 ## Files
 
-| File                              | Purpose                                                                  |
-| --------------------------------- | ------------------------------------------------------------------------ |
-| `aura.css`                        | Elements layer: reset, tokens, defaults, layout, components, utilities   |
-| `aura-composites.css`             | Optional Composites layer with higher-level CSS patterns                 |
-| `aura-diagram.js`                 | Browser-friendly no-build entrypoint for `aura-diagram`                  |
-| `aura-components.js`              | Browser-friendly no-build Components entrypoint                          |
-| `aura-components.browser.test.js` | Headless browser smoke test for the optional packages and keyboard flows |
-| `aura-diagram.test.js`            | Deno behavioral coverage for `aura-diagram`                              |
-| `packages/diagram/mod.ts`         | Deno-first export surface for the diagram package                        |
-| `packages/diagram/jsr.json`       | JSR package metadata for `@aura/diagram`                                 |
-| `packages/diagram/README.md`      | Package-level usage notes for `@aura/diagram`                            |
-| `packages/diagram/src/`           | Diagram package runtime module                                           |
-| `packages/components/mod.ts`      | Deno-first export surface for the Components package                     |
-| `packages/components/jsr.json`    | JSR package metadata for `@aura/components`                              |
-| `packages/components/README.md`   | Package-level usage notes                                                |
-| `packages/components/src/`        | Shared logic plus per-component runtime modules                          |
-| `aura-brand.css`                  | Sample brand pack that activates with `data-brand="aura"`                |
-| `aura-brand-editorial.css`        | Sample editorial brand pack                                              |
-| `index.html`                      | Interactive demo exercising the Elements, Composites, and Components     |
-| `docs/component-architecture.md`  | Architecture note and layer decision rules                               |
-| `deno.json`                       | Deno tasks for local dev server and component checking                   |
+| File                                    | Purpose                                                                  |
+| --------------------------------------- | ------------------------------------------------------------------------ |
+| `aura.css`                              | Elements layer: reset, tokens, defaults, layout, components, utilities   |
+| `aura-composites.css`                   | Optional Composites layer with higher-level CSS patterns                 |
+| `aura-diagram.js`                       | Browser-friendly no-build entrypoint for `aura-diagram`                  |
+| `aura-components.js`                    | Browser-friendly no-build Components entrypoint                          |
+| `tests/aura-components.browser.test.js` | Headless browser smoke test for the optional packages and keyboard flows |
+| `tests/aura-diagram.test.js`            | Deno behavioral coverage for `aura-diagram`                              |
+| `tests/aura-components.test.js`         | Deno behavioral coverage for the Components package                      |
+| `packages/diagram/mod.ts`               | Deno-first export surface for the diagram package                        |
+| `packages/diagram/jsr.json`             | JSR package metadata for `@aura/diagram`                                 |
+| `packages/diagram/README.md`            | Package-level usage notes for `@aura/diagram`                            |
+| `packages/diagram/src/`                 | Diagram package runtime module                                           |
+| `packages/components/mod.ts`            | Deno-first export surface for the Components package                     |
+| `packages/components/jsr.json`          | JSR package metadata for `@aura/components`                              |
+| `packages/components/README.md`         | Package-level usage notes                                                |
+| `packages/components/src/`              | Shared logic plus per-component runtime modules                          |
+| `aura-brand.css`                        | Sample brand pack that activates with `data-brand="aura"`                |
+| `aura-brand-editorial.css`              | Sample editorial brand pack                                              |
+| `showcase/index.html`                   | Interactive demo exercising the Elements, Composites, and Components     |
+| `docs/component-architecture.md`        | Architecture note and layer decision rules                               |
+| `deno.json`                             | Deno tasks for local dev server and component checking                   |
 
 ## License
 

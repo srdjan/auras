@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aura CSS Demo</title>
-    <link rel="stylesheet" href="aura.css" />
-    <link rel="stylesheet" href="aura-composites.css" />
+    <link rel="stylesheet" href="../aura.css" />
+    <link rel="stylesheet" href="../aura-composites.css" />
   </head>
   <body data-layout="container">
     <div data-layout="stack" data-gap="8">
@@ -1325,8 +1325,8 @@
       </footer>
     </div>
 
-    <script type="module" src="aura-diagram.js"></script>
-    <script type="module" src="aura-components.js"></script>
+    <script type="module" src="../aura-diagram.js"></script>
+    <script type="module" src="../aura-components.js"></script>
     <script>
       (function () {
         const root = document.documentElement;
@@ -1342,8 +1342,8 @@
         const dialog = document.getElementById("capability-dialog");
         const smoothRegion = document.getElementById("smooth-region");
         const brandStylesheetByName = {
-          aura: "aura-brand.css",
-          editorial: "aura-brand-editorial.css",
+          aura: "../aura-brand.css",
+          editorial: "../aura-brand-editorial.css",
         };
 
         function ensureBrandStylesheet(brand) {
