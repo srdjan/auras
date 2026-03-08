@@ -1,30 +1,34 @@
 import {
+  type AuraSelectableEntry,
   AuraSelectablePanelsElement,
   getDirectionality,
-} from "./shared/selectable-panels.js";
+} from "./shared/selectable-panels.ts";
 
 const MASTER_SELECTOR = '[data-part="master"]';
 const DETAIL_SELECTOR = '[data-part="detail"]';
 export const AURA_MASTER_DETAIL_TAG_NAME = "aura-master-detail";
 
 export class AuraMasterDetail extends AuraSelectablePanelsElement {
-  _getContainerSelector() {
+  protected override _getContainerSelector(): string {
     return MASTER_SELECTOR;
   }
 
-  _getPanelRootSelector() {
+  protected override _getPanelRootSelector(): string {
     return DETAIL_SELECTOR;
   }
 
-  _getPanelIdPrefix() {
+  protected override _getPanelIdPrefix(): string {
     return "aura-master-detail-panel";
   }
 
-  _applyEntrySemantics(entry) {
+  protected override _applyEntrySemantics(entry: AuraSelectableEntry): void {
     entry.trigger.setAttribute("aria-expanded", "false");
   }
 
-  _applySelectionState(entry, isActive) {
+  protected override _applySelectionState(
+    entry: AuraSelectableEntry,
+    isActive: boolean,
+  ): void {
     entry.trigger.setAttribute("aria-expanded", String(isActive));
 
     if (isActive) {
@@ -34,7 +38,10 @@ export class AuraMasterDetail extends AuraSelectablePanelsElement {
     }
   }
 
-  _getNextIndex(currentIndex, key) {
+  protected override _getNextIndex(
+    currentIndex: number,
+    key: string,
+  ): number | null {
     const lastIndex = this._entries.length - 1;
     const directionality = getDirectionality(this);
 
@@ -61,7 +68,7 @@ export class AuraMasterDetail extends AuraSelectablePanelsElement {
   }
 }
 
-export function registerAuraMasterDetail() {
+export function registerAuraMasterDetail(): typeof AuraMasterDetail {
   if (!customElements.get(AURA_MASTER_DETAIL_TAG_NAME)) {
     customElements.define(AURA_MASTER_DETAIL_TAG_NAME, AuraMasterDetail);
   }

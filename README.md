@@ -65,7 +65,7 @@ The repo now includes a working prototype of the next layers:
 - `aura-composites.css`
   - optional CSS-only shell patterns
 - `aura-components.js`
-  - thin browser entrypoint that registers the Components package
+  - browser-friendly no-build Components entrypoint
 - `packages/components/mod.ts`
   - Deno-first Components package surface
 - `aura-master-detail`
@@ -493,18 +493,21 @@ Aura targets modern evergreen browsers. Key features and their support:
 
 ## Files
 
-| File                             | Purpose                                                                |
-| -------------------------------- | ---------------------------------------------------------------------- |
-| `aura.css`                       | Elements layer: reset, tokens, defaults, layout, components, utilities |
-| `aura-composites.css`            | Optional Composites layer with higher-level CSS patterns               |
-| `aura-components.js`             | Thin browser entrypoint that registers the packaged Components modules |
-| `packages/components/mod.ts`     | Deno-first export surface for the Components package                   |
-| `packages/components/src/`       | Shared logic plus per-component runtime modules                        |
-| `aura-brand.css`                 | Sample brand pack that activates with `data-brand="aura"`              |
-| `aura-brand-editorial.css`       | Sample editorial brand pack                                            |
-| `index.html`                     | Interactive demo exercising the Elements, Composites, and Components   |
-| `docs/component-architecture.md` | Architecture note and `aura-master-detail` contract                    |
-| `deno.json`                      | Deno tasks for local dev server and component checking                 |
+| File                              | Purpose                                                                |
+| --------------------------------- | ---------------------------------------------------------------------- |
+| `aura.css`                        | Elements layer: reset, tokens, defaults, layout, components, utilities |
+| `aura-composites.css`             | Optional Composites layer with higher-level CSS patterns               |
+| `aura-components.js`              | Browser-friendly no-build Components entrypoint                        |
+| `aura-components.browser.test.js` | Headless browser smoke test for upgrade and keyboard flows             |
+| `packages/components/mod.ts`      | Deno-first export surface for the Components package                   |
+| `packages/components/jsr.json`    | JSR package metadata for `@aura/components`                            |
+| `packages/components/README.md`   | Package-level usage notes                                              |
+| `packages/components/src/`        | Shared logic plus per-component runtime modules                        |
+| `aura-brand.css`                  | Sample brand pack that activates with `data-brand="aura"`              |
+| `aura-brand-editorial.css`        | Sample editorial brand pack                                            |
+| `index.html`                      | Interactive demo exercising the Elements, Composites, and Components   |
+| `docs/component-architecture.md`  | Architecture note and `aura-master-detail` contract                    |
+| `deno.json`                       | Deno tasks for local dev server and component checking                 |
 
 ## License
 

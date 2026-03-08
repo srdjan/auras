@@ -7,6 +7,7 @@ Object.assign(globalThis, {
   window: testWindow,
   document: testWindow.document,
   customElements: testWindow.customElements,
+  Element: testWindow.Element,
   HTMLElement: testWindow.HTMLElement,
   HTMLAnchorElement: testWindow.HTMLAnchorElement,
   KeyboardEvent: testWindow.KeyboardEvent,

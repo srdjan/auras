@@ -333,20 +333,23 @@ The demo also exercises:
 
 ## File Map
 
-| File                             | Purpose                                 |
-| -------------------------------- | --------------------------------------- |
-| `aura.css`                       | Elements layer framework                |
-| `aura-composites.css`            | Optional Composites layer               |
-| `aura-components.js`             | Thin browser entrypoint for Components  |
-| `packages/components/mod.ts`     | Deno-first Components package surface   |
-| `packages/components/src/`       | Shared logic plus per-component modules |
-| `aura-components.test.js`        | Deno behavioral coverage for Components |
-| `aura-brand.css`                 | Sample Aura brand pack                  |
-| `aura-brand-editorial.css`       | Sample editorial brand pack             |
-| `deno.lock`                      | Locked JSR and npm test dependencies    |
-| `index.html`                     | Interactive demo page                   |
-| `docs/component-architecture.md` | Architecture note for the next layers   |
-| `docs/user-guide.md`             | This user guide                         |
+| File                              | Purpose                                 |
+| --------------------------------- | --------------------------------------- |
+| `aura.css`                        | Elements layer framework                |
+| `aura-composites.css`             | Optional Composites layer               |
+| `aura-components.js`              | Browser-friendly no-build entrypoint    |
+| `aura-components.browser.test.js` | Browser smoke coverage for Components   |
+| `packages/components/mod.ts`      | Deno-first Components package surface   |
+| `packages/components/jsr.json`    | JSR package metadata                    |
+| `packages/components/README.md`   | Package-level usage note                |
+| `packages/components/src/`        | Shared logic plus per-component modules |
+| `aura-components.test.js`         | Deno behavioral coverage for Components |
+| `aura-brand.css`                  | Sample Aura brand pack                  |
+| `aura-brand-editorial.css`        | Sample editorial brand pack             |
+| `deno.lock`                       | Locked JSR and npm test dependencies    |
+| `index.html`                      | Interactive demo page                   |
+| `docs/component-architecture.md`  | Architecture note for the next layers   |
+| `docs/user-guide.md`              | This user guide                         |
 
 ## Verification
 
@@ -356,8 +359,13 @@ Run these checks after changes:
 cd /Users/srdjans/Code/MetadorHome/metador.aura
 deno task check
 deno task test
+deno task test:browser
+deno task publish:components:dry-run
 deno task dev
 ```
+
+If Chrome is not installed at the default macOS path, set
+`AURA_BROWSER_EXECUTABLE` before running `deno task test:browser`.
 
 Then verify:
 

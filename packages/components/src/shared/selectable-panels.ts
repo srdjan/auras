@@ -1,13 +1,27 @@
 const TRIGGER_SELECTOR = '[data-part="trigger"][data-value]';
 const PANEL_SELECTOR = '[data-part="panel"][data-value]';
 
+type AuraActivation = "auto" | "manual";
+type SelectionOptions = {
+  dispatch: boolean;
+  focus: boolean;
+};
+
+export type AuraSelectableEntry = {
+  value: string;
+  trigger: HTMLElement;
+  panel: HTMLElement;
+};
+
 let generatedIdSequence = 0;
 
-export function normalizeActivation(value) {
+export function normalizeActivation(
+  value: string | null | undefined,
+): AuraActivation {
   return value === "manual" ? "manual" : "auto";
 }
 
-export function getDirectionality(node) {
+export function getDirectionality(node: Element): "ltr" | "rtl" {
   if (node.closest('[dir="rtl"]') || document.documentElement.dir === "rtl") {
     return "rtl";
   }
@@ -15,7 +29,7 @@ export function getDirectionality(node) {
   return "ltr";
 }
 
-export function ensureElementId(element, prefix) {
+export function ensureElementId(element: HTMLElement, prefix: string): string {
   if (element.id) {
     return element.id;
   }
@@ -25,7 +39,10 @@ export function ensureElementId(element, prefix) {
   return element.id;
 }
 
-export function upgradeProperty(node, name) {
+export function upgradeProperty<T extends object, K extends keyof T>(
+  node: T,
+  name: K,
+): void {
   if (!Object.prototype.hasOwnProperty.call(node, name)) {
     return;
   }
@@ -38,28 +55,32 @@ export function upgradeProperty(node, name) {
 export class AuraSelectablePanelsElement extends HTMLElement {
   static observedAttributes = ["value", "activation"];
 
+  protected _container: HTMLElement | null = null;
+  protected _entries: AuraSelectableEntry[] = [];
+  protected _syncingValue = false;
+
   constructor() {
     super();
-
-    this._container = null;
-    this._entries = [];
-    this._syncingValue = false;
 
     this._handleClick = this._handleClick.bind(this);
     this._handleKeydown = this._handleKeydown.bind(this);
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     upgradeProperty(this, "value");
     upgradeProperty(this, "activation");
     this._connect();
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     this._disconnect();
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
+  attributeChangedCallback(
+    name: string,
+    oldValue: string | null,
+    newValue: string | null,
+  ): void {
     if (oldValue === newValue || !this.isConnected) {
       return;
     }
@@ -81,11 +102,11 @@ export class AuraSelectablePanelsElement extends HTMLElement {
     }
   }
 
-  get value() {
+  get value(): string | null {
     return this.getAttribute("value");
   }
 
-  set value(value) {
+  set value(value: string | null) {
     if (value == null || value === "") {
       this.removeAttribute("value");
       return;
@@ -94,11 +115,11 @@ export class AuraSelectablePanelsElement extends HTMLElement {
     this.setAttribute("value", String(value));
   }
 
-  get activation() {
+  get activation(): AuraActivation {
     return normalizeActivation(this.getAttribute("activation"));
   }
 
-  set activation(value) {
+  set activation(value: AuraActivation | string | null) {
     const normalizedValue = normalizeActivation(value);
     if (normalizedValue === "auto") {
       this.removeAttribute("activation");
@@ -108,11 +129,11 @@ export class AuraSelectablePanelsElement extends HTMLElement {
     this.setAttribute("activation", normalizedValue);
   }
 
-  show(value) {
+  show(value: string): boolean {
     return this._select(value, { dispatch: true, focus: false });
   }
 
-  focusCurrent() {
+  focusCurrent(): void {
     const activeEntry =
       this._entries.find((entry) =>
         entry.trigger.hasAttribute("data-active")
@@ -121,54 +142,64 @@ export class AuraSelectablePanelsElement extends HTMLElement {
     activeEntry?.trigger.focus();
   }
 
-  _getContainerSelector() {
+  protected _getContainerSelector(): string | null {
     return null;
   }
 
-  _getPanelRootSelector() {
+  protected _getPanelRootSelector(): string | null {
     return null;
   }
 
-  _getPanelIdPrefix() {
+  protected _getPanelIdPrefix(): string {
     return "aura-panel";
   }
 
-  _setContainerSemantics() {}
+  protected _setContainerSemantics(_container: HTMLElement): void {}
 
-  _applyEntrySemantics() {}
+  protected _applyEntrySemantics(_entry: AuraSelectableEntry): void {}
 
-  _applySelectionState() {}
+  protected _applySelectionState(
+    _entry: AuraSelectableEntry,
+    _isActive: boolean,
+  ): void {}
 
-  _getNextIndex() {
+  protected _getNextIndex(
+    _currentIndex: number,
+    _key: string,
+  ): number | null {
     return null;
   }
 
-  _connect() {
+  protected _connect(): void {
     this._disconnect();
 
     const containerSelector = this._getContainerSelector();
     const panelRootSelector = this._getPanelRootSelector();
     const container = containerSelector
-      ? this.querySelector(containerSelector)
+      ? this.querySelector<HTMLElement>(containerSelector)
       : null;
     const panelRoot = panelRootSelector
-      ? this.querySelector(panelRootSelector)
+      ? this.querySelector<HTMLElement>(panelRootSelector)
       : this;
 
     if (!container || !panelRoot) {
       return;
     }
 
-    const panelsByValue = new Map();
-    for (const panel of panelRoot.querySelectorAll(PANEL_SELECTOR)) {
+    const panelsByValue = new Map<string, HTMLElement>();
+    for (
+      const panel of panelRoot.querySelectorAll<HTMLElement>(PANEL_SELECTOR)
+    ) {
       const value = panel.getAttribute("data-value");
       if (value && !panelsByValue.has(value)) {
         panelsByValue.set(value, panel);
       }
     }
 
-    const entries = [];
-    for (const trigger of container.querySelectorAll(TRIGGER_SELECTOR)) {
+    const entries: AuraSelectableEntry[] = [];
+    for (
+      const trigger of container.querySelectorAll<HTMLElement>(TRIGGER_SELECTOR)
+    ) {
       const value = trigger.getAttribute("data-value");
       const panel = value ? panelsByValue.get(value) : null;
 
@@ -206,7 +237,7 @@ export class AuraSelectablePanelsElement extends HTMLElement {
     }
   }
 
-  _disconnect() {
+  protected _disconnect(): void {
     if (this._container) {
       this._container.removeEventListener("click", this._handleClick);
       this._container.removeEventListener("keydown", this._handleKeydown);
@@ -216,7 +247,7 @@ export class AuraSelectablePanelsElement extends HTMLElement {
     this._entries = [];
   }
 
-  _normalizeActivationAttribute() {
+  protected _normalizeActivationAttribute(): void {
     if (this.activation === "manual") {
       this.setAttribute("activation", "manual");
       return;
@@ -225,7 +256,7 @@ export class AuraSelectablePanelsElement extends HTMLElement {
     this.removeAttribute("activation");
   }
 
-  _selectFromAttribute(options) {
+  protected _selectFromAttribute(options: SelectionOptions): boolean {
     const value = this.getAttribute("value");
     if (!value) {
       return false;
@@ -234,7 +265,7 @@ export class AuraSelectablePanelsElement extends HTMLElement {
     return this._select(value, options);
   }
 
-  _select(value, options) {
+  protected _select(value: string, options: SelectionOptions): boolean {
     const entry = this._entries.find(
       (currentEntry) => currentEntry.value === value,
     );
@@ -282,7 +313,10 @@ export class AuraSelectablePanelsElement extends HTMLElement {
     return true;
   }
 
-  _activateTrigger(trigger, options) {
+  protected _activateTrigger(
+    trigger: HTMLElement,
+    options: SelectionOptions,
+  ): boolean {
     const value = trigger.getAttribute("data-value");
     if (!value) {
       return false;
@@ -291,13 +325,20 @@ export class AuraSelectablePanelsElement extends HTMLElement {
     return this._select(value, options);
   }
 
-  _isActivationKey(key) {
+  protected _isActivationKey(key: string): boolean {
     return key === "Enter" || key === " ";
   }
 
-  _handleClick(event) {
-    const trigger = event.target.closest(TRIGGER_SELECTOR);
-    if (!trigger || !this._container?.contains(trigger)) {
+  protected _handleClick(event: Event): void {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      return;
+    }
+
+    const trigger = target.closest(TRIGGER_SELECTOR);
+    if (
+      !(trigger instanceof HTMLElement) || !this._container?.contains(trigger)
+    ) {
       return;
     }
 
@@ -308,9 +349,16 @@ export class AuraSelectablePanelsElement extends HTMLElement {
     this._activateTrigger(trigger, { dispatch: true, focus: false });
   }
 
-  _handleKeydown(event) {
-    const trigger = event.target.closest(TRIGGER_SELECTOR);
-    if (!trigger || !this._container?.contains(trigger)) {
+  protected _handleKeydown(event: KeyboardEvent): void {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      return;
+    }
+
+    const trigger = target.closest(TRIGGER_SELECTOR);
+    if (
+      !(trigger instanceof HTMLElement) || !this._container?.contains(trigger)
+    ) {
       return;
     }
 

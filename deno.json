@@ -1,8 +1,13 @@
 {
   "tasks": {
     "dev": "deno run --allow-net --allow-read jsr:@std/http/file-server . --host 127.0.0.1",
-    "check": "deno check aura-components.js aura-components.test.js packages/components/mod.ts",
-    "test": "deno test --allow-env=WS_NO_BUFFER_UTIL,WS_NO_UTF_8_VALIDATE"
+    "check": "deno check aura-components.js aura-components.test.js aura-components.browser.test.js packages/components/mod.ts",
+    "test": "deno test --allow-env=WS_NO_BUFFER_UTIL,WS_NO_UTF_8_VALIDATE aura-components.test.js",
+    "test:browser": "deno test --allow-env --allow-read --allow-write --allow-net --allow-run --allow-sys aura-components.browser.test.js",
+    "publish:components:dry-run": "deno publish --dry-run --allow-dirty --config packages/components/jsr.json"
+  },
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"]
   },
   "fmt": {
     "useTabs": false,

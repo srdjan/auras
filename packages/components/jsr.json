@@ -1,0 +1,19 @@
+{
+  "$schema": "https://jsr.io/schema/config-file.v1.json",
+  "name": "@aura/components",
+  "version": "0.2.0",
+  "license": "MIT",
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"]
+  },
+  "exports": {
+    ".": "./mod.ts"
+  },
+  "publish": {
+    "include": [
+      "README.md",
+      "mod.ts",
+      "src/**/*.ts"
+    ]
+  }
+}

@@ -1,32 +1,33 @@
 import {
+  type AuraSelectableEntry,
   AuraSelectablePanelsElement,
   ensureElementId,
   getDirectionality,
-} from "./shared/selectable-panels.js";
+} from "./shared/selectable-panels.ts";
 
 const TABLIST_SELECTOR = '[data-part="tablist"]';
 const PANELS_SELECTOR = '[data-part="panels"]';
 export const AURA_TABS_TAG_NAME = "aura-tabs";
 
 export class AuraTabs extends AuraSelectablePanelsElement {
-  _getContainerSelector() {
+  protected override _getContainerSelector(): string {
     return TABLIST_SELECTOR;
   }
 
-  _getPanelRootSelector() {
+  protected override _getPanelRootSelector(): string {
     return PANELS_SELECTOR;
   }
 
-  _getPanelIdPrefix() {
+  protected override _getPanelIdPrefix(): string {
     return "aura-tabs-panel";
   }
 
-  _setContainerSemantics(container) {
+  protected override _setContainerSemantics(container: HTMLElement): void {
     container.setAttribute("role", "tablist");
     container.setAttribute("aria-orientation", "horizontal");
   }
 
-  _applyEntrySemantics(entry) {
+  protected override _applyEntrySemantics(entry: AuraSelectableEntry): void {
     entry.trigger.setAttribute("role", "tab");
     entry.trigger.setAttribute("aria-selected", "false");
     entry.trigger.setAttribute(
@@ -37,11 +38,17 @@ export class AuraTabs extends AuraSelectablePanelsElement {
     entry.panel.setAttribute("aria-labelledby", entry.trigger.id);
   }
 
-  _applySelectionState(entry, isActive) {
+  protected override _applySelectionState(
+    entry: AuraSelectableEntry,
+    isActive: boolean,
+  ): void {
     entry.trigger.setAttribute("aria-selected", String(isActive));
   }
 
-  _getNextIndex(currentIndex, key) {
+  protected override _getNextIndex(
+    currentIndex: number,
+    key: string,
+  ): number | null {
     const lastIndex = this._entries.length - 1;
     const directionality = getDirectionality(this);
 
@@ -64,7 +71,7 @@ export class AuraTabs extends AuraSelectablePanelsElement {
   }
 }
 
-export function registerAuraTabs() {
+export function registerAuraTabs(): typeof AuraTabs {
   if (!customElements.get(AURA_TABS_TAG_NAME)) {
     customElements.define(AURA_TABS_TAG_NAME, AuraTabs);
   }

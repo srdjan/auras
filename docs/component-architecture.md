@@ -100,11 +100,12 @@ Recommended package boundaries:
 /aura-brand-editorial.css
 
 /packages/composites/aura-composites.css
-/packages/components/mod.js
+/packages/components/jsr.json
+/packages/components/README.md
 /packages/components/mod.ts
-/packages/components/src/shared/selectable-panels.js
-/packages/components/src/master-detail.js
-/packages/components/src/tabs.js
+/packages/components/src/shared/selectable-panels.ts
+/packages/components/src/master-detail.ts
+/packages/components/src/tabs.ts
 
 /docs/component-architecture.md
 ```
@@ -118,9 +119,9 @@ Recommended publishing shape:
 Current repo structure:
 
 - `aura-composites.css` still stands in for the future `@aura/composites`
-- `packages/components/mod.ts` is the Deno-first package surface
-- `aura-components.js` is a thin browser entrypoint that registers the package
-  modules for the demo and no-build usage
+- `packages/components/mod.ts` is the Deno-first TypeScript package surface
+- `aura-components.js` is a browser-friendly no-build entrypoint for the demo
+  and plain browser usage
 
 ## Decision Rule
 

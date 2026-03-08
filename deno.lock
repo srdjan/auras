@@ -4,7 +4,8 @@
     "jsr:@std/assert@^1.0.14": "1.0.19",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "npm:@happy-dom/global-registrator@*": "20.8.3",
-    "npm:happy-dom@*": "20.8.3"
+    "npm:happy-dom@*": "20.8.3",
+    "npm:playwright-core@*": "1.58.2"
   },
   "jsr": {
     "@std/assert@1.0.19": {
@@ -53,6 +54,10 @@
         "whatwg-mimetype",
         "ws"
       ]
+    },
+    "playwright-core@1.58.2": {
+      "integrity": "sha512-yZkEtftgwS8CsfYo7nm0KE8jsvm6i/PTgVtB8DL726wNf6H2IMsDuxCpJj59KDaxCtSnrWan2AeDqM7JBaultg==",
+      "bin": true
     },
     "undici-types@7.18.2": {
       "integrity": "sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w=="
