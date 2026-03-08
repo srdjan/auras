@@ -104,20 +104,28 @@
     --primary-c: 0.03;
     --primary: oklch(var(--primary-l) var(--primary-c) var(--hue-primary));
     --primary-hover: oklch(
-      calc(var(--primary-l) - 5%) var(--primary-c) var(--hue-primary)
+      calc(var(--primary-l) - 5%)
+      var(--primary-c)
+      var(--hue-primary)
     );
     --primary-subtle: oklch(
-      calc(var(--primary-l) + 28%) 0.02 var(--hue-primary)
+      calc(var(--primary-l) + 28%)
+      0.02
+      var(--hue-primary)
     );
 
     /* Secondary */
     --secondary-l: 50%;
     --secondary-c: 0.02;
     --secondary: oklch(
-      var(--secondary-l) var(--secondary-c) var(--hue-secondary)
+      var(--secondary-l)
+      var(--secondary-c)
+      var(--hue-secondary)
     );
     --secondary-hover: oklch(
-      calc(var(--secondary-l) - 5%) var(--secondary-c) var(--hue-secondary)
+      calc(var(--secondary-l) - 5%)
+      var(--secondary-c)
+      var(--hue-secondary)
     );
 
     /* Neutral grays */
@@ -501,7 +509,7 @@
     background-position:
       calc(100% - var(--select-indicator-offset)) calc(50% - 0.125rem),
       calc(100% - calc(var(--select-indicator-offset) - var(--space-1)))
-        calc(50% - 0.125rem);
+      calc(50% - 0.125rem);
     background-repeat: no-repeat;
     background-size:
       var(--select-indicator-size) var(--select-indicator-size),
@@ -782,7 +790,8 @@
   }
   :where([data-layout~="grid"]) {
     display: grid;
-    grid-template-columns: repeat(
+    grid-template-columns:
+      repeat(
       auto-fit,
       minmax(min(100%, var(--grid-min, 250px)), 1fr)
     );
@@ -1147,14 +1156,14 @@
   }
 
   :where([aria-busy="true"]):not(html):not(input):not(select):not(textarea):not(
-      progress
-    ) {
+    progress
+  ) {
     cursor: progress;
     position: relative;
   }
   :where([aria-busy="true"]):not(html):not(input):not(select):not(textarea):not(
-      progress
-    )::before {
+    progress
+  )::before {
     content: "";
     display: inline-block;
     inline-size: var(--busy-spinner-size);
@@ -1168,14 +1177,14 @@
     vertical-align: -0.125em;
   }
   :where([aria-busy="true"]):not(html):not(input):not(select):not(textarea):not(
-      progress
-    ):empty::before {
+    progress
+  ):empty::before {
     margin-inline-end: 0;
   }
   @media (prefers-reduced-motion: no-preference) {
     :where([aria-busy="true"]):not(html):not(input):not(select):not(
-        textarea
-      ):not(progress)::before {
+      textarea
+    ):not(progress)::before {
       animation: aura-spin 0.7s linear infinite;
     }
   }

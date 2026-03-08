@@ -24,5 +24,4 @@ import { registerAuraComponents } from "@aura/components";
 registerAuraComponents();
 ```
 
-For no-build browser usage in this repo, load the root `/aura-components.js`
-entrypoint instead.
+For no-build browser usage in this repo, load `/packages/components/browser.js`.

@@ -19,7 +19,7 @@ deno task dev
 3. Add the core stylesheet to any HTML page:
 
 ```html
-<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="packages/elements/aura.css" />
 ```
 
 4. When you want a branded look, load a brand pack and set `data-brand`:
@@ -30,8 +30,8 @@ deno task dev
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="aura.css" />
-    <link rel="stylesheet" href="aura-brand.css" />
+    <link rel="stylesheet" href="packages/elements/aura.css" />
+    <link rel="stylesheet" href="packages/brands/aura-brand.css" />
     <title>Aura Example</title>
   </head>
   <body data-brand="aura">
@@ -48,17 +48,17 @@ deno task dev
 5. When you want the optional higher layers, load them explicitly:
 
 ```html
-<link rel="stylesheet" href="aura.css" />
-<link rel="stylesheet" href="aura-composites.css" />
-<script type="module" src="aura-diagram.js"></script>
-<script type="module" src="aura-components.js"></script>
+<link rel="stylesheet" href="packages/elements/aura.css" />
+<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<script type="module" src="packages/diagram/browser.js"></script>
+<script type="module" src="packages/components/browser.js"></script>
 ```
 
 ## Mental Model
 
-- `aura.css` is the Elements layer. It gives you reset, tokens, typography,
-  layout primitives, components, utilities, accessibility defaults, and print
-  styles.
+- `packages/elements/aura.css` is the Elements layer. It gives you reset,
+  tokens, typography, layout primitives, components, utilities, accessibility
+  defaults, and print styles.
 - Start with semantic HTML. Add `data-*` attributes only when you want layout,
   surface, variant, or utility behavior.
 - Keep branding separate from structure. The Elements layer stays neutral; brand
@@ -67,10 +67,9 @@ deno task dev
   - `data-brand` goes on `<body>` in the current examples.
   - `data-theme="dark"`, `data-contrast="more"`, and `data-motion="reduce"` go
     on `<html>`.
-- The framework does not require JavaScript. The JS in `showcase/index.html` and
-  `aura-diagram.js` / `aura-components.js` only power the optional interactive
-  layer and the demo controls. The reusable package modules live under
-  `packages/diagram` and `packages/components`.
+- The framework does not require JavaScript. The JS in `showcase/index.html`
+  only powers the optional interactive layer and the demo controls. The package
+  and browser sources live under `packages/diagram` and `packages/components`.
 
 ## Common Patterns
 
@@ -200,9 +199,9 @@ If the same diagram needs selection state and keyboard movement, add the
 separate optional `aura-diagram` package:
 
 ```html
-<link rel="stylesheet" href="aura.css" />
-<link rel="stylesheet" href="aura-composites.css" />
-<script type="module" src="aura-diagram.js"></script>
+<link rel="stylesheet" href="packages/elements/aura.css" />
+<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<script type="module" src="packages/diagram/browser.js"></script>
 
 <aura-diagram value="received" activation="manual" aria-label="Order flow">
   <p data-part="caption">Interactive flow</p>
@@ -246,9 +245,9 @@ One optional Component is `aura-master-detail`, paired with the optional
 Composites stylesheet:
 
 ```html
-<link rel="stylesheet" href="aura.css" />
-<link rel="stylesheet" href="aura-composites.css" />
-<script type="module" src="aura-components.js"></script>
+<link rel="stylesheet" href="packages/elements/aura.css" />
+<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<script type="module" src="packages/components/browser.js"></script>
 
 <aura-master-detail
   data-ui="master-detail"
@@ -284,9 +283,9 @@ actions.
 filtering, active-option state, and optional linked panels:
 
 ```html
-<link rel="stylesheet" href="aura.css" />
-<link rel="stylesheet" href="aura-composites.css" />
-<script type="module" src="aura-components.js"></script>
+<link rel="stylesheet" href="packages/elements/aura.css" />
+<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<script type="module" src="packages/components/browser.js"></script>
 
 <aura-combobox data-ui="combobox" value="elements" activation="manual">
   <label for="component-search">Search components</label>
@@ -332,9 +331,9 @@ before `Enter` commits the selected value.
 adding keyboard resize, pointer drag, and percent-based primary pane state:
 
 ```html
-<link rel="stylesheet" href="aura.css" />
-<link rel="stylesheet" href="aura-composites.css" />
-<script type="module" src="aura-components.js"></script>
+<link rel="stylesheet" href="packages/elements/aura.css" />
+<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<script type="module" src="packages/components/browser.js"></script>
 
 <aura-splitter data-ui="splitter" value="42" min="30" max="70" step="5">
   <section data-part="pane" data-pane="primary">...</section>
@@ -357,9 +356,9 @@ change the split. `Home` and `End` jump to the configured min and max.
 branch expansion, roving focus, and optional linked panels:
 
 ```html
-<link rel="stylesheet" href="aura.css" />
-<link rel="stylesheet" href="aura-composites.css" />
-<script type="module" src="aura-components.js"></script>
+<link rel="stylesheet" href="packages/elements/aura.css" />
+<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<script type="module" src="packages/components/browser.js"></script>
 
 <aura-tree data-ui="tree" value="master-detail" activation="manual">
   <ul data-part="tree" aria-label="Aura components">
@@ -405,9 +404,9 @@ through the visible hierarchy before `Enter` or `Space` commits the selection.
 tab semantics:
 
 ```html
-<link rel="stylesheet" href="aura.css" />
-<link rel="stylesheet" href="aura-composites.css" />
-<script type="module" src="aura-components.js"></script>
+<link rel="stylesheet" href="packages/elements/aura.css" />
+<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<script type="module" src="packages/components/browser.js"></script>
 
 <aura-tabs data-ui="tabs" value="overview" activation="manual">
   <nav data-part="tablist" aria-label="Release views">
@@ -491,8 +490,9 @@ Aura also exposes small, semantic helpers:
 
 The repo currently ships with two sample packs:
 
-- `aura-brand.css` activates when `data-brand="aura"`
-- `aura-brand-editorial.css` activates when `data-brand="editorial"`
+- `packages/brands/aura-brand.css` activates when `data-brand="aura"`
+- `packages/brands/aura-brand-editorial.css` activates when
+  `data-brand="editorial"`
 
 To make your own, create a new CSS file and override tokens in `@layer brands`:
 
@@ -514,8 +514,9 @@ Then load it after the core stylesheet and set `data-brand="custom"` on
 `showcase/index.html` is the fastest way to validate the framework:
 
 - `Headless core`: removes `data-brand`
-- `Aura pack`: loads `aura-brand.css` and sets `data-brand="aura"`
-- `Editorial pack`: loads `aura-brand-editorial.css` and sets
+- `Aura pack`: loads `packages/brands/aura-brand.css` and sets
+  `data-brand="aura"`
+- `Editorial pack`: loads `packages/brands/aura-brand-editorial.css` and sets
   `data-brand="editorial"`
 - `Toggle dark`: toggles `data-theme="dark"` on `<html>`
 - `Enable high contrast`: toggles `data-contrast="more"` on `<html>`
@@ -539,35 +540,35 @@ The demo also exercises:
 
 ## File Map
 
-| File                                    | Purpose                                          |
-| --------------------------------------- | ------------------------------------------------ |
-| `aura.css`                              | Elements layer framework                         |
-| `aura-composites.css`                   | Optional Composites layer                        |
-| `aura-diagram.js`                       | Browser-friendly no-build diagram entrypoint     |
-| `aura-components.js`                    | Browser-friendly no-build entrypoint             |
-| `tests/aura-components.browser.test.js` | Browser smoke coverage for the optional packages |
-| `tests/aura-combobox.test.js`           | Deno behavioral coverage for `aura-combobox`     |
-| `tests/aura-splitter.test.js`           | Deno behavioral coverage for `aura-splitter`     |
-| `tests/aura-diagram.test.js`            | Deno behavioral coverage for `aura-diagram`      |
-| `tests/aura-components.test.js`         | Deno behavioral coverage for Components          |
-| `tests/aura-tree.test.js`               | Deno behavioral coverage for `aura-tree`         |
-| `packages/diagram/mod.ts`               | Deno-first diagram package surface               |
-| `packages/diagram/jsr.json`             | JSR package metadata for `@aura/diagram`         |
-| `packages/diagram/README.md`            | Package-level usage note for `@aura/diagram`     |
-| `packages/diagram/src/`                 | Diagram package runtime module                   |
-| `packages/components/mod.ts`            | Deno-first Components package surface            |
-| `packages/components/jsr.json`          | JSR package metadata                             |
-| `packages/components/README.md`         | Package-level usage note                         |
-| `packages/components/src/`              | Shared logic plus per-component modules          |
-| `packages/components/src/combobox.ts`   | `aura-combobox` runtime module                   |
-| `packages/components/src/splitter.ts`   | `aura-splitter` runtime module                   |
-| `packages/components/src/tree.ts`       | `aura-tree` runtime module                       |
-| `aura-brand.css`                        | Sample Aura brand pack                           |
-| `aura-brand-editorial.css`              | Sample editorial brand pack                      |
-| `deno.lock`                             | Locked JSR and npm test dependencies             |
-| `showcase/index.html`                   | Interactive demo page                            |
-| `docs/component-architecture.md`        | Architecture note for the next layers            |
-| `docs/user-guide.md`                    | This user guide                                  |
+| File                                       | Purpose                                          |
+| ------------------------------------------ | ------------------------------------------------ |
+| `tests/aura-components.browser.test.js`    | Browser smoke coverage for the optional packages |
+| `tests/aura-combobox.test.js`              | Deno behavioral coverage for `aura-combobox`     |
+| `tests/aura-splitter.test.js`              | Deno behavioral coverage for `aura-splitter`     |
+| `tests/aura-diagram.test.js`               | Deno behavioral coverage for `aura-diagram`      |
+| `tests/aura-components.test.js`            | Deno behavioral coverage for Components          |
+| `tests/aura-tree.test.js`                  | Deno behavioral coverage for `aura-tree`         |
+| `packages/elements/aura.css`               | Elements layer stylesheet source                 |
+| `packages/composites/aura-composites.css`  | Composites layer stylesheet source               |
+| `packages/brands/aura-brand.css`           | Aura brand stylesheet source                     |
+| `packages/brands/aura-brand-editorial.css` | Editorial brand stylesheet source                |
+| `packages/diagram/browser.js`              | Browser-friendly no-build diagram entrypoint     |
+| `packages/diagram/mod.ts`                  | Deno-first diagram package surface               |
+| `packages/diagram/jsr.json`                | JSR package metadata for `@aura/diagram`         |
+| `packages/diagram/README.md`               | Package-level usage note for `@aura/diagram`     |
+| `packages/diagram/src/`                    | Diagram package runtime module                   |
+| `packages/components/browser.js`           | Browser-friendly no-build Components entrypoint  |
+| `packages/components/mod.ts`               | Deno-first Components package surface            |
+| `packages/components/jsr.json`             | JSR package metadata                             |
+| `packages/components/README.md`            | Package-level usage note                         |
+| `packages/components/src/`                 | Shared logic plus per-component modules          |
+| `packages/components/src/combobox.ts`      | `aura-combobox` runtime module                   |
+| `packages/components/src/splitter.ts`      | `aura-splitter` runtime module                   |
+| `packages/components/src/tree.ts`          | `aura-tree` runtime module                       |
+| `deno.lock`                                | Locked JSR and npm test dependencies             |
+| `showcase/index.html`                      | Interactive demo page                            |
+| `docs/component-architecture.md`           | Architecture note for the next layers            |
+| `docs/user-guide.md`                       | This user guide                                  |
 
 ## Verification
 

@@ -17,4 +17,6 @@ import { registerAuraDiagram } from "jsr:@aura/diagram";
 registerAuraDiagram();
 ```
 
-Load `aura-composites.css` for the visual diagram shell.
+Load `/packages/composites/aura-composites.css` for the visual diagram shell.
+
+For no-build browser usage in this repo, load `/packages/diagram/browser.js`.

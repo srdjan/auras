@@ -54,7 +54,7 @@ function getEntryLayout(node, index) {
   return {
     columnStart:
       parseGridStartValue(node.style.getPropertyValue("--diagram-column")) ??
-      index + 1,
+        index + 1,
     rowStart:
       parseGridStartValue(node.style.getPropertyValue("--diagram-row")) ?? 1,
     order: index,
@@ -262,7 +262,7 @@ export class AuraDiagram extends HTMLElement {
   focusCurrent() {
     const activeEntry =
       this._entries.find((entry) => entry.node.hasAttribute("data-active")) ??
-      this._entries[0];
+        this._entries[0];
 
     activeEntry?.node.focus();
   }

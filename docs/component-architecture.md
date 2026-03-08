@@ -22,7 +22,7 @@ Aura should evolve as three explicit layers:
 
 ### 1. Elements
 
-`aura.css`
+`packages/elements/aura.css`
 
 Responsibility:
 
@@ -42,7 +42,7 @@ Rules:
 
 ### 2. Composites
 
-`aura-composites.css`
+`packages/composites/aura-composites.css`
 
 Responsibility:
 
@@ -98,15 +98,16 @@ Rules:
 Recommended package boundaries:
 
 ```text
-/aura.css
-/aura-brand.css
-/aura-brand-editorial.css
-
+/packages/elements/aura.css
 /packages/composites/aura-composites.css
+/packages/brands/aura-brand.css
+/packages/brands/aura-brand-editorial.css
+/packages/diagram/browser.js
 /packages/diagram/jsr.json
 /packages/diagram/README.md
 /packages/diagram/mod.ts
 /packages/diagram/src/aura-diagram.ts
+/packages/components/browser.js
 /packages/components/jsr.json
 /packages/components/README.md
 /packages/components/mod.ts
@@ -122,21 +123,24 @@ Recommended package boundaries:
 
 Recommended publishing shape:
 
-- `aura.css`: Elements layer stylesheet
+- `@aura/elements`: Elements layer stylesheet
 - `@aura/composites`: optional CSS-only higher-level patterns
 - `jsr:@aura/diagram`: optional Deno-first interactive diagram package
 - `jsr:@aura/components`: optional Deno-first light-DOM interactive components
 
 Current repo structure:
 
-- `aura-composites.css` still stands in for the future `@aura/composites`
+- `packages/elements/aura.css` is the canonical Elements stylesheet source
+- `packages/composites/aura-composites.css` is the canonical Composites
+  stylesheet source
+- `packages/brands/` contains the canonical brand stylesheet sources
 - `packages/diagram/mod.ts` is the Deno-first TypeScript surface for the diagram
   package
-- `aura-diagram.js` is a browser-friendly no-build entrypoint for the demo and
-  plain browser usage
+- `packages/diagram/browser.js` is the browser-friendly no-build diagram
+  entrypoint
 - `packages/components/mod.ts` is the Deno-first TypeScript package surface
-- `aura-components.js` is a browser-friendly no-build entrypoint for the demo
-  and plain browser usage
+- `packages/components/browser.js` is the browser-friendly no-build Components
+  entrypoint
 
 ## Decision Rule
 
@@ -366,14 +370,14 @@ components package into the CSS layer.
 The companion composite stylesheet should handle only layout and visual states:
 
 ```html
-<link rel="stylesheet" href="aura.css" />
-<link rel="stylesheet" href="aura-composites.css" />
-<script type="module" src="aura-components.js"></script>
+<link rel="stylesheet" href="packages/elements/aura.css" />
+<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<script type="module" src="packages/components/browser.js"></script>
 ```
 
 Example responsibility split:
 
-- `aura-composites.css`
+- `packages/composites/aura-composites.css`
   - 2-column master/detail layout
   - mobile stack behavior
   - selected trigger visuals
@@ -662,7 +666,8 @@ Host API:
 
 Recommended order for implementation:
 
-1. Extract `aura-composites.css` as a separate optional layer.
+1. Extract `packages/composites/aura-composites.css` as a separate optional
+   layer.
 2. Add one visual composite for master-detail shell with no JavaScript.
 3. Implement `aura-master-detail` in `jsr:@aura/components` against the
    documented markup contract.

@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aura CSS Demo</title>
-    <link rel="stylesheet" href="../aura.css" />
-    <link rel="stylesheet" href="../aura-composites.css" />
+    <link rel="stylesheet" href="../packages/elements/aura.css" />
+    <link rel="stylesheet" href="../packages/composites/aura-composites.css" />
   </head>
   <body data-layout="container">
     <div data-layout="stack" data-gap="8">
@@ -13,8 +13,9 @@
         <div data-layout="stack" data-gap="2">
           <p><strong>Aura CSS</strong></p>
           <p>
-            Demoing the Elements layer from <code>aura.css</code> plus optional
-            Composites and Components files on top of it.
+            Demoing the Elements layer from
+            <code>packages/elements/aura.css</code> plus optional Composites and
+            Components files on top of it.
           </p>
         </div>
         <nav data-nav="inline">
@@ -83,12 +84,12 @@
 
           <pre><code>&lt;body data-brand="aura" data-theme="dark" data-contrast="more"&gt;...&lt;/body&gt;</code></pre>
           <pre>
-<code>&lt;link rel="stylesheet" href="aura.css"&gt;
-&lt;link rel="stylesheet" href="aura-composites.css"&gt; &lt;!-- optional composites layer --&gt;
-&lt;script type="module" src="aura-diagram.js"&gt;&lt;/script&gt; &lt;!-- optional diagram package --&gt;
-&lt;script type="module" src="aura-components.js"&gt;&lt;/script&gt; &lt;!-- optional components layer --&gt;
-&lt;link rel="stylesheet" href="aura-brand.css"&gt; &lt;!-- optional brand pack --&gt;
-&lt;link rel="stylesheet" href="aura-brand-editorial.css"&gt; &lt;!-- optional brand pack --&gt;</code></pre>
+<code>&lt;link rel="stylesheet" href="packages/elements/aura.css"&gt;
+&lt;link rel="stylesheet" href="packages/composites/aura-composites.css"&gt; &lt;!-- optional composites layer --&gt;
+&lt;script type="module" src="packages/diagram/browser.js"&gt;&lt;/script&gt; &lt;!-- optional diagram package --&gt;
+&lt;script type="module" src="packages/components/browser.js"&gt;&lt;/script&gt; &lt;!-- optional components layer --&gt;
+&lt;link rel="stylesheet" href="packages/brands/aura-brand.css"&gt; &lt;!-- optional brand pack --&gt;
+&lt;link rel="stylesheet" href="packages/brands/aura-brand-editorial.css"&gt; &lt;!-- optional brand pack --&gt;</code></pre>
         </section>
 
         <section
@@ -814,9 +815,10 @@
             </p>
             <p>
               This interactive diagram uses
-              <code>aura-diagram.js</code>. Arrow keys move spatially across the
-              grid; manual activation keeps selection separate from focus until
-              you press <kbd>Enter</kbd> or <kbd>Space</kbd>.
+              <code>packages/diagram/browser.js</code>. Arrow keys move
+              spatially across the grid; manual activation keeps selection
+              separate from focus until you press <kbd>Enter</kbd> or
+              <kbd>Space</kbd>.
             </p>
 
             <aura-diagram
@@ -1161,8 +1163,9 @@
             <h2>Pilot: master-detail</h2>
             <p>
               This is one split-layer prototype. The shell comes from
-              <code>aura-composites.css</code>; selection, focus, and panel
-              visibility come from <code>aura-components.js</code>.
+              <code>packages/composites/aura-composites.css</code>; selection,
+              focus, and panel visibility come from
+              <code>packages/components/browser.js</code>.
             </p>
           </div>
 
@@ -1805,8 +1808,8 @@
       </footer>
     </div>
 
-    <script type="module" src="../aura-diagram.js"></script>
-    <script type="module" src="../aura-components.js"></script>
+    <script type="module" src="../packages/diagram/browser.js"></script>
+    <script type="module" src="../packages/components/browser.js"></script>
     <script>
       (function () {
         const root = document.documentElement;
@@ -1826,8 +1829,8 @@
         const dialog = document.getElementById("capability-dialog");
         const smoothRegion = document.getElementById("smooth-region");
         const brandStylesheetByName = {
-          aura: "../aura-brand.css",
-          editorial: "../aura-brand-editorial.css",
+          aura: "../packages/brands/aura-brand.css",
+          editorial: "../packages/brands/aura-brand-editorial.css",
         };
 
         function ensureBrandStylesheet(brand) {
