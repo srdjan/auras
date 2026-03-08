@@ -20,6 +20,8 @@ Object.assign(globalThis, {
   Event: testWindow.Event,
 });
 
+await testWindow.happyDOM.whenAsyncComplete();
+
 const { registerAuraDiagram } = await import("../packages/diagram/mod.ts");
 
 registerAuraDiagram();

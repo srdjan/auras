@@ -4,11 +4,19 @@ const MASTER_SELECTOR = '[data-part="master"]';
 const DETAIL_SELECTOR = '[data-part="detail"]';
 const TABLIST_SELECTOR = '[data-part="tablist"]';
 const PANELS_SELECTOR = '[data-part="panels"]';
+const INPUT_SELECTOR = '[data-part="input"]';
 const TREE_SELECTOR = '[data-part="tree"]';
+const LISTBOX_SELECTOR = '[data-part="listbox"]';
+const OPTION_SELECTOR = '[data-part="option"][data-value]';
+const PRIMARY_PANE_SELECTOR = '[data-part="pane"][data-pane="primary"]';
 const ITEM_SELECTOR = '[data-part="item"][data-value]';
+const EMPTY_SELECTOR = '[data-part="empty"]';
 const NODE_SELECTOR = '[data-part="node"]';
+const SECONDARY_PANE_SELECTOR = '[data-part="pane"][data-pane="secondary"]';
+const SEPARATOR_SELECTOR = '[data-part="separator"]';
 const TOGGLE_SELECTOR = '[data-part="toggle"]';
 const GROUP_SELECTOR = '[data-part="group"]';
+const VALUE_INPUT_SELECTOR = 'input[data-part="value"]';
 
 let generatedIdSequence = 0;
 
@@ -396,7 +404,716 @@ class AuraSelectablePanelsElement extends HTMLElement {
   }
 }
 
+class AuraCombobox extends HTMLElement {
+  static observedAttributes = ["value", "activation", "open"];
+
+  constructor() {
+    super();
+
+    this._input = null;
+    this._toggle = null;
+    this._listbox = null;
+    this._emptyState = null;
+    this._valueInput = null;
+    this._entries = [];
+    this._entriesByValue = new Map();
+    this._activeValue = null;
+    this._isQuerying = false;
+    this._syncingValue = false;
+    this._syncingOpen = false;
+
+    this._handleClick = this._handleClick.bind(this);
+    this._handleKeydown = this._handleKeydown.bind(this);
+    this._handleInput = this._handleInput.bind(this);
+    this._handleFocusOut = this._handleFocusOut.bind(this);
+    this._handleMouseDown = this._handleMouseDown.bind(this);
+  }
+
+  connectedCallback() {
+    upgradeProperty(this, "value");
+    upgradeProperty(this, "activation");
+    upgradeProperty(this, "open");
+    this._connect();
+  }
+
+  disconnectedCallback() {
+    this._disconnect();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue === newValue || !this.isConnected) {
+      return;
+    }
+
+    if (name === "activation") {
+      this._normalizeActivationAttribute();
+      return;
+    }
+
+    if (name === "open") {
+      if (this._syncingOpen) {
+        return;
+      }
+
+      this._applyOpenState(this.hasAttribute("open"), {
+        restoreInput: !this.hasAttribute("open"),
+      });
+      return;
+    }
+
+    if (this._syncingValue) {
+      return;
+    }
+
+    if (
+      !this._selectFromAttribute({
+        dispatch: false,
+        closeListbox: false,
+        focusInput: false,
+        syncInput: true,
+      })
+    ) {
+      const firstEntry = this._entries[0];
+      if (firstEntry) {
+        this._select(firstEntry.value, {
+          dispatch: false,
+          closeListbox: false,
+          focusInput: false,
+          syncInput: true,
+        });
+      }
+    }
+  }
+
+  get value() {
+    return this.getAttribute("value");
+  }
+
+  set value(value) {
+    if (value == null || value === "") {
+      this.removeAttribute("value");
+      return;
+    }
+
+    this.setAttribute("value", String(value));
+  }
+
+  get activation() {
+    return normalizeActivation(this.getAttribute("activation"));
+  }
+
+  set activation(value) {
+    const normalizedValue = normalizeActivation(value);
+    if (normalizedValue === "auto") {
+      this.removeAttribute("activation");
+      return;
+    }
+
+    this.setAttribute("activation", normalizedValue);
+  }
+
+  get open() {
+    return this.hasAttribute("open");
+  }
+
+  set open(value) {
+    this.toggleAttribute("open", Boolean(value));
+  }
+
+  show(value) {
+    return this._select(value, {
+      dispatch: true,
+      closeListbox: true,
+      focusInput: false,
+      syncInput: true,
+    });
+  }
+
+  focusCurrent() {
+    this._input?.focus();
+  }
+
+  openListbox() {
+    if (!this._listbox || this.open) {
+      return false;
+    }
+
+    this._applyOpenState(true, { restoreInput: false });
+    this._syncOpenAttribute(true);
+    return true;
+  }
+
+  closeListbox() {
+    if (!this._listbox || !this.open) {
+      return false;
+    }
+
+    this._applyOpenState(false, { restoreInput: true });
+    this._syncOpenAttribute(false);
+    return true;
+  }
+
+  toggleListbox() {
+    return this.open ? this.closeListbox() : this.openListbox();
+  }
+
+  _connect() {
+    this._disconnect();
+
+    const input = this.querySelector(INPUT_SELECTOR);
+    const listbox = this.querySelector(LISTBOX_SELECTOR);
+
+    if (!(input instanceof HTMLInputElement) || !listbox) {
+      return;
+    }
+
+    const toggle = this.querySelector(TOGGLE_SELECTOR);
+    const emptyState = this.querySelector(EMPTY_SELECTOR);
+    const valueInput = this.querySelector(VALUE_INPUT_SELECTOR);
+
+    const panelsByValue = new Map();
+    for (const panel of this.querySelectorAll(PANEL_SELECTOR)) {
+      const value = panel.getAttribute("data-value");
+      if (value && !panelsByValue.has(value)) {
+        panelsByValue.set(value, panel);
+      }
+    }
+
+    const entries = [];
+    const seenValues = new Set();
+    for (const option of listbox.querySelectorAll(OPTION_SELECTOR)) {
+      const value = option.getAttribute("data-value");
+      if (!value || seenValues.has(value)) {
+        continue;
+      }
+      seenValues.add(value);
+
+      const label = option.getAttribute("data-label")?.trim() ||
+        option.textContent?.trim() ||
+        value;
+
+      entries.push({
+        value,
+        label,
+        searchText: label.toLocaleLowerCase(),
+        option,
+        panel: panelsByValue.get(value) ?? null,
+      });
+    }
+
+    if (entries.length === 0) {
+      return;
+    }
+
+    this._input = input;
+    this._toggle = toggle;
+    this._listbox = listbox;
+    this._emptyState = emptyState;
+    this._valueInput = valueInput instanceof HTMLInputElement
+      ? valueInput
+      : null;
+    this._entries = entries;
+    this._entriesByValue = new Map(
+      entries.map((entry) => [entry.value, entry]),
+    );
+    this._activeValue = null;
+    this._isQuerying = false;
+
+    this._applySemantics();
+
+    this.addEventListener("click", this._handleClick);
+    this.addEventListener("keydown", this._handleKeydown);
+    this.addEventListener("input", this._handleInput);
+    this.addEventListener("focusout", this._handleFocusOut);
+    this.addEventListener("mousedown", this._handleMouseDown);
+
+    this._normalizeActivationAttribute();
+
+    if (
+      !this._selectFromAttribute({
+        dispatch: false,
+        closeListbox: false,
+        focusInput: false,
+        syncInput: true,
+      })
+    ) {
+      this._select(entries[0].value, {
+        dispatch: false,
+        closeListbox: false,
+        focusInput: false,
+        syncInput: true,
+      });
+    }
+
+    this._applyOpenState(this.open, { restoreInput: !this.open });
+  }
+
+  _disconnect() {
+    this.removeEventListener("click", this._handleClick);
+    this.removeEventListener("keydown", this._handleKeydown);
+    this.removeEventListener("input", this._handleInput);
+    this.removeEventListener("focusout", this._handleFocusOut);
+    this.removeEventListener("mousedown", this._handleMouseDown);
+
+    this._input = null;
+    this._toggle = null;
+    this._listbox = null;
+    this._emptyState = null;
+    this._valueInput = null;
+    this._entries = [];
+    this._entriesByValue = new Map();
+    this._activeValue = null;
+    this._isQuerying = false;
+  }
+
+  _applySemantics() {
+    if (!this._input || !this._listbox) {
+      return;
+    }
+
+    const listboxId = ensureElementId(this._listbox, "aura-combobox-listbox");
+
+    this._input.setAttribute("role", "combobox");
+    this._input.setAttribute("aria-autocomplete", "list");
+    this._input.setAttribute("aria-controls", listboxId);
+    this._input.setAttribute("aria-expanded", "false");
+    this._input.setAttribute("autocomplete", "off");
+
+    this._listbox.setAttribute("role", "listbox");
+
+    for (const entry of this._entries) {
+      entry.option.setAttribute("role", "option");
+      entry.option.setAttribute(
+        "id",
+        ensureElementId(entry.option, "aura-combobox-option"),
+      );
+      entry.option.setAttribute("aria-selected", "false");
+
+      if (entry.panel) {
+        entry.panel.setAttribute("role", "region");
+        entry.panel.setAttribute("aria-labelledby", entry.option.id);
+      }
+    }
+
+    if (this._toggle) {
+      this._toggle.setAttribute("aria-controls", listboxId);
+      this._toggle.setAttribute("aria-expanded", "false");
+    }
+  }
+
+  _normalizeActivationAttribute() {
+    if (this.activation === "manual") {
+      this.setAttribute("activation", "manual");
+      return;
+    }
+
+    this.removeAttribute("activation");
+  }
+
+  _selectFromAttribute(options) {
+    const value = this.getAttribute("value");
+    if (!value) {
+      return false;
+    }
+
+    return this._select(value, options);
+  }
+
+  _select(value, options) {
+    const entry = this._entriesByValue.get(value);
+    if (!entry) {
+      return false;
+    }
+
+    const previousValue = this.getAttribute("value");
+    const didChange = previousValue !== entry.value;
+
+    for (const currentEntry of this._entries) {
+      const isSelected = currentEntry === entry;
+
+      currentEntry.option.toggleAttribute("data-selected", isSelected);
+      currentEntry.option.setAttribute("aria-selected", String(isSelected));
+
+      if (currentEntry.panel) {
+        currentEntry.panel.hidden = !isSelected;
+        currentEntry.panel.toggleAttribute("data-active", isSelected);
+      }
+    }
+
+    if (this.getAttribute("value") !== entry.value) {
+      this._syncingValue = true;
+      this.setAttribute("value", entry.value);
+      this._syncingValue = false;
+    }
+
+    if (this._valueInput) {
+      this._valueInput.value = entry.value;
+    }
+
+    if (options.syncInput) {
+      this._commitSelectedLabel(entry);
+    }
+
+    if (
+      !this._listbox?.hidden &&
+      this._getVisibleEntries().some((currentEntry) => currentEntry === entry)
+    ) {
+      this._setActiveOption(entry.value);
+    }
+
+    if (options.closeListbox) {
+      this.closeListbox();
+    }
+
+    if (options.focusInput) {
+      this._input?.focus();
+    }
+
+    if (options.dispatch && didChange) {
+      this.dispatchEvent(
+        new CustomEvent("aura-change", {
+          detail: {
+            value: entry.value,
+            option: entry.option,
+            input: this._input,
+            panel: entry.panel,
+          },
+          bubbles: true,
+        }),
+      );
+    }
+
+    return true;
+  }
+
+  _commitSelectedLabel(entry) {
+    if (!this._input) {
+      return;
+    }
+
+    this._input.value = entry.label;
+    this._isQuerying = false;
+  }
+
+  _restoreSelectedLabel() {
+    const selectedEntry = this.value
+      ? this._entriesByValue.get(this.value)
+      : null;
+    if (selectedEntry) {
+      this._commitSelectedLabel(selectedEntry);
+      return;
+    }
+
+    if (this._input) {
+      this._input.value = "";
+    }
+    this._isQuerying = false;
+  }
+
+  _syncOpenAttribute(open) {
+    if (this.open === open) {
+      return;
+    }
+
+    this._syncingOpen = true;
+    this.toggleAttribute("open", open);
+    this._syncingOpen = false;
+  }
+
+  _applyOpenState(open, options) {
+    if (!this._input || !this._listbox) {
+      return;
+    }
+
+    if (!open && options.restoreInput) {
+      this._restoreSelectedLabel();
+    }
+
+    this._listbox.hidden = !open;
+    this._input.setAttribute("aria-expanded", String(open));
+    this.toggleAttribute(
+      "data-empty",
+      open && this._getVisibleEntries().length === 0,
+    );
+
+    if (this._toggle) {
+      this._toggle.setAttribute("aria-expanded", String(open));
+    }
+
+    this._syncOptionVisibility();
+    this._syncEmptyState(open);
+
+    if (!open) {
+      this._setActiveOption(null);
+      return;
+    }
+
+    const visibleEntries = this._getVisibleEntries();
+    const activeEntry =
+      visibleEntries.find((entry) => entry.value === this._activeValue) ||
+      (this.value
+        ? visibleEntries.find((entry) => entry.value === this.value)
+        : null) ||
+      visibleEntries[0] ||
+      null;
+
+    this._setActiveOption(activeEntry?.value ?? null);
+  }
+
+  _syncOptionVisibility() {
+    for (const entry of this._entries) {
+      entry.option.hidden = !this._isEntryVisible(entry);
+    }
+  }
+
+  _syncEmptyState(open) {
+    if (!this._emptyState) {
+      return;
+    }
+
+    this._emptyState.hidden = !(open && this._getVisibleEntries().length === 0);
+  }
+
+  _isEntryVisible(entry) {
+    if (this._listbox?.hidden ?? !this.open) {
+      return true;
+    }
+
+    if (!this._isQuerying) {
+      return true;
+    }
+
+    const query = this._input?.value.trim().toLocaleLowerCase() ?? "";
+    if (query === "") {
+      return true;
+    }
+
+    return entry.searchText.includes(query);
+  }
+
+  _getVisibleEntries() {
+    return this._entries.filter((entry) => this._isEntryVisible(entry));
+  }
+
+  _setActiveOption(value) {
+    this._activeValue = value;
+
+    for (const entry of this._entries) {
+      entry.option.toggleAttribute("data-active", entry.value === value);
+    }
+
+    if (!this._input) {
+      return;
+    }
+
+    if (!value) {
+      this._input.removeAttribute("aria-activedescendant");
+      return;
+    }
+
+    const entry = this._entriesByValue.get(value);
+    if (!entry) {
+      this._input.removeAttribute("aria-activedescendant");
+      return;
+    }
+
+    this._input.setAttribute("aria-activedescendant", entry.option.id);
+  }
+
+  _moveActive(direction) {
+    const visibleEntries = this._getVisibleEntries();
+    if (visibleEntries.length === 0) {
+      this._setActiveOption(null);
+      this._syncEmptyState(this.open);
+      return;
+    }
+
+    const currentIndex = visibleEntries.findIndex(
+      (entry) => entry.value === this._activeValue,
+    );
+    const fallbackIndex = direction > 0 ? 0 : visibleEntries.length - 1;
+    const nextIndex = currentIndex < 0 ? fallbackIndex : Math.max(
+      0,
+      Math.min(visibleEntries.length - 1, currentIndex + direction),
+    );
+    const nextEntry = visibleEntries[nextIndex];
+
+    if (!nextEntry) {
+      return;
+    }
+
+    this._setActiveOption(nextEntry.value);
+
+    if (this.activation === "auto") {
+      this._select(nextEntry.value, {
+        dispatch: true,
+        closeListbox: false,
+        focusInput: false,
+        syncInput: !this._isQuerying,
+      });
+    }
+  }
+
+  _handleMouseDown(event) {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      return;
+    }
+
+    const option = target.closest(OPTION_SELECTOR);
+    if (option instanceof HTMLElement && this.contains(option)) {
+      event.preventDefault();
+    }
+  }
+
+  _handleClick(event) {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      return;
+    }
+
+    const toggle = target.closest(TOGGLE_SELECTOR);
+    if (toggle instanceof HTMLElement && this.contains(toggle)) {
+      event.preventDefault();
+      this.toggleListbox();
+      this._input?.focus();
+      return;
+    }
+
+    const input = target.closest(INPUT_SELECTOR);
+    if (input instanceof HTMLInputElement && this.contains(input)) {
+      this.openListbox();
+      return;
+    }
+
+    const option = target.closest(OPTION_SELECTOR);
+    if (!(option instanceof HTMLElement) || !this.contains(option)) {
+      return;
+    }
+
+    const value = option.getAttribute("data-value");
+    if (!value || option.hidden) {
+      return;
+    }
+
+    this._select(value, {
+      dispatch: true,
+      closeListbox: true,
+      focusInput: true,
+      syncInput: true,
+    });
+  }
+
+  _handleInput(event) {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement) || target !== this._input) {
+      return;
+    }
+
+    this._isQuerying = target.value.trim() !== "";
+    this.openListbox();
+    this._syncOptionVisibility();
+    this._syncEmptyState(true);
+
+    const visibleEntries = this._getVisibleEntries();
+    const nextActive =
+      visibleEntries.find((entry) => entry.value === this._activeValue) ||
+      visibleEntries[0] ||
+      null;
+
+    this._setActiveOption(nextActive?.value ?? null);
+  }
+
+  _handleKeydown(event) {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement) || target !== this._input) {
+      return;
+    }
+
+    switch (event.key) {
+      case "ArrowDown": {
+        event.preventDefault();
+
+        if (!this.open) {
+          this.openListbox();
+          const visibleEntries = this._getVisibleEntries();
+          const selectedEntry = this.value
+            ? this._entriesByValue.get(this.value)
+            : null;
+          const nextEntry =
+            (selectedEntry && visibleEntries.includes(selectedEntry)
+              ? selectedEntry
+              : null) || visibleEntries[0];
+          this._setActiveOption(nextEntry?.value ?? null);
+          return;
+        }
+
+        this._moveActive(1);
+        return;
+      }
+      case "ArrowUp": {
+        event.preventDefault();
+
+        if (!this.open) {
+          this.openListbox();
+          const visibleEntries = this._getVisibleEntries();
+          const selectedEntry = this.value
+            ? this._entriesByValue.get(this.value)
+            : null;
+          const nextEntry =
+            (selectedEntry && visibleEntries.includes(selectedEntry)
+              ? selectedEntry
+              : null) || visibleEntries[visibleEntries.length - 1];
+          this._setActiveOption(nextEntry?.value ?? null);
+          return;
+        }
+
+        this._moveActive(-1);
+        return;
+      }
+      case "Enter": {
+        if (!this.open || !this._activeValue) {
+          return;
+        }
+
+        event.preventDefault();
+        this._select(this._activeValue, {
+          dispatch: true,
+          closeListbox: true,
+          focusInput: true,
+          syncInput: true,
+        });
+        return;
+      }
+      case "Escape": {
+        if (!this.open) {
+          return;
+        }
+
+        event.preventDefault();
+        this.closeListbox();
+        return;
+      }
+      default:
+        return;
+    }
+  }
+
+  _handleFocusOut() {
+    queueMicrotask(() => {
+      const activeElement = document.activeElement;
+      if (activeElement instanceof Node && this.contains(activeElement)) {
+        return;
+      }
+
+      this.closeListbox();
+    });
+  }
+}
+
+const AURA_COMBOBOX_TAG_NAME = "aura-combobox";
 const AURA_MASTER_DETAIL_TAG_NAME = "aura-master-detail";
+const AURA_SPLITTER_TAG_NAME = "aura-splitter";
 const AURA_TREE_TAG_NAME = "aura-tree";
 const AURA_TABS_TAG_NAME = "aura-tabs";
 
@@ -1177,6 +1894,404 @@ class AuraTree extends HTMLElement {
   }
 }
 
+class AuraSplitter extends HTMLElement {
+  static observedAttributes = ["value", "orientation", "min", "max", "step"];
+
+  constructor() {
+    super();
+
+    this._primaryPane = null;
+    this._secondaryPane = null;
+    this._separator = null;
+    this._value = 50;
+    this._dragging = false;
+    this._syncingValue = false;
+    this._syncingOrientation = false;
+
+    this._handleMouseDown = this._handleMouseDown.bind(this);
+    this._handleMouseMove = this._handleMouseMove.bind(this);
+    this._handleMouseUp = this._handleMouseUp.bind(this);
+    this._handleKeydown = this._handleKeydown.bind(this);
+  }
+
+  connectedCallback() {
+    upgradeProperty(this, "value");
+    upgradeProperty(this, "orientation");
+    upgradeProperty(this, "min");
+    upgradeProperty(this, "max");
+    upgradeProperty(this, "step");
+    this._connect();
+  }
+
+  disconnectedCallback() {
+    this._disconnect();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue === newValue || !this.isConnected) {
+      return;
+    }
+
+    if (name === "orientation") {
+      if (this._syncingOrientation) {
+        return;
+      }
+
+      this._syncOrientationAttribute();
+      this._applyState({ dispatch: false });
+      return;
+    }
+
+    if (name === "value" && this._syncingValue) {
+      return;
+    }
+
+    this._applyState({ dispatch: false });
+  }
+
+  get value() {
+    return this._value;
+  }
+
+  set value(value) {
+    if (value == null || value === "") {
+      this.removeAttribute("value");
+      return;
+    }
+
+    this.setAttribute("value", String(value));
+  }
+
+  get orientation() {
+    return normalizeSplitterOrientation(this.getAttribute("orientation"));
+  }
+
+  set orientation(value) {
+    if (normalizeSplitterOrientation(value) === "horizontal") {
+      this.removeAttribute("orientation");
+      return;
+    }
+
+    this.setAttribute("orientation", "vertical");
+  }
+
+  get min() {
+    return this._getBounds().min;
+  }
+
+  get max() {
+    return this._getBounds().max;
+  }
+
+  get step() {
+    return this._getBounds().step;
+  }
+
+  setPosition(value) {
+    return this._setValue(value, { dispatch: true });
+  }
+
+  focusHandle() {
+    this._separator?.focus();
+  }
+
+  _connect() {
+    this._disconnect();
+
+    const primaryPane = this.querySelector(PRIMARY_PANE_SELECTOR);
+    const secondaryPane = this.querySelector(SECONDARY_PANE_SELECTOR);
+    const separator = this.querySelector(SEPARATOR_SELECTOR);
+
+    if (!primaryPane || !secondaryPane || !separator) {
+      return;
+    }
+
+    this._primaryPane = primaryPane;
+    this._secondaryPane = secondaryPane;
+    this._separator = separator;
+
+    this._applySemantics();
+    separator.addEventListener("mousedown", this._handleMouseDown);
+    separator.addEventListener("keydown", this._handleKeydown);
+
+    this._syncOrientationAttribute();
+    this._applyState({ dispatch: false });
+  }
+
+  _disconnect() {
+    this._stopDragging();
+
+    if (this._separator) {
+      this._separator.removeEventListener("mousedown", this._handleMouseDown);
+      this._separator.removeEventListener("keydown", this._handleKeydown);
+    }
+
+    this._primaryPane = null;
+    this._secondaryPane = null;
+    this._separator = null;
+    this._dragging = false;
+    this.removeAttribute("data-dragging");
+  }
+
+  _applySemantics() {
+    if (!this._primaryPane || !this._secondaryPane || !this._separator) {
+      return;
+    }
+
+    const primaryId = ensureElementId(this._primaryPane, "aura-splitter-pane");
+    const secondaryId = ensureElementId(
+      this._secondaryPane,
+      "aura-splitter-pane",
+    );
+
+    this._separator.setAttribute("role", "separator");
+    this._separator.setAttribute(
+      "aria-controls",
+      `${primaryId} ${secondaryId}`,
+    );
+
+    if (!this._separator.hasAttribute("tabindex")) {
+      this._separator.tabIndex = 0;
+    }
+  }
+
+  _syncOrientationAttribute() {
+    const orientation = this.orientation;
+
+    this._syncingOrientation = true;
+    if (orientation === "horizontal") {
+      this.removeAttribute("orientation");
+    } else {
+      this.setAttribute("orientation", "vertical");
+    }
+    this._syncingOrientation = false;
+  }
+
+  _applyState(options) {
+    if (!this._separator) {
+      return;
+    }
+
+    const nextValue = this._resolveValue();
+    this._setValue(nextValue, options);
+
+    const orientation = this.orientation;
+    this._separator.setAttribute("aria-orientation", orientation);
+    this._separator.setAttribute("aria-valuemin", String(this.min));
+    this._separator.setAttribute("aria-valuemax", String(this.max));
+    this._separator.setAttribute("aria-valuenow", String(this._value));
+  }
+
+  _resolveValue() {
+    const bounds = this._getBounds();
+    return clampSplitterPercent(
+      parseSplitterNumber(this.getAttribute("value"), 50),
+      bounds.min,
+      bounds.max,
+    );
+  }
+
+  _getBounds() {
+    const min = clampSplitterPercent(
+      parseSplitterNumber(this.getAttribute("min"), 20),
+      0,
+      95,
+    );
+    const max = clampSplitterPercent(
+      parseSplitterNumber(this.getAttribute("max"), 80),
+      min + 1,
+      100,
+    );
+    const step = clampSplitterPercent(
+      parseSplitterNumber(this.getAttribute("step"), 5),
+      1,
+      25,
+    );
+
+    return { min, max, step };
+  }
+
+  _setValue(nextValue, options) {
+    if (!this._separator) {
+      return false;
+    }
+
+    const bounds = this._getBounds();
+    const normalizedValue = clampSplitterPercent(
+      nextValue,
+      bounds.min,
+      bounds.max,
+    );
+    const didChange = normalizedValue !== this._value;
+
+    this._value = normalizedValue;
+    this.style.setProperty("--splitter-primary-size", `${normalizedValue}%`);
+
+    const currentAttribute = this.getAttribute("value");
+    const nextAttribute = String(normalizedValue);
+    if (currentAttribute !== nextAttribute) {
+      this._syncingValue = true;
+      this.setAttribute("value", nextAttribute);
+      this._syncingValue = false;
+    }
+
+    this._separator.setAttribute("aria-valuemin", String(bounds.min));
+    this._separator.setAttribute("aria-valuemax", String(bounds.max));
+    this._separator.setAttribute("aria-valuenow", nextAttribute);
+
+    if (options.dispatch && didChange) {
+      this.dispatchEvent(
+        new CustomEvent("aura-change", {
+          detail: {
+            value: normalizedValue,
+            separator: this._separator,
+            primaryPane: this._primaryPane,
+            secondaryPane: this._secondaryPane,
+          },
+          bubbles: true,
+        }),
+      );
+    }
+
+    return didChange;
+  }
+
+  _handleMouseDown(event) {
+    if (!(event.currentTarget instanceof HTMLElement) || event.button !== 0) {
+      return;
+    }
+
+    event.preventDefault();
+    this._dragging = true;
+    this.setAttribute("data-dragging", "");
+
+    document.addEventListener("mousemove", this._handleMouseMove);
+    document.addEventListener("mouseup", this._handleMouseUp);
+  }
+
+  _handleMouseMove(event) {
+    if (!this._dragging) {
+      return;
+    }
+
+    this._setValue(this._positionFromPointer(event), { dispatch: true });
+  }
+
+  _handleMouseUp() {
+    this._stopDragging();
+  }
+
+  _stopDragging() {
+    if (!this._dragging) {
+      return;
+    }
+
+    this._dragging = false;
+    this.removeAttribute("data-dragging");
+    document.removeEventListener("mousemove", this._handleMouseMove);
+    document.removeEventListener("mouseup", this._handleMouseUp);
+  }
+
+  _positionFromPointer(event) {
+    const rect = this.getBoundingClientRect();
+
+    if (this.orientation === "vertical") {
+      const offset = event.clientY - rect.top;
+      return (offset / rect.height) * 100;
+    }
+
+    const offset = event.clientX - rect.left;
+    return (offset / rect.width) * 100;
+  }
+
+  _handleKeydown(event) {
+    if (!(event.currentTarget instanceof HTMLElement) || !this._separator) {
+      return;
+    }
+
+    const step = this.step;
+
+    switch (event.key) {
+      case "ArrowLeft":
+        if (this.orientation !== "horizontal") {
+          return;
+        }
+        event.preventDefault();
+        this._setValue(this._value - step, { dispatch: true });
+        return;
+      case "ArrowRight":
+        if (this.orientation !== "horizontal") {
+          return;
+        }
+        event.preventDefault();
+        this._setValue(this._value + step, { dispatch: true });
+        return;
+      case "ArrowUp":
+        if (this.orientation !== "vertical") {
+          return;
+        }
+        event.preventDefault();
+        this._setValue(this._value - step, { dispatch: true });
+        return;
+      case "ArrowDown":
+        if (this.orientation !== "vertical") {
+          return;
+        }
+        event.preventDefault();
+        this._setValue(this._value + step, { dispatch: true });
+        return;
+      case "Home":
+        event.preventDefault();
+        this._setValue(this.min, { dispatch: true });
+        return;
+      case "End":
+        event.preventDefault();
+        this._setValue(this.max, { dispatch: true });
+        return;
+      default:
+        return;
+    }
+  }
+}
+
+function normalizeSplitterOrientation(value) {
+  return value === "vertical" ? "vertical" : "horizontal";
+}
+
+function parseSplitterNumber(value, fallbackValue) {
+  if (value == null || value === "") {
+    return fallbackValue;
+  }
+
+  const parsedValue = Number(value);
+
+  if (!Number.isFinite(parsedValue)) {
+    return fallbackValue;
+  }
+
+  return parsedValue;
+}
+
+function clampSplitterPercent(value, min, max) {
+  return Math.round(Math.min(max, Math.max(min, value)));
+}
+
+function registerAuraCombobox() {
+  if (!customElements.get(AURA_COMBOBOX_TAG_NAME)) {
+    customElements.define(AURA_COMBOBOX_TAG_NAME, AuraCombobox);
+  }
+
+  return AuraCombobox;
+}
+
+function registerAuraSplitter() {
+  if (!customElements.get(AURA_SPLITTER_TAG_NAME)) {
+    customElements.define(AURA_SPLITTER_TAG_NAME, AuraSplitter);
+  }
+
+  return AuraSplitter;
+}
+
 function registerAuraMasterDetail() {
   if (!customElements.get(AURA_MASTER_DETAIL_TAG_NAME)) {
     customElements.define(AURA_MASTER_DETAIL_TAG_NAME, AuraMasterDetail);
@@ -1202,7 +2317,9 @@ function registerAuraTree() {
 }
 
 function registerAuraComponents() {
+  registerAuraCombobox();
   registerAuraMasterDetail();
+  registerAuraSplitter();
   registerAuraTree();
   registerAuraTabs();
 }
@@ -1210,14 +2327,20 @@ function registerAuraComponents() {
 registerAuraComponents();
 
 export {
+  AURA_COMBOBOX_TAG_NAME,
   AURA_MASTER_DETAIL_TAG_NAME,
+  AURA_SPLITTER_TAG_NAME,
   AURA_TABS_TAG_NAME,
   AURA_TREE_TAG_NAME,
+  AuraCombobox,
   AuraMasterDetail,
+  AuraSplitter,
   AuraTabs,
   AuraTree,
+  registerAuraCombobox,
   registerAuraComponents,
   registerAuraMasterDetail,
+  registerAuraSplitter,
   registerAuraTabs,
   registerAuraTree,
 };

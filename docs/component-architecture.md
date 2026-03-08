@@ -81,6 +81,7 @@ Examples:
 - diagram controller
 - master-detail controller
 - light data grid
+- splitter
 - tree
 - tabs
 - combobox / command palette
@@ -110,7 +111,9 @@ Recommended package boundaries:
 /packages/components/README.md
 /packages/components/mod.ts
 /packages/components/src/shared/selectable-panels.ts
+/packages/components/src/combobox.ts
 /packages/components/src/master-detail.ts
+/packages/components/src/splitter.ts
 /packages/components/src/tree.ts
 /packages/components/src/tabs.ts
 
@@ -152,6 +155,7 @@ Examples:
 - `master-detail` layout shell: composites
 - `master-detail` selection controller: components
 - `data-grid`: components
+- `splitter`: components
 - `tree`: components
 
 ## Specialized Packages
@@ -207,14 +211,15 @@ Implementation detail that should stay private:
 ## Pilot Components
 
 The first behavioral pilot was `aura-master-detail`. The second is `aura-tabs`.
-The third is `aura-tree`.
+The third is `aura-tree`. The fourth is `aura-combobox`. The fifth is
+`aura-splitter`.
 
 Why these first:
 
 - common in real apps
 - useful without becoming framework-sized
 - accessibility is tractable
-- lower complexity than grid or combobox
+- lower complexity than grid or command palette
 - works well with Aura's existing layout and card primitives
 
 ## `aura-master-detail` v1 Scope
@@ -527,6 +532,132 @@ Host API:
 - `toggle(value: string): boolean`
 - `aura-change`
 
+## `aura-combobox` v1 Scope
+
+The fourth pilot should do exactly this:
+
+- coordinate one selected value in an authored local option list
+- filter visible options from the current input text
+- manage one active option for keyboard navigation
+- support Up, Down, Enter, Escape, click selection, and popup toggle
+- optionally reveal a matching linked panel
+
+It should not do this in v1:
+
+- async loading
+- remote data sources
+- fuzzy ranking
+- multi-select
+- creatable entries
+- command-palette actions
+
+Suggested authoring model:
+
+```html
+<aura-combobox value="elements" activation="manual">
+  <label for="component-search">Search components</label>
+
+  <div data-part="control">
+    <input id="component-search" data-part="input" type="text" />
+    <button
+      type="button"
+      data-part="toggle"
+      aria-label="Toggle component options"
+    >
+    </button>
+    <input type="hidden" data-part="value" name="component" />
+  </div>
+
+  <ul data-part="listbox">
+    <li data-part="option" data-value="elements">Elements</li>
+    <li data-part="option" data-value="master-detail">Master-detail</li>
+    <li data-part="option" data-value="tabs">Tabs</li>
+  </ul>
+
+  <p data-part="empty" hidden>No matching components.</p>
+
+  <section data-part="panels">
+    <article data-part="panel" data-value="elements">...</article>
+    <article data-part="panel" data-value="master-detail" hidden>...</article>
+    <article data-part="panel" data-value="tabs" hidden>...</article>
+  </section>
+</aura-combobox>
+```
+
+Required parts:
+
+- one host: `<aura-combobox>`
+- one text input: `[data-part="input"]`
+- one popup listbox: `[data-part="listbox"]`
+- one or more options: `[data-part="option"][data-value]`
+- optional toggle button: `[data-part="toggle"]`
+- optional hidden value input: `input[data-part="value"]`
+- optional empty-state note: `[data-part="empty"]`
+- optional linked panels: `[data-part="panel"][data-value]`
+
+Host API:
+
+- `value`
+- `activation="auto|manual"`
+- `open`
+- `show(value: string): void`
+- `focusCurrent(): void`
+- `openListbox(): boolean`
+- `closeListbox(): boolean`
+- `toggleListbox(): boolean`
+- `aura-change`
+
+## `aura-splitter` v1 Scope
+
+The fifth pilot should do exactly this:
+
+- coordinate a percent-based split between two authored panes
+- expose one keyboard-focusable separator with resize semantics
+- support mouse drag on the separator
+- support Left and Right or Up and Down depending on orientation
+- support Home and End to jump to min and max
+
+It should not do this in v1:
+
+- more than two panes
+- nested splitters owned by one host
+- persistence beyond initial host attributes
+- snap points beyond min, max, and step
+- collapse buttons or hidden-pane modes
+
+Suggested authoring model:
+
+```html
+<aura-splitter value="42" min="30" max="70" step="5">
+  <section data-part="pane" data-pane="primary">...</section>
+  <button
+    type="button"
+    data-part="separator"
+    aria-label="Resize panes"
+  >
+  </button>
+  <section data-part="pane" data-pane="secondary">...</section>
+</aura-splitter>
+```
+
+Required parts:
+
+- one host: `<aura-splitter>`
+- one primary pane: `[data-part="pane"][data-pane="primary"]`
+- one separator: `[data-part="separator"]`
+- one secondary pane: `[data-part="pane"][data-pane="secondary"]`
+
+Host API:
+
+- `value`
+- `orientation="horizontal|vertical"`
+- `min`
+- `max`
+- `step`
+- `setPosition(value: number): boolean`
+- `focusHandle(): void`
+- `aura-change`
+
 ## Build Order
 
 Recommended order for implementation:
@@ -538,14 +669,17 @@ Recommended order for implementation:
 4. Validate the shared host API with `aura-tabs`.
 5. Extend the same package with hierarchical selection and expansion in
    `aura-tree`.
-6. Only then move on to combobox or grid.
+6. Extend the same package with local filtering and popup state in
+   `aura-combobox`.
+7. Extend the same package with two-pane resize behavior in `aura-splitter`.
+8. Only then move on to listbox or grid.
 
 ## Follow-On Components
 
 After the pilot is stable:
 
 - `aura-data-grid`
-- `aura-combobox`
+- `aura-listbox`
 
 Only add them if they preserve the same rules:
 

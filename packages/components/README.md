@@ -4,11 +4,15 @@ Light-DOM interactive components for Aura.
 
 Current exports:
 
+- `AuraCombobox`
 - `AuraMasterDetail`
+- `AuraSplitter`
 - `AuraTree`
 - `AuraTabs`
+- `registerAuraCombobox()`
 - `registerAuraComponents()`
 - `registerAuraMasterDetail()`
+- `registerAuraSplitter()`
 - `registerAuraTree()`
 - `registerAuraTabs()`
 

@@ -16,8 +16,11 @@ Object.assign(globalThis, {
   Event: testWindow.Event,
 });
 
-const { registerAuraComponents } =
-  await import("../packages/components/mod.ts");
+await testWindow.happyDOM.whenAsyncComplete();
+
+const { registerAuraComponents } = await import(
+  "../packages/components/mod.ts"
+);
 
 registerAuraComponents();
 

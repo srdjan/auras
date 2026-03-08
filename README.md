@@ -75,8 +75,12 @@ The repo now includes a working prototype of the next layers:
   - Deno-first Components package surface
 - `aura-diagram`
   - spatial node selection for interactive diagrams
+- `aura-combobox`
+  - local-option combobox with filtering and optional linked panels
 - `aura-master-detail`
   - selection controller for master-detail views
+- `aura-splitter`
+  - two-pane splitter with keyboard and pointer resize
 - `aura-tree`
   - hierarchical selection controller with expansion and optional panels
 - `aura-tabs`
@@ -402,6 +406,77 @@ panels. It does not do auto-layout or edge routing.
 Use `activation="manual"` when arrow keys should move focus without changing the
 open panel until the user presses `Enter` or `Space`.
 
+### Combobox pilot
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-components.js"></script>
+
+<aura-combobox data-ui="combobox" value="elements" activation="manual">
+  <label for="component-search">Search components</label>
+
+  <div data-part="control">
+    <input
+      id="component-search"
+      data-part="input"
+      type="text"
+      placeholder="Type to filter"
+    />
+    <button
+      type="button"
+      data-part="toggle"
+      aria-label="Toggle component options"
+    >
+    </button>
+    <input type="hidden" data-part="value" name="component" />
+  </div>
+
+  <ul data-part="listbox">
+    <li data-part="option" data-value="elements">Elements</li>
+    <li data-part="option" data-value="master-detail">Master-detail</li>
+    <li data-part="option" data-value="tabs">Tabs</li>
+  </ul>
+
+  <p data-part="empty" hidden>No matching components.</p>
+
+  <section data-part="panels">
+    <article data-part="panel" data-value="elements">...</article>
+    <article data-part="panel" data-value="master-detail" hidden>...</article>
+    <article data-part="panel" data-value="tabs" hidden>...</article>
+  </section>
+</aura-combobox>
+```
+
+`aura-combobox` keeps the input, popup listbox, and authored options in light
+DOM. It supports local filtering, single selection, `activation="manual"` when
+arrow keys should move the active option before `Enter`, and optional linked
+panels that follow the selected value.
+
+### Splitter pilot
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-components.js"></script>
+
+<aura-splitter data-ui="splitter" value="42" min="30" max="70" step="5">
+  <section data-part="pane" data-pane="primary">...</section>
+  <button
+    type="button"
+    data-part="separator"
+    aria-label="Resize panes"
+  >
+  </button>
+  <section data-part="pane" data-pane="secondary">...</section>
+</aura-splitter>
+```
+
+`aura-splitter` keeps both panes and the separator in authored light DOM. It
+exposes the primary pane size through the host `value` attribute, supports
+keyboard resize on the separator, supports pointer drag, and keeps layout
+styling in the Composites layer.
+
 ### Tree pilot
 
 ```html
@@ -631,6 +706,8 @@ Aura targets modern evergreen browsers. Key features and their support:
 | `aura-diagram.js`                       | Browser-friendly no-build entrypoint for `aura-diagram`                  |
 | `aura-components.js`                    | Browser-friendly no-build Components entrypoint                          |
 | `tests/aura-components.browser.test.js` | Headless browser smoke test for the optional packages and keyboard flows |
+| `tests/aura-combobox.test.js`           | Deno behavioral coverage for `aura-combobox`                             |
+| `tests/aura-splitter.test.js`           | Deno behavioral coverage for `aura-splitter`                             |
 | `tests/aura-diagram.test.js`            | Deno behavioral coverage for `aura-diagram`                              |
 | `tests/aura-components.test.js`         | Deno behavioral coverage for the Components package                      |
 | `tests/aura-tree.test.js`               | Deno behavioral coverage for `aura-tree`                                 |
@@ -642,6 +719,8 @@ Aura targets modern evergreen browsers. Key features and their support:
 | `packages/components/jsr.json`          | JSR package metadata for `@aura/components`                              |
 | `packages/components/README.md`         | Package-level usage notes                                                |
 | `packages/components/src/`              | Shared logic plus per-component runtime modules                          |
+| `packages/components/src/combobox.ts`   | Combobox runtime for `aura-combobox`                                     |
+| `packages/components/src/splitter.ts`   | Splitter runtime for `aura-splitter`                                     |
 | `packages/components/src/tree.ts`       | Tree runtime for `aura-tree`                                             |
 | `aura-brand.css`                        | Sample brand pack that activates with `data-brand="aura"`                |
 | `aura-brand-editorial.css`              | Sample editorial brand pack                                              |

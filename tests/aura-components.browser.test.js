@@ -86,17 +86,39 @@ Deno.test(
 
         await page.goto(`${origin}/showcase/index.html`);
 
+        await page.waitForSelector("aura-combobox");
         await page.waitForSelector("aura-diagram");
+        await page.waitForSelector("aura-splitter");
         await page.waitForSelector("aura-tree");
         await page.waitForSelector("aura-master-detail");
         await page.waitForSelector("aura-tabs");
 
+        await expectText(page, "#combobox-selection", "elements");
+        await expectText(page, "#manual-combobox-selection", "elements");
         await expectText(page, "#diagram-selection", "received");
+        await expectText(page, "#splitter-value", "42");
         await expectText(page, "#tree-selection", "master-detail");
         await expectText(page, "#master-detail-selection", "elements");
         await expectText(page, "#manual-master-detail-selection", "elements");
         await expectText(page, "#tabs-selection", "overview");
         await expectText(page, "#manual-tabs-selection", "overview");
+
+        await page.locator('#combobox-auto-pilot [data-part="input"]').focus();
+        await page.keyboard.press("ArrowDown");
+        await page.keyboard.press("ArrowDown");
+        await expectText(page, "#combobox-selection", "master-detail");
+
+        await page.locator('#combobox-manual-pilot [data-part="input"]')
+          .focus();
+        await page.keyboard.press("ArrowDown");
+        await page.keyboard.press("ArrowDown");
+        await expectText(page, "#manual-combobox-selection", "elements");
+        await page.keyboard.press("Enter");
+        await expectText(page, "#manual-combobox-selection", "master-detail");
+
+        await page.locator('#splitter-pilot [data-part="separator"]').focus();
+        await page.keyboard.press("ArrowRight");
+        await expectText(page, "#splitter-value", "47");
 
         await page
           .locator('#diagram-pilot [data-part="node"][data-value="received"]')

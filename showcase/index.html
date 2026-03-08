@@ -23,6 +23,8 @@
             <li><a href="#headless">Headless</a></li>
             <li><a href="#layout">Layout</a></li>
             <li><a href="#components">Components</a></li>
+            <li><a href="#combobox">Combobox</a></li>
+            <li><a href="#splitter">Splitter</a></li>
             <li><a href="#diagram">Diagram</a></li>
             <li><a href="#tree">Tree</a></li>
             <li><a href="#pilot">Pilot</a></li>
@@ -388,6 +390,324 @@
               <button type="button" data-variant="solid">Primary action</button>
             </div>
           </dialog>
+        </section>
+
+        <section
+          id="combobox"
+          data-surface="card"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <div>
+            <h2>Pilot: combobox</h2>
+            <p>
+              <code>aura-combobox</code> keeps the authored input and option
+              list in light DOM, then adds filtering, active option state,
+              keyboard selection, and optional linked panels.
+            </p>
+          </div>
+
+          <div data-layout="grid" data-gap="4" data-grid-min="md">
+            <section data-layout="stack" data-gap="3">
+              <p>
+                <strong>Auto activation:</strong>
+                <code id="combobox-selection">elements</code>
+              </p>
+
+              <aura-combobox
+                id="combobox-auto-pilot"
+                data-ui="combobox"
+                value="elements"
+              >
+                <label for="component-search-auto">Search components</label>
+
+                <div data-part="control">
+                  <input
+                    id="component-search-auto"
+                    data-part="input"
+                    type="text"
+                    placeholder="Type to filter components"
+                  />
+                  <button
+                    type="button"
+                    data-part="toggle"
+                    aria-label="Toggle component options"
+                  >
+                  </button>
+                  <input
+                    type="hidden"
+                    data-part="value"
+                    name="component-auto"
+                  />
+                </div>
+
+                <ul data-part="listbox">
+                  <li data-part="option" data-value="elements">Elements</li>
+                  <li data-part="option" data-value="master-detail">
+                    Master-detail
+                  </li>
+                  <li data-part="option" data-value="tabs">Tabs</li>
+                  <li data-part="option" data-value="tree">Tree</li>
+                  <li data-part="option" data-value="diagram">Diagram</li>
+                </ul>
+
+                <p data-part="empty" hidden>No matching components.</p>
+
+                <section data-part="panels">
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="elements"
+                  >
+                    <h3>Elements</h3>
+                    <p>
+                      The base Aura layer stays static and classless: defaults,
+                      layout, surfaces, tokens, and utilities.
+                    </p>
+                  </article>
+
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="master-detail"
+                    hidden
+                  >
+                    <h3>Master-detail</h3>
+                    <p>
+                      The first component pilot proved the split between CSS
+                      layout shells and behavior-only custom elements.
+                    </p>
+                  </article>
+
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="tabs"
+                    hidden
+                  >
+                    <h3>Tabs</h3>
+                    <p>
+                      Tabs reuse the same host contract, but switch panels in a
+                      tighter inline context.
+                    </p>
+                  </article>
+
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="tree"
+                    hidden
+                  >
+                    <h3>Tree</h3>
+                    <p>
+                      Tree adds parent-child movement and branch visibility on
+                      top of the shared value and activation model.
+                    </p>
+                  </article>
+
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="diagram"
+                    hidden
+                  >
+                    <h3>Diagram</h3>
+                    <p>
+                      Diagram remains separate because spatial navigation and
+                      node geometry are specialized enough to justify their own
+                      package.
+                    </p>
+                  </article>
+                </section>
+              </aura-combobox>
+            </section>
+
+            <section data-layout="stack" data-gap="3">
+              <p>
+                <strong>Manual activation:</strong>
+                <code id="manual-combobox-selection">elements</code>
+              </p>
+              <p>
+                Arrow keys move the active option first. Press
+                <kbd>Enter</kbd> to commit the highlighted result.
+              </p>
+
+              <aura-combobox
+                id="combobox-manual-pilot"
+                data-ui="combobox"
+                value="elements"
+                activation="manual"
+              >
+                <label for="component-search-manual">Manual combobox</label>
+
+                <div data-part="control">
+                  <input
+                    id="component-search-manual"
+                    data-part="input"
+                    type="text"
+                    placeholder="Search without immediate selection"
+                  />
+                  <button
+                    type="button"
+                    data-part="toggle"
+                    aria-label="Toggle manual combobox options"
+                  >
+                  </button>
+                  <input
+                    type="hidden"
+                    data-part="value"
+                    name="component-manual"
+                  />
+                </div>
+
+                <ul data-part="listbox">
+                  <li data-part="option" data-value="elements">Elements</li>
+                  <li data-part="option" data-value="master-detail">
+                    Master-detail
+                  </li>
+                  <li data-part="option" data-value="tabs">Tabs</li>
+                  <li data-part="option" data-value="tree">Tree</li>
+                  <li data-part="option" data-value="diagram">Diagram</li>
+                </ul>
+
+                <p data-part="empty" hidden>No matching components.</p>
+
+                <section data-part="panels">
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="elements"
+                  >
+                    <h3>Manual mode</h3>
+                    <p>
+                      Use manual activation when filter navigation should stay
+                      low-cost until the user explicitly commits a choice.
+                    </p>
+                  </article>
+
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="master-detail"
+                    hidden
+                  >
+                    <h3>Master-detail result</h3>
+                    <p>
+                      This keeps the panel stable until the user confirms the
+                      new result with <kbd>Enter</kbd>.
+                    </p>
+                  </article>
+
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="tabs"
+                    hidden
+                  >
+                    <h3>Tabs result</h3>
+                    <p>
+                      Manual mode is useful when previewing options should not
+                      immediately change the current reading context.
+                    </p>
+                  </article>
+
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="tree"
+                    hidden
+                  >
+                    <h3>Tree result</h3>
+                    <p>
+                      The selected value only changes after explicit activation,
+                      not during arrow-key movement.
+                    </p>
+                  </article>
+
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="diagram"
+                    hidden
+                  >
+                    <h3>Diagram result</h3>
+                    <p>
+                      The same authored options can power quick picker
+                      interactions without changing the browser-native input
+                      model.
+                    </p>
+                  </article>
+                </section>
+              </aura-combobox>
+            </section>
+          </div>
+        </section>
+
+        <section
+          id="splitter"
+          data-surface="card"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <div>
+            <h2>Pilot: splitter</h2>
+            <p>
+              <code>aura-splitter</code> keeps both panes and the separator in
+              authored light DOM, then adds keyboard resizing, drag resize, and
+              percent-based layout state.
+            </p>
+          </div>
+
+          <p>
+            <strong>Current split:</strong>
+            <code id="splitter-value">42</code>% primary pane
+          </p>
+          <p>
+            Focus the divider and use <kbd>Left</kbd>/<kbd>Right</kbd>, or drag
+            it with the pointer, to resize the two panes.
+          </p>
+
+          <aura-splitter
+            id="splitter-pilot"
+            data-ui="splitter"
+            value="42"
+            min="30"
+            max="70"
+            step="5"
+          >
+            <section data-part="pane" data-pane="primary">
+              <h3>Primary pane</h3>
+              <p>
+                This side is useful for navigation, a source list, or a compact
+                inspector. The component only owns resize state.
+              </p>
+              <ul>
+                <li>Pointer drag updates the split.</li>
+                <li>Keyboard resize uses the configured step.</li>
+                <li>Home and End jump to min and max.</li>
+              </ul>
+            </section>
+
+            <button
+              type="button"
+              data-part="separator"
+              aria-label="Resize layout panes"
+            >
+            </button>
+
+            <section data-part="pane" data-pane="secondary">
+              <h3>Secondary pane</h3>
+              <p>
+                Use this side for detail content, preview content, or a larger
+                editing surface. Layout styling stays in the Composites layer.
+              </p>
+              <p>
+                The current value is exposed through the host
+                <code>value</code> attribute and the <code>aura-change</code>
+                event.
+              </p>
+            </section>
+          </aura-splitter>
         </section>
 
         <section
@@ -1704,6 +2024,17 @@
             smoothRegion.scrollTo({ top: smoothRegion.scrollHeight });
           });
 
+        bindSelectionOutput(
+          "combobox-auto-pilot",
+          "combobox-selection",
+          "elements",
+        );
+        bindSelectionOutput(
+          "combobox-manual-pilot",
+          "manual-combobox-selection",
+          "elements",
+        );
+        bindSelectionOutput("splitter-pilot", "splitter-value", "42");
         bindSelectionOutput(
           "tree-pilot",
           "tree-selection",

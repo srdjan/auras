@@ -278,6 +278,79 @@ Composites stylesheet:
 Use `activation="manual"` when focus movement and selection should be separate
 actions.
 
+### Combobox pilot
+
+`aura-combobox` keeps the authored input and listbox in light DOM while adding
+filtering, active-option state, and optional linked panels:
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-components.js"></script>
+
+<aura-combobox data-ui="combobox" value="elements" activation="manual">
+  <label for="component-search">Search components</label>
+
+  <div data-part="control">
+    <input
+      id="component-search"
+      data-part="input"
+      type="text"
+      placeholder="Type to filter"
+    />
+    <button
+      type="button"
+      data-part="toggle"
+      aria-label="Toggle component options"
+    >
+    </button>
+    <input type="hidden" data-part="value" name="component" />
+  </div>
+
+  <ul data-part="listbox">
+    <li data-part="option" data-value="elements">Elements</li>
+    <li data-part="option" data-value="master-detail">Master-detail</li>
+    <li data-part="option" data-value="tabs">Tabs</li>
+  </ul>
+
+  <p data-part="empty" hidden>No matching components.</p>
+
+  <section data-part="panels">
+    <article data-part="panel" data-value="elements">...</article>
+    <article data-part="panel" data-value="master-detail" hidden>...</article>
+    <article data-part="panel" data-value="tabs" hidden>...</article>
+  </section>
+</aura-combobox>
+```
+
+Use `activation="manual"` when arrow keys should move the highlighted result
+before `Enter` commits the selected value.
+
+### Splitter pilot
+
+`aura-splitter` keeps both panes and the separator in authored light DOM while
+adding keyboard resize, pointer drag, and percent-based primary pane state:
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-components.js"></script>
+
+<aura-splitter data-ui="splitter" value="42" min="30" max="70" step="5">
+  <section data-part="pane" data-pane="primary">...</section>
+  <button
+    type="button"
+    data-part="separator"
+    aria-label="Resize panes"
+  >
+  </button>
+  <section data-part="pane" data-pane="secondary">...</section>
+</aura-splitter>
+```
+
+Focus the separator and use the arrow keys, or drag it with the pointer, to
+change the split. `Home` and `End` jump to the configured min and max.
+
 ### Tree pilot
 
 `aura-tree` keeps the authored nested list in light DOM and adds hierarchy,
@@ -473,6 +546,8 @@ The demo also exercises:
 | `aura-diagram.js`                       | Browser-friendly no-build diagram entrypoint     |
 | `aura-components.js`                    | Browser-friendly no-build entrypoint             |
 | `tests/aura-components.browser.test.js` | Browser smoke coverage for the optional packages |
+| `tests/aura-combobox.test.js`           | Deno behavioral coverage for `aura-combobox`     |
+| `tests/aura-splitter.test.js`           | Deno behavioral coverage for `aura-splitter`     |
 | `tests/aura-diagram.test.js`            | Deno behavioral coverage for `aura-diagram`      |
 | `tests/aura-components.test.js`         | Deno behavioral coverage for Components          |
 | `tests/aura-tree.test.js`               | Deno behavioral coverage for `aura-tree`         |
@@ -484,6 +559,8 @@ The demo also exercises:
 | `packages/components/jsr.json`          | JSR package metadata                             |
 | `packages/components/README.md`         | Package-level usage note                         |
 | `packages/components/src/`              | Shared logic plus per-component modules          |
+| `packages/components/src/combobox.ts`   | `aura-combobox` runtime module                   |
+| `packages/components/src/splitter.ts`   | `aura-splitter` runtime module                   |
 | `packages/components/src/tree.ts`       | `aura-tree` runtime module                       |
 | `aura-brand.css`                        | Sample Aura brand pack                           |
 | `aura-brand-editorial.css`              | Sample editorial brand pack                      |
@@ -514,23 +591,28 @@ Then verify:
 1. Open `http://127.0.0.1:8000/showcase/index.html`.
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
-4. Review the prose, static diagram, interactive diagram, tree, notice,
-   accordion, master-detail, and tabs pilot examples.
+4. Review the prose, static diagram, interactive diagram, combobox, splitter,
+   tree, notice, accordion, master-detail, and tabs pilot examples.
 5. Use arrow keys inside the interactive diagram and confirm focus moves across
    the grid; in manual activation, `Enter` or `Space` should update the detail
    panel.
-6. Use arrow keys inside the tree pilot and confirm the selected node and panel
+6. Use arrow keys inside the combobox pilots and confirm the selected value
+   stays in sync with the current panel; in manual mode, `Enter` should commit
+   the highlighted result.
+7. Focus the splitter handle and confirm arrow keys update the split value; drag
+   the divider with the pointer and confirm the primary pane size changes.
+8. Use arrow keys inside the tree pilot and confirm the selected node and panel
    stay in sync while branch expansion and collapse follow the current focus.
-7. Use arrow keys inside the auto-activation master-detail pilot and confirm the
+9. Use arrow keys inside the auto-activation master-detail pilot and confirm the
    detail panel follows the active trigger.
-8. Use arrow keys inside the manual-activation master-detail pilot and confirm
-   focus moves first, then `Enter` or `Space` updates the detail panel.
-9. Use arrow keys inside the auto-activation tabs pilot and confirm the active
-   tab and visible panel stay in sync.
-10. Use arrow keys inside the manual-activation tabs pilot and confirm focus
+10. Use arrow keys inside the manual-activation master-detail pilot and confirm
+    focus moves first, then `Enter` or `Space` updates the detail panel.
+11. Use arrow keys inside the auto-activation tabs pilot and confirm the active
+    tab and visible panel stay in sync.
+12. Use arrow keys inside the manual-activation tabs pilot and confirm focus
     moves first, then `Enter` or `Space` updates the panel.
-11. Open the dialog and confirm the backdrop and page scroll lock.
-12. Submit the form with empty required fields and confirm validation, busy
+13. Open the dialog and confirm the backdrop and page scroll lock.
+14. Submit the form with empty required fields and confirm validation, busy
     states, select chevrons, progress, and meter styles.
-13. Open print preview and confirm buttons/nav are hidden and print-only rules
+15. Open print preview and confirm buttons/nav are hidden and print-only rules
     apply.

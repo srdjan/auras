@@ -165,6 +165,323 @@
     display: none !important;
   }
 
+  :where([data-ui~="combobox"], aura-combobox) {
+    --combobox-gap: var(--space-3);
+    --combobox-control-gap: var(--space-2);
+    --combobox-control-bg: var(--surface);
+    --combobox-control-border-color: var(--border);
+    --combobox-control-shadow: var(--shadow-sm);
+    --combobox-control-radius: var(--radius-lg);
+    --combobox-input-padding-inline: var(--space-3);
+    --combobox-input-padding-block: var(--space-2);
+    --combobox-toggle-size: 2.75rem;
+    --combobox-list-max-block-size: 16rem;
+    --combobox-list-bg: var(--surface);
+    --combobox-list-border-color: var(--border);
+    --combobox-list-shadow: var(--shadow-md);
+    --combobox-option-padding-inline: var(--space-3);
+    --combobox-option-padding-block: var(--space-2);
+    --combobox-option-bg-hover: var(--surface-raised);
+    --combobox-option-bg-active: var(--primary-subtle);
+    --combobox-option-border-color: transparent;
+    --combobox-option-border-color-active: color-mix(
+      in oklch,
+      var(--primary) 38%,
+      var(--border)
+    );
+    --combobox-panel-bg: var(--surface);
+    --combobox-panel-border-color: var(--border);
+    --combobox-panel-shadow: var(--shadow-sm);
+    --combobox-panel-padding: var(--space-4);
+
+    display: grid;
+    gap: var(--combobox-gap);
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="combobox"], aura-combobox) > label {
+    font-weight: var(--font-weight-medium);
+  }
+
+  :where([data-ui~="combobox"], aura-combobox) [data-part="control"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    min-inline-size: 0;
+    background-color: var(--combobox-control-bg);
+    border: 1px solid var(--combobox-control-border-color);
+    border-radius: var(--combobox-control-radius);
+    box-shadow: var(--combobox-control-shadow);
+    overflow: clip;
+  }
+
+  :where([data-ui~="combobox"], aura-combobox)
+    [data-part="control"]
+    > [data-part="input"] {
+    inline-size: 100%;
+    min-inline-size: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    padding-inline: var(--combobox-input-padding-inline);
+    padding-block: var(--combobox-input-padding-block);
+  }
+
+  :where([data-ui~="combobox"], aura-combobox)
+    [data-part="control"]
+    > [data-part="input"]:focus {
+    outline: none;
+  }
+
+  :where([data-ui~="combobox"], aura-combobox)
+    [data-part="control"]:focus-within {
+    border-color: var(--focus-ring);
+    box-shadow: 0 0 0 3px
+      color-mix(in oklch, var(--focus-ring) 22%, transparent);
+  }
+
+  :where([data-ui~="combobox"], aura-combobox)
+    [data-part="control"]
+    > [data-part="toggle"] {
+    inline-size: var(--combobox-toggle-size);
+    block-size: 100%;
+    min-block-size: calc(var(--combobox-toggle-size) - 0.25rem);
+    padding: 0;
+    border: 0;
+    border-inline-start: 1px solid var(--combobox-control-border-color);
+    border-radius: 0;
+    background: transparent;
+    color: var(--text-muted);
+    box-shadow: none;
+  }
+
+  :where([data-ui~="combobox"], aura-combobox)
+    [data-part="control"]
+    > [data-part="toggle"]::before {
+    content: "";
+    inline-size: 0.65rem;
+    block-size: 0.65rem;
+    border-inline-end: 2px solid currentColor;
+    border-block-end: 2px solid currentColor;
+    transform: rotate(45deg) translateY(-0.15rem);
+    transition: transform 160ms ease;
+  }
+
+  :where([data-ui~="combobox"], aura-combobox[open])
+    [data-part="control"]
+    > [data-part="toggle"]::before {
+    transform: rotate(225deg) translateY(-0.05rem);
+  }
+
+  :where([data-ui~="combobox"], aura-combobox) [data-part="listbox"] {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: var(--space-1);
+    list-style: none;
+    min-inline-size: 0;
+    max-block-size: var(--combobox-list-max-block-size);
+    overflow: auto;
+    background-color: var(--combobox-list-bg);
+    border: 1px solid var(--combobox-list-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--combobox-list-shadow);
+  }
+
+  :where([data-ui~="combobox"], aura-combobox) [data-part="listbox"][hidden] {
+    display: none !important;
+  }
+
+  :where([data-ui~="combobox"], aura-combobox) [data-part="option"] {
+    display: grid;
+    gap: var(--space-1);
+    padding-inline: var(--combobox-option-padding-inline);
+    padding-block: var(--combobox-option-padding-block);
+    border: 1px solid var(--combobox-option-border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  :where([data-ui~="combobox"], aura-combobox) [data-part="option"]:hover {
+    background-color: var(--combobox-option-bg-hover);
+  }
+
+  :where([data-ui~="combobox"], aura-combobox)
+    [data-part="option"][data-active],
+  :where([data-ui~="combobox"], aura-combobox)
+    [data-part="option"][data-selected] {
+    background-color: var(--combobox-option-bg-active);
+    border-color: var(--combobox-option-border-color-active);
+  }
+
+  :where([data-ui~="combobox"], aura-combobox) [data-part="empty"] {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+  }
+
+  :where([data-ui~="combobox"], aura-combobox) [data-part="empty"][hidden] {
+    display: none !important;
+  }
+
+  :where([data-ui~="combobox"], aura-combobox) [data-part="panels"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="combobox"], aura-combobox) [data-part="panel"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+    padding: var(--combobox-panel-padding);
+    background-color: var(--combobox-panel-bg);
+    border: 1px solid var(--combobox-panel-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--combobox-panel-shadow);
+  }
+
+  :where([data-ui~="combobox"], aura-combobox) [data-part="panel"][hidden] {
+    display: none !important;
+  }
+
+  :where([data-ui~="splitter"], aura-splitter) {
+    --splitter-gap: 0;
+    --splitter-handle-size: 0.875rem;
+    --splitter-pane-min-block-size: 18rem;
+    --splitter-pane-padding: var(--space-4);
+    --splitter-pane-bg: var(--surface);
+    --splitter-pane-border-color: var(--border);
+    --splitter-pane-shadow: var(--shadow-sm);
+    --splitter-handle-bg: color-mix(
+      in oklch,
+      var(--surface-raised) 78%,
+      var(--border)
+    );
+    --splitter-handle-bg-hover: color-mix(
+      in oklch,
+      var(--primary-subtle) 62%,
+      var(--surface-raised)
+    );
+    --splitter-handle-grip: color-mix(
+      in oklch,
+      var(--text-muted) 55%,
+      transparent
+    );
+
+    display: grid;
+    gap: var(--splitter-gap);
+    min-inline-size: 0;
+    align-items: stretch;
+    grid-template-columns:
+      minmax(0, var(--splitter-primary-size, 50%))
+      var(--splitter-handle-size)
+      minmax(0, calc(100% - var(--splitter-primary-size, 50%)));
+  }
+
+  :where([data-ui~="splitter"], aura-splitter)[orientation="vertical"] {
+    grid-template-columns: none;
+    grid-template-rows:
+      minmax(0, var(--splitter-primary-size, 50%))
+      var(--splitter-handle-size)
+      minmax(0, calc(100% - var(--splitter-primary-size, 50%)));
+  }
+
+  :where([data-ui~="splitter"], aura-splitter)[data-dragging] {
+    user-select: none;
+  }
+
+  :where([data-ui~="splitter"], aura-splitter) [data-part="pane"] {
+    min-inline-size: 0;
+    min-block-size: var(--splitter-pane-min-block-size);
+    overflow: auto;
+    padding: var(--splitter-pane-padding);
+    background-color: var(--splitter-pane-bg);
+    border: 1px solid var(--splitter-pane-border-color);
+    box-shadow: var(--splitter-pane-shadow);
+  }
+
+  :where([data-ui~="splitter"], aura-splitter)
+    [data-part="pane"][data-pane="primary"] {
+    border-start-start-radius: var(--radius-lg);
+    border-end-start-radius: var(--radius-lg);
+    border-inline-end-width: 0;
+  }
+
+  :where([data-ui~="splitter"], aura-splitter)
+    [data-part="pane"][data-pane="secondary"] {
+    border-start-end-radius: var(--radius-lg);
+    border-end-end-radius: var(--radius-lg);
+    border-inline-start-width: 0;
+  }
+
+  :where([data-ui~="splitter"], aura-splitter)[orientation="vertical"]
+    [data-part="pane"][data-pane="primary"] {
+    border-start-start-radius: var(--radius-lg);
+    border-start-end-radius: var(--radius-lg);
+    border-end-start-radius: 0;
+    border-inline-end-width: 1px;
+    border-block-end-width: 0;
+  }
+
+  :where([data-ui~="splitter"], aura-splitter)[orientation="vertical"]
+    [data-part="pane"][data-pane="secondary"] {
+    border-end-start-radius: var(--radius-lg);
+    border-end-end-radius: var(--radius-lg);
+    border-start-end-radius: 0;
+    border-inline-start-width: 1px;
+    border-block-start-width: 0;
+  }
+
+  :where([data-ui~="splitter"], aura-splitter) [data-part="separator"] {
+    position: relative;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background-color: var(--splitter-handle-bg);
+    color: inherit;
+    box-shadow: none;
+    cursor: col-resize;
+  }
+
+  :where([data-ui~="splitter"], aura-splitter)[orientation="vertical"]
+    [data-part="separator"] {
+    cursor: row-resize;
+  }
+
+  :where([data-ui~="splitter"], aura-splitter)
+    [data-part="separator"]:where(:hover, :focus-visible) {
+    background-color: var(--splitter-handle-bg-hover);
+  }
+
+  :where([data-ui~="splitter"], aura-splitter) [data-part="separator"]::before {
+    content: "";
+    position: absolute;
+    inset: 50%;
+    inline-size: 0.2rem;
+    block-size: 2.25rem;
+    border-radius: var(--radius-full);
+    background: radial-gradient(
+      circle at center,
+      var(--splitter-handle-grip) 0.08rem,
+      transparent 0.09rem
+    ) center / 0.2rem 0.55rem repeat-y;
+    transform: translate(-50%, -50%);
+  }
+
+  :where([data-ui~="splitter"], aura-splitter)[orientation="vertical"]
+    [data-part="separator"]::before {
+    inline-size: 2.25rem;
+    block-size: 0.2rem;
+    background: radial-gradient(
+      circle at center,
+      var(--splitter-handle-grip) 0.08rem,
+      transparent 0.09rem
+    ) center / 0.55rem 0.2rem repeat-x;
+  }
+
   :where([data-ui~="tree"], aura-tree) {
     --tree-gap: var(--space-4);
     --tree-indent: var(--space-4);
