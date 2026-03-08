@@ -87,10 +87,12 @@ Deno.test(
         await page.goto(`${origin}/showcase/index.html`);
 
         await page.waitForSelector("aura-diagram");
+        await page.waitForSelector("aura-tree");
         await page.waitForSelector("aura-master-detail");
         await page.waitForSelector("aura-tabs");
 
         await expectText(page, "#diagram-selection", "received");
+        await expectText(page, "#tree-selection", "master-detail");
         await expectText(page, "#master-detail-selection", "elements");
         await expectText(page, "#manual-master-detail-selection", "elements");
         await expectText(page, "#tabs-selection", "overview");
@@ -103,6 +105,18 @@ Deno.test(
         await expectText(page, "#diagram-selection", "received");
         await page.keyboard.press("Enter");
         await expectText(page, "#diagram-selection", "validate");
+
+        await page
+          .locator(
+            '#tree-pilot [data-part="item"][data-value="master-detail"] > [data-part="node"]',
+          )
+          .focus();
+        await page.keyboard.press("ArrowDown");
+        await expectText(page, "#tree-selection", "tabs");
+        await page.keyboard.press("ArrowLeft");
+        await expectText(page, "#tree-selection", "components");
+        await page.keyboard.press("ArrowLeft");
+        await expectTreeBranchHidden(page, "components");
 
         await page
           .locator('#layer-pilot [data-part="trigger"][data-value="elements"]')
@@ -151,4 +165,17 @@ async function expectText(page, selector, expectedText) {
     },
     { selector, expectedText },
   );
+}
+
+async function expectTreeBranchHidden(page, value) {
+  await page.waitForFunction((value) => {
+    const item = document.querySelector(
+      `#tree-pilot [data-part="item"][data-value="${value}"]`,
+    );
+    const group = item?.querySelector(':scope > [data-part="group"]');
+
+    return Boolean(
+      item && group && !item.hasAttribute("data-expanded") && group.hidden,
+    );
+  }, value);
 }

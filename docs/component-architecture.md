@@ -111,6 +111,7 @@ Recommended package boundaries:
 /packages/components/mod.ts
 /packages/components/src/shared/selectable-panels.ts
 /packages/components/src/master-detail.ts
+/packages/components/src/tree.ts
 /packages/components/src/tabs.ts
 
 /docs/component-architecture.md
@@ -126,8 +127,8 @@ Recommended publishing shape:
 Current repo structure:
 
 - `aura-composites.css` still stands in for the future `@aura/composites`
-- `packages/diagram/mod.ts` is the Deno-first TypeScript surface for the
-  diagram package
+- `packages/diagram/mod.ts` is the Deno-first TypeScript surface for the diagram
+  package
 - `aura-diagram.js` is a browser-friendly no-build entrypoint for the demo and
   plain browser usage
 - `packages/components/mod.ts` is the Deno-first TypeScript package surface
@@ -206,13 +207,14 @@ Implementation detail that should stay private:
 ## Pilot Components
 
 The first behavioral pilot was `aura-master-detail`. The second is `aura-tabs`.
+The third is `aura-tree`.
 
 Why these first:
 
 - common in real apps
 - useful without becoming framework-sized
 - accessibility is tractable
-- lower complexity than grid or tree
+- lower complexity than grid or combobox
 - works well with Aura's existing layout and card primitives
 
 ## `aura-master-detail` v1 Scope
@@ -446,6 +448,85 @@ Accessibility contract:
 - use Left and Right for navigation, respecting document direction
 - keep inactive panels `hidden`
 
+## `aura-tree` v1 Scope
+
+The third pilot should do exactly this:
+
+- coordinate one selected node in an authored nested tree
+- manage roving focus across visible nodes
+- support branch expansion and collapse
+- support Up, Down, Left, Right, Home, and End
+- support click and keyboard activation
+- optionally reveal a matching linked panel
+
+It should not do this in v1:
+
+- multi-select
+- typeahead
+- async loading
+- drag and drop
+- virtualization
+- reorderable nodes
+
+Suggested authoring model:
+
+```html
+<aura-tree value="master-detail">
+  <ul data-part="tree" aria-label="Aura components">
+    <li data-part="item" data-value="elements">
+      <button type="button" data-part="node">Elements</button>
+    </li>
+
+    <li data-part="item" data-value="components" data-expanded>
+      <button
+        type="button"
+        data-part="toggle"
+        aria-label="Toggle Components"
+      >
+      </button>
+      <button type="button" data-part="node">Components</button>
+
+      <ul data-part="group">
+        <li data-part="item" data-value="master-detail">
+          <button type="button" data-part="node">Master-detail</button>
+        </li>
+        <li data-part="item" data-value="tabs">
+          <button type="button" data-part="node">Tabs</button>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <section data-part="panels">
+    <article data-part="panel" data-value="elements">...</article>
+    <article data-part="panel" data-value="components" hidden>...</article>
+    <article data-part="panel" data-value="master-detail" hidden>...</article>
+    <article data-part="panel" data-value="tabs" hidden>...</article>
+  </section>
+</aura-tree>
+```
+
+Required parts:
+
+- one host: `<aura-tree>`
+- one tree container: `[data-part="tree"]`
+- one or more items: `[data-part="item"][data-value]`
+- one node per item: `[data-part="node"]`
+- optional branch toggle: `[data-part="toggle"]`
+- optional child group: `[data-part="group"]`
+- optional linked panels: `[data-part="panel"][data-value]`
+
+Host API:
+
+- `value`
+- `activation="auto|manual"`
+- `show(value: string): void`
+- `focusCurrent(): void`
+- `expand(value: string): boolean`
+- `collapse(value: string): boolean`
+- `toggle(value: string): boolean`
+- `aura-change`
+
 ## Build Order
 
 Recommended order for implementation:
@@ -455,14 +536,16 @@ Recommended order for implementation:
 3. Implement `aura-master-detail` in `jsr:@aura/components` against the
    documented markup contract.
 4. Validate the shared host API with `aura-tabs`.
-5. Only then move on to grid or tree.
+5. Extend the same package with hierarchical selection and expansion in
+   `aura-tree`.
+6. Only then move on to combobox or grid.
 
 ## Follow-On Components
 
 After the pilot is stable:
 
 - `aura-data-grid`
-- `aura-tree`
+- `aura-combobox`
 
 Only add them if they preserve the same rules:
 

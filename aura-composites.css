@@ -165,6 +165,190 @@
     display: none !important;
   }
 
+  :where([data-ui~="tree"], aura-tree) {
+    --tree-gap: var(--space-4);
+    --tree-indent: var(--space-4);
+    --tree-rule-color: var(--border);
+    --tree-tree-padding: var(--space-2);
+    --tree-tree-bg: var(--surface);
+    --tree-tree-border-color: var(--border);
+    --tree-tree-shadow: var(--shadow-sm);
+    --tree-node-padding-inline: var(--space-3);
+    --tree-node-padding-block: var(--space-2);
+    --tree-node-bg: transparent;
+    --tree-node-bg-hover: var(--surface-raised);
+    --tree-node-bg-active: var(--primary-subtle);
+    --tree-node-border-color: transparent;
+    --tree-node-border-color-active: color-mix(
+      in oklch,
+      var(--primary) 38%,
+      var(--border)
+    );
+    --tree-toggle-size: 1.5rem;
+    --tree-panel-bg: var(--surface);
+    --tree-panel-border-color: var(--border);
+    --tree-panel-shadow: var(--shadow-sm);
+    --tree-panel-padding: var(--space-4);
+
+    display: grid;
+    gap: var(--tree-gap);
+    min-inline-size: 0;
+  }
+
+  @media (min-width: 64rem) {
+    :where(aura-tree[data-has-panels]) {
+      grid-template-columns: minmax(18rem, 22rem) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  :where([data-ui~="tree"], aura-tree) [data-part="tree"] {
+    display: grid;
+    gap: var(--space-1);
+    align-content: start;
+    min-inline-size: 0;
+    padding: var(--tree-tree-padding);
+    background-color: var(--tree-tree-bg);
+    border: 1px solid var(--tree-tree-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--tree-tree-shadow);
+    list-style: none;
+  }
+
+  :where([data-ui~="tree"], aura-tree) [data-part="tree"],
+  :where([data-ui~="tree"], aura-tree) [data-part="group"] {
+    margin: 0;
+    padding-inline-start: 0;
+  }
+
+  :where([data-ui~="tree"], aura-tree) [data-part="item"] {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  :where([data-ui~="tree"], aura-tree) [data-part="item"][data-branch] {
+    grid-template-columns: var(--tree-toggle-size) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  :where([data-ui~="tree"], aura-tree) [data-part="item"] > [data-part="node"] {
+    grid-column: 1 / -1;
+    inline-size: 100%;
+    min-block-size: auto;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-1);
+    text-align: left;
+    background-color: var(--tree-node-bg);
+    border: 1px solid var(--tree-node-border-color);
+    border-radius: var(--radius-md);
+    padding-block: var(--tree-node-padding-block);
+    padding-inline: var(--tree-node-padding-inline);
+    box-shadow: none;
+  }
+
+  :where([data-ui~="tree"], aura-tree)
+    [data-part="item"][data-branch]
+    > [data-part="node"] {
+    grid-column: 2;
+  }
+
+  :where([data-ui~="tree"], aura-tree)
+    [data-part="item"]
+    > [data-part="node"]:hover {
+    background-color: var(--tree-node-bg-hover);
+  }
+
+  :where([data-ui~="tree"], aura-tree)
+    [data-part="item"][data-active]
+    > [data-part="node"],
+  :where([data-ui~="tree"], aura-tree) [data-part="node"][data-active] {
+    background-color: var(--tree-node-bg-active);
+    border-color: var(--tree-node-border-color-active);
+  }
+
+  :where([data-ui~="tree"], aura-tree)
+    [data-part="item"]
+    > [data-part="node"]
+    > :where(p, small) {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+
+  :where([data-ui~="tree"], aura-tree)
+    [data-part="item"]
+    > [data-part="toggle"] {
+    grid-column: 1;
+    align-self: center;
+    justify-self: center;
+    inline-size: var(--tree-toggle-size);
+    block-size: var(--tree-toggle-size);
+    min-block-size: var(--tree-toggle-size);
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    background-color: transparent;
+    color: var(--text-muted);
+    box-shadow: none;
+  }
+
+  :where([data-ui~="tree"], aura-tree)
+    [data-part="item"][data-branch]
+    > [data-part="toggle"]::before {
+    content: "";
+    inline-size: 0.55rem;
+    block-size: 0.55rem;
+    border-inline-end: 2px solid currentColor;
+    border-block-end: 2px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 160ms ease;
+  }
+
+  :where([data-ui~="tree"], aura-tree)
+    [data-part="item"][data-expanded]
+    > [data-part="toggle"]::before {
+    transform: rotate(45deg);
+  }
+
+  :where([data-ui~="tree"], aura-tree) [data-part="group"] {
+    display: grid;
+    gap: var(--space-1);
+    min-inline-size: 0;
+    margin-inline-start: calc(var(--tree-toggle-size) + var(--space-2));
+    padding-inline-start: var(--tree-indent);
+    border-inline-start: 1px solid var(--tree-rule-color);
+    list-style: none;
+  }
+
+  :where([data-ui~="tree"], aura-tree) [data-part="group"][hidden] {
+    display: none !important;
+  }
+
+  :where([data-ui~="tree"], aura-tree) [data-part="panels"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+    align-content: start;
+  }
+
+  :where([data-ui~="tree"], aura-tree) [data-part="panel"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+    padding: var(--tree-panel-padding);
+    background-color: var(--tree-panel-bg);
+    border: 1px solid var(--tree-panel-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--tree-panel-shadow);
+  }
+
+  :where([data-ui~="tree"], aura-tree) [data-part="panel"][hidden] {
+    display: none !important;
+  }
+
   :where([data-ui~="diagram"], aura-diagram) {
     --diagram-gap: var(--space-4);
     --diagram-columns: 12;

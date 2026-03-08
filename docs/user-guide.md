@@ -278,6 +278,54 @@ Composites stylesheet:
 Use `activation="manual"` when focus movement and selection should be separate
 actions.
 
+### Tree pilot
+
+`aura-tree` keeps the authored nested list in light DOM and adds hierarchy,
+branch expansion, roving focus, and optional linked panels:
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-components.js"></script>
+
+<aura-tree data-ui="tree" value="master-detail" activation="manual">
+  <ul data-part="tree" aria-label="Aura components">
+    <li data-part="item" data-value="elements">
+      <button type="button" data-part="node">Elements</button>
+    </li>
+
+    <li data-part="item" data-value="components" data-expanded>
+      <button
+        type="button"
+        data-part="toggle"
+        aria-label="Toggle Components"
+      >
+      </button>
+      <button type="button" data-part="node">Components</button>
+
+      <ul data-part="group">
+        <li data-part="item" data-value="master-detail">
+          <button type="button" data-part="node">Master-detail</button>
+        </li>
+        <li data-part="item" data-value="tabs">
+          <button type="button" data-part="node">Tabs</button>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <section data-part="panels">
+    <article data-part="panel" data-value="elements">...</article>
+    <article data-part="panel" data-value="components" hidden>...</article>
+    <article data-part="panel" data-value="master-detail" hidden>...</article>
+    <article data-part="panel" data-value="tabs" hidden>...</article>
+  </section>
+</aura-tree>
+```
+
+Use `activation="manual"` when `Up`/`Down`/`Left`/`Right` should move focus
+through the visible hierarchy before `Enter` or `Space` commits the selection.
+
 ### Tabs pilot
 
 `aura-tabs` uses the same host contract as `aura-master-detail`, but with honest
@@ -427,6 +475,7 @@ The demo also exercises:
 | `tests/aura-components.browser.test.js` | Browser smoke coverage for the optional packages |
 | `tests/aura-diagram.test.js`            | Deno behavioral coverage for `aura-diagram`      |
 | `tests/aura-components.test.js`         | Deno behavioral coverage for Components          |
+| `tests/aura-tree.test.js`               | Deno behavioral coverage for `aura-tree`         |
 | `packages/diagram/mod.ts`               | Deno-first diagram package surface               |
 | `packages/diagram/jsr.json`             | JSR package metadata for `@aura/diagram`         |
 | `packages/diagram/README.md`            | Package-level usage note for `@aura/diagram`     |
@@ -435,6 +484,7 @@ The demo also exercises:
 | `packages/components/jsr.json`          | JSR package metadata                             |
 | `packages/components/README.md`         | Package-level usage note                         |
 | `packages/components/src/`              | Shared logic plus per-component modules          |
+| `packages/components/src/tree.ts`       | `aura-tree` runtime module                       |
 | `aura-brand.css`                        | Sample Aura brand pack                           |
 | `aura-brand-editorial.css`              | Sample editorial brand pack                      |
 | `deno.lock`                             | Locked JSR and npm test dependencies             |
@@ -464,21 +514,23 @@ Then verify:
 1. Open `http://127.0.0.1:8000/showcase/index.html`.
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
-4. Review the prose, static diagram, interactive diagram, notice, accordion,
-   master-detail, and tabs pilot examples.
+4. Review the prose, static diagram, interactive diagram, tree, notice,
+   accordion, master-detail, and tabs pilot examples.
 5. Use arrow keys inside the interactive diagram and confirm focus moves across
    the grid; in manual activation, `Enter` or `Space` should update the detail
    panel.
-6. Use arrow keys inside the auto-activation master-detail pilot and confirm the
+6. Use arrow keys inside the tree pilot and confirm the selected node and panel
+   stay in sync while branch expansion and collapse follow the current focus.
+7. Use arrow keys inside the auto-activation master-detail pilot and confirm the
    detail panel follows the active trigger.
-7. Use arrow keys inside the manual-activation master-detail pilot and confirm
+8. Use arrow keys inside the manual-activation master-detail pilot and confirm
    focus moves first, then `Enter` or `Space` updates the detail panel.
-8. Use arrow keys inside the auto-activation tabs pilot and confirm the active
+9. Use arrow keys inside the auto-activation tabs pilot and confirm the active
    tab and visible panel stay in sync.
-9. Use arrow keys inside the manual-activation tabs pilot and confirm focus
-   moves first, then `Enter` or `Space` updates the panel.
-10. Open the dialog and confirm the backdrop and page scroll lock.
-11. Submit the form with empty required fields and confirm validation, busy
+10. Use arrow keys inside the manual-activation tabs pilot and confirm focus
+    moves first, then `Enter` or `Space` updates the panel.
+11. Open the dialog and confirm the backdrop and page scroll lock.
+12. Submit the form with empty required fields and confirm validation, busy
     states, select chevrons, progress, and meter styles.
-12. Open print preview and confirm buttons/nav are hidden and print-only rules
+13. Open print preview and confirm buttons/nav are hidden and print-only rules
     apply.

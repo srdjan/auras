@@ -1,64 +1,64 @@
-const TRIGGER_SELECTOR = '[data-part="trigger"][data-value]';
-const PANEL_SELECTOR = '[data-part="panel"][data-value]';
-const MASTER_SELECTOR = '[data-part="master"]';
-const DETAIL_SELECTOR = '[data-part="detail"]';
-const TABLIST_SELECTOR = '[data-part="tablist"]';
-const PANELS_SELECTOR = '[data-part="panels"]';
+import {
+  ensureElementId,
+  getDirectionality,
+  normalizeActivation,
+  upgradeProperty,
+} from "./shared/selectable-panels.ts";
+
 const TREE_SELECTOR = '[data-part="tree"]';
 const ITEM_SELECTOR = '[data-part="item"][data-value]';
 const NODE_SELECTOR = '[data-part="node"]';
 const TOGGLE_SELECTOR = '[data-part="toggle"]';
 const GROUP_SELECTOR = '[data-part="group"]';
+const PANEL_SELECTOR = '[data-part="panel"][data-value]';
 
-let generatedIdSequence = 0;
+type AuraActivation = "auto" | "manual";
 
-function normalizeActivation(value) {
-  return value === "manual" ? "manual" : "auto";
-}
+type SelectionOptions = {
+  dispatch: boolean;
+  focus: boolean;
+};
 
-function getDirectionality(node) {
-  if (node.closest('[dir="rtl"]') || document.documentElement.dir === "rtl") {
-    return "rtl";
-  }
+type ExpansionOptions = {
+  dispatchSelection: boolean;
+  focusNode: boolean;
+};
 
-  return "ltr";
-}
+export type AuraTreeEntry = {
+  value: string;
+  item: HTMLElement;
+  node: HTMLElement;
+  toggle: HTMLElement | null;
+  group: HTMLElement | null;
+  panel: HTMLElement | null;
+  parentValue: string | null;
+  childValues: string[];
+  level: number;
+  positionInSet: number;
+  setSize: number;
+};
 
-function ensureElementId(element, prefix) {
-  if (element.id) {
-    return element.id;
-  }
-
-  generatedIdSequence += 1;
-  element.id = `${prefix}-${generatedIdSequence}`;
-  return element.id;
-}
-
-function upgradeProperty(node, name) {
-  if (!Object.prototype.hasOwnProperty.call(node, name)) {
-    return;
-  }
-
-  const value = node[name];
-  delete node[name];
-  node[name] = value;
-}
-
-function getDirectChildElements(container, selector) {
-  return Array.from(container.children).filter((child) =>
+function getDirectChildElements(
+  container: HTMLElement,
+  selector: string,
+): HTMLElement[] {
+  return Array.from(container.children).filter((child): child is HTMLElement =>
     child instanceof HTMLElement && child.matches(selector)
   );
 }
 
-function getDirectChildElement(container, selector) {
+function getDirectChildElement(
+  container: HTMLElement,
+  selector: string,
+): HTMLElement | null {
   return (
-    Array.from(container.children).find((child) =>
+    Array.from(container.children).find((child): child is HTMLElement =>
       child instanceof HTMLElement && child.matches(selector)
     ) ?? null
   );
 }
 
-function isNativeInteractiveElement(node) {
+function isNativeInteractiveElement(node: HTMLElement): boolean {
   return (
     node instanceof HTMLButtonElement ||
     node instanceof HTMLAnchorElement ||
@@ -68,474 +68,38 @@ function isNativeInteractiveElement(node) {
   );
 }
 
-class AuraSelectablePanelsElement extends HTMLElement {
+export const AURA_TREE_TAG_NAME = "aura-tree";
+
+export class AuraTree extends HTMLElement {
   static observedAttributes = ["value", "activation"];
+
+  private _tree: HTMLElement | null = null;
+  private _entries: AuraTreeEntry[] = [];
+  private _entriesByValue = new Map<string, AuraTreeEntry>();
+  private _syncingValue = false;
 
   constructor() {
     super();
-
-    this._container = null;
-    this._entries = [];
-    this._syncingValue = false;
 
     this._handleClick = this._handleClick.bind(this);
     this._handleKeydown = this._handleKeydown.bind(this);
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     upgradeProperty(this, "value");
     upgradeProperty(this, "activation");
     this._connect();
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     this._disconnect();
   }
 
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (oldValue === newValue || !this.isConnected) {
-      return;
-    }
-
-    if (name === "activation") {
-      this._normalizeActivationAttribute();
-      return;
-    }
-
-    if (this._syncingValue) {
-      return;
-    }
-
-    if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
-      const firstEntry = this._entries[0];
-      if (firstEntry) {
-        this._select(firstEntry.value, { dispatch: false, focus: false });
-      }
-    }
-  }
-
-  get value() {
-    return this.getAttribute("value");
-  }
-
-  set value(value) {
-    if (value == null || value === "") {
-      this.removeAttribute("value");
-      return;
-    }
-
-    this.setAttribute("value", String(value));
-  }
-
-  get activation() {
-    return normalizeActivation(this.getAttribute("activation"));
-  }
-
-  set activation(value) {
-    const normalizedValue = normalizeActivation(value);
-    if (normalizedValue === "auto") {
-      this.removeAttribute("activation");
-      return;
-    }
-
-    this.setAttribute("activation", normalizedValue);
-  }
-
-  show(value) {
-    return this._select(value, { dispatch: true, focus: false });
-  }
-
-  focusCurrent() {
-    const activeEntry =
-      this._entries.find((entry) =>
-        entry.trigger.hasAttribute("data-active")
-      ) || this._entries[0];
-
-    activeEntry?.trigger.focus();
-  }
-
-  _getContainerSelector() {
-    return null;
-  }
-
-  _getPanelRootSelector() {
-    return null;
-  }
-
-  _getPanelIdPrefix() {
-    return "aura-panel";
-  }
-
-  _setContainerSemantics() {}
-
-  _applyEntrySemantics() {}
-
-  _applySelectionState() {}
-
-  _getNextIndex() {
-    return null;
-  }
-
-  _connect() {
-    this._disconnect();
-
-    const containerSelector = this._getContainerSelector();
-    const panelRootSelector = this._getPanelRootSelector();
-    const container = containerSelector
-      ? this.querySelector(containerSelector)
-      : null;
-    const panelRoot = panelRootSelector
-      ? this.querySelector(panelRootSelector)
-      : this;
-
-    if (!container || !panelRoot) {
-      return;
-    }
-
-    const panelsByValue = new Map();
-    for (const panel of panelRoot.querySelectorAll(PANEL_SELECTOR)) {
-      const value = panel.getAttribute("data-value");
-      if (value && !panelsByValue.has(value)) {
-        panelsByValue.set(value, panel);
-      }
-    }
-
-    const entries = [];
-    for (const trigger of container.querySelectorAll(TRIGGER_SELECTOR)) {
-      const value = trigger.getAttribute("data-value");
-      const panel = value ? panelsByValue.get(value) : null;
-
-      if (!value || !panel) {
-        continue;
-      }
-
-      const entry = { value, trigger, panel };
-
-      trigger.setAttribute(
-        "aria-controls",
-        ensureElementId(panel, this._getPanelIdPrefix()),
-      );
-      this._applyEntrySemantics(entry);
-
-      entries.push(entry);
-    }
-
-    if (entries.length === 0) {
-      return;
-    }
-
-    this._container = container;
-    this._entries = entries;
-
-    this._setContainerSemantics(container);
-
-    container.addEventListener("click", this._handleClick);
-    container.addEventListener("keydown", this._handleKeydown);
-
-    this._normalizeActivationAttribute();
-
-    if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
-      this._select(entries[0].value, { dispatch: false, focus: false });
-    }
-  }
-
-  _disconnect() {
-    if (this._container) {
-      this._container.removeEventListener("click", this._handleClick);
-      this._container.removeEventListener("keydown", this._handleKeydown);
-    }
-
-    this._container = null;
-    this._entries = [];
-  }
-
-  _normalizeActivationAttribute() {
-    if (this.activation === "manual") {
-      this.setAttribute("activation", "manual");
-      return;
-    }
-
-    this.removeAttribute("activation");
-  }
-
-  _selectFromAttribute(options) {
-    const value = this.getAttribute("value");
-    if (!value) {
-      return false;
-    }
-
-    return this._select(value, options);
-  }
-
-  _select(value, options) {
-    const entry = this._entries.find(
-      (currentEntry) => currentEntry.value === value,
-    );
-    if (!entry) {
-      return false;
-    }
-
-    const previousValue = this.getAttribute("value");
-    const didChange = previousValue !== entry.value;
-
-    for (const currentEntry of this._entries) {
-      const isActive = currentEntry === entry;
-
-      currentEntry.trigger.tabIndex = isActive ? 0 : -1;
-      currentEntry.trigger.toggleAttribute("data-active", isActive);
-      currentEntry.panel.hidden = !isActive;
-      currentEntry.panel.toggleAttribute("data-active", isActive);
-
-      this._applySelectionState(currentEntry, isActive);
-    }
-
-    if (this.getAttribute("value") !== entry.value) {
-      this._syncingValue = true;
-      this.setAttribute("value", entry.value);
-      this._syncingValue = false;
-    }
-
-    if (options.focus) {
-      entry.trigger.focus();
-    }
-
-    if (options.dispatch && didChange) {
-      this.dispatchEvent(
-        new CustomEvent("aura-change", {
-          detail: {
-            value: entry.value,
-            trigger: entry.trigger,
-            panel: entry.panel,
-          },
-          bubbles: true,
-        }),
-      );
-    }
-
-    return true;
-  }
-
-  _activateTrigger(trigger, options) {
-    const value = trigger.getAttribute("data-value");
-    if (!value) {
-      return false;
-    }
-
-    return this._select(value, options);
-  }
-
-  _isActivationKey(key) {
-    return key === "Enter" || key === " ";
-  }
-
-  _handleClick(event) {
-    const target = event.target;
-    if (!(target instanceof Element)) {
-      return;
-    }
-
-    const trigger = target.closest(TRIGGER_SELECTOR);
-    if (
-      !(trigger instanceof HTMLElement) || !this._container?.contains(trigger)
-    ) {
-      return;
-    }
-
-    if (trigger instanceof HTMLAnchorElement) {
-      event.preventDefault();
-    }
-
-    this._activateTrigger(trigger, { dispatch: true, focus: false });
-  }
-
-  _handleKeydown(event) {
-    const target = event.target;
-    if (!(target instanceof Element)) {
-      return;
-    }
-
-    const trigger = target.closest(TRIGGER_SELECTOR);
-    if (
-      !(trigger instanceof HTMLElement) || !this._container?.contains(trigger)
-    ) {
-      return;
-    }
-
-    const currentIndex = this._entries.findIndex(
-      (entry) => entry.trigger === trigger,
-    );
-    if (currentIndex < 0) {
-      return;
-    }
-
-    if (this._isActivationKey(event.key)) {
-      if (this.activation === "manual") {
-        event.preventDefault();
-        this._activateTrigger(trigger, { dispatch: true, focus: false });
-      }
-      return;
-    }
-
-    const nextIndex = this._getNextIndex(currentIndex, event.key);
-    if (nextIndex == null) {
-      return;
-    }
-
-    event.preventDefault();
-
-    const nextEntry = this._entries[nextIndex];
-    if (!nextEntry) {
-      return;
-    }
-
-    nextEntry.trigger.focus();
-
-    if (this.activation === "auto") {
-      this._select(nextEntry.value, { dispatch: true, focus: false });
-    }
-  }
-}
-
-const AURA_MASTER_DETAIL_TAG_NAME = "aura-master-detail";
-const AURA_TREE_TAG_NAME = "aura-tree";
-const AURA_TABS_TAG_NAME = "aura-tabs";
-
-class AuraMasterDetail extends AuraSelectablePanelsElement {
-  _getContainerSelector() {
-    return MASTER_SELECTOR;
-  }
-
-  _getPanelRootSelector() {
-    return DETAIL_SELECTOR;
-  }
-
-  _getPanelIdPrefix() {
-    return "aura-master-detail-panel";
-  }
-
-  _applyEntrySemantics(entry) {
-    entry.trigger.setAttribute("aria-expanded", "false");
-  }
-
-  _applySelectionState(entry, isActive) {
-    entry.trigger.setAttribute("aria-expanded", String(isActive));
-
-    if (isActive) {
-      entry.trigger.setAttribute("aria-current", "true");
-    } else {
-      entry.trigger.removeAttribute("aria-current");
-    }
-  }
-
-  _getNextIndex(currentIndex, key) {
-    const lastIndex = this._entries.length - 1;
-    const directionality = getDirectionality(this);
-
-    switch (key) {
-      case "ArrowDown":
-        return Math.min(lastIndex, currentIndex + 1);
-      case "ArrowUp":
-        return Math.max(0, currentIndex - 1);
-      case "ArrowRight":
-        return directionality === "rtl"
-          ? Math.max(0, currentIndex - 1)
-          : Math.min(lastIndex, currentIndex + 1);
-      case "ArrowLeft":
-        return directionality === "rtl"
-          ? Math.min(lastIndex, currentIndex + 1)
-          : Math.max(0, currentIndex - 1);
-      case "Home":
-        return 0;
-      case "End":
-        return lastIndex;
-      default:
-        return null;
-    }
-  }
-}
-
-class AuraTabs extends AuraSelectablePanelsElement {
-  _getContainerSelector() {
-    return TABLIST_SELECTOR;
-  }
-
-  _getPanelRootSelector() {
-    return PANELS_SELECTOR;
-  }
-
-  _getPanelIdPrefix() {
-    return "aura-tabs-panel";
-  }
-
-  _setContainerSemantics(container) {
-    container.setAttribute("role", "tablist");
-    container.setAttribute("aria-orientation", "horizontal");
-  }
-
-  _applyEntrySemantics(entry) {
-    entry.trigger.setAttribute("role", "tab");
-    entry.trigger.setAttribute("aria-selected", "false");
-    entry.trigger.setAttribute(
-      "id",
-      ensureElementId(entry.trigger, "aura-tabs-trigger"),
-    );
-    entry.panel.setAttribute("role", "tabpanel");
-    entry.panel.setAttribute("aria-labelledby", entry.trigger.id);
-  }
-
-  _applySelectionState(entry, isActive) {
-    entry.trigger.setAttribute("aria-selected", String(isActive));
-  }
-
-  _getNextIndex(currentIndex, key) {
-    const lastIndex = this._entries.length - 1;
-    const directionality = getDirectionality(this);
-
-    switch (key) {
-      case "ArrowRight":
-        return directionality === "rtl"
-          ? Math.max(0, currentIndex - 1)
-          : Math.min(lastIndex, currentIndex + 1);
-      case "ArrowLeft":
-        return directionality === "rtl"
-          ? Math.min(lastIndex, currentIndex + 1)
-          : Math.max(0, currentIndex - 1);
-      case "Home":
-        return 0;
-      case "End":
-        return lastIndex;
-      default:
-        return null;
-    }
-  }
-}
-
-class AuraTree extends HTMLElement {
-  static observedAttributes = ["value", "activation"];
-
-  constructor() {
-    super();
-
-    this._tree = null;
-    this._entries = [];
-    this._entriesByValue = new Map();
-    this._syncingValue = false;
-
-    this._handleClick = this._handleClick.bind(this);
-    this._handleKeydown = this._handleKeydown.bind(this);
-  }
-
-  connectedCallback() {
-    upgradeProperty(this, "value");
-    upgradeProperty(this, "activation");
-    this._connect();
-  }
-
-  disconnectedCallback() {
-    this._disconnect();
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
+  attributeChangedCallback(
+    name: string,
+    oldValue: string | null,
+    newValue: string | null,
+  ): void {
     if (oldValue === newValue || !this.isConnected) {
       return;
     }
@@ -557,11 +121,11 @@ class AuraTree extends HTMLElement {
     }
   }
 
-  get value() {
+  get value(): string | null {
     return this.getAttribute("value");
   }
 
-  set value(value) {
+  set value(value: string | null) {
     if (value == null || value === "") {
       this.removeAttribute("value");
       return;
@@ -570,11 +134,11 @@ class AuraTree extends HTMLElement {
     this.setAttribute("value", String(value));
   }
 
-  get activation() {
+  get activation(): AuraActivation {
     return normalizeActivation(this.getAttribute("activation"));
   }
 
-  set activation(value) {
+  set activation(value: AuraActivation | string | null) {
     const normalizedValue = normalizeActivation(value);
     if (normalizedValue === "auto") {
       this.removeAttribute("activation");
@@ -584,11 +148,11 @@ class AuraTree extends HTMLElement {
     this.setAttribute("activation", normalizedValue);
   }
 
-  show(value) {
+  show(value: string): boolean {
     return this._select(value, { dispatch: true, focus: false });
   }
 
-  focusCurrent() {
+  focusCurrent(): void {
     const activeEntry =
       this._entries.find((entry) => entry.node.hasAttribute("data-active")) ??
         this._getVisibleEntries()[0];
@@ -596,7 +160,7 @@ class AuraTree extends HTMLElement {
     activeEntry?.node.focus();
   }
 
-  expand(value) {
+  expand(value: string): boolean {
     const entry = this._entriesByValue.get(value);
     if (!entry || !entry.group) {
       return false;
@@ -609,7 +173,7 @@ class AuraTree extends HTMLElement {
     });
   }
 
-  collapse(value) {
+  collapse(value: string): boolean {
     const entry = this._entriesByValue.get(value);
     if (!entry || !entry.group) {
       return false;
@@ -621,7 +185,7 @@ class AuraTree extends HTMLElement {
     });
   }
 
-  toggle(value) {
+  toggle(value: string): boolean {
     const entry = this._entriesByValue.get(value);
     if (!entry || !entry.group) {
       return false;
@@ -633,16 +197,16 @@ class AuraTree extends HTMLElement {
     });
   }
 
-  _connect() {
+  private _connect(): void {
     this._disconnect();
 
-    const tree = this.querySelector(TREE_SELECTOR);
+    const tree = this.querySelector<HTMLElement>(TREE_SELECTOR);
     if (!tree) {
       return;
     }
 
-    const panelsByValue = new Map();
-    for (const panel of this.querySelectorAll(PANEL_SELECTOR)) {
+    const panelsByValue = new Map<string, HTMLElement>();
+    for (const panel of this.querySelectorAll<HTMLElement>(PANEL_SELECTOR)) {
       const value = panel.getAttribute("data-value");
       if (value && !panelsByValue.has(value)) {
         panelsByValue.set(value, panel);
@@ -693,7 +257,7 @@ class AuraTree extends HTMLElement {
     }
   }
 
-  _disconnect() {
+  private _disconnect(): void {
     if (this._tree) {
       this._tree.removeEventListener("click", this._handleClick);
       this._tree.removeEventListener("keydown", this._handleKeydown);
@@ -706,8 +270,13 @@ class AuraTree extends HTMLElement {
     this.removeAttribute("data-has-branches");
   }
 
-  _collectEntries(container, panelsByValue, parentValue = null, level = 1) {
-    const entries = [];
+  private _collectEntries(
+    container: HTMLElement,
+    panelsByValue: Map<string, HTMLElement>,
+    parentValue: string | null = null,
+    level = 1,
+  ): AuraTreeEntry[] {
+    const entries: AuraTreeEntry[] = [];
     const directItems = getDirectChildElements(container, ITEM_SELECTOR);
     const setSize = directItems.length;
 
@@ -724,7 +293,7 @@ class AuraTree extends HTMLElement {
         : [];
       const toggle = getDirectChildElement(item, TOGGLE_SELECTOR);
 
-      const entry = {
+      const entry: AuraTreeEntry = {
         value,
         item,
         node,
@@ -734,7 +303,7 @@ class AuraTree extends HTMLElement {
         parentValue,
         childValues: directChildren
           .map((child) => child.getAttribute("data-value"))
-          .filter(Boolean),
+          .filter((childValue): childValue is string => Boolean(childValue)),
         level,
         positionInSet: index + 1,
         setSize,
@@ -759,7 +328,7 @@ class AuraTree extends HTMLElement {
     return entries;
   }
 
-  _normalizeActivationAttribute() {
+  private _normalizeActivationAttribute(): void {
     if (this.activation === "manual") {
       this.setAttribute("activation", "manual");
       return;
@@ -768,9 +337,18 @@ class AuraTree extends HTMLElement {
     this.removeAttribute("activation");
   }
 
-  _applyEntrySemantics(entry) {
+  private _applyEntrySemantics(entry: AuraTreeEntry): void {
     entry.item.setAttribute("data-level", String(entry.level));
-    entry.node.setAttribute("role", "treeitem");
+
+    if (
+      !isNativeInteractiveElement(entry.node) &&
+      !entry.node.hasAttribute("role")
+    ) {
+      entry.node.setAttribute("role", "treeitem");
+    } else {
+      entry.node.setAttribute("role", "treeitem");
+    }
+
     entry.node.setAttribute(
       "id",
       ensureElementId(entry.node, "aura-tree-node"),
@@ -780,7 +358,7 @@ class AuraTree extends HTMLElement {
     entry.node.setAttribute("aria-posinset", String(entry.positionInSet));
     entry.node.setAttribute("aria-selected", "false");
 
-    const controlIds = [];
+    const controlIds: string[] = [];
 
     if (entry.group) {
       const groupId = ensureElementId(entry.group, "aura-tree-group");
@@ -814,7 +392,7 @@ class AuraTree extends HTMLElement {
     }
   }
 
-  _selectFromAttribute(options) {
+  private _selectFromAttribute(options: SelectionOptions): boolean {
     const value = this.getAttribute("value");
     if (!value) {
       return false;
@@ -823,7 +401,7 @@ class AuraTree extends HTMLElement {
     return this._select(value, options);
   }
 
-  _select(value, options) {
+  private _select(value: string, options: SelectionOptions): boolean {
     const entry = this._entriesByValue.get(value);
     if (!entry) {
       return false;
@@ -875,7 +453,7 @@ class AuraTree extends HTMLElement {
     return true;
   }
 
-  _expandAncestors(entry) {
+  private _expandAncestors(entry: AuraTreeEntry): void {
     let currentParentValue = entry.parentValue;
 
     while (currentParentValue) {
@@ -889,11 +467,11 @@ class AuraTree extends HTMLElement {
     }
   }
 
-  _isExpanded(entry) {
+  private _isExpanded(entry: AuraTreeEntry): boolean {
     return entry.group ? entry.item.hasAttribute("data-expanded") : false;
   }
 
-  _syncExpandedState(entry, expanded) {
+  private _syncExpandedState(entry: AuraTreeEntry, expanded: boolean): void {
     if (!entry.group) {
       return;
     }
@@ -907,7 +485,11 @@ class AuraTree extends HTMLElement {
     }
   }
 
-  _setExpanded(entry, expanded, options) {
+  private _setExpanded(
+    entry: AuraTreeEntry,
+    expanded: boolean,
+    options: ExpansionOptions,
+  ): boolean {
     if (!entry.group || this._isExpanded(entry) === expanded) {
       return false;
     }
@@ -935,7 +517,10 @@ class AuraTree extends HTMLElement {
     return true;
   }
 
-  _isDescendantOf(entry, ancestor) {
+  private _isDescendantOf(
+    entry: AuraTreeEntry,
+    ancestor: AuraTreeEntry,
+  ): boolean {
     let currentParentValue = entry.parentValue;
 
     while (currentParentValue) {
@@ -950,7 +535,7 @@ class AuraTree extends HTMLElement {
     return false;
   }
 
-  _getVisibleEntries() {
+  private _getVisibleEntries(): AuraTreeEntry[] {
     return this._entries.filter((entry) => {
       let currentParentValue = entry.parentValue;
 
@@ -971,7 +556,7 @@ class AuraTree extends HTMLElement {
     });
   }
 
-  _moveFocus(entry) {
+  private _moveFocus(entry: AuraTreeEntry): void {
     entry.node.focus();
 
     if (this.activation === "auto") {
@@ -979,7 +564,10 @@ class AuraTree extends HTMLElement {
     }
   }
 
-  _activateNode(node, options) {
+  private _activateNode(
+    node: HTMLElement,
+    options: SelectionOptions,
+  ): boolean {
     const entry = this._entries.find((currentEntry) =>
       currentEntry.node === node
     );
@@ -990,11 +578,11 @@ class AuraTree extends HTMLElement {
     return this._select(entry.value, options);
   }
 
-  _isActivationKey(key) {
+  private _isActivationKey(key: string): boolean {
     return key === "Enter" || key === " ";
   }
 
-  _handleClick(event) {
+  private _handleClick(event: Event): void {
     const target = event.target;
     if (!(target instanceof Element)) {
       return;
@@ -1035,7 +623,7 @@ class AuraTree extends HTMLElement {
     this._activateNode(node, { dispatch: true, focus: false });
   }
 
-  _handleKeydown(event) {
+  private _handleKeydown(event: KeyboardEvent): void {
     const target = event.target;
     if (!(target instanceof Element)) {
       return;
@@ -1062,8 +650,8 @@ class AuraTree extends HTMLElement {
     }
 
     const visibleEntries = this._getVisibleEntries();
-    const currentIndex = visibleEntries.findIndex(
-      (currentEntry) => currentEntry.value === entry.value,
+    const currentIndex = visibleEntries.findIndex((currentEntry) =>
+      currentEntry.value === entry.value
     );
     if (currentIndex < 0) {
       return;
@@ -1131,7 +719,7 @@ class AuraTree extends HTMLElement {
     }
   }
 
-  _handleRightArrow(entry, event) {
+  private _handleRightArrow(entry: AuraTreeEntry, event: KeyboardEvent): void {
     if (entry.group && !this._isExpanded(entry)) {
       event.preventDefault();
       this._setExpanded(entry, true, {
@@ -1153,7 +741,7 @@ class AuraTree extends HTMLElement {
     this._moveFocus(firstChildEntry);
   }
 
-  _handleLeftArrow(entry, event) {
+  private _handleLeftArrow(entry: AuraTreeEntry, event: KeyboardEvent): void {
     if (entry.group && this._isExpanded(entry)) {
       event.preventDefault();
       this._setExpanded(entry, false, {
@@ -1177,47 +765,10 @@ class AuraTree extends HTMLElement {
   }
 }
 
-function registerAuraMasterDetail() {
-  if (!customElements.get(AURA_MASTER_DETAIL_TAG_NAME)) {
-    customElements.define(AURA_MASTER_DETAIL_TAG_NAME, AuraMasterDetail);
-  }
-
-  return AuraMasterDetail;
-}
-
-function registerAuraTabs() {
-  if (!customElements.get(AURA_TABS_TAG_NAME)) {
-    customElements.define(AURA_TABS_TAG_NAME, AuraTabs);
-  }
-
-  return AuraTabs;
-}
-
-function registerAuraTree() {
+export function registerAuraTree(): typeof AuraTree {
   if (!customElements.get(AURA_TREE_TAG_NAME)) {
     customElements.define(AURA_TREE_TAG_NAME, AuraTree);
   }
 
   return AuraTree;
 }
-
-function registerAuraComponents() {
-  registerAuraMasterDetail();
-  registerAuraTree();
-  registerAuraTabs();
-}
-
-registerAuraComponents();
-
-export {
-  AURA_MASTER_DETAIL_TAG_NAME,
-  AURA_TABS_TAG_NAME,
-  AURA_TREE_TAG_NAME,
-  AuraMasterDetail,
-  AuraTabs,
-  AuraTree,
-  registerAuraComponents,
-  registerAuraMasterDetail,
-  registerAuraTabs,
-  registerAuraTree,
-};

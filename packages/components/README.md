@@ -5,9 +5,11 @@ Light-DOM interactive components for Aura.
 Current exports:
 
 - `AuraMasterDetail`
+- `AuraTree`
 - `AuraTabs`
 - `registerAuraComponents()`
 - `registerAuraMasterDetail()`
+- `registerAuraTree()`
 - `registerAuraTabs()`
 
 Example:

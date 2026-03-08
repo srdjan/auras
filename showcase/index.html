@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -24,6 +24,7 @@
             <li><a href="#layout">Layout</a></li>
             <li><a href="#components">Components</a></li>
             <li><a href="#diagram">Diagram</a></li>
+            <li><a href="#tree">Tree</a></li>
             <li><a href="#pilot">Pilot</a></li>
             <li><a href="#forms">Forms</a></li>
             <li><a href="#media">Media</a></li>
@@ -75,8 +76,7 @@
           <p>
             <strong>Current mode:</strong>
             <code id="state-output"
-              >brand=headless theme=light contrast=normal motion=normal</code
-            >
+            >brand=headless theme=light contrast=normal motion=normal</code>
           </p>
 
           <pre><code>&lt;body data-brand="aura" data-theme="dark" data-contrast="more"&gt;...&lt;/body&gt;</code></pre>
@@ -656,6 +656,182 @@
         </section>
 
         <section
+          id="tree"
+          data-surface="card"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <div>
+            <h2>Pilot: tree</h2>
+            <p>
+              <code>aura-tree</code> keeps the authored nested list in light DOM
+              and adds roving focus, branch expansion, keyboard navigation,
+              selection state, and optional linked panels.
+            </p>
+          </div>
+
+          <p>
+            <strong>Current selection:</strong>
+            <code id="tree-selection">master-detail</code>
+          </p>
+          <p>
+            Use <kbd>Up</kbd> and <kbd>Down</kbd> to move through visible items,
+            <kbd>Right</kbd> to expand or enter a branch, and <kbd>Left</kbd>
+            to move back toward the parent.
+          </p>
+
+          <aura-tree
+            id="tree-pilot"
+            data-ui="tree"
+            value="master-detail"
+          >
+            <ul data-part="tree" aria-label="Aura interactive package map">
+              <li data-part="item" data-value="elements">
+                <button type="button" data-part="node">
+                  <strong>Elements</strong>
+                  <p>
+                    Neutral defaults, layout primitives, forms, and utilities.
+                  </p>
+                </button>
+              </li>
+
+              <li data-part="item" data-value="components" data-expanded>
+                <button
+                  type="button"
+                  data-part="toggle"
+                  aria-label="Toggle Components"
+                >
+                </button>
+                <button type="button" data-part="node">
+                  <strong>Components</strong>
+                  <p>
+                    Interactive controllers that stay light-DOM and inspectable.
+                  </p>
+                </button>
+
+                <ul data-part="group">
+                  <li data-part="item" data-value="master-detail">
+                    <button type="button" data-part="node">
+                      <strong>Master-detail</strong>
+                      <p>
+                        Selection controller for a split list and detail view.
+                      </p>
+                    </button>
+                  </li>
+                  <li data-part="item" data-value="tabs">
+                    <button type="button" data-part="node">
+                      <strong>Tabs</strong>
+                      <p>Horizontal trigger and panel coordination.</p>
+                    </button>
+                  </li>
+                  <li data-part="item" data-value="tree">
+                    <button type="button" data-part="node">
+                      <strong>Tree</strong>
+                      <p>
+                        Nested hierarchy with expansion and parent-child
+                        movement.
+                      </p>
+                    </button>
+                  </li>
+                </ul>
+              </li>
+
+              <li data-part="item" data-value="diagram">
+                <button type="button" data-part="node">
+                  <strong>Diagram</strong>
+                  <p>
+                    Specialized package for spatial node selection and panels.
+                  </p>
+                </button>
+              </li>
+            </ul>
+
+            <section data-part="panels">
+              <article
+                data-part="panel"
+                data-surface="card"
+                data-value="elements"
+                hidden
+              >
+                <h3>Elements</h3>
+                <p>
+                  The base layer remains static CSS: semantic defaults, layout,
+                  surfaces, theming, accessibility, and print styles.
+                </p>
+              </article>
+
+              <article
+                data-part="panel"
+                data-surface="card"
+                data-value="components"
+                hidden
+              >
+                <h3>Components</h3>
+                <p>
+                  Components own behavior, not presentation. They coordinate
+                  focus, selection, keyboard models, and authored light-DOM
+                  state.
+                </p>
+              </article>
+
+              <article
+                data-part="panel"
+                data-surface="card"
+                data-value="master-detail"
+              >
+                <h3>Master-detail</h3>
+                <p>
+                  This remains the clearest split-layer example: CSS provides
+                  the shell and the custom element only coordinates the active
+                  item and panel.
+                </p>
+              </article>
+
+              <article
+                data-part="panel"
+                data-surface="card"
+                data-value="tabs"
+                hidden
+              >
+                <h3>Tabs</h3>
+                <p>
+                  Tabs reuse the same host contract as master-detail, but switch
+                  inline panels with honest tab semantics.
+                </p>
+              </article>
+
+              <article
+                data-part="panel"
+                data-surface="card"
+                data-value="tree"
+                hidden
+              >
+                <h3>Tree</h3>
+                <p>
+                  Tree is the next step up in complexity because it adds nested
+                  visibility, parent-child movement, and expandable branches
+                  without leaving Aura&apos;s authored HTML model.
+                </p>
+              </article>
+
+              <article
+                data-part="panel"
+                data-surface="card"
+                data-value="diagram"
+                hidden
+              >
+                <h3>Diagram</h3>
+                <p>
+                  Diagram stays separate because spatial navigation and
+                  directional node movement are specialized enough to justify a
+                  dedicated package.
+                </p>
+              </article>
+            </section>
+          </aura-tree>
+        </section>
+
+        <section
           id="pilot"
           data-surface="card"
           data-layout="stack"
@@ -1091,20 +1267,14 @@
                 <div data-layout="stack" data-gap="2">
                   <p><strong>Choices</strong></p>
                   <label><input type="checkbox" checked /> Email updates</label>
-                  <label
-                    ><input type="radio" name="plan" checked /> Starter
-                    plan</label
-                  >
+                  <label><input type="radio" name="plan" checked /> Starter
+                    plan</label>
                   <label><input type="radio" name="plan" /> Pro plan</label>
                   <p><strong>Switches</strong></p>
-                  <label
-                    ><input type="checkbox" role="switch" checked /> Public
-                    profile</label
-                  >
-                  <label
-                    ><input type="checkbox" role="switch" /> Weekly digest
-                    reminders</label
-                  >
+                  <label><input type="checkbox" role="switch" checked /> Public
+                    profile</label>
+                  <label><input type="checkbox" role="switch" /> Weekly digest
+                    reminders</label>
                 </div>
 
                 <div data-layout="stack" data-gap="2">
@@ -1227,20 +1397,11 @@
               <div
                 id="smooth-region"
                 data-smooth
-                style="
-                  max-height: 14rem;
-                  border: 1px solid var(--border);
-                  padding: var(--space-3);
-                "
+                style="max-height: 14rem; border: 1px solid var(--border); padding: var(--space-3)"
               >
                 <p
                   data-sticky
-                  style="
-                    --sticky-top: var(--space-2);
-                    background: var(--surface);
-                    border: 1px solid var(--border);
-                    padding: var(--space-2);
-                  "
+                  style="--sticky-top: var(--space-2); background: var(--surface); border: 1px solid var(--border); padding: var(--space-2)"
                 >
                   Sticky note inside a smooth scroll region.
                 </p>
@@ -1277,8 +1438,7 @@
 
               <p>
                 <span data-visually-hidden
-                  >Screen-reader-only introduction.</span
-                >
+                >Screen-reader-only introduction.</span>
                 This sentence includes hidden accessible text.
               </p>
             </div>
@@ -1333,11 +1493,15 @@
         const body = document.body;
         const stateOutput = document.getElementById("state-output");
         const headlessButton = document.getElementById("use-headless");
-        const auraBrandButton = document.getElementById("use-aura-brand");
+        const auraBrandButton = document.getElementById(
+          "use-aura-brand",
+        );
         const editorialBrandButton = document.getElementById(
           "use-editorial-brand",
         );
-        const contrastButton = document.getElementById("toggle-contrast");
+        const contrastButton = document.getElementById(
+          "toggle-contrast",
+        );
         const motionButton = document.getElementById("toggle-motion");
         const dialog = document.getElementById("capability-dialog");
         const smoothRegion = document.getElementById("smooth-region");
@@ -1397,7 +1561,11 @@
           }
         }
 
-        function bindSelectionOutput(elementId, outputId, fallbackValue) {
+        function bindSelectionOutput(
+          elementId,
+          outputId,
+          fallbackValue,
+        ) {
           const element = document.getElementById(elementId);
           const output = document.getElementById(outputId);
 
@@ -1405,7 +1573,8 @@
             return;
           }
 
-          output.textContent = element.getAttribute("value") || fallbackValue;
+          output.textContent = element.getAttribute("value") ||
+            fallbackValue;
           element.addEventListener("aura-change", (event) => {
             output.textContent = event.detail.value;
           });
@@ -1444,30 +1613,42 @@
         function updateState() {
           const brand = body.getAttribute("data-brand") || "headless";
           const theme = root.getAttribute("data-theme") || "light";
-          const contrast = root.getAttribute("data-contrast") || "normal";
+          const contrast = root.getAttribute("data-contrast") ||
+            "normal";
           const motion = root.getAttribute("data-motion") || "normal";
 
-          stateOutput.textContent = `brand=${brand} theme=${theme} contrast=${contrast} motion=${motion}`;
+          stateOutput.textContent =
+            `brand=${brand} theme=${theme} contrast=${contrast} motion=${motion}`;
 
-          contrastButton.textContent =
-            contrast === "more"
-              ? "Disable high contrast"
-              : "Enable high contrast";
-          motionButton.textContent =
-            motion === "reduce" ? "Use normal motion" : "Use reduced motion";
+          contrastButton.textContent = contrast === "more"
+            ? "Disable high contrast"
+            : "Enable high contrast";
+          motionButton.textContent = motion === "reduce"
+            ? "Use normal motion"
+            : "Use reduced motion";
           syncBrandButtons(brand);
         }
 
-        headlessButton.addEventListener("click", () => setBrand("headless"));
-        auraBrandButton.addEventListener("click", () => setBrand("aura"));
-        editorialBrandButton.addEventListener("click", () =>
-          setBrand("editorial"),
+        headlessButton.addEventListener(
+          "click",
+          () => setBrand("headless"),
+        );
+        auraBrandButton.addEventListener(
+          "click",
+          () => setBrand("aura"),
+        );
+        editorialBrandButton.addEventListener(
+          "click",
+          () => setBrand("editorial"),
         );
 
-        document.getElementById("toggle-dark").addEventListener("click", () => {
-          toggleThemeToken("dark");
-          updateState();
-        });
+        document.getElementById("toggle-dark").addEventListener(
+          "click",
+          () => {
+            toggleThemeToken("dark");
+            updateState();
+          },
+        );
 
         contrastButton.addEventListener("click", () => {
           toggleAttribute(root, "data-contrast", "more");
@@ -1479,21 +1660,27 @@
           updateState();
         });
 
-        document.getElementById("reset-demo").addEventListener("click", () => {
-          body.removeAttribute("data-brand");
-          root.removeAttribute("data-theme");
-          root.removeAttribute("data-contrast");
-          root.removeAttribute("data-motion");
-          updateState();
-        });
+        document.getElementById("reset-demo").addEventListener(
+          "click",
+          () => {
+            body.removeAttribute("data-brand");
+            root.removeAttribute("data-theme");
+            root.removeAttribute("data-contrast");
+            root.removeAttribute("data-motion");
+            updateState();
+          },
+        );
 
-        document.getElementById("open-dialog").addEventListener("click", () => {
-          if (typeof dialog.showModal === "function") {
-            dialog.showModal();
-          } else {
-            dialog.setAttribute("open", "");
-          }
-        });
+        document.getElementById("open-dialog").addEventListener(
+          "click",
+          () => {
+            if (typeof dialog.showModal === "function") {
+              dialog.showModal();
+            } else {
+              dialog.setAttribute("open", "");
+            }
+          },
+        );
 
         document
           .getElementById("close-dialog")
@@ -1518,6 +1705,11 @@
           });
 
         bindSelectionOutput(
+          "tree-pilot",
+          "tree-selection",
+          "master-detail",
+        );
+        bindSelectionOutput(
           "layer-pilot",
           "master-detail-selection",
           "elements",
@@ -1527,8 +1719,16 @@
           "manual-master-detail-selection",
           "elements",
         );
-        bindSelectionOutput("diagram-pilot", "diagram-selection", "received");
-        bindSelectionOutput("tabs-auto-pilot", "tabs-selection", "overview");
+        bindSelectionOutput(
+          "diagram-pilot",
+          "diagram-selection",
+          "received",
+        );
+        bindSelectionOutput(
+          "tabs-auto-pilot",
+          "tabs-selection",
+          "overview",
+        );
         bindSelectionOutput(
           "tabs-manual-pilot",
           "manual-tabs-selection",

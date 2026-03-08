@@ -77,12 +77,14 @@ The repo now includes a working prototype of the next layers:
   - spatial node selection for interactive diagrams
 - `aura-master-detail`
   - selection controller for master-detail views
+- `aura-tree`
+  - hierarchical selection controller with expansion and optional panels
 - `aura-tabs`
   - tab controller with the same host contract
 
 The current implementation keeps the browser demo entry at the repo root and the
-reusable package modules under `packages/diagram` and `packages/components`.
-The architecture note still describes the future publishing shape as
+reusable package modules under `packages/diagram` and `packages/components`. The
+architecture note still describes the future publishing shape as
 `@aura/composites`, `jsr:@aura/diagram`, and `jsr:@aura/components`.
 
 ## Design tokens
@@ -194,7 +196,8 @@ These work on any `data-layout` element:
   data-align="center"
   data-justify="between"
   data-gap="4"
-></div>
+>
+</div>
 ```
 
 | Attribute      | Values                                                  |
@@ -361,8 +364,8 @@ carry meaning.
 ```
 
 `aura-diagram` is a separate optional package on top of the CSS shell. It adds
-active-node state, roving focus, spatial arrow-key movement, and optional
-linked panels. It does not do auto-layout or edge routing.
+active-node state, roving focus, spatial arrow-key movement, and optional linked
+panels. It does not do auto-layout or edge routing.
 
 ### Master-detail pilot
 
@@ -398,6 +401,54 @@ linked panels. It does not do auto-layout or edge routing.
 
 Use `activation="manual"` when arrow keys should move focus without changing the
 open panel until the user presses `Enter` or `Space`.
+
+### Tree pilot
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-components.js"></script>
+
+<aura-tree data-ui="tree" value="master-detail" activation="manual">
+  <ul data-part="tree" aria-label="Aura components">
+    <li data-part="item" data-value="elements">
+      <button type="button" data-part="node">Elements</button>
+    </li>
+
+    <li data-part="item" data-value="components" data-expanded>
+      <button
+        type="button"
+        data-part="toggle"
+        aria-label="Toggle Components"
+      >
+      </button>
+      <button type="button" data-part="node">Components</button>
+
+      <ul data-part="group">
+        <li data-part="item" data-value="master-detail">
+          <button type="button" data-part="node">Master-detail</button>
+        </li>
+        <li data-part="item" data-value="tabs">
+          <button type="button" data-part="node">Tabs</button>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <section data-part="panels">
+    <article data-part="panel" data-value="elements">...</article>
+    <article data-part="panel" data-value="components" hidden>...</article>
+    <article data-part="panel" data-value="master-detail" hidden>...</article>
+    <article data-part="panel" data-value="tabs" hidden>...</article>
+  </section>
+</aura-tree>
+```
+
+`aura-tree` uses the same `value`, `activation`, `show(value)`,
+`focusCurrent()`, and `aura-change` contract as the other Components, but adds
+hierarchy and branch expansion. `Up` and `Down` move through visible nodes;
+`Right` expands or enters a branch; `Left` collapses or moves back to the
+parent.
 
 ### Tabs pilot
 
@@ -582,6 +633,7 @@ Aura targets modern evergreen browsers. Key features and their support:
 | `tests/aura-components.browser.test.js` | Headless browser smoke test for the optional packages and keyboard flows |
 | `tests/aura-diagram.test.js`            | Deno behavioral coverage for `aura-diagram`                              |
 | `tests/aura-components.test.js`         | Deno behavioral coverage for the Components package                      |
+| `tests/aura-tree.test.js`               | Deno behavioral coverage for `aura-tree`                                 |
 | `packages/diagram/mod.ts`               | Deno-first export surface for the diagram package                        |
 | `packages/diagram/jsr.json`             | JSR package metadata for `@aura/diagram`                                 |
 | `packages/diagram/README.md`            | Package-level usage notes for `@aura/diagram`                            |
@@ -590,6 +642,7 @@ Aura targets modern evergreen browsers. Key features and their support:
 | `packages/components/jsr.json`          | JSR package metadata for `@aura/components`                              |
 | `packages/components/README.md`         | Package-level usage notes                                                |
 | `packages/components/src/`              | Shared logic plus per-component runtime modules                          |
+| `packages/components/src/tree.ts`       | Tree runtime for `aura-tree`                                             |
 | `aura-brand.css`                        | Sample brand pack that activates with `data-brand="aura"`                |
 | `aura-brand-editorial.css`              | Sample editorial brand pack                                              |
 | `showcase/index.html`                   | Interactive demo exercising the Elements, Composites, and Components     |
