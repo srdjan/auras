@@ -11,7 +11,7 @@ step.
 
 ```sh
 cd /Users/srdjans/Code/MetadorHome/metador.aura
-deno run --allow-net --allow-read jsr:@std/http/file-server .
+deno task dev
 ```
 
 2. Open `http://localhost:8000/index.html`.
@@ -45,21 +45,30 @@ deno run --allow-net --allow-read jsr:@std/http/file-server .
 </html>
 ```
 
+5. When you want the optional higher layers, load them explicitly:
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-components.js"></script>
+```
+
 ## Mental Model
 
-- `aura.css` is the headless core. It gives you reset, tokens, typography,
+- `aura.css` is the Elements layer. It gives you reset, tokens, typography,
   layout primitives, components, utilities, accessibility defaults, and print
   styles.
 - Start with semantic HTML. Add `data-*` attributes only when you want layout,
   surface, variant, or utility behavior.
-- Keep branding separate from structure. The core stays neutral; brand packs
-  only override tokens inside `@layer brands`.
+- Keep branding separate from structure. The Elements layer stays neutral; brand
+  packs only override tokens inside `@layer brands`.
 - Theme controls are composable:
   - `data-brand` goes on `<body>` in the current examples.
   - `data-theme="dark"`, `data-contrast="more"`, and `data-motion="reduce"` go
     on `<html>`.
-- The framework does not require JavaScript. The JS in `index.html` exists only
-  to let the demo switch brands and theme states live.
+- The framework does not require JavaScript. The JS in `index.html` and
+  `aura-components.js` only powers the optional interactive layer and the demo
+  controls.
 
 ## Common Patterns
 
@@ -145,6 +154,37 @@ application chrome:
   </hgroup>
   <p>Aura keeps this behavior opt-in so general UI stays restrained.</p>
 </article>
+```
+
+### Master-detail pilot
+
+The first optional Component is `aura-master-detail`, paired with the optional
+Composites stylesheet:
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-components.js"></script>
+
+<aura-master-detail data-ui="master-detail" value="elements">
+  <nav data-part="master" aria-label="Aura layers">
+    <button type="button" data-part="trigger" data-value="elements">
+      Elements
+    </button>
+    <button type="button" data-part="trigger" data-value="composites">
+      Composites
+    </button>
+    <button type="button" data-part="trigger" data-value="components">
+      Components
+    </button>
+  </nav>
+
+  <section data-part="detail">
+    <article data-part="panel" data-value="elements">...</article>
+    <article data-part="panel" data-value="composites" hidden>...</article>
+    <article data-part="panel" data-value="components" hidden>...</article>
+  </section>
+</aura-master-detail>
 ```
 
 ### Forms
@@ -241,6 +281,7 @@ The demo also exercises:
 - Layout primitives
 - Long-form prose styling
 - Card, notice, and accordion surfaces
+- Master-detail composites and the `aura-master-detail` pilot
 - Button variants, busy states, and dialog styling
 - Form validation states
 - Switch, progress, and meter styling
@@ -251,13 +292,16 @@ The demo also exercises:
 
 ## File Map
 
-| File                       | Purpose                     |
-| -------------------------- | --------------------------- |
-| `aura.css`                 | Headless core framework     |
-| `aura-brand.css`           | Sample Aura brand pack      |
-| `aura-brand-editorial.css` | Sample editorial brand pack |
-| `index.html`               | Interactive demo page       |
-| `docs/user-guide.md`       | This user guide             |
+| File                             | Purpose                               |
+| -------------------------------- | ------------------------------------- |
+| `aura.css`                       | Elements layer framework              |
+| `aura-composites.css`            | Optional Composites layer             |
+| `aura-components.js`             | Optional Components layer             |
+| `aura-brand.css`                 | Sample Aura brand pack                |
+| `aura-brand-editorial.css`       | Sample editorial brand pack           |
+| `index.html`                     | Interactive demo page                 |
+| `docs/component-architecture.md` | Architecture note for the next layers |
+| `docs/user-guide.md`             | This user guide                       |
 
 ## Verification
 
@@ -265,7 +309,8 @@ Run these checks after changes:
 
 ```sh
 cd /Users/srdjans/Code/MetadorHome/metador.aura
-deno run --allow-net --allow-read jsr:@std/http/file-server .
+deno task check
+deno task dev
 ```
 
 Then verify:
@@ -273,9 +318,11 @@ Then verify:
 1. Open `http://localhost:8000/index.html`.
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
-4. Review the prose, notice, and accordion examples.
-5. Open the dialog and confirm the backdrop and page scroll lock.
-6. Submit the form with empty required fields and confirm validation, busy
+4. Review the prose, notice, accordion, and master-detail pilot examples.
+5. Use arrow keys inside the master-detail pilot and confirm the detail panel
+   follows the active trigger.
+6. Open the dialog and confirm the backdrop and page scroll lock.
+7. Submit the form with empty required fields and confirm validation, busy
    states, select chevrons, progress, and meter styles.
-7. Open print preview and confirm buttons/nav are hidden and print-only rules
+8. Open print preview and confirm buttons/nav are hidden and print-only rules
    apply.

@@ -24,6 +24,14 @@ When you are ready for a branded look, add the brand pack and a data attribute:
 <body data-brand="aura"></body>
 ```
 
+When you want the optional higher layers, load them explicitly:
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-components.js"></script>
+```
+
 ## Architecture
 
 Aura uses CSS `@layer` ordering to keep specificity predictable:
@@ -32,13 +40,38 @@ Aura uses CSS `@layer` ordering to keep specificity predictable:
 reset > tokens > brands > defaults > layouts > components > utilities > print
 ```
 
-**Headless core** (`aura.css`) ships with near-neutral colors (chroma 0.03),
+**Elements layer** (`aura.css`) ships with near-neutral colors (chroma 0.03),
 transparent bordered buttons, and no card shadows. It provides structure without
 forcing a visual language.
 
 **Brand packs** (e.g. `aura-brand.css`) live in the `brands` layer and override
 token values when a `data-brand` attribute is present. This keeps the core
 cacheable and lets you swap brands without touching the framework.
+
+## Next Architecture
+
+The current repo is the Elements layer. The proposed next step is to keep that
+base intact, add an optional Composites stylesheet for CSS-only app patterns,
+and put behavior-heavy widgets into a separate Components package built from
+light-DOM custom elements.
+
+See [Component Architecture](./docs/component-architecture.md) for the package
+split, decision rules, and the `aura-master-detail` pilot contract.
+
+## Shipped Prototype
+
+The repo now includes a working prototype of the next layers:
+
+- `aura-composites.css`
+  - optional CSS-only shell patterns
+- `aura-components.js`
+  - optional light-DOM interactive components
+- `aura-master-detail`
+  - first pilot component
+
+The current implementation lives as root files to keep the prototype easy to
+inspect. The architecture note describes the future package split as
+`@aura/composites` and `jsr:@aura/components`.
 
 ## Design tokens
 
@@ -149,7 +182,8 @@ These work on any `data-layout` element:
   data-align="center"
   data-justify="between"
   data-gap="4"
-></div>
+>
+</div>
 ```
 
 | Attribute      | Values                                                  |
@@ -243,6 +277,34 @@ alternatives:
     <p>Aura is a headless-first CSS framework for semantic HTML.</p>
   </details>
 </section>
+```
+
+### Master-detail pilot
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-components.js"></script>
+
+<aura-master-detail data-ui="master-detail" value="elements">
+  <nav data-part="master" aria-label="Aura layers">
+    <button type="button" data-part="trigger" data-value="elements">
+      Elements
+    </button>
+    <button type="button" data-part="trigger" data-value="composites">
+      Composites
+    </button>
+    <button type="button" data-part="trigger" data-value="components">
+      Components
+    </button>
+  </nav>
+
+  <section data-part="detail">
+    <article data-part="panel" data-value="elements">...</article>
+    <article data-part="panel" data-value="composites" hidden>...</article>
+    <article data-part="panel" data-value="components" hidden>...</article>
+  </section>
+</aura-master-detail>
 ```
 
 ### Prose
@@ -387,11 +449,16 @@ Aura targets modern evergreen browsers. Key features and their support:
 
 ## Files
 
-| File             | Purpose                                                                      |
-| ---------------- | ---------------------------------------------------------------------------- |
-| `aura.css`       | Headless core: reset, tokens, defaults, layout, components, utilities, print |
-| `aura-brand.css` | Sample brand pack that activates with `data-brand="aura"`                    |
-| `index.html`     | Interactive demo exercising all features                                     |
+| File                             | Purpose                                                                |
+| -------------------------------- | ---------------------------------------------------------------------- |
+| `aura.css`                       | Elements layer: reset, tokens, defaults, layout, components, utilities |
+| `aura-composites.css`            | Optional Composites layer with higher-level CSS patterns               |
+| `aura-components.js`             | Optional Components layer with light-DOM interactive widgets           |
+| `aura-brand.css`                 | Sample brand pack that activates with `data-brand="aura"`              |
+| `aura-brand-editorial.css`       | Sample editorial brand pack                                            |
+| `index.html`                     | Interactive demo exercising the Elements, Composites, and Components   |
+| `docs/component-architecture.md` | Architecture note and `aura-master-detail` contract                    |
+| `deno.json`                      | Deno tasks for local dev server and component checking                 |
 
 ## License
 

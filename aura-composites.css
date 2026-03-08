@@ -1,0 +1,104 @@
+/* Optional Aura composites layer. Load this after aura.css when you want
+   higher-level CSS patterns without pulling in behavior. */
+@layer composites {
+  :where([data-ui~="master-detail"], aura-master-detail) {
+    --master-detail-gap: var(--space-4);
+    --master-detail-master-width: 18rem;
+    --master-detail-master-padding: var(--space-2);
+    --master-detail-master-bg: var(--surface);
+    --master-detail-master-border-color: var(--border);
+    --master-detail-master-shadow: var(--shadow-sm);
+    --master-detail-trigger-radius: var(--radius-md);
+    --master-detail-trigger-padding: var(--space-3);
+    --master-detail-trigger-border-color: transparent;
+    --master-detail-trigger-bg: transparent;
+    --master-detail-trigger-bg-hover: var(--surface-raised);
+    --master-detail-trigger-bg-active: var(--primary-subtle);
+    --master-detail-trigger-border-color-active: color-mix(
+      in oklch,
+      var(--primary) 38%,
+      var(--border)
+    );
+
+    display: grid;
+    gap: var(--master-detail-gap);
+    align-items: start;
+  }
+
+  @media (min-width: 48rem) {
+    :where([data-ui~="master-detail"], aura-master-detail) {
+      grid-template-columns:
+        minmax(15rem, var(--master-detail-master-width))
+        minmax(0, 1fr);
+    }
+  }
+
+  :where([data-ui~="master-detail"], aura-master-detail) [data-part="master"] {
+    display: grid;
+    gap: var(--space-1);
+    align-content: start;
+    padding: var(--master-detail-master-padding);
+    background-color: var(--master-detail-master-bg);
+    border: 1px solid var(--master-detail-master-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--master-detail-master-shadow);
+  }
+
+  :where([data-ui~="master-detail"], aura-master-detail)
+    :where(button, a)[data-part="trigger"] {
+    inline-size: 100%;
+    min-block-size: auto;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-1);
+    text-align: left;
+    background-color: var(--master-detail-trigger-bg);
+    border: 1px solid var(--master-detail-trigger-border-color);
+    border-radius: var(--master-detail-trigger-radius);
+    padding: var(--master-detail-trigger-padding);
+    box-shadow: none;
+  }
+
+  :where([data-ui~="master-detail"], aura-master-detail)
+    :where(button, a)[data-part="trigger"]:hover {
+    background-color: var(--master-detail-trigger-bg-hover);
+  }
+
+  :where([data-ui~="master-detail"], aura-master-detail)
+    [data-part="trigger"][data-active] {
+    background-color: var(--master-detail-trigger-bg-active);
+    border-color: var(--master-detail-trigger-border-color-active);
+  }
+
+  :where([data-ui~="master-detail"], aura-master-detail)
+    [data-part="trigger"]
+    > :where(p, small) {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+
+  :where([data-ui~="master-detail"], aura-master-detail)
+    [data-part="trigger"][data-active]
+    > :where(p, small) {
+    color: var(--text);
+  }
+
+  :where([data-ui~="master-detail"], aura-master-detail) [data-part="detail"] {
+    display: grid;
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="master-detail"], aura-master-detail) [data-part="panel"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="master-detail"], aura-master-detail)
+    [data-part="panel"][hidden] {
+    display: none !important;
+  }
+}
