@@ -396,7 +396,7 @@
           <div>
             <h2>Pilot: master-detail</h2>
             <p>
-              This is the first split-layer prototype. The shell comes from
+              This is one split-layer prototype. The shell comes from
               <code>aura-composites.css</code>; selection, focus, and panel
               visibility come from <code>aura-components.js</code>.
             </p>
@@ -590,6 +590,181 @@
                   </article>
                 </section>
               </aura-master-detail>
+            </section>
+          </div>
+        </section>
+
+        <section
+          id="tabs-pilot"
+          data-surface="card"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <div>
+            <h2>Pilot: tabs</h2>
+            <p>
+              <code>aura-tabs</code> reuses the same light-DOM component
+              contract as <code>aura-master-detail</code>, but with honest tab
+              semantics for compact app views.
+            </p>
+          </div>
+
+          <div data-layout="grid" data-gap="4" data-grid-min="md">
+            <section data-layout="stack" data-gap="3">
+              <p>
+                <strong>Auto activation:</strong>
+                <code id="tabs-selection">overview</code>
+              </p>
+
+              <aura-tabs id="tabs-auto-pilot" data-ui="tabs" value="overview">
+                <nav data-part="tablist" aria-label="Release views">
+                  <button
+                    type="button"
+                    data-part="trigger"
+                    data-value="overview"
+                  >
+                    Overview
+                  </button>
+                  <button
+                    type="button"
+                    data-part="trigger"
+                    data-value="tokens"
+                  >
+                    Tokens
+                  </button>
+                  <button
+                    type="button"
+                    data-part="trigger"
+                    data-value="behavior"
+                  >
+                    Behavior
+                  </button>
+                </nav>
+
+                <section data-part="panels">
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="overview"
+                  >
+                    <h3>Overview</h3>
+                    <p>
+                      Tabs are a better fit than master-detail when the content
+                      lives in one compact context and should switch inline.
+                    </p>
+                  </article>
+
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="tokens"
+                    hidden
+                  >
+                    <h3>Tokens</h3>
+                    <p>
+                      The component only manages selection and panel visibility.
+                      Visual treatment still belongs to the Elements and
+                      Composites layers.
+                    </p>
+                  </article>
+
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="behavior"
+                    hidden
+                  >
+                    <h3>Behavior</h3>
+                    <p>
+                      Arrow keys, Home, End, click activation, and value sync
+                      all follow the same contract as the master-detail pilot.
+                    </p>
+                  </article>
+                </section>
+              </aura-tabs>
+            </section>
+
+            <section data-layout="stack" data-gap="3">
+              <p>
+                <strong>Manual activation:</strong>
+                <code id="manual-tabs-selection">overview</code>
+              </p>
+              <p>
+                Left and right arrows move focus first. Press
+                <kbd>Enter</kbd> or <kbd>Space</kbd> to activate the focused
+                tab.
+              </p>
+
+              <aura-tabs
+                id="tabs-manual-pilot"
+                data-ui="tabs"
+                value="overview"
+                activation="manual"
+              >
+                <nav data-part="tablist" aria-label="Manual tabs example">
+                  <button
+                    type="button"
+                    data-part="trigger"
+                    data-value="overview"
+                  >
+                    Overview
+                  </button>
+                  <button
+                    type="button"
+                    data-part="trigger"
+                    data-value="tokens"
+                  >
+                    Tokens
+                  </button>
+                  <button
+                    type="button"
+                    data-part="trigger"
+                    data-value="behavior"
+                  >
+                    Behavior
+                  </button>
+                </nav>
+
+                <section data-part="panels">
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="overview"
+                  >
+                    <h3>Manual tabs</h3>
+                    <p>
+                      Use manual activation when arrowing across tabs should not
+                      immediately replace the current reading context.
+                    </p>
+                  </article>
+
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="tokens"
+                    hidden
+                  >
+                    <h3>Tokens tab</h3>
+                    <p>
+                      Focus can move here without changing the visible panel
+                      until activation is explicit.
+                    </p>
+                  </article>
+
+                  <article
+                    data-part="panel"
+                    data-surface="card"
+                    data-value="behavior"
+                    hidden
+                  >
+                    <h3>Behavior tab</h3>
+                    <p>
+                      This mode is useful when panel contents are heavy enough
+                      that casual focus movement should stay low-cost.
+                    </p>
+                  </article>
+                </section>
+              </aura-tabs>
             </section>
           </div>
         </section>
@@ -893,16 +1068,6 @@
         const motionButton = document.getElementById("toggle-motion");
         const dialog = document.getElementById("capability-dialog");
         const smoothRegion = document.getElementById("smooth-region");
-        const layerPilot = document.getElementById("layer-pilot");
-        const layerPilotSelection = document.getElementById(
-          "master-detail-selection",
-        );
-        const manualLayerPilot = document.getElementById(
-          "manual-layer-pilot",
-        );
-        const manualLayerPilotSelection = document.getElementById(
-          "manual-master-detail-selection",
-        );
         const brandStylesheetByName = {
           aura: "aura-brand.css",
           editorial: "aura-brand-editorial.css",
@@ -957,6 +1122,25 @@
           } else {
             node.setAttribute(name, value);
           }
+        }
+
+        function bindSelectionOutput(
+          elementId,
+          outputId,
+          fallbackValue,
+        ) {
+          const element = document.getElementById(elementId);
+          const output = document.getElementById(outputId);
+
+          if (!element || !output) {
+            return;
+          }
+
+          output.textContent = element.getAttribute("value") ||
+            fallbackValue;
+          element.addEventListener("aura-change", (event) => {
+            output.textContent = event.detail.value;
+          });
         }
 
         function setBrand(brand) {
@@ -1083,23 +1267,26 @@
             smoothRegion.scrollTo({ top: smoothRegion.scrollHeight });
           });
 
-        if (layerPilot && layerPilotSelection) {
-          layerPilotSelection.textContent =
-            layerPilot.getAttribute("value") || "elements";
-
-          layerPilot.addEventListener("aura-change", (event) => {
-            layerPilotSelection.textContent = event.detail.value;
-          });
-        }
-
-        if (manualLayerPilot && manualLayerPilotSelection) {
-          manualLayerPilotSelection.textContent =
-            manualLayerPilot.getAttribute("value") || "elements";
-
-          manualLayerPilot.addEventListener("aura-change", (event) => {
-            manualLayerPilotSelection.textContent = event.detail.value;
-          });
-        }
+        bindSelectionOutput(
+          "layer-pilot",
+          "master-detail-selection",
+          "elements",
+        );
+        bindSelectionOutput(
+          "manual-layer-pilot",
+          "manual-master-detail-selection",
+          "elements",
+        );
+        bindSelectionOutput(
+          "tabs-auto-pilot",
+          "tabs-selection",
+          "overview",
+        );
+        bindSelectionOutput(
+          "tabs-manual-pilot",
+          "manual-tabs-selection",
+          "overview",
+        );
 
         updateState();
       })();

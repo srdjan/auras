@@ -101,4 +101,67 @@
     [data-part="panel"][hidden] {
     display: none !important;
   }
+
+  :where([data-ui~="tabs"], aura-tabs) {
+    --tabs-gap: var(--space-4);
+    --tabs-list-gap: var(--space-2);
+    --tabs-list-padding: var(--space-2);
+    --tabs-rule-color: var(--border);
+    --tabs-trigger-bg: transparent;
+    --tabs-trigger-bg-hover: var(--surface-raised);
+    --tabs-trigger-bg-active: var(--primary-subtle);
+    --tabs-trigger-border-color: transparent;
+    --tabs-trigger-border-color-active: color-mix(
+      in oklch,
+      var(--primary) 38%,
+      var(--border)
+    );
+
+    display: grid;
+    gap: var(--tabs-gap);
+  }
+
+  :where([data-ui~="tabs"], aura-tabs) [data-part="tablist"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--tabs-list-gap);
+    align-items: center;
+    padding-block-end: var(--tabs-list-padding);
+    border-block-end: 1px solid var(--tabs-rule-color);
+  }
+
+  :where([data-ui~="tabs"], aura-tabs) :where(button, a)[data-part="trigger"] {
+    min-block-size: auto;
+    box-shadow: none;
+    border: 1px solid var(--tabs-trigger-border-color);
+    border-radius: var(--radius-full);
+    background-color: var(--tabs-trigger-bg);
+    padding-inline: var(--space-3);
+    padding-block: var(--space-2);
+  }
+
+  :where([data-ui~="tabs"], aura-tabs)
+    :where(button, a)[data-part="trigger"]:hover {
+    background-color: var(--tabs-trigger-bg-hover);
+  }
+
+  :where([data-ui~="tabs"], aura-tabs) [data-part="trigger"][data-active] {
+    background-color: var(--tabs-trigger-bg-active);
+    border-color: var(--tabs-trigger-border-color-active);
+  }
+
+  :where([data-ui~="tabs"], aura-tabs) [data-part="panels"] {
+    display: grid;
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="tabs"], aura-tabs) [data-part="panel"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="tabs"], aura-tabs) [data-part="panel"][hidden] {
+    display: none !important;
+  }
 }

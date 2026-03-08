@@ -56,7 +56,7 @@ and put behavior-heavy widgets into a separate Components package built from
 light-DOM custom elements.
 
 See [Component Architecture](./docs/component-architecture.md) for the package
-split, decision rules, and the `aura-master-detail` pilot contract.
+split, decision rules, and the current pilot component contracts.
 
 ## Shipped Prototype
 
@@ -65,13 +65,18 @@ The repo now includes a working prototype of the next layers:
 - `aura-composites.css`
   - optional CSS-only shell patterns
 - `aura-components.js`
-  - optional light-DOM interactive components
+  - thin browser entrypoint that registers the Components package
+- `packages/components/mod.ts`
+  - Deno-first Components package surface
 - `aura-master-detail`
-  - first pilot component
+  - selection controller for master-detail views
+- `aura-tabs`
+  - tab controller with the same host contract
 
-The current implementation lives as root files to keep the prototype easy to
-inspect. The architecture note describes the future package split as
-`@aura/composites` and `jsr:@aura/components`.
+The current implementation keeps the browser demo entry at the repo root and the
+reusable component modules under `packages/components`. The architecture note
+still describes the future publishing shape as `@aura/composites` and
+`jsr:@aura/components`.
 
 ## Design tokens
 
@@ -314,6 +319,38 @@ alternatives:
 Use `activation="manual"` when arrow keys should move focus without changing the
 open panel until the user presses `Enter` or `Space`.
 
+### Tabs pilot
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-components.js"></script>
+
+<aura-tabs data-ui="tabs" value="overview" activation="manual">
+  <nav data-part="tablist" aria-label="Release views">
+    <button type="button" data-part="trigger" data-value="overview">
+      Overview
+    </button>
+    <button type="button" data-part="trigger" data-value="tokens">
+      Tokens
+    </button>
+    <button type="button" data-part="trigger" data-value="behavior">
+      Behavior
+    </button>
+  </nav>
+
+  <section data-part="panels">
+    <article data-part="panel" data-value="overview">...</article>
+    <article data-part="panel" data-value="tokens" hidden>...</article>
+    <article data-part="panel" data-value="behavior" hidden>...</article>
+  </section>
+</aura-tabs>
+```
+
+`aura-tabs` uses the same `value`, `activation`, `show(value)`,
+`focusCurrent()`, and `aura-change` contract as `aura-master-detail`, but with
+tab semantics and horizontal arrow-key navigation.
+
 ### Prose
 
 ```html
@@ -460,7 +497,9 @@ Aura targets modern evergreen browsers. Key features and their support:
 | -------------------------------- | ---------------------------------------------------------------------- |
 | `aura.css`                       | Elements layer: reset, tokens, defaults, layout, components, utilities |
 | `aura-composites.css`            | Optional Composites layer with higher-level CSS patterns               |
-| `aura-components.js`             | Optional Components layer with light-DOM interactive widgets           |
+| `aura-components.js`             | Thin browser entrypoint that registers the packaged Components modules |
+| `packages/components/mod.ts`     | Deno-first export surface for the Components package                   |
+| `packages/components/src/`       | Shared logic plus per-component runtime modules                        |
 | `aura-brand.css`                 | Sample brand pack that activates with `data-brand="aura"`              |
 | `aura-brand-editorial.css`       | Sample editorial brand pack                                            |
 | `index.html`                     | Interactive demo exercising the Elements, Composites, and Components   |

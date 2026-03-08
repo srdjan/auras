@@ -68,7 +68,7 @@ deno task dev
     on `<html>`.
 - The framework does not require JavaScript. The JS in `index.html` and
   `aura-components.js` only powers the optional interactive layer and the demo
-  controls.
+  controls. The reusable package modules live under `packages/components`.
 
 ## Common Patterns
 
@@ -158,7 +158,7 @@ application chrome:
 
 ### Master-detail pilot
 
-The first optional Component is `aura-master-detail`, paired with the optional
+One optional Component is `aura-master-detail`, paired with the optional
 Composites stylesheet:
 
 ```html
@@ -193,6 +193,40 @@ Composites stylesheet:
 
 Use `activation="manual"` when focus movement and selection should be separate
 actions.
+
+### Tabs pilot
+
+`aura-tabs` uses the same host contract as `aura-master-detail`, but with honest
+tab semantics:
+
+```html
+<link rel="stylesheet" href="aura.css" />
+<link rel="stylesheet" href="aura-composites.css" />
+<script type="module" src="aura-components.js"></script>
+
+<aura-tabs data-ui="tabs" value="overview" activation="manual">
+  <nav data-part="tablist" aria-label="Release views">
+    <button type="button" data-part="trigger" data-value="overview">
+      Overview
+    </button>
+    <button type="button" data-part="trigger" data-value="tokens">
+      Tokens
+    </button>
+    <button type="button" data-part="trigger" data-value="behavior">
+      Behavior
+    </button>
+  </nav>
+
+  <section data-part="panels">
+    <article data-part="panel" data-value="overview">...</article>
+    <article data-part="panel" data-value="tokens" hidden>...</article>
+    <article data-part="panel" data-value="behavior" hidden>...</article>
+  </section>
+</aura-tabs>
+```
+
+Use `activation="manual"` when horizontal arrow-key focus should move before the
+panel changes.
 
 ### Forms
 
@@ -288,7 +322,7 @@ The demo also exercises:
 - Layout primitives
 - Long-form prose styling
 - Card, notice, and accordion surfaces
-- Master-detail composites and the `aura-master-detail` pilot
+- Master-detail and tabs composites plus the matching Components pilots
 - Button variants, busy states, and dialog styling
 - Form validation states
 - Switch, progress, and meter styling
@@ -303,7 +337,9 @@ The demo also exercises:
 | -------------------------------- | --------------------------------------- |
 | `aura.css`                       | Elements layer framework                |
 | `aura-composites.css`            | Optional Composites layer               |
-| `aura-components.js`             | Optional Components layer               |
+| `aura-components.js`             | Thin browser entrypoint for Components  |
+| `packages/components/mod.ts`     | Deno-first Components package surface   |
+| `packages/components/src/`       | Shared logic plus per-component modules |
 | `aura-components.test.js`        | Deno behavioral coverage for Components |
 | `aura-brand.css`                 | Sample Aura brand pack                  |
 | `aura-brand-editorial.css`       | Sample editorial brand pack             |
@@ -328,13 +364,17 @@ Then verify:
 1. Open `http://127.0.0.1:8000/index.html`.
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
-4. Review the prose, notice, accordion, and master-detail pilot examples.
+4. Review the prose, notice, accordion, master-detail, and tabs pilot examples.
 5. Use arrow keys inside the auto-activation master-detail pilot and confirm the
    detail panel follows the active trigger.
 6. Use arrow keys inside the manual-activation master-detail pilot and confirm
    focus moves first, then `Enter` or `Space` updates the detail panel.
-7. Open the dialog and confirm the backdrop and page scroll lock.
-8. Submit the form with empty required fields and confirm validation, busy
-   states, select chevrons, progress, and meter styles.
-9. Open print preview and confirm buttons/nav are hidden and print-only rules
-   apply.
+7. Use arrow keys inside the auto-activation tabs pilot and confirm the active
+   tab and visible panel stay in sync.
+8. Use arrow keys inside the manual-activation tabs pilot and confirm focus
+   moves first, then `Enter` or `Space` updates the panel.
+9. Open the dialog and confirm the backdrop and page scroll lock.
+10. Submit the form with empty required fields and confirm validation, busy
+    states, select chevrons, progress, and meter styles.
+11. Open print preview and confirm buttons/nav are hidden and print-only rules
+    apply.

@@ -100,10 +100,11 @@ Recommended package boundaries:
 /aura-brand-editorial.css
 
 /packages/composites/aura-composites.css
-/packages/components/deno.json
+/packages/components/mod.js
 /packages/components/mod.ts
-/packages/components/src/shared.ts
-/packages/components/src/master-detail.ts
+/packages/components/src/shared/selectable-panels.js
+/packages/components/src/master-detail.js
+/packages/components/src/tabs.js
 
 /docs/component-architecture.md
 ```
@@ -114,10 +115,12 @@ Recommended publishing shape:
 - `@aura/composites`: optional CSS-only higher-level patterns
 - `jsr:@aura/components`: optional Deno-first light-DOM interactive components
 
-Current repo prototype:
+Current repo structure:
 
-- `aura-composites.css` stands in for the future `@aura/composites`
-- `aura-components.js` stands in for the future `jsr:@aura/components`
+- `aura-composites.css` still stands in for the future `@aura/composites`
+- `packages/components/mod.ts` is the Deno-first package surface
+- `aura-components.js` is a thin browser entrypoint that registers the package
+  modules for the demo and no-build usage
 
 ## Decision Rule
 
@@ -162,11 +165,11 @@ Implementation detail that should stay private:
 - internal observers
 - internal maps and indexes
 
-## Pilot Component
+## Pilot Components
 
-The first behavioral pilot should be `aura-master-detail`.
+The first behavioral pilot was `aura-master-detail`. The second is `aura-tabs`.
 
-Why this first:
+Why these first:
 
 - common in real apps
 - useful without becoming framework-sized
@@ -336,6 +339,75 @@ Example responsibility split:
   - focus model
   - panel visibility
 
+## `aura-tabs` v1 Scope
+
+The second pilot should do exactly this:
+
+- coordinate one selected tab in a tablist
+- reveal the matching panel
+- manage roving focus between tabs
+- support Left, Right, Home, and End
+- support click and keyboard activation
+- expose selection state to CSS through attributes
+
+It should not do this in v1:
+
+- nested tabsets
+- overflow menus
+- async panel loading
+- lazy rendering
+- persistence beyond initial host attribute state
+
+Suggested authoring model:
+
+```html
+<aura-tabs value="overview">
+  <nav data-part="tablist" aria-label="Release views">
+    <button type="button" data-part="trigger" data-value="overview">
+      Overview
+    </button>
+    <button type="button" data-part="trigger" data-value="tokens">
+      Tokens
+    </button>
+    <button type="button" data-part="trigger" data-value="behavior">
+      Behavior
+    </button>
+  </nav>
+
+  <section data-part="panels">
+    <article data-part="panel" data-value="overview">Overview panel</article>
+    <article data-part="panel" data-value="tokens" hidden>Tokens panel</article>
+    <article data-part="panel" data-value="behavior" hidden>
+      Behavior panel
+    </article>
+  </section>
+</aura-tabs>
+```
+
+Required parts:
+
+- one host: `<aura-tabs>`
+- one tablist container: `[data-part="tablist"]`
+- one or more tab triggers: `[data-part="trigger"][data-value]`
+- one panel container: `[data-part="panels"]`
+- one or more panels: `[data-part="panel"][data-value]`
+
+Host API:
+
+- `value`
+- `activation="auto|manual"`
+- `show(value: string): void`
+- `focusCurrent(): void`
+- `aura-change`
+
+Accessibility contract:
+
+- set `role="tablist"` on the list container
+- set `role="tab"` plus `aria-selected` on triggers
+- set `role="tabpanel"` plus `aria-labelledby` on panels
+- use Left and Right for navigation, respecting document direction
+- keep inactive panels `hidden`
+
 ## Build Order
 
 Recommended order for implementation:
@@ -344,7 +416,8 @@ Recommended order for implementation:
 2. Add one visual composite for master-detail shell with no JavaScript.
 3. Implement `aura-master-detail` in `jsr:@aura/components` against the
    documented markup contract.
-4. Validate the public contract before building grid or tree.
+4. Validate the shared host API with `aura-tabs`.
+5. Only then move on to grid or tree.
 
 ## Follow-On Components
 
@@ -352,7 +425,6 @@ After the pilot is stable:
 
 - `aura-data-grid`
 - `aura-tree`
-- `aura-tabs`
 
 Only add them if they preserve the same rules:
 

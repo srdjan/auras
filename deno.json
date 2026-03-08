@@ -1,7 +1,7 @@
 {
   "tasks": {
     "dev": "deno run --allow-net --allow-read jsr:@std/http/file-server . --host 127.0.0.1",
-    "check": "deno check aura-components.js aura-components.test.js",
+    "check": "deno check aura-components.js aura-components.test.js packages/components/mod.ts",
     "test": "deno test --allow-env=WS_NO_BUFFER_UTIL,WS_NO_UTF_8_VALIDATE"
   },
   "fmt": {
