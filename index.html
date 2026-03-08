@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -23,6 +23,7 @@
             <li><a href="#headless">Headless</a></li>
             <li><a href="#layout">Layout</a></li>
             <li><a href="#components">Components</a></li>
+            <li><a href="#diagram">Diagram</a></li>
             <li><a href="#pilot">Pilot</a></li>
             <li><a href="#forms">Forms</a></li>
             <li><a href="#media">Media</a></li>
@@ -74,7 +75,8 @@
           <p>
             <strong>Current mode:</strong>
             <code id="state-output"
-            >brand=headless theme=light contrast=normal motion=normal</code>
+              >brand=headless theme=light contrast=normal motion=normal</code
+            >
           </p>
 
           <pre><code>&lt;body data-brand="aura" data-theme="dark" data-contrast="more"&gt;...&lt;/body&gt;</code></pre>
@@ -388,6 +390,123 @@
         </section>
 
         <section
+          id="diagram"
+          data-surface="card"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <div>
+            <h2>Composite: diagram</h2>
+            <p>
+              <code>data-ui="diagram"</code> turns semantic content plus
+              explicit CSS Grid placement into static flow and architecture
+              diagrams. Layout stays CSS-only; connectors stay author-owned
+              markup.
+            </p>
+          </div>
+
+          <figure
+            data-ui="diagram"
+            style="--diagram-columns: 11; --diagram-min-inline-size: 46rem"
+          >
+            <figcaption>
+              Documentation-friendly flow diagram without classes or script.
+            </figcaption>
+
+            <div data-part="canvas">
+              <article
+                data-part="node"
+                data-kind="input"
+                style="--diagram-column: 1 / span 3; --diagram-row: 1"
+              >
+                <h3>Order received</h3>
+                <p>Incoming payload from checkout or API.</p>
+              </article>
+
+              <div
+                data-part="connector"
+                aria-hidden="true"
+                style="--diagram-column: 4; --diagram-row: 1"
+              >
+                <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+                  <path d="M4 20 H108" />
+                  <path data-marker="arrow" d="M108 12 L116 20 L108 28 Z" />
+                </svg>
+              </div>
+
+              <article
+                data-part="node"
+                data-kind="process"
+                style="--diagram-column: 5 / span 3; --diagram-row: 1"
+              >
+                <h3>Validate</h3>
+                <p>Checks stock, address, and payment status.</p>
+              </article>
+
+              <div
+                data-part="connector"
+                aria-hidden="true"
+                style="--diagram-column: 8; --diagram-row: 1"
+              >
+                <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+                  <path d="M4 20 H108" />
+                  <path data-marker="arrow" d="M108 12 L116 20 L108 28 Z" />
+                </svg>
+              </div>
+
+              <article
+                data-part="node"
+                data-kind="output"
+                style="--diagram-column: 9 / span 3; --diagram-row: 1"
+              >
+                <h3>Fulfill</h3>
+                <p>Warehouse picks, packs, and ships the order.</p>
+              </article>
+
+              <div
+                data-part="connector"
+                aria-hidden="true"
+                style="--diagram-column: 6; --diagram-row: 2"
+              >
+                <svg viewBox="0 0 40 120" preserveAspectRatio="none">
+                  <path d="M20 4 V108" />
+                  <path data-marker="arrow" d="M12 108 L20 116 L28 108 Z" />
+                </svg>
+              </div>
+
+              <article
+                data-part="node"
+                data-kind="decision"
+                style="--diagram-column: 5 / span 3; --diagram-row: 3"
+              >
+                <h3>Manual review</h3>
+                <p>Fallback path for payment or address mismatches.</p>
+              </article>
+            </div>
+          </figure>
+
+          <pre>
+<code>&lt;figure data-ui="diagram" style="--diagram-columns: 11"&gt;
+  &lt;figcaption&gt;Order flow&lt;/figcaption&gt;
+  &lt;div data-part="canvas"&gt;
+    &lt;article
+      data-part="node"
+      style="--diagram-column: 1 / span 3; --diagram-row: 1"
+    &gt;
+      ...
+    &lt;/article&gt;
+    &lt;div
+      data-part="connector"
+      aria-hidden="true"
+      style="--diagram-column: 4; --diagram-row: 1"
+    &gt;
+      &lt;svg&gt;...&lt;/svg&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/figure&gt;</code></pre>
+        </section>
+
+        <section
           id="pilot"
           data-surface="card"
           data-layout="stack"
@@ -625,11 +744,7 @@
                   >
                     Overview
                   </button>
-                  <button
-                    type="button"
-                    data-part="trigger"
-                    data-value="tokens"
-                  >
+                  <button type="button" data-part="trigger" data-value="tokens">
                     Tokens
                   </button>
                   <button
@@ -709,11 +824,7 @@
                   >
                     Overview
                   </button>
-                  <button
-                    type="button"
-                    data-part="trigger"
-                    data-value="tokens"
-                  >
+                  <button type="button" data-part="trigger" data-value="tokens">
                     Tokens
                   </button>
                   <button
@@ -831,14 +942,20 @@
                 <div data-layout="stack" data-gap="2">
                   <p><strong>Choices</strong></p>
                   <label><input type="checkbox" checked /> Email updates</label>
-                  <label><input type="radio" name="plan" checked /> Starter
-                    plan</label>
+                  <label
+                    ><input type="radio" name="plan" checked /> Starter
+                    plan</label
+                  >
                   <label><input type="radio" name="plan" /> Pro plan</label>
                   <p><strong>Switches</strong></p>
-                  <label><input type="checkbox" role="switch" checked /> Public
-                    profile</label>
-                  <label><input type="checkbox" role="switch" /> Weekly digest
-                    reminders</label>
+                  <label
+                    ><input type="checkbox" role="switch" checked /> Public
+                    profile</label
+                  >
+                  <label
+                    ><input type="checkbox" role="switch" /> Weekly digest
+                    reminders</label
+                  >
                 </div>
 
                 <div data-layout="stack" data-gap="2">
@@ -961,11 +1078,20 @@
               <div
                 id="smooth-region"
                 data-smooth
-                style="max-height: 14rem; border: 1px solid var(--border); padding: var(--space-3)"
+                style="
+                  max-height: 14rem;
+                  border: 1px solid var(--border);
+                  padding: var(--space-3);
+                "
               >
                 <p
                   data-sticky
-                  style="--sticky-top: var(--space-2); background: var(--surface); border: 1px solid var(--border); padding: var(--space-2)"
+                  style="
+                    --sticky-top: var(--space-2);
+                    background: var(--surface);
+                    border: 1px solid var(--border);
+                    padding: var(--space-2);
+                  "
                 >
                   Sticky note inside a smooth scroll region.
                 </p>
@@ -1002,7 +1128,8 @@
 
               <p>
                 <span data-visually-hidden
-                >Screen-reader-only introduction.</span>
+                  >Screen-reader-only introduction.</span
+                >
                 This sentence includes hidden accessible text.
               </p>
             </div>
@@ -1056,15 +1183,11 @@
         const body = document.body;
         const stateOutput = document.getElementById("state-output");
         const headlessButton = document.getElementById("use-headless");
-        const auraBrandButton = document.getElementById(
-          "use-aura-brand",
-        );
+        const auraBrandButton = document.getElementById("use-aura-brand");
         const editorialBrandButton = document.getElementById(
           "use-editorial-brand",
         );
-        const contrastButton = document.getElementById(
-          "toggle-contrast",
-        );
+        const contrastButton = document.getElementById("toggle-contrast");
         const motionButton = document.getElementById("toggle-motion");
         const dialog = document.getElementById("capability-dialog");
         const smoothRegion = document.getElementById("smooth-region");
@@ -1124,11 +1247,7 @@
           }
         }
 
-        function bindSelectionOutput(
-          elementId,
-          outputId,
-          fallbackValue,
-        ) {
+        function bindSelectionOutput(elementId, outputId, fallbackValue) {
           const element = document.getElementById(elementId);
           const output = document.getElementById(outputId);
 
@@ -1136,8 +1255,7 @@
             return;
           }
 
-          output.textContent = element.getAttribute("value") ||
-            fallbackValue;
+          output.textContent = element.getAttribute("value") || fallbackValue;
           element.addEventListener("aura-change", (event) => {
             output.textContent = event.detail.value;
           });
@@ -1176,42 +1294,30 @@
         function updateState() {
           const brand = body.getAttribute("data-brand") || "headless";
           const theme = root.getAttribute("data-theme") || "light";
-          const contrast = root.getAttribute("data-contrast") ||
-            "normal";
+          const contrast = root.getAttribute("data-contrast") || "normal";
           const motion = root.getAttribute("data-motion") || "normal";
 
-          stateOutput.textContent =
-            `brand=${brand} theme=${theme} contrast=${contrast} motion=${motion}`;
+          stateOutput.textContent = `brand=${brand} theme=${theme} contrast=${contrast} motion=${motion}`;
 
-          contrastButton.textContent = contrast === "more"
-            ? "Disable high contrast"
-            : "Enable high contrast";
-          motionButton.textContent = motion === "reduce"
-            ? "Use normal motion"
-            : "Use reduced motion";
+          contrastButton.textContent =
+            contrast === "more"
+              ? "Disable high contrast"
+              : "Enable high contrast";
+          motionButton.textContent =
+            motion === "reduce" ? "Use normal motion" : "Use reduced motion";
           syncBrandButtons(brand);
         }
 
-        headlessButton.addEventListener(
-          "click",
-          () => setBrand("headless"),
-        );
-        auraBrandButton.addEventListener(
-          "click",
-          () => setBrand("aura"),
-        );
-        editorialBrandButton.addEventListener(
-          "click",
-          () => setBrand("editorial"),
+        headlessButton.addEventListener("click", () => setBrand("headless"));
+        auraBrandButton.addEventListener("click", () => setBrand("aura"));
+        editorialBrandButton.addEventListener("click", () =>
+          setBrand("editorial"),
         );
 
-        document.getElementById("toggle-dark").addEventListener(
-          "click",
-          () => {
-            toggleThemeToken("dark");
-            updateState();
-          },
-        );
+        document.getElementById("toggle-dark").addEventListener("click", () => {
+          toggleThemeToken("dark");
+          updateState();
+        });
 
         contrastButton.addEventListener("click", () => {
           toggleAttribute(root, "data-contrast", "more");
@@ -1223,27 +1329,21 @@
           updateState();
         });
 
-        document.getElementById("reset-demo").addEventListener(
-          "click",
-          () => {
-            body.removeAttribute("data-brand");
-            root.removeAttribute("data-theme");
-            root.removeAttribute("data-contrast");
-            root.removeAttribute("data-motion");
-            updateState();
-          },
-        );
+        document.getElementById("reset-demo").addEventListener("click", () => {
+          body.removeAttribute("data-brand");
+          root.removeAttribute("data-theme");
+          root.removeAttribute("data-contrast");
+          root.removeAttribute("data-motion");
+          updateState();
+        });
 
-        document.getElementById("open-dialog").addEventListener(
-          "click",
-          () => {
-            if (typeof dialog.showModal === "function") {
-              dialog.showModal();
-            } else {
-              dialog.setAttribute("open", "");
-            }
-          },
-        );
+        document.getElementById("open-dialog").addEventListener("click", () => {
+          if (typeof dialog.showModal === "function") {
+            dialog.showModal();
+          } else {
+            dialog.setAttribute("open", "");
+          }
+        });
 
         document
           .getElementById("close-dialog")
@@ -1277,11 +1377,7 @@
           "manual-master-detail-selection",
           "elements",
         );
-        bindSelectionOutput(
-          "tabs-auto-pilot",
-          "tabs-selection",
-          "overview",
-        );
+        bindSelectionOutput("tabs-auto-pilot", "tabs-selection", "overview");
         bindSelectionOutput(
           "tabs-manual-pilot",
           "manual-tabs-selection",

@@ -187,8 +187,7 @@ These work on any `data-layout` element:
   data-align="center"
   data-justify="between"
   data-gap="4"
->
-</div>
+></div>
 ```
 
 | Attribute      | Values                                                  |
@@ -283,6 +282,40 @@ alternatives:
   </details>
 </section>
 ```
+
+### Diagram composite
+
+```html
+<figure data-ui="diagram" style="--diagram-columns: 11">
+  <figcaption>Order flow</figcaption>
+
+  <div data-part="canvas">
+    <article
+      data-part="node"
+      data-kind="input"
+      style="--diagram-column: 1 / span 3; --diagram-row: 1"
+    >
+      <h3>Order received</h3>
+      <p>Incoming payload from checkout.</p>
+    </article>
+
+    <div
+      data-part="connector"
+      aria-hidden="true"
+      style="--diagram-column: 4; --diagram-row: 1"
+    >
+      <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+        <path d="M4 20 H108" />
+        <path data-marker="arrow" d="M108 12 L116 20 L108 28 Z" />
+      </svg>
+    </div>
+  </div>
+</figure>
+```
+
+Use this for static flow or architecture diagrams where placement is explicit in
+the markup. Keep connectors decorative with `aria-hidden="true"` unless they
+carry meaning.
 
 ### Master-detail pilot
 
@@ -506,7 +539,7 @@ Aura targets modern evergreen browsers. Key features and their support:
 | `aura-brand.css`                  | Sample brand pack that activates with `data-brand="aura"`              |
 | `aura-brand-editorial.css`        | Sample editorial brand pack                                            |
 | `index.html`                      | Interactive demo exercising the Elements, Composites, and Components   |
-| `docs/component-architecture.md`  | Architecture note and `aura-master-detail` contract                    |
+| `docs/component-architecture.md`  | Architecture note and layer decision rules                             |
 | `deno.json`                       | Deno tasks for local dev server and component checking                 |
 
 ## License

@@ -54,6 +54,7 @@ Examples:
 
 - card variants
 - master-detail page shell
+- static flow / architecture diagrams
 - app header / sidebar shell
 - list treatments
 - empty state layouts
@@ -135,6 +136,7 @@ Examples:
 
 - `card`: composites
 - `notice`: composites
+- `diagram` layout shell: composites
 - `master-detail` layout shell: composites
 - `master-detail` selection controller: components
 - `data-grid`: components

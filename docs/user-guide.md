@@ -156,6 +156,42 @@ application chrome:
 </article>
 ```
 
+### Diagram composite
+
+Use `data-ui="diagram"` for static flow or architecture diagrams that should
+stay CSS-only:
+
+```html
+<figure data-ui="diagram" style="--diagram-columns: 11">
+  <figcaption>Order flow</figcaption>
+
+  <div data-part="canvas">
+    <article
+      data-part="node"
+      data-kind="input"
+      style="--diagram-column: 1 / span 3; --diagram-row: 1"
+    >
+      <h3>Order received</h3>
+      <p>Incoming payload from checkout.</p>
+    </article>
+
+    <div
+      data-part="connector"
+      aria-hidden="true"
+      style="--diagram-column: 4; --diagram-row: 1"
+    >
+      <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+        <path d="M4 20 H108" />
+        <path data-marker="arrow" d="M108 12 L116 20 L108 28 Z" />
+      </svg>
+    </div>
+  </div>
+</figure>
+```
+
+Placement is explicit through custom properties on each node or connector, so
+the pattern stays inspectable and easy to override.
+
 ### Master-detail pilot
 
 One optional Component is `aura-master-detail`, paired with the optional
@@ -321,6 +357,7 @@ The demo also exercises:
 
 - Layout primitives
 - Long-form prose styling
+- Static diagram composites for documentation flows
 - Card, notice, and accordion surfaces
 - Master-detail and tabs composites plus the matching Components pilots
 - Button variants, busy states, and dialog styling
@@ -372,7 +409,8 @@ Then verify:
 1. Open `http://127.0.0.1:8000/index.html`.
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
-4. Review the prose, notice, accordion, master-detail, and tabs pilot examples.
+4. Review the prose, diagram, notice, accordion, master-detail, and tabs pilot
+   examples.
 5. Use arrow keys inside the auto-activation master-detail pilot and confirm the
    detail panel follows the active trigger.
 6. Use arrow keys inside the manual-activation master-detail pilot and confirm
