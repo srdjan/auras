@@ -67,7 +67,7 @@ class AuraMasterDetail extends HTMLElement {
     }
 
     if (name === "activation") {
-      this._reflectActivation();
+      this._normalizeActivationAttribute();
       return;
     }
 
@@ -166,7 +166,7 @@ class AuraMasterDetail extends HTMLElement {
     master.addEventListener("click", this._handleClick);
     master.addEventListener("keydown", this._handleKeydown);
 
-    this._reflectActivation();
+    this._normalizeActivationAttribute();
 
     if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
       this._select(entries[0].value, { dispatch: false, focus: false });
@@ -183,8 +183,13 @@ class AuraMasterDetail extends HTMLElement {
     this._entries = [];
   }
 
-  _reflectActivation() {
-    this.setAttribute("data-activation", this.activation);
+  _normalizeActivationAttribute() {
+    if (this.activation === "manual") {
+      this.setAttribute("activation", "manual");
+      return;
+    }
+
+    this.removeAttribute("activation");
   }
 
   _selectFromAttribute(options) {
@@ -203,6 +208,9 @@ class AuraMasterDetail extends HTMLElement {
     if (!entry) {
       return false;
     }
+
+    const previousValue = this.getAttribute("value");
+    const didChange = previousValue !== entry.value;
 
     for (const currentEntry of this._entries) {
       const isActive = currentEntry === entry;
@@ -231,7 +239,7 @@ class AuraMasterDetail extends HTMLElement {
       entry.trigger.focus();
     }
 
-    if (options.dispatch) {
+    if (options.dispatch && didChange) {
       this.dispatchEvent(
         new CustomEvent("aura-change", {
           detail: {

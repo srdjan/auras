@@ -166,7 +166,11 @@ Composites stylesheet:
 <link rel="stylesheet" href="aura-composites.css" />
 <script type="module" src="aura-components.js"></script>
 
-<aura-master-detail data-ui="master-detail" value="elements">
+<aura-master-detail
+  data-ui="master-detail"
+  value="elements"
+  activation="manual"
+>
   <nav data-part="master" aria-label="Aura layers">
     <button type="button" data-part="trigger" data-value="elements">
       Elements
@@ -186,6 +190,9 @@ Composites stylesheet:
   </section>
 </aura-master-detail>
 ```
+
+Use `activation="manual"` when focus movement and selection should be separate
+actions.
 
 ### Forms
 
@@ -292,16 +299,18 @@ The demo also exercises:
 
 ## File Map
 
-| File                             | Purpose                               |
-| -------------------------------- | ------------------------------------- |
-| `aura.css`                       | Elements layer framework              |
-| `aura-composites.css`            | Optional Composites layer             |
-| `aura-components.js`             | Optional Components layer             |
-| `aura-brand.css`                 | Sample Aura brand pack                |
-| `aura-brand-editorial.css`       | Sample editorial brand pack           |
-| `index.html`                     | Interactive demo page                 |
-| `docs/component-architecture.md` | Architecture note for the next layers |
-| `docs/user-guide.md`             | This user guide                       |
+| File                             | Purpose                                 |
+| -------------------------------- | --------------------------------------- |
+| `aura.css`                       | Elements layer framework                |
+| `aura-composites.css`            | Optional Composites layer               |
+| `aura-components.js`             | Optional Components layer               |
+| `aura-components.test.js`        | Deno behavioral coverage for Components |
+| `aura-brand.css`                 | Sample Aura brand pack                  |
+| `aura-brand-editorial.css`       | Sample editorial brand pack             |
+| `deno.lock`                      | Locked JSR and npm test dependencies    |
+| `index.html`                     | Interactive demo page                   |
+| `docs/component-architecture.md` | Architecture note for the next layers   |
+| `docs/user-guide.md`             | This user guide                         |
 
 ## Verification
 
@@ -310,6 +319,7 @@ Run these checks after changes:
 ```sh
 cd /Users/srdjans/Code/MetadorHome/metador.aura
 deno task check
+deno task test
 deno task dev
 ```
 
@@ -319,10 +329,12 @@ Then verify:
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
 4. Review the prose, notice, accordion, and master-detail pilot examples.
-5. Use arrow keys inside the master-detail pilot and confirm the detail panel
-   follows the active trigger.
-6. Open the dialog and confirm the backdrop and page scroll lock.
-7. Submit the form with empty required fields and confirm validation, busy
+5. Use arrow keys inside the auto-activation master-detail pilot and confirm the
+   detail panel follows the active trigger.
+6. Use arrow keys inside the manual-activation master-detail pilot and confirm
+   focus moves first, then `Enter` or `Space` updates the detail panel.
+7. Open the dialog and confirm the backdrop and page scroll lock.
+8. Submit the form with empty required fields and confirm validation, busy
    states, select chevrons, progress, and meter styles.
-8. Open print preview and confirm buttons/nav are hidden and print-only rules
+9. Open print preview and confirm buttons/nav are hidden and print-only rules
    apply.

@@ -266,7 +266,8 @@ On upgrade:
 - otherwise select the first valid trigger
 - set `hidden` on inactive panels
 - set `tabindex="0"` on the active trigger and `tabindex="-1"` on the rest
-- set `aria-selected="true"` on the active trigger and `"false"` on the rest
+- set `aria-current="true"` on the active trigger and remove it from the rest
+- set `aria-expanded="true"` on the active trigger and `"false"` on the rest
 - set `data-active` on the active trigger and panel
 
 On selection change:
@@ -274,7 +275,7 @@ On selection change:
 - update host `value`
 - update trigger attributes
 - update panel visibility
-- dispatch `aura-change`
+- dispatch `aura-change` only when the selected value actually changes
 
 ## Accessibility
 

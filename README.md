@@ -286,7 +286,11 @@ alternatives:
 <link rel="stylesheet" href="aura-composites.css" />
 <script type="module" src="aura-components.js"></script>
 
-<aura-master-detail data-ui="master-detail" value="elements">
+<aura-master-detail
+  data-ui="master-detail"
+  value="elements"
+  activation="manual"
+>
   <nav data-part="master" aria-label="Aura layers">
     <button type="button" data-part="trigger" data-value="elements">
       Elements
@@ -306,6 +310,9 @@ alternatives:
   </section>
 </aura-master-detail>
 ```
+
+Use `activation="manual"` when arrow keys should move focus without changing the
+open panel until the user presses `Enter` or `Space`.
 
 ### Prose
 
