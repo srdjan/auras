@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aura - Headless CSS Framework</title>
-    <link rel="stylesheet" href="../packages/elements/aura.css" />
-    <link rel="stylesheet" href="../packages/composites/aura-composites.css" />
+    <link rel="stylesheet" href="/packages/elements/aura.css" />
+    <link rel="stylesheet" href="/packages/composites/aura-composites.css" />
     <style>
       @layer site {
         [data-site="hero"] {
@@ -1581,8 +1581,8 @@
       </div>
     </div>
 
-    <script type="module" src="../packages/diagram/browser.js"></script>
-    <script type="module" src="../packages/components/browser.js"></script>
+    <script type="module" src="/packages/diagram/browser.js"></script>
+    <script type="module" src="/packages/components/browser.js"></script>
     <script>
       (function () {
         const root = document.documentElement;
@@ -1594,8 +1594,8 @@
         };
         const darkButton = document.getElementById("toggle-dark");
         const brandStylesheets = {
-          aura: "../packages/brands/aura-brand.css",
-          editorial: "../packages/brands/aura-brand-editorial.css",
+          aura: "/packages/brands/aura-brand.css",
+          editorial: "/packages/brands/aura-brand-editorial.css",
         };
 
         function ensureBrandStylesheet(brand) {

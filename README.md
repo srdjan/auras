@@ -728,7 +728,8 @@ Aura targets modern evergreen browsers. Key features and their support:
 | `packages/components/src/combobox.ts`      | Combobox runtime for `aura-combobox`                                     |
 | `packages/components/src/splitter.ts`      | Splitter runtime for `aura-splitter`                                     |
 | `packages/components/src/tree.ts`          | Tree runtime for `aura-tree`                                             |
-| `showcase/index.html`                      | Interactive demo exercising the Elements, Composites, and Components     |
+| `public/`                                  | Showcase site for local testing and Deno Deploy                          |
+| `main.ts`                                  | Deno Deploy entry point (static file server)                             |
 | `docs/component-architecture.md`           | Architecture note and layer decision rules                               |
 | `deno.json`                                | Deno tasks for local dev server and component checking                   |
 

@@ -14,7 +14,7 @@ cd /Users/srdjans/Code/MetadorHome/metador.aura
 deno task dev
 ```
 
-2. Open `http://127.0.0.1:8000/showcase/index.html`.
+2. Open `http://localhost:8000`.
 
 3. Add the core stylesheet to any HTML page:
 
@@ -67,7 +67,7 @@ deno task dev
   - `data-brand` goes on `<body>` in the current examples.
   - `data-theme="dark"`, `data-contrast="more"`, and `data-motion="reduce"` go
     on `<html>`.
-- The framework does not require JavaScript. The JS in `showcase/index.html`
+- The framework does not require JavaScript. The JS in `public/index.html`
   only powers the optional interactive layer and the demo controls. The package
   and browser sources live under `packages/diagram` and `packages/components`.
 
@@ -511,7 +511,7 @@ Then load it after the core stylesheet and set `data-brand="custom"` on
 
 ## Demo Page Guide
 
-`showcase/index.html` is the fastest way to validate the framework:
+`public/index.html` is the fastest way to validate the framework:
 
 - `Headless core`: removes `data-brand`
 - `Aura pack`: loads `packages/brands/aura-brand.css` and sets
@@ -566,7 +566,7 @@ The demo also exercises:
 | `packages/components/src/splitter.ts`      | `aura-splitter` runtime module                   |
 | `packages/components/src/tree.ts`          | `aura-tree` runtime module                       |
 | `deno.lock`                                | Locked JSR and npm test dependencies             |
-| `showcase/index.html`                      | Interactive demo page                            |
+| `public/index.html`                      | Interactive demo page                            |
 | `docs/component-architecture.md`           | Architecture note for the next layers            |
 | `docs/user-guide.md`                       | This user guide                                  |
 
@@ -589,7 +589,7 @@ If Chrome is not installed at the default macOS path, set
 
 Then verify:
 
-1. Open `http://127.0.0.1:8000/showcase/index.html`.
+1. Open `http://localhost:8000`.
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
 4. Review the prose, static diagram, interactive diagram, combobox, splitter,

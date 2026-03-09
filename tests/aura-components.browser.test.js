@@ -46,7 +46,7 @@ function startStaticServer(rootDir) {
   return Deno.serve({ hostname: "127.0.0.1", port: 0 }, async (request) => {
     const url = new URL(request.url);
     const relativePath = decodeURIComponent(
-      url.pathname === "/" ? "/showcase/index.html" : url.pathname,
+      url.pathname === "/" ? "/public/index.html" : url.pathname,
     );
     const filePath = `${rootDir}${relativePath}`;
 
@@ -84,7 +84,7 @@ Deno.test(
         const page = await browser.newPage();
         const origin = `http://127.0.0.1:${server.addr.port}`;
 
-        await page.goto(`${origin}/showcase/index.html`);
+        await page.goto(`${origin}/public/index.html`);
 
         await page.waitForSelector("aura-combobox");
         await page.waitForSelector("aura-diagram");
