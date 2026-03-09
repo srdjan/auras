@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aura - Headless CSS Framework</title>
+    <meta property="og:image" content="aura-banner-dark.jpg" />
     <link rel="stylesheet" href="/packages/elements/aura.css" />
     <link rel="stylesheet" href="/packages/composites/aura-composites.css" />
     <style>
@@ -13,10 +14,26 @@
           text-align: center;
         }
 
-        [data-site="hero"] h1 {
-          font-size: clamp(var(--text-xl), 5vw, var(--text-3xl));
-          letter-spacing: -0.02em;
-          margin-block-end: var(--space-2);
+        [data-site="hero-banner"] {
+          max-inline-size: 100%;
+          height: auto;
+          border-radius: var(--radius-lg);
+          margin-inline: auto;
+          display: block;
+        }
+
+        /* Theme-aware image switching: default show light, hide dark */
+        [data-for-theme="dark"] { display: none; }
+
+        [data-theme~="dark"] [data-for-theme="light"] { display: none; }
+        [data-theme~="dark"] [data-for-theme="dark"] { display: inline; }
+        /* Special case: block display for hero banners in dark mode */
+        [data-theme~="dark"] img[data-site="hero-banner"][data-for-theme="dark"] { display: block; }
+
+        @media (prefers-color-scheme: dark) {
+          :root:not([data-theme]) [data-for-theme="light"] { display: none; }
+          :root:not([data-theme]) [data-for-theme="dark"] { display: inline; }
+          :root:not([data-theme]) img[data-site="hero-banner"][data-for-theme="dark"] { display: block; }
         }
 
         [data-site="hero"] .lead {
@@ -171,7 +188,9 @@
         data-gap="2"
         style="max-inline-size: 64rem; margin-inline: auto"
       >
-        <strong>Aura</strong>
+        <div data-layout="cluster" data-gap="1" data-align="center">
+          <strong>Aura</strong>
+        </div>
         <div data-layout="cluster" data-gap="2" data-align="center">
           <button id="brand-headless" type="button" data-variant="ghost">
             Headless
@@ -198,7 +217,21 @@
         <header data-site="hero">
           <div data-layout="stack" data-gap="4">
             <div>
-              <h1>Aura</h1>
+              <h1 data-visually-hidden>Aura - Headless CSS Framework</h1>
+              <img
+                src="aura-banner-light.jpg"
+                alt="Aura - Headless CSS Framework"
+                data-site="hero-banner"
+                data-for-theme="light"
+                width="600" height="327"
+              />
+              <img
+                src="aura-banner-dark.jpg"
+                alt=""
+                data-site="hero-banner"
+                data-for-theme="dark"
+                width="600" height="327"
+              />
               <p class="lead">
                 A headless CSS framework built on semantic HTML and
                 <code>data-*</code> attributes. No classes, no mandatory build
