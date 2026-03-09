@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aura - Headless CSS Framework</title>
+    <link rel="stylesheet" href="../packages/elements/aura.css" />
+    <link rel="stylesheet" href="../packages/composites/aura-composites.css" />
+    <style>
+      @layer site {
+        [data-site="hero"] {
+          padding-block: var(--space-8);
+          text-align: center;
+        }
+
+        [data-site="hero"] h1 {
+          font-size: clamp(var(--text-xl), 5vw, var(--text-3xl));
+          letter-spacing: -0.02em;
+          margin-block-end: var(--space-2);
+        }
+
+        [data-site="hero"] .lead {
+          font-size: var(--text-lg);
+          color: var(--text-muted);
+          max-inline-size: 42rem;
+          margin-inline: auto;
+          overflow-wrap: break-word;
+        }
+
+        [data-site="hero"] .lead code {
+          word-break: break-all;
+        }
+
+        [data-site="feature-grid"] {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+          gap: var(--space-4);
+        }
+
+        [data-site="feature-grid"] article {
+          padding: var(--space-4);
+        }
+
+        [data-site="feature-grid"] article h3 {
+          font-size: var(--text-base);
+          margin-block-end: var(--space-1);
+        }
+
+        [data-site="feature-grid"] article p {
+          color: var(--text-muted);
+          font-size: var(--text-sm);
+        }
+
+        [data-site="section"] {
+          scroll-margin-block-start: var(--space-4);
+        }
+
+        [data-site="section"] > h2 {
+          font-size: var(--text-xl);
+          margin-block-end: var(--space-1);
+        }
+
+        [data-site="section"] > h2 + p {
+          color: var(--text-muted);
+          margin-block-end: var(--space-4);
+        }
+
+        [data-site="code-block"] {
+          background-color: var(--surface-raised);
+          border: 1px solid var(--border);
+          border-radius: var(--radius-lg);
+          padding: var(--space-3);
+          overflow-x: auto;
+          font-size: var(--text-sm);
+        }
+
+        [data-site="code-block"] code {
+          background: none;
+          padding: 0;
+          border: 0;
+          font-size: inherit;
+        }
+
+        [data-site="example"] {
+          border: 1px solid var(--border);
+          border-radius: var(--radius-lg);
+          overflow: hidden;
+        }
+
+        [data-site="example"] > [data-site="example-preview"] {
+          padding: var(--space-4);
+        }
+
+        [data-site="example"] > [data-site="example-code"] {
+          border-block-start: 1px solid var(--border);
+          padding: var(--space-3);
+          background-color: var(--surface-raised);
+          font-size: var(--text-sm);
+          overflow-x: auto;
+        }
+
+        [data-site="example"] > [data-site="example-code"] pre {
+          margin: 0;
+        }
+
+        [data-site="example"] > [data-site="example-code"] code {
+          background: none;
+          padding: 0;
+          border: 0;
+          font-size: inherit;
+        }
+
+        [data-site="toolbar"] {
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          backdrop-filter: blur(12px);
+          background-color: color-mix(
+            in oklch,
+            var(--bg) 85%,
+            transparent
+          );
+          border-block-end: 1px solid var(--border);
+          padding-block: var(--space-2);
+          padding-inline: var(--space-4);
+        }
+
+        [data-site="toolbar"] button {
+          font-size: var(--text-sm);
+          padding-block: var(--space-1);
+          padding-inline: var(--space-2);
+        }
+
+        [data-site="swatch"] {
+          display: inline-block;
+          inline-size: 2.5rem;
+          block-size: 2.5rem;
+          border-radius: var(--radius-md);
+          border: 1px solid color-mix(in oklch, var(--text-muted) 30%, transparent);
+          box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--text-muted) 10%, transparent);
+        }
+
+        [data-site="swatch-row"] {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-2);
+          align-items: center;
+        }
+
+        [data-site="swatch-row"] span {
+          font-size: var(--text-sm);
+          color: var(--text-muted);
+          min-inline-size: 5rem;
+        }
+
+        [data-site="token-table"] td:first-child {
+          font-family: var(--font-mono);
+          font-size: var(--text-sm);
+          white-space: nowrap;
+        }
+      }
+    </style>
+  </head>
+  <body data-brand="aura">
+    <!-- Sticky toolbar -->
+    <div data-site="toolbar">
+      <div
+        data-layout="row"
+        data-align="center"
+        data-justify="between"
+        data-gap="2"
+        style="max-inline-size: 64rem; margin-inline: auto"
+      >
+        <strong>Aura</strong>
+        <div data-layout="cluster" data-gap="2" data-align="center">
+          <button id="brand-headless" type="button" data-variant="ghost">
+            Headless
+          </button>
+          <button id="brand-aura" type="button" data-variant="solid">
+            Aura
+          </button>
+          <button id="brand-editorial" type="button" data-variant="ghost">
+            Editorial
+          </button>
+          <button id="toggle-dark" type="button" data-variant="soft">
+            Dark
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      data-layout="container"
+      style="max-inline-size: 64rem; padding-block-end: var(--space-8)"
+    >
+      <div data-layout="stack" data-gap="8">
+        <!-- Hero -->
+        <header data-site="hero">
+          <div data-layout="stack" data-gap="4">
+            <div>
+              <h1>Aura</h1>
+              <p class="lead">
+                A headless CSS framework built on semantic HTML and
+                <code>data-*</code> attributes. No classes, no mandatory build
+                step, no JavaScript required for the base layer.
+              </p>
+            </div>
+
+            <div
+              data-layout="cluster"
+              data-gap="2"
+              data-align="center"
+              data-justify="center"
+            >
+              <a href="#get-started" role="button" data-variant="solid">
+                Get started
+              </a>
+              <a href="#components" role="button" data-variant="soft">
+                Components
+              </a>
+            </div>
+
+            <div data-site="feature-grid">
+              <article data-surface="card">
+                <h3>Headless by default</h3>
+                <p>
+                  Structure without opinion. Readable typography, sensible
+                  spacing, and semantic surfaces that do not force a visual
+                  language.
+                </p>
+              </article>
+              <article data-surface="card">
+                <h3>Attribute-driven</h3>
+                <p>
+                  No class names to memorize. Use
+                  <code>data-layout</code>, <code>data-surface</code>,
+                  <code>data-variant</code> and other semantic attributes.
+                </p>
+              </article>
+              <article data-surface="card">
+                <h3>Three layers</h3>
+                <p>
+                  Elements for base styles. Composites for CSS-only patterns.
+                  Components for optional interactive custom elements.
+                </p>
+              </article>
+              <article data-surface="card">
+                <h3>Pluggable brands</h3>
+                <p>
+                  Layer a brand pack on top for a full design system. Switch
+                  brands at runtime with a single attribute change.
+                </p>
+              </article>
+            </div>
+          </div>
+        </header>
+
+        <!-- Get started -->
+        <section
+          id="get-started"
+          data-site="section"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <h2>Get started</h2>
+          <p>
+            Add the base stylesheet and optionally layer composites, components,
+            and a brand pack.
+          </p>
+
+          <div data-site="code-block">
+            <pre><code>&lt;!-- Required: base elements --&gt;
+&lt;link rel="stylesheet" href="aura.css"&gt;
+
+&lt;!-- Optional: composites for higher-level CSS patterns --&gt;
+&lt;link rel="stylesheet" href="aura-composites.css"&gt;
+
+&lt;!-- Optional: interactive custom elements --&gt;
+&lt;script type="module" src="@aura/components/browser.js"&gt;&lt;/script&gt;
+&lt;script type="module" src="@aura/diagram/browser.js"&gt;&lt;/script&gt;
+
+&lt;!-- Optional: brand pack --&gt;
+&lt;link rel="stylesheet" href="aura-brand.css"&gt;
+&lt;body data-brand="aura"&gt;</code></pre>
+          </div>
+
+          <div data-layout="grid" data-gap="4" data-grid-min="md">
+            <article data-surface="card" data-layout="stack" data-gap="2">
+              <h3>Layer architecture</h3>
+              <p>
+                CSS layers ensure predictable specificity regardless of load
+                order.
+              </p>
+              <div data-site="code-block">
+                <pre><code>reset > tokens > brands > defaults
+  > layouts > components > utilities > print</code></pre>
+              </div>
+            </article>
+            <article data-surface="card" data-layout="stack" data-gap="2">
+              <h3>Design tokens</h3>
+              <p>
+                OKLCH-based color system with fluid typography and consistent
+                spacing scale.
+              </p>
+              <div data-site="code-block">
+                <pre><code>--space-1 through --space-16
+--text-xs through --text-3xl
+--primary, --secondary, --accent</code></pre>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- Typography and surfaces -->
+        <section
+          id="elements"
+          data-site="section"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <h2>Elements</h2>
+          <p>
+            The base layer provides typography, surfaces, buttons, notices,
+            forms, and utilities without requiring any classes.
+          </p>
+
+          <!-- Typography -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Typography</h3>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <div data-layout="stack" data-gap="2">
+                  <h1>Heading 1</h1>
+                  <h2>Heading 2</h2>
+                  <h3>Heading 3</h3>
+                  <p>
+                    Body text inherits system fonts and scales fluidly using
+                    <code>clamp()</code> functions. Inline elements like
+                    <strong>strong</strong>, <em>emphasis</em>,
+                    <code>code</code>, and <a href="#">links</a> are styled
+                    automatically.
+                  </p>
+                  <blockquote>
+                    <p>
+                      Blockquotes get a subtle left border and muted styling
+                      from the base layer.
+                    </p>
+                  </blockquote>
+                </div>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;h1&gt;Heading 1&lt;/h1&gt;
+&lt;p&gt;Body text with &lt;strong&gt;strong&lt;/strong&gt; and &lt;code&gt;code&lt;/code&gt;.&lt;/p&gt;
+&lt;blockquote&gt;&lt;p&gt;A quotation.&lt;/p&gt;&lt;/blockquote&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+
+          <!-- Buttons -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Buttons</h3>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <div
+                  data-layout="cluster"
+                  data-gap="2"
+                  data-align="center"
+                  data-stack="mobile"
+                >
+                  <button type="button">Default</button>
+                  <button type="button" data-variant="solid">Solid</button>
+                  <button type="button" data-variant="soft">Soft</button>
+                  <button type="button" data-variant="ghost">Ghost</button>
+                  <button type="button" data-variant="solid" aria-busy="true">
+                    Loading
+                  </button>
+                  <button type="button" disabled>Disabled</button>
+                </div>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;button type="button"&gt;Default&lt;/button&gt;
+&lt;button type="button" data-variant="solid"&gt;Solid&lt;/button&gt;
+&lt;button type="button" data-variant="soft"&gt;Soft&lt;/button&gt;
+&lt;button type="button" data-variant="ghost"&gt;Ghost&lt;/button&gt;
+&lt;button type="button" aria-busy="true"&gt;Loading&lt;/button&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+
+          <!-- Notices -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Notices</h3>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <div data-layout="grid" data-gap="3" data-grid-min="sm">
+                  <aside data-surface="notice" data-status="info">
+                    <strong>Info</strong>
+                    <p>Neutral informational message.</p>
+                  </aside>
+                  <aside data-surface="notice" data-status="success">
+                    <strong>Success</strong>
+                    <p>Operation completed.</p>
+                  </aside>
+                  <aside data-surface="notice" data-status="warning">
+                    <strong>Warning</strong>
+                    <p>Something needs attention.</p>
+                  </aside>
+                  <aside data-surface="notice" data-status="error">
+                    <strong>Error</strong>
+                    <p>Something went wrong.</p>
+                  </aside>
+                </div>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;aside data-surface="notice" data-status="info"&gt;
+  &lt;strong&gt;Info&lt;/strong&gt;
+  &lt;p&gt;Neutral informational message.&lt;/p&gt;
+&lt;/aside&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+
+          <!-- Accordion -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Accordion</h3>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <section data-ui="accordion" aria-label="FAQ">
+                  <details name="faq" open>
+                    <summary>What is Aura?</summary>
+                    <p>
+                      A headless CSS framework that provides structure through
+                      semantic HTML and data attributes, not class names.
+                    </p>
+                  </details>
+                  <details name="faq">
+                    <summary>Does it require JavaScript?</summary>
+                    <p>
+                      The base Elements and Composites layers are pure CSS. The
+                      Components layer adds optional interactive custom elements.
+                    </p>
+                  </details>
+                  <details name="faq">
+                    <summary>How do I theme it?</summary>
+                    <p>
+                      Override design tokens in a brand pack CSS file and apply
+                      it with <code>data-brand</code> on the body element.
+                    </p>
+                  </details>
+                </section>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;section data-ui="accordion"&gt;
+  &lt;details name="faq" open&gt;
+    &lt;summary&gt;Question&lt;/summary&gt;
+    &lt;p&gt;Answer.&lt;/p&gt;
+  &lt;/details&gt;
+&lt;/section&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+
+          <!-- Dialog -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Dialog</h3>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <button
+                  id="open-dialog"
+                  type="button"
+                  data-variant="soft"
+                >
+                  Open dialog
+                </button>
+
+                <dialog id="site-dialog">
+                  <h3>Dialog</h3>
+                  <p>
+                    Native dialogs inherit active tokens, lock page scroll,
+                    and use a motion-safe entry transition.
+                  </p>
+                  <div
+                    data-layout="cluster"
+                    data-gap="2"
+                    data-justify="end"
+                  >
+                    <button
+                      id="close-dialog"
+                      type="button"
+                      data-variant="ghost"
+                    >
+                      Close
+                    </button>
+                    <button type="button" data-variant="solid">
+                      Confirm
+                    </button>
+                  </div>
+                </dialog>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;dialog id="my-dialog"&gt;
+  &lt;h3&gt;Title&lt;/h3&gt;
+  &lt;p&gt;Content.&lt;/p&gt;
+  &lt;button onclick="this.closest('dialog').close()"&gt;Close&lt;/button&gt;
+&lt;/dialog&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <!-- Layout -->
+        <section
+          id="layout"
+          data-site="section"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <h2>Layout</h2>
+          <p>
+            Directional layouts, responsive grids, alignment, gaps, and
+            stacking - all through data attributes.
+          </p>
+
+          <!-- Row -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Row, cluster, and stack</h3>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <div data-layout="stack" data-gap="3">
+                  <div
+                    data-layout="row"
+                    data-align="center"
+                    data-justify="between"
+                    data-gap="2"
+                    data-surface="card"
+                  >
+                    <span>Row start</span>
+                    <span>Row center</span>
+                    <span>Row end</span>
+                  </div>
+
+                  <div data-layout="cluster" data-gap="2">
+                    <button type="button" data-variant="soft">Tag one</button>
+                    <button type="button" data-variant="soft">Tag two</button>
+                    <button type="button" data-variant="soft">
+                      Tag three
+                    </button>
+                    <button type="button" data-variant="soft">Tag four</button>
+                    <button type="button" data-variant="soft">Tag five</button>
+                    <button type="button" data-variant="soft">Tag six</button>
+                  </div>
+
+                  <div data-layout="stack" data-gap="2">
+                    <div data-surface="card">Stack item 1</div>
+                    <div data-surface="card">Stack item 2</div>
+                    <div data-surface="card">Stack item 3</div>
+                  </div>
+                </div>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;div data-layout="row" data-align="center" data-justify="between"&gt;...&lt;/div&gt;
+&lt;div data-layout="cluster" data-gap="2"&gt;...&lt;/div&gt;
+&lt;div data-layout="stack" data-gap="2"&gt;...&lt;/div&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+
+          <!-- Grid -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Grid</h3>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <div data-layout="grid" data-gap="3" data-grid-min="sm">
+                  <div data-surface="card" data-layout="stack" data-gap="1">
+                    <strong>Auto columns</strong>
+                    <p>Columns size themselves using <code>auto-fit</code>.</p>
+                  </div>
+                  <div data-surface="card" data-layout="stack" data-gap="1">
+                    <strong>Responsive</strong>
+                    <p>Set a minimum with <code>data-grid-min</code>.</p>
+                  </div>
+                  <div data-surface="card" data-layout="stack" data-gap="1">
+                    <strong>No breakpoints</strong>
+                    <p>The grid adapts to available space automatically.</p>
+                  </div>
+                  <div data-surface="card" data-layout="stack" data-gap="1">
+                    <strong>Consistent gaps</strong>
+                    <p>Gaps use the design token spacing scale.</p>
+                  </div>
+                </div>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;div data-layout="grid" data-gap="3" data-grid-min="sm"&gt;
+  &lt;div data-surface="card"&gt;...&lt;/div&gt;
+  &lt;div data-surface="card"&gt;...&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+
+          <!-- Container and mobile stacking -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Container and responsive stacking</h3>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <div
+                  data-layout="row"
+                  data-gap="3"
+                  data-align="center"
+                  data-stack="mobile"
+                >
+                  <div data-surface="card" style="flex: 1">
+                    <strong>Left</strong>
+                    <p>Stacks vertically on mobile.</p>
+                  </div>
+                  <div data-surface="card" style="flex: 1">
+                    <strong>Right</strong>
+                    <p>Use <code>data-stack="mobile"</code> for this behavior.</p>
+                  </div>
+                </div>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;body data-layout="container"&gt;...&lt;/body&gt;
+&lt;div data-layout="row" data-stack="mobile"&gt;...&lt;/div&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <!-- Forms -->
+        <section
+          id="forms"
+          data-site="section"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <h2>Forms</h2>
+          <p>
+            Text fields, selects, checkboxes, switches, ranges, progress bars,
+            and validation - all styled through the base layer.
+          </p>
+
+          <div data-site="example">
+            <div data-site="example-preview">
+              <form
+                data-layout="stack"
+                data-gap="3"
+                onsubmit="event.preventDefault()"
+              >
+                <fieldset data-layout="stack" data-gap="3">
+                  <legend>Contact</legend>
+
+                  <label for="site-name">Name</label>
+                  <input
+                    id="site-name"
+                    type="text"
+                    required
+                    placeholder="Ada Lovelace"
+                  />
+
+                  <label for="site-email">Email</label>
+                  <input
+                    id="site-email"
+                    type="email"
+                    required
+                    placeholder="ada@example.com"
+                  />
+
+                  <label for="site-country">Country</label>
+                  <select id="site-country">
+                    <option value="">Choose one</option>
+                    <option value="rs">Serbia</option>
+                    <option value="uk">United Kingdom</option>
+                    <option value="us">United States</option>
+                  </select>
+
+                  <label for="site-message">Message</label>
+                  <textarea
+                    id="site-message"
+                    rows="3"
+                    placeholder="Write something..."
+                  ></textarea>
+
+                  <div data-layout="grid" data-gap="3" data-grid-min="md">
+                    <div data-layout="stack" data-gap="2">
+                      <label>
+                        <input type="checkbox" checked /> Subscribe to updates
+                      </label>
+                      <label>
+                        <input type="checkbox" role="switch" checked />
+                        Public profile
+                      </label>
+                      <label>
+                        <input type="checkbox" role="switch" />
+                        Weekly digest
+                      </label>
+                    </div>
+                    <div data-layout="stack" data-gap="2">
+                      <label for="site-volume">Volume</label>
+                      <input id="site-volume" type="range" value="60" />
+                      <label>Upload progress</label>
+                      <progress value="72" max="100">72%</progress>
+                    </div>
+                  </div>
+
+                  <div data-layout="cluster" data-gap="2" data-align="center">
+                    <button type="submit" data-variant="solid">Submit</button>
+                    <button type="reset">Reset</button>
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+            <div data-site="example-code">
+              <pre><code>&lt;label for="name"&gt;Name&lt;/label&gt;
+&lt;input id="name" type="text" required /&gt;
+
+&lt;label&gt;&lt;input type="checkbox" role="switch" /&gt; Toggle&lt;/label&gt;
+&lt;progress value="72" max="100"&gt;72%&lt;/progress&gt;</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <!-- Components -->
+        <section
+          id="components"
+          data-site="section"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <h2>Components</h2>
+          <p>
+            Optional light-DOM custom elements that add keyboard navigation,
+            selection state, and panel coordination. No shadow DOM - your
+            authored HTML stays visible and styleable.
+          </p>
+
+          <div data-site="code-block">
+            <pre><code>&lt;script type="module" src="@aura/components/browser.js"&gt;&lt;/script&gt;
+&lt;script type="module" src="@aura/diagram/browser.js"&gt;&lt;/script&gt;</code></pre>
+          </div>
+
+          <!-- Tabs -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Tabs</h3>
+            <p>
+              <code>aura-tabs</code> coordinates tab selection with roving
+              focus and panel visibility. The component only manages behavior -
+              the Composites layer handles visual treatment.
+            </p>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <div data-layout="stack" data-gap="3">
+                  <p>
+                    Selected:
+                    <code id="tabs-out">overview</code>
+                  </p>
+                  <aura-tabs
+                    id="site-tabs"
+                    data-ui="tabs"
+                    value="overview"
+                  >
+                    <nav data-part="tablist" aria-label="Feature views">
+                      <button
+                        type="button"
+                        data-part="trigger"
+                        data-value="overview"
+                      >
+                        Overview
+                      </button>
+                      <button
+                        type="button"
+                        data-part="trigger"
+                        data-value="tokens"
+                      >
+                        Tokens
+                      </button>
+                      <button
+                        type="button"
+                        data-part="trigger"
+                        data-value="a11y"
+                      >
+                        Accessibility
+                      </button>
+                    </nav>
+
+                    <section data-part="panels">
+                      <article
+                        data-part="panel"
+                        data-surface="card"
+                        data-value="overview"
+                      >
+                        <h4>Overview</h4>
+                        <p>
+                          Tabs switch content inline with Left/Right arrow key
+                          navigation, Home, End, and click activation.
+                        </p>
+                      </article>
+                      <article
+                        data-part="panel"
+                        data-surface="card"
+                        data-value="tokens"
+                        hidden
+                      >
+                        <h4>Tokens</h4>
+                        <p>
+                          Visual treatment comes from CSS tokens in the
+                          Composites layer. The component only manages selection
+                          and panel visibility.
+                        </p>
+                      </article>
+                      <article
+                        data-part="panel"
+                        data-surface="card"
+                        data-value="a11y"
+                        hidden
+                      >
+                        <h4>Accessibility</h4>
+                        <p>
+                          Roving focus with <code>tabindex</code>,
+                          <code>aria-selected</code>, and proper tab semantics
+                          are handled automatically.
+                        </p>
+                      </article>
+                    </section>
+                  </aura-tabs>
+                </div>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;aura-tabs data-ui="tabs" value="overview"&gt;
+  &lt;nav data-part="tablist"&gt;
+    &lt;button data-part="trigger" data-value="overview"&gt;Overview&lt;/button&gt;
+    &lt;button data-part="trigger" data-value="tokens"&gt;Tokens&lt;/button&gt;
+  &lt;/nav&gt;
+  &lt;section data-part="panels"&gt;
+    &lt;article data-part="panel" data-value="overview"&gt;...&lt;/article&gt;
+    &lt;article data-part="panel" data-value="tokens" hidden&gt;...&lt;/article&gt;
+  &lt;/section&gt;
+&lt;/aura-tabs&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+
+          <!-- Master-detail -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Master-detail</h3>
+            <p>
+              <code>aura-master-detail</code> coordinates a sidebar list with a
+              detail panel. The Composites layer provides a responsive grid
+              shell.
+            </p>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <div data-layout="stack" data-gap="3">
+                  <p>
+                    Selected:
+                    <code id="md-out">elements</code>
+                  </p>
+                  <aura-master-detail
+                    id="site-md"
+                    data-ui="master-detail"
+                    value="elements"
+                  >
+                    <nav data-part="master">
+                      <button
+                        type="button"
+                        data-part="trigger"
+                        data-value="elements"
+                      >
+                        <strong>Elements</strong>
+                        <p>Base styles and tokens</p>
+                      </button>
+                      <button
+                        type="button"
+                        data-part="trigger"
+                        data-value="composites"
+                      >
+                        <strong>Composites</strong>
+                        <p>CSS-only patterns</p>
+                      </button>
+                      <button
+                        type="button"
+                        data-part="trigger"
+                        data-value="components"
+                      >
+                        <strong>Components</strong>
+                        <p>Interactive custom elements</p>
+                      </button>
+                    </nav>
+
+                    <section data-part="detail">
+                      <article
+                        data-part="panel"
+                        data-surface="card"
+                        data-value="elements"
+                      >
+                        <h4>Elements</h4>
+                        <p>
+                          The foundation layer provides reset, design tokens,
+                          element defaults, layout primitives, and utilities in
+                          a single CSS file.
+                        </p>
+                      </article>
+                      <article
+                        data-part="panel"
+                        data-surface="card"
+                        data-value="composites"
+                        hidden
+                      >
+                        <h4>Composites</h4>
+                        <p>
+                          Higher-level CSS patterns like master-detail shells,
+                          tab bars, tree views, and diagram canvases.
+                          No JavaScript required.
+                        </p>
+                      </article>
+                      <article
+                        data-part="panel"
+                        data-surface="card"
+                        data-value="components"
+                        hidden
+                      >
+                        <h4>Components</h4>
+                        <p>
+                          Light-DOM custom elements that add keyboard
+                          navigation, focus management, and selection state.
+                        </p>
+                      </article>
+                    </section>
+                  </aura-master-detail>
+                </div>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;aura-master-detail data-ui="master-detail" value="elements"&gt;
+  &lt;nav data-part="master"&gt;
+    &lt;button data-part="trigger" data-value="elements"&gt;
+      &lt;strong&gt;Elements&lt;/strong&gt;
+      &lt;p&gt;Base styles and tokens&lt;/p&gt;
+    &lt;/button&gt;
+  &lt;/nav&gt;
+  &lt;section data-part="detail"&gt;
+    &lt;article data-part="panel" data-value="elements"&gt;...&lt;/article&gt;
+  &lt;/section&gt;
+&lt;/aura-master-detail&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+
+          <!-- Combobox -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Combobox</h3>
+            <p>
+              <code>aura-combobox</code> adds filtering, active option state,
+              keyboard selection, and optional linked panels to a native input
+              and list.
+            </p>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <div data-layout="stack" data-gap="3">
+                  <p>
+                    Selected:
+                    <code id="combobox-out">tabs</code>
+                  </p>
+                  <aura-combobox
+                    id="site-combobox"
+                    data-ui="combobox"
+                    value="tabs"
+                  >
+                    <label for="site-component-search">
+                      Search components
+                    </label>
+
+                    <div data-part="control">
+                      <input
+                        id="site-component-search"
+                        data-part="input"
+                        type="text"
+                        placeholder="Type to filter..."
+                      />
+                      <button
+                        type="button"
+                        data-part="toggle"
+                        aria-label="Toggle options"
+                      ></button>
+                      <input
+                        type="hidden"
+                        data-part="value"
+                        name="component"
+                      />
+                    </div>
+
+                    <ul data-part="listbox">
+                      <li data-part="option" data-value="tabs">Tabs</li>
+                      <li data-part="option" data-value="master-detail">
+                        Master-detail
+                      </li>
+                      <li data-part="option" data-value="tree">Tree</li>
+                      <li data-part="option" data-value="combobox">
+                        Combobox
+                      </li>
+                      <li data-part="option" data-value="splitter">
+                        Splitter
+                      </li>
+                      <li data-part="option" data-value="diagram">Diagram</li>
+                    </ul>
+
+                    <p data-part="empty" hidden>No matches found.</p>
+                  </aura-combobox>
+                </div>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;aura-combobox data-ui="combobox" value="tabs"&gt;
+  &lt;label for="search"&gt;Search&lt;/label&gt;
+  &lt;div data-part="control"&gt;
+    &lt;input data-part="input" type="text" placeholder="Filter..." /&gt;
+    &lt;button data-part="toggle" aria-label="Toggle"&gt;&lt;/button&gt;
+    &lt;input type="hidden" data-part="value" name="search" /&gt;
+  &lt;/div&gt;
+  &lt;ul data-part="listbox"&gt;
+    &lt;li data-part="option" data-value="tabs"&gt;Tabs&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;p data-part="empty" hidden&gt;No matches.&lt;/p&gt;
+&lt;/aura-combobox&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+
+          <!-- Splitter -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Splitter</h3>
+            <p>
+              <code>aura-splitter</code> adds keyboard resizing, pointer drag,
+              and percent-based layout state to a two-pane layout.
+            </p>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <div data-layout="stack" data-gap="3">
+                  <p>
+                    Split at:
+                    <code id="splitter-out">40</code>%
+                  </p>
+                  <aura-splitter
+                    id="site-splitter"
+                    data-ui="splitter"
+                    value="40"
+                    min="25"
+                    max="75"
+                    step="5"
+                  >
+                    <section data-part="pane" data-pane="primary">
+                      <h4>Primary</h4>
+                      <p>
+                        Drag the separator or use arrow keys to resize.
+                      </p>
+                    </section>
+                    <button
+                      type="button"
+                      data-part="separator"
+                      aria-label="Resize panes"
+                    ></button>
+                    <section data-part="pane" data-pane="secondary">
+                      <h4>Secondary</h4>
+                      <p>
+                        The split value is exposed through the
+                        <code>value</code> attribute and the
+                        <code>aura-change</code> event.
+                      </p>
+                    </section>
+                  </aura-splitter>
+                </div>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;aura-splitter data-ui="splitter" value="40" min="25" max="75" step="5"&gt;
+  &lt;section data-part="pane" data-pane="primary"&gt;...&lt;/section&gt;
+  &lt;button data-part="separator" aria-label="Resize"&gt;&lt;/button&gt;
+  &lt;section data-part="pane" data-pane="secondary"&gt;...&lt;/section&gt;
+&lt;/aura-splitter&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+
+          <!-- Tree -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Tree</h3>
+            <p>
+              <code>aura-tree</code> adds hierarchical selection, branch
+              expansion, and spatial keyboard navigation to a nested list.
+            </p>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <div data-layout="stack" data-gap="3">
+                  <p>
+                    Selected:
+                    <code id="tree-out">aura-css</code>
+                  </p>
+                  <aura-tree
+                    id="site-tree"
+                    data-ui="tree"
+                    value="aura-css"
+                  >
+                    <ul data-part="tree" aria-label="Package structure">
+                      <li data-part="item" data-branch data-expanded>
+                        <button
+                          type="button"
+                          data-part="toggle"
+                          aria-label="Toggle elements"
+                        ></button>
+                        <button
+                          type="button"
+                          data-part="node"
+                          data-value="elements"
+                        >
+                          <strong>elements/</strong>
+                          <p>Base layer</p>
+                        </button>
+                        <ul data-part="group">
+                          <li data-part="item">
+                            <button
+                              type="button"
+                              data-part="node"
+                              data-value="aura-css"
+                            >
+                              <strong>aura.css</strong>
+                              <p>Core framework</p>
+                            </button>
+                          </li>
+                        </ul>
+                      </li>
+                      <li data-part="item" data-branch>
+                        <button
+                          type="button"
+                          data-part="toggle"
+                          aria-label="Toggle composites"
+                        ></button>
+                        <button
+                          type="button"
+                          data-part="node"
+                          data-value="composites"
+                        >
+                          <strong>composites/</strong>
+                          <p>CSS patterns</p>
+                        </button>
+                        <ul data-part="group" hidden>
+                          <li data-part="item">
+                            <button
+                              type="button"
+                              data-part="node"
+                              data-value="composites-css"
+                            >
+                              <strong>aura-composites.css</strong>
+                              <p>Optional patterns</p>
+                            </button>
+                          </li>
+                        </ul>
+                      </li>
+                      <li data-part="item" data-branch>
+                        <button
+                          type="button"
+                          data-part="toggle"
+                          aria-label="Toggle components"
+                        ></button>
+                        <button
+                          type="button"
+                          data-part="node"
+                          data-value="components"
+                        >
+                          <strong>components/</strong>
+                          <p>Custom elements</p>
+                        </button>
+                        <ul data-part="group" hidden>
+                          <li data-part="item">
+                            <button
+                              type="button"
+                              data-part="node"
+                              data-value="browser-js"
+                            >
+                              <strong>browser.js</strong>
+                              <p>No-build entry</p>
+                            </button>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </aura-tree>
+                </div>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;aura-tree data-ui="tree" value="root"&gt;
+  &lt;ul data-part="tree"&gt;
+    &lt;li data-part="item" data-branch data-expanded&gt;
+      &lt;button data-part="toggle"&gt;&lt;/button&gt;
+      &lt;button data-part="node" data-value="parent"&gt;Parent&lt;/button&gt;
+      &lt;ul data-part="group"&gt;
+        &lt;li data-part="item"&gt;
+          &lt;button data-part="node" data-value="child"&gt;Child&lt;/button&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/aura-tree&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+
+          <!-- Diagram -->
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Diagram</h3>
+            <p>
+              <code>aura-diagram</code> turns semantic content with CSS Grid
+              placement into interactive flow diagrams with spatial keyboard
+              navigation and linked detail panels.
+            </p>
+            <div data-site="example">
+              <div data-site="example-preview">
+                <div data-layout="stack" data-gap="3">
+                  <p>
+                    Selected:
+                    <code id="diagram-out">input</code>
+                  </p>
+                  <aura-diagram
+                    id="site-diagram"
+                    value="input"
+                    activation="manual"
+                    aria-label="Data pipeline"
+                    style="
+                      --diagram-columns: 7;
+                      --diagram-min-inline-size: 32rem;
+                    "
+                  >
+                    <p data-part="caption">
+                      A simple three-step data pipeline.
+                    </p>
+
+                    <div data-part="canvas">
+                      <button
+                        type="button"
+                        data-part="node"
+                        data-kind="input"
+                        data-value="input"
+                        style="
+                          --diagram-column: 1 / span 2;
+                          --diagram-row: 1;
+                        "
+                      >
+                        <strong>Ingest</strong>
+                        <p>Receive raw data.</p>
+                      </button>
+
+                      <div
+                        data-part="connector"
+                        aria-hidden="true"
+                        style="--diagram-column: 3; --diagram-row: 1"
+                      >
+                        <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+                          <path d="M4 20 H108" />
+                          <path
+                            data-marker="arrow"
+                            d="M108 12 L116 20 L108 28 Z"
+                          />
+                        </svg>
+                      </div>
+
+                      <button
+                        type="button"
+                        data-part="node"
+                        data-kind="process"
+                        data-value="transform"
+                        style="
+                          --diagram-column: 4 / span 2;
+                          --diagram-row: 1;
+                        "
+                      >
+                        <strong>Transform</strong>
+                        <p>Clean and normalize.</p>
+                      </button>
+
+                      <div
+                        data-part="connector"
+                        aria-hidden="true"
+                        style="--diagram-column: 6; --diagram-row: 1"
+                      >
+                        <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+                          <path d="M4 20 H108" />
+                          <path
+                            data-marker="arrow"
+                            d="M108 12 L116 20 L108 28 Z"
+                          />
+                        </svg>
+                      </div>
+
+                      <button
+                        type="button"
+                        data-part="node"
+                        data-kind="output"
+                        data-value="store"
+                        style="--diagram-column: 7; --diagram-row: 1"
+                      >
+                        <strong>Store</strong>
+                        <p>Persist to database.</p>
+                      </button>
+                    </div>
+
+                    <section data-part="panels">
+                      <article data-part="panel" data-value="input">
+                        <h4>Ingest</h4>
+                        <p>
+                          Raw data arrives from external sources via API or file
+                          upload.
+                        </p>
+                      </article>
+                      <article data-part="panel" data-value="transform" hidden>
+                        <h4>Transform</h4>
+                        <p>
+                          Data is cleaned, validated, and normalized into the
+                          target schema.
+                        </p>
+                      </article>
+                      <article data-part="panel" data-value="store" hidden>
+                        <h4>Store</h4>
+                        <p>
+                          Transformed data is persisted to the database and
+                          indexed for queries.
+                        </p>
+                      </article>
+                    </section>
+                  </aura-diagram>
+                </div>
+              </div>
+              <div data-site="example-code">
+                <pre><code>&lt;aura-diagram value="input" style="--diagram-columns: 7"&gt;
+  &lt;div data-part="canvas"&gt;
+    &lt;button data-part="node" data-kind="input" data-value="input"
+      style="--diagram-column: 1 / span 2; --diagram-row: 1"&gt;
+      &lt;strong&gt;Ingest&lt;/strong&gt;
+    &lt;/button&gt;
+    &lt;div data-part="connector" aria-hidden="true"
+      style="--diagram-column: 3; --diagram-row: 1"&gt;
+      &lt;svg viewBox="0 0 120 40"&gt;&lt;path d="M4 20 H108" /&gt;&lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;!-- more nodes... --&gt;
+  &lt;/div&gt;
+  &lt;section data-part="panels"&gt;
+    &lt;article data-part="panel" data-value="input"&gt;...&lt;/article&gt;
+  &lt;/section&gt;
+&lt;/aura-diagram&gt;</code></pre>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <!-- Theming -->
+        <section
+          id="theming"
+          data-site="section"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <h2>Theming</h2>
+          <p>
+            Switch between brands, toggle dark mode, and adjust contrast and
+            motion preferences - all through data attributes on the root
+            elements.
+          </p>
+
+          <div data-layout="grid" data-gap="4" data-grid-min="md">
+            <article data-surface="card" data-layout="stack" data-gap="3">
+              <h3>Brand packs</h3>
+              <p>
+                A brand pack is a standalone CSS file that overrides tokens via
+                <code>@layer brands</code>. Apply it by setting
+                <code>data-brand</code> on the body.
+              </p>
+              <div data-site="code-block">
+                <pre><code>&lt;body data-brand="aura"&gt;
+&lt;body data-brand="editorial"&gt;
+&lt;body&gt; &lt;!-- headless, no brand --&gt;</code></pre>
+              </div>
+            </article>
+
+            <article data-surface="card" data-layout="stack" data-gap="3">
+              <h3>Dark mode and preferences</h3>
+              <p>
+                Toggle dark mode, high contrast, and reduced motion through
+                attributes on the root element.
+              </p>
+              <div data-site="code-block">
+                <pre><code>&lt;html data-theme="dark"&gt;
+&lt;html data-contrast="more"&gt;
+&lt;html data-motion="reduce"&gt;</code></pre>
+              </div>
+            </article>
+          </div>
+
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <h3>Color palette</h3>
+            <p>
+              OKLCH-based colors adapt automatically between light and dark
+              modes.
+            </p>
+            <div data-layout="stack" data-gap="3">
+              <div data-site="swatch-row">
+                <span>Primary</span>
+                <div
+                  data-site="swatch"
+                  style="background-color: var(--primary)"
+                ></div>
+                <div
+                  data-site="swatch"
+                  style="background-color: var(--primary-hover)"
+                ></div>
+                <div
+                  data-site="swatch"
+                  style="background-color: var(--primary-subtle)"
+                ></div>
+              </div>
+              <div data-site="swatch-row">
+                <span>Surface</span>
+                <div
+                  data-site="swatch"
+                  style="background-color: var(--bg)"
+                ></div>
+                <div
+                  data-site="swatch"
+                  style="background-color: var(--surface)"
+                ></div>
+                <div
+                  data-site="swatch"
+                  style="background-color: var(--surface-raised)"
+                ></div>
+              </div>
+              <div data-site="swatch-row">
+                <span>Status</span>
+                <div
+                  data-site="swatch"
+                  style="background-color: var(--color-info)"
+                ></div>
+                <div
+                  data-site="swatch"
+                  style="background-color: var(--color-success)"
+                ></div>
+                <div
+                  data-site="swatch"
+                  style="background-color: var(--color-warning)"
+                ></div>
+                <div
+                  data-site="swatch"
+                  style="background-color: var(--color-error)"
+                ></div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <!-- Accessibility -->
+        <section
+          id="accessibility"
+          data-site="section"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <h2>Accessibility</h2>
+          <p>
+            Aura bakes accessibility into every layer rather than treating it as
+            an afterthought.
+          </p>
+
+          <div data-layout="grid" data-gap="4" data-grid-min="sm">
+            <article data-surface="card" data-layout="stack" data-gap="2">
+              <h3>Focus management</h3>
+              <p>
+                <code>:focus-visible</code> outlines on all interactive
+                elements. Components use roving focus for keyboard navigation.
+              </p>
+            </article>
+            <article data-surface="card" data-layout="stack" data-gap="2">
+              <h3>Motion preferences</h3>
+              <p>
+                <code>prefers-reduced-motion</code> is respected by default.
+                Override with <code>data-motion="reduce"</code>.
+              </p>
+            </article>
+            <article data-surface="card" data-layout="stack" data-gap="2">
+              <h3>Contrast modes</h3>
+              <p>
+                <code>prefers-contrast: more/less</code> and
+                <code>forced-colors: active</code> (Windows High Contrast)
+                are supported.
+              </p>
+            </article>
+            <article data-surface="card" data-layout="stack" data-gap="2">
+              <h3>ARIA integration</h3>
+              <p>
+                Components manage <code>aria-selected</code>,
+                <code>aria-expanded</code>, and <code>aria-current</code>
+                automatically.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <!-- Host API reference -->
+        <section
+          id="api"
+          data-site="section"
+          data-layout="stack"
+          data-gap="4"
+        >
+          <h2>Component API</h2>
+          <p>
+            All components share a consistent host contract for attributes,
+            methods, and events.
+          </p>
+
+          <article data-surface="card" data-layout="stack" data-gap="3">
+            <table data-site="token-table">
+              <thead>
+                <tr>
+                  <th>API</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>value</td>
+                  <td>Attribute</td>
+                  <td>
+                    Current selection value. Reflected as a host attribute.
+                  </td>
+                </tr>
+                <tr>
+                  <td>activation</td>
+                  <td>Attribute</td>
+                  <td>
+                    <code>"auto"</code> (default) or <code>"manual"</code>.
+                    Controls whether focus movement triggers selection.
+                  </td>
+                </tr>
+                <tr>
+                  <td>show(value)</td>
+                  <td>Method</td>
+                  <td>Programmatically select a value and show its panel.</td>
+                </tr>
+                <tr>
+                  <td>focusCurrent()</td>
+                  <td>Method</td>
+                  <td>
+                    Move focus to the currently active trigger or node.
+                  </td>
+                </tr>
+                <tr>
+                  <td>aura-change</td>
+                  <td>Event</td>
+                  <td>
+                    Dispatched on selection change.
+                    <code>detail: { value, trigger, panel }</code>.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+        </section>
+
+        <!-- Footer -->
+        <footer data-surface="card">
+          <div
+            data-layout="row"
+            data-align="center"
+            data-justify="between"
+            data-stack="mobile"
+            data-gap="2"
+          >
+            <p>
+              Aura is headless by default. Add
+              <code>data-brand</code> when you want a design system.
+            </p>
+            <p style="color: var(--text-muted); font-size: var(--text-sm)">
+              Built entirely with Aura.
+            </p>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <script type="module" src="../packages/diagram/browser.js"></script>
+    <script type="module" src="../packages/components/browser.js"></script>
+    <script>
+      (function () {
+        const root = document.documentElement;
+        const body = document.body;
+        const brandButtons = {
+          headless: document.getElementById("brand-headless"),
+          aura: document.getElementById("brand-aura"),
+          editorial: document.getElementById("brand-editorial"),
+        };
+        const darkButton = document.getElementById("toggle-dark");
+        const brandStylesheets = {
+          aura: "../packages/brands/aura-brand.css",
+          editorial: "../packages/brands/aura-brand-editorial.css",
+        };
+
+        function ensureBrandStylesheet(brand) {
+          const href = brandStylesheets[brand];
+          if (!href) return;
+          const id = "brand-" + brand;
+          if (document.getElementById(id)) return;
+          const link = document.createElement("link");
+          link.id = id;
+          link.rel = "stylesheet";
+          link.href = href;
+          document.head.appendChild(link);
+        }
+
+        function setBrand(brand) {
+          if (brand === "headless") {
+            body.removeAttribute("data-brand");
+          } else {
+            ensureBrandStylesheet(brand);
+            body.setAttribute("data-brand", brand);
+          }
+          Object.entries(brandButtons).forEach(([key, btn]) => {
+            if (!btn) return;
+            btn.setAttribute(
+              "data-variant",
+              key === brand ? "solid" : "ghost",
+            );
+          });
+        }
+
+        Object.entries(brandButtons).forEach(([brand, btn]) => {
+          if (!btn) return;
+          btn.addEventListener("click", () => setBrand(brand));
+        });
+
+        darkButton.addEventListener("click", () => {
+          const isDark = root.getAttribute("data-theme") === "dark";
+          if (isDark) {
+            root.removeAttribute("data-theme");
+            darkButton.textContent = "Dark";
+          } else {
+            root.setAttribute("data-theme", "dark");
+            darkButton.textContent = "Light";
+          }
+        });
+
+        // Dialog
+        const dialog = document.getElementById("site-dialog");
+        document.getElementById("open-dialog").addEventListener(
+          "click",
+          () => {
+            if (typeof dialog.showModal === "function") {
+              dialog.showModal();
+            } else {
+              dialog.setAttribute("open", "");
+            }
+          },
+        );
+        document
+          .getElementById("close-dialog")
+          .addEventListener("click", () => {
+            if (typeof dialog.close === "function") {
+              dialog.close();
+            } else {
+              dialog.removeAttribute("open");
+            }
+          });
+
+        // Bind component outputs
+        function bindOutput(elementId, outputId, fallback) {
+          const el = document.getElementById(elementId);
+          const out = document.getElementById(outputId);
+          if (!el || !out) return;
+          out.textContent = el.getAttribute("value") || fallback;
+          el.addEventListener("aura-change", (e) => {
+            out.textContent = e.detail.value;
+          });
+        }
+
+        bindOutput("site-tabs", "tabs-out", "overview");
+        bindOutput("site-md", "md-out", "elements");
+        bindOutput("site-combobox", "combobox-out", "tabs");
+        bindOutput("site-splitter", "splitter-out", "40");
+        bindOutput("site-tree", "tree-out", "aura-css");
+        bindOutput("site-diagram", "diagram-out", "input");
+      })();
+    </script>
+  </body>
+</html>
