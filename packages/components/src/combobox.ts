@@ -468,24 +468,25 @@ export class AuraCombobox extends HTMLElement {
 
     this._listbox.hidden = !open;
     this._input.setAttribute("aria-expanded", String(open));
-    this.toggleAttribute(
-      "data-empty",
-      open && this._getVisibleEntries().length === 0,
-    );
 
     if (this._toggle) {
       this._toggle.setAttribute("aria-expanded", String(open));
     }
 
     this._syncOptionVisibility();
-    this._syncEmptyState(open);
+
+    const visibleEntries = this._getVisibleEntries();
+    const isEmpty = open && visibleEntries.length === 0;
+    this.toggleAttribute("data-empty", isEmpty);
+
+    if (this._emptyState) {
+      this._emptyState.hidden = !isEmpty;
+    }
 
     if (!open) {
       this._setActiveOption(null);
       return;
     }
-
-    const visibleEntries = this._getVisibleEntries();
     const activeEntry =
       visibleEntries.find((entry) => entry.value === this._activeValue) ||
       (this.value
@@ -498,8 +499,9 @@ export class AuraCombobox extends HTMLElement {
   }
 
   private _syncOptionVisibility(): void {
+    const query = this._getQuery();
     for (const entry of this._entries) {
-      entry.option.hidden = !this._isEntryVisible(entry);
+      entry.option.hidden = !this._isEntryVisible(entry, query);
     }
   }
 
@@ -507,29 +509,29 @@ export class AuraCombobox extends HTMLElement {
     if (!this._emptyState) {
       return;
     }
-
     this._emptyState.hidden = !(open && this._getVisibleEntries().length === 0);
   }
 
-  private _isEntryVisible(entry: AuraComboboxEntry): boolean {
+  private _getQuery(): string {
     if (this._listbox?.hidden ?? !this.open) {
-      return true;
+      return "";
     }
-
     if (!this._isQuerying) {
-      return true;
+      return "";
     }
+    return this._input?.value.trim().toLocaleLowerCase() ?? "";
+  }
 
-    const query = this._input?.value.trim().toLocaleLowerCase() ?? "";
+  private _isEntryVisible(entry: AuraComboboxEntry, query: string): boolean {
     if (query === "") {
       return true;
     }
-
     return entry.searchText.includes(query);
   }
 
   private _getVisibleEntries(): AuraComboboxEntry[] {
-    return this._entries.filter((entry) => this._isEntryVisible(entry));
+    const query = this._getQuery();
+    return this._entries.filter((entry) => this._isEntryVisible(entry, query));
   }
 
   private _setActiveOption(value: string | null): void {
@@ -650,9 +652,11 @@ export class AuraCombobox extends HTMLElement {
     this._isQuerying = target.value.trim() !== "";
     this.openListbox();
     this._syncOptionVisibility();
-    this._syncEmptyState(true);
 
     const visibleEntries = this._getVisibleEntries();
+    if (this._emptyState) {
+      this._emptyState.hidden = visibleEntries.length > 0;
+    }
     const nextActive =
       visibleEntries.find((entry) => entry.value === this._activeValue) ||
       visibleEntries[0] ||

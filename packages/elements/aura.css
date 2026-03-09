@@ -96,7 +96,6 @@
     /* OKLCH base hues */
     --hue-primary: 260;
     --hue-secondary: 200;
-    --hue-accent: 20;
     --hue-neutral: 0;
 
     /* Primary (headless-by-default) */
@@ -847,71 +846,71 @@
     );
   }
   /* New orthogonal alignment API */
-  [data-align="start"] {
+  :where([data-align="start"]) {
     align-items: flex-start;
   }
-  [data-align="center"] {
+  :where([data-align="center"]) {
     align-items: center;
   }
-  [data-align="end"] {
+  :where([data-align="end"]) {
     align-items: flex-end;
   }
-  [data-align="stretch"] {
+  :where([data-align="stretch"]) {
     align-items: stretch;
   }
 
-  [data-justify="start"] {
+  :where([data-justify="start"]) {
     justify-content: flex-start;
   }
-  [data-justify="center"] {
+  :where([data-justify="center"]) {
     justify-content: center;
   }
-  [data-justify="end"] {
+  :where([data-justify="end"]) {
     justify-content: flex-end;
   }
-  [data-justify="between"] {
+  :where([data-justify="between"]) {
     justify-content: space-between;
   }
-  [data-justify="around"] {
+  :where([data-justify="around"]) {
     justify-content: space-around;
   }
-  [data-justify="evenly"] {
+  :where([data-justify="evenly"]) {
     justify-content: space-evenly;
   }
 
-  [data-gap="1"] {
+  :where([data-gap="1"]) {
     gap: var(--space-1);
   }
-  [data-gap="2"] {
+  :where([data-gap="2"]) {
     gap: var(--space-2);
   }
-  [data-gap="3"] {
+  :where([data-gap="3"]) {
     gap: var(--space-3);
   }
-  [data-gap="4"] {
+  :where([data-gap="4"]) {
     gap: var(--space-4);
   }
-  [data-gap="6"] {
+  :where([data-gap="6"]) {
     gap: var(--space-6);
   }
-  [data-gap="8"] {
+  :where([data-gap="8"]) {
     gap: var(--space-8);
   }
 
   /* Grid min-width presets */
-  [data-grid-min="sm"] {
+  :where([data-grid-min="sm"]) {
     --grid-min: 150px;
   }
-  [data-grid-min="md"] {
+  :where([data-grid-min="md"]) {
     --grid-min: 250px;
   }
-  [data-grid-min="lg"] {
+  :where([data-grid-min="lg"]) {
     --grid-min: 350px;
   }
 
   /* Responsive stack: row on desktop, column on mobile */
   @media (max-width: 640px) {
-    [data-stack="mobile"] {
+    :where([data-stack="mobile"]) {
       flex-direction: column;
     }
   }

@@ -831,24 +831,25 @@ class AuraCombobox extends HTMLElement {
 
     this._listbox.hidden = !open;
     this._input.setAttribute("aria-expanded", String(open));
-    this.toggleAttribute(
-      "data-empty",
-      open && this._getVisibleEntries().length === 0,
-    );
 
     if (this._toggle) {
       this._toggle.setAttribute("aria-expanded", String(open));
     }
 
     this._syncOptionVisibility();
-    this._syncEmptyState(open);
+
+    const visibleEntries = this._getVisibleEntries();
+    const isEmpty = open && visibleEntries.length === 0;
+    this.toggleAttribute("data-empty", isEmpty);
+
+    if (this._emptyState) {
+      this._emptyState.hidden = !isEmpty;
+    }
 
     if (!open) {
       this._setActiveOption(null);
       return;
     }
-
-    const visibleEntries = this._getVisibleEntries();
     const activeEntry =
       visibleEntries.find((entry) => entry.value === this._activeValue) ||
       (this.value
@@ -861,8 +862,9 @@ class AuraCombobox extends HTMLElement {
   }
 
   _syncOptionVisibility() {
+    const query = this._getQuery();
     for (const entry of this._entries) {
-      entry.option.hidden = !this._isEntryVisible(entry);
+      entry.option.hidden = !this._isEntryVisible(entry, query);
     }
   }
 
@@ -870,29 +872,29 @@ class AuraCombobox extends HTMLElement {
     if (!this._emptyState) {
       return;
     }
-
     this._emptyState.hidden = !(open && this._getVisibleEntries().length === 0);
   }
 
-  _isEntryVisible(entry) {
+  _getQuery() {
     if (this._listbox?.hidden ?? !this.open) {
-      return true;
+      return "";
     }
-
     if (!this._isQuerying) {
-      return true;
+      return "";
     }
+    return this._input?.value.trim().toLocaleLowerCase() ?? "";
+  }
 
-    const query = this._input?.value.trim().toLocaleLowerCase() ?? "";
+  _isEntryVisible(entry, query) {
     if (query === "") {
       return true;
     }
-
     return entry.searchText.includes(query);
   }
 
   _getVisibleEntries() {
-    return this._entries.filter((entry) => this._isEntryVisible(entry));
+    const query = this._getQuery();
+    return this._entries.filter((entry) => this._isEntryVisible(entry, query));
   }
 
   _setActiveOption(value) {
@@ -1013,9 +1015,11 @@ class AuraCombobox extends HTMLElement {
     this._isQuerying = target.value.trim() !== "";
     this.openListbox();
     this._syncOptionVisibility();
-    this._syncEmptyState(true);
 
     const visibleEntries = this._getVisibleEntries();
+    if (this._emptyState) {
+      this._emptyState.hidden = visibleEntries.length > 0;
+    }
     const nextActive =
       visibleEntries.find((entry) => entry.value === this._activeValue) ||
       visibleEntries[0] ||
@@ -1905,6 +1909,7 @@ class AuraSplitter extends HTMLElement {
     this._separator = null;
     this._value = 50;
     this._dragging = false;
+    this._rafId = 0;
     this._syncingValue = false;
     this._syncingOrientation = false;
 
@@ -2075,11 +2080,7 @@ class AuraSplitter extends HTMLElement {
     const nextValue = this._resolveValue();
     this._setValue(nextValue, options);
 
-    const orientation = this.orientation;
-    this._separator.setAttribute("aria-orientation", orientation);
-    this._separator.setAttribute("aria-valuemin", String(this.min));
-    this._separator.setAttribute("aria-valuemax", String(this.max));
-    this._separator.setAttribute("aria-valuenow", String(this._value));
+    this._separator.setAttribute("aria-orientation", this.orientation);
   }
 
   _resolveValue() {
@@ -2174,7 +2175,15 @@ class AuraSplitter extends HTMLElement {
       return;
     }
 
-    this._setValue(this._positionFromPointer(event), { dispatch: true });
+    const position = this._positionFromPointer(event);
+    if (typeof requestAnimationFrame === "function") {
+      cancelAnimationFrame(this._rafId);
+      this._rafId = requestAnimationFrame(() => {
+        this._setValue(position, { dispatch: true });
+      });
+    } else {
+      this._setValue(position, { dispatch: true });
+    }
   }
 
   _handleMouseUp() {
@@ -2187,6 +2196,9 @@ class AuraSplitter extends HTMLElement {
     }
 
     this._dragging = false;
+    if (typeof cancelAnimationFrame === "function") {
+      cancelAnimationFrame(this._rafId);
+    }
     this.removeAttribute("data-dragging");
     document.removeEventListener("mousemove", this._handleMouseMove);
     document.removeEventListener("mouseup", this._handleMouseUp);

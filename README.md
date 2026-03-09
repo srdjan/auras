@@ -50,50 +50,32 @@ layer and override token values when a `data-brand` attribute is present. This
 keeps the core cacheable and lets you swap brands without touching the
 framework.
 
-## Next Architecture
+## Packages
 
-The current repo is the Elements layer. The proposed next step is to keep that
-base intact, add an optional Composites stylesheet for CSS-only app patterns,
-and put behavior-heavy widgets into a separate Components package built from
-light-DOM custom elements.
+The framework is split into independent layers. The Elements layer is the
+foundation; everything else is optional and additive.
 
-See [Component Architecture](./docs/component-architecture.md) for the package
-split, decision rules, and the current pilot component contracts.
+| Package | Path | Purpose |
+| --- | --- | --- |
+| Elements | `packages/elements/aura.css` | Core stylesheet: reset, tokens, typography, layout, components, utilities, a11y, print |
+| Composites | `packages/composites/aura-composites.css` | CSS-only app patterns (master-detail, tabs, combobox, splitter, tree, diagram) |
+| Brands | `packages/brands/` | Token override packs scoped to `data-brand` |
+| Components | `packages/components/` | Light-DOM custom elements for interactive behavior |
+| Diagram | `packages/diagram/` | Standalone spatial selection component for diagrams |
 
-## Shipped Prototype
+Components ship as both a Deno-first module (`mod.ts`) and a browser-friendly
+no-build entrypoint (`browser.js`). See
+[Component Architecture](./docs/component-architecture.md) for the package
+split and decision rules.
 
-The repo now includes a working prototype of the next layers:
+### Included components
 
-- `packages/elements/aura.css`
-  - Elements layer stylesheet source
-- `packages/composites/aura-composites.css`
-  - Composites layer stylesheet source
-- `packages/brands/`
-  - brand stylesheet sources
-- `packages/diagram/browser.js`
-  - browser-friendly no-build diagram entrypoint
-- `packages/components/browser.js`
-  - browser-friendly no-build Components entrypoint
-- `packages/diagram/mod.ts`
-  - Deno-first package surface for `@aura/diagram`
-- `packages/components/mod.ts`
-  - Deno-first Components package surface
-- `aura-diagram`
-  - spatial node selection for interactive diagrams
-- `aura-combobox`
-  - local-option combobox with filtering and optional linked panels
-- `aura-master-detail`
-  - selection controller for master-detail views
-- `aura-splitter`
-  - two-pane splitter with keyboard and pointer resize
-- `aura-tree`
-  - hierarchical selection controller with expansion and optional panels
-- `aura-tabs`
-  - tab controller with the same host contract
-
-The canonical source files now live under `packages/`. The architecture note
-still describes the future publishing shape as `@aura/composites`,
-`jsr:@aura/diagram`, and `jsr:@aura/components`.
+- `aura-master-detail` - selection controller for master-detail views
+- `aura-tabs` - tab controller with horizontal arrow-key navigation
+- `aura-combobox` - local-option combobox with filtering and optional linked panels
+- `aura-splitter` - two-pane splitter with keyboard and pointer resize
+- `aura-tree` - hierarchical selection controller with expansion and optional panels
+- `aura-diagram` - spatial node selection for interactive diagrams
 
 ## Design tokens
 
@@ -137,7 +119,6 @@ Colors use OKLCH with configurable hue angles:
 | ------------------------------ | ----------------------------- |
 | `--hue-primary`                | Primary hue (default 260)     |
 | `--hue-secondary`              | Secondary hue (default 200)   |
-| `--hue-accent`                 | Accent hue (default 20)       |
 | `--hue-neutral`                | Gray hue rotation (default 0) |
 | `--primary`                    | Primary color                 |
 | `--secondary`                  | Secondary color               |
@@ -375,7 +356,7 @@ carry meaning.
 active-node state, roving focus, spatial arrow-key movement, and optional linked
 panels. It does not do auto-layout or edge routing.
 
-### Master-detail pilot
+### Master-detail
 
 ```html
 <link rel="stylesheet" href="packages/elements/aura.css" />
@@ -410,7 +391,7 @@ panels. It does not do auto-layout or edge routing.
 Use `activation="manual"` when arrow keys should move focus without changing the
 open panel until the user presses `Enter` or `Space`.
 
-### Combobox pilot
+### Combobox
 
 ```html
 <link rel="stylesheet" href="packages/elements/aura.css" />
@@ -457,7 +438,7 @@ DOM. It supports local filtering, single selection, `activation="manual"` when
 arrow keys should move the active option before `Enter`, and optional linked
 panels that follow the selected value.
 
-### Splitter pilot
+### Splitter
 
 ```html
 <link rel="stylesheet" href="packages/elements/aura.css" />
@@ -481,7 +462,7 @@ exposes the primary pane size through the host `value` attribute, supports
 keyboard resize on the separator, supports pointer drag, and keeps layout
 styling in the Composites layer.
 
-### Tree pilot
+### Tree
 
 ```html
 <link rel="stylesheet" href="packages/elements/aura.css" />
@@ -529,7 +510,7 @@ hierarchy and branch expansion. `Up` and `Down` move through visible nodes;
 `Right` expands or enters a branch; `Left` collapses or moves back to the
 parent.
 
-### Tabs pilot
+### Tabs
 
 ```html
 <link rel="stylesheet" href="packages/elements/aura.css" />
@@ -690,6 +671,26 @@ Load it alongside the core:
 The included `packages/brands/aura-brand.css` stylesheet serves as both a
 working brand and a template for creating your own.
 
+## Development and deployment
+
+Run the demo site locally:
+
+```sh
+deno task dev
+# http://localhost:8000
+```
+
+Run checks and tests:
+
+```sh
+deno task check      # type-check all packages
+deno task test       # unit tests (happy-dom)
+deno task test:browser  # headless browser smoke tests
+```
+
+The same `main.ts` entry point serves both `deno task dev` and Deno Deploy.
+It maps `/` to `./public` and `/packages/` to `./packages/`.
+
 ## Browser support
 
 Aura targets modern evergreen browsers. Key features and their support:
@@ -728,10 +729,12 @@ Aura targets modern evergreen browsers. Key features and their support:
 | `packages/components/src/combobox.ts`      | Combobox runtime for `aura-combobox`                                     |
 | `packages/components/src/splitter.ts`      | Splitter runtime for `aura-splitter`                                     |
 | `packages/components/src/tree.ts`          | Tree runtime for `aura-tree`                                             |
-| `public/`                                  | Showcase site for local testing and Deno Deploy                          |
+| `public/`                                  | Demo site for local testing and Deno Deploy                              |
 | `main.ts`                                  | Deno Deploy entry point (static file server)                             |
+| `deno.json`                                | Deno tasks for dev server, type checking, and tests                      |
+| `deno.lock`                                | Locked JSR and npm test dependencies                                     |
 | `docs/component-architecture.md`           | Architecture note and layer decision rules                               |
-| `deno.json`                                | Deno tasks for local dev server and component checking                   |
+| `docs/user-guide.md`                       | User guide with patterns, verification steps, and file map               |
 
 ## License
 

@@ -239,10 +239,10 @@ separate optional `aura-diagram` package:
 - spatial arrow-key navigation
 - optional linked panels
 
-### Master-detail pilot
+### Master-detail
 
-One optional Component is `aura-master-detail`, paired with the optional
-Composites stylesheet:
+`aura-master-detail` pairs with the Composites stylesheet for a selection-driven
+layout:
 
 ```html
 <link rel="stylesheet" href="packages/elements/aura.css" />
@@ -277,7 +277,7 @@ Composites stylesheet:
 Use `activation="manual"` when focus movement and selection should be separate
 actions.
 
-### Combobox pilot
+### Combobox
 
 `aura-combobox` keeps the authored input and listbox in light DOM while adding
 filtering, active-option state, and optional linked panels:
@@ -325,7 +325,7 @@ filtering, active-option state, and optional linked panels:
 Use `activation="manual"` when arrow keys should move the highlighted result
 before `Enter` commits the selected value.
 
-### Splitter pilot
+### Splitter
 
 `aura-splitter` keeps both panes and the separator in authored light DOM while
 adding keyboard resize, pointer drag, and percent-based primary pane state:
@@ -350,7 +350,7 @@ adding keyboard resize, pointer drag, and percent-based primary pane state:
 Focus the separator and use the arrow keys, or drag it with the pointer, to
 change the split. `Home` and `End` jump to the configured min and max.
 
-### Tree pilot
+### Tree
 
 `aura-tree` keeps the authored nested list in light DOM and adds hierarchy,
 branch expansion, roving focus, and optional linked panels:
@@ -398,7 +398,7 @@ branch expansion, roving focus, and optional linked panels:
 Use `activation="manual"` when `Up`/`Down`/`Left`/`Right` should move focus
 through the visible hierarchy before `Enter` or `Space` commits the selection.
 
-### Tabs pilot
+### Tabs
 
 `aura-tabs` uses the same host contract as `aura-master-detail`, but with honest
 tab semantics:
@@ -529,7 +529,7 @@ The demo also exercises:
 - Long-form prose styling
 - Static diagram composites for documentation flows
 - Card, notice, and accordion surfaces
-- Master-detail and tabs composites plus the matching Components pilots
+- Master-detail and tabs composites plus the matching Components
 - Button variants, busy states, and dialog styling
 - Form validation states
 - Switch, progress, and meter styling
@@ -565,9 +565,11 @@ The demo also exercises:
 | `packages/components/src/combobox.ts`      | `aura-combobox` runtime module                   |
 | `packages/components/src/splitter.ts`      | `aura-splitter` runtime module                   |
 | `packages/components/src/tree.ts`          | `aura-tree` runtime module                       |
+| `deno.json`                                | Deno tasks for dev server, checking, and tests   |
 | `deno.lock`                                | Locked JSR and npm test dependencies             |
-| `public/index.html`                      | Interactive demo page                            |
-| `docs/component-architecture.md`           | Architecture note for the next layers            |
+| `main.ts`                                  | Deno Deploy entry point (static file server)     |
+| `public/index.html`                        | Interactive demo page                            |
+| `docs/component-architecture.md`           | Architecture note for the layer split            |
 | `docs/user-guide.md`                       | This user guide                                  |
 
 ## Verification
@@ -593,24 +595,24 @@ Then verify:
 2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
 4. Review the prose, static diagram, interactive diagram, combobox, splitter,
-   tree, notice, accordion, master-detail, and tabs pilot examples.
+   tree, notice, accordion, master-detail, and tabs examples.
 5. Use arrow keys inside the interactive diagram and confirm focus moves across
    the grid; in manual activation, `Enter` or `Space` should update the detail
    panel.
-6. Use arrow keys inside the combobox pilots and confirm the selected value
+6. Use arrow keys inside the combobox and confirm the selected value
    stays in sync with the current panel; in manual mode, `Enter` should commit
    the highlighted result.
 7. Focus the splitter handle and confirm arrow keys update the split value; drag
    the divider with the pointer and confirm the primary pane size changes.
-8. Use arrow keys inside the tree pilot and confirm the selected node and panel
+8. Use arrow keys inside the tree and confirm the selected node and panel
    stay in sync while branch expansion and collapse follow the current focus.
-9. Use arrow keys inside the auto-activation master-detail pilot and confirm the
+9. Use arrow keys inside the auto-activation master-detail and confirm the
    detail panel follows the active trigger.
-10. Use arrow keys inside the manual-activation master-detail pilot and confirm
+10. Use arrow keys inside the manual-activation master-detail and confirm
     focus moves first, then `Enter` or `Space` updates the detail panel.
-11. Use arrow keys inside the auto-activation tabs pilot and confirm the active
+11. Use arrow keys inside the auto-activation tabs and confirm the active
     tab and visible panel stay in sync.
-12. Use arrow keys inside the manual-activation tabs pilot and confirm focus
+12. Use arrow keys inside the manual-activation tabs and confirm focus
     moves first, then `Enter` or `Space` updates the panel.
 13. Open the dialog and confirm the backdrop and page scroll lock.
 14. Submit the form with empty required fields and confirm validation, busy

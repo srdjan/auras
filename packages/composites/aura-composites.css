@@ -200,7 +200,7 @@
   }
 
   :where([data-ui~="combobox"], aura-combobox) > label {
-    font-weight: var(--font-weight-medium);
+    font-weight: 500;
   }
 
   :where([data-ui~="combobox"], aura-combobox) [data-part="control"] {

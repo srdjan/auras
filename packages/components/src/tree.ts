@@ -340,14 +340,7 @@ export class AuraTree extends HTMLElement {
   private _applyEntrySemantics(entry: AuraTreeEntry): void {
     entry.item.setAttribute("data-level", String(entry.level));
 
-    if (
-      !isNativeInteractiveElement(entry.node) &&
-      !entry.node.hasAttribute("role")
-    ) {
-      entry.node.setAttribute("role", "treeitem");
-    } else {
-      entry.node.setAttribute("role", "treeitem");
-    }
+    entry.node.setAttribute("role", "treeitem");
 
     entry.node.setAttribute(
       "id",
