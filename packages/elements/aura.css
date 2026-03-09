@@ -265,6 +265,17 @@
     --border-strong: var(--gray-6);
     --link: oklch(70% 0.15 var(--hue-primary));
     --link-visited: oklch(70% 0.1 var(--hue-secondary));
+    --primary-hover: oklch(
+      calc(var(--primary-l) + 10%)
+      var(--primary-c)
+      var(--hue-primary)
+    );
+    --primary-subtle: oklch(
+      calc(var(--primary-l) - 20%)
+      0.02
+      var(--hue-primary)
+    );
+    --button-soft-color: var(--gray-1);
     --shadow-sm: 0 1px 3px 0 rgb(255 255 255 / 0.05);
   }
 
@@ -295,6 +306,17 @@
       --border-strong: var(--gray-6);
       --link: oklch(70% 0.15 var(--hue-primary));
       --link-visited: oklch(70% 0.1 var(--hue-secondary));
+      --primary-hover: oklch(
+        calc(var(--primary-l) + 10%)
+        var(--primary-c)
+        var(--hue-primary)
+      );
+      --primary-subtle: oklch(
+        calc(var(--primary-l) - 20%)
+        0.02
+        var(--hue-primary)
+      );
+      --button-soft-color: var(--gray-1);
       --shadow-sm: 0 1px 3px 0 rgb(255 255 255 / 0.05);
     }
   }
@@ -310,6 +332,20 @@
     :root {
       --primary-hover: color-mix(in oklch, var(--primary) 88%, black);
       --primary-subtle: color-mix(in oklch, var(--primary) 20%, white);
+    }
+    [data-theme~="dark"] {
+      --primary-hover: color-mix(in oklch, var(--primary) 80%, white);
+      --primary-subtle: color-mix(in oklch, var(--primary) 30%, var(--gray-10));
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme]) {
+        --primary-hover: color-mix(in oklch, var(--primary) 80%, white);
+        --primary-subtle: color-mix(
+          in oklch,
+          var(--primary) 30%,
+          var(--gray-10)
+        );
+      }
     }
   }
 }
