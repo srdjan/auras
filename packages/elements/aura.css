@@ -248,6 +248,21 @@
 
     --prose-measure: 70ch;
 
+    /* Code blocks */
+    --code-block-bg: var(--surface-raised);
+    --code-block-border-color: var(--border);
+    --code-block-padding: var(--space-3);
+    --code-block-radius: var(--radius-lg);
+    --code-block-font-size: var(--text-sm);
+
+    /* Syntax highlighting */
+    --syntax-tag: oklch(55% 0.15 var(--hue-primary));
+    --syntax-attr: oklch(50% 0.12 var(--hue-secondary));
+    --syntax-value: oklch(55% 0.15 145);
+    --syntax-comment: var(--text-muted);
+    --syntax-keyword: oklch(55% 0.15 330);
+    --syntax-function: oklch(55% 0.12 60);
+
     /* Transitions */
     --transition-fast: 150ms ease;
     --transition-base: 250ms ease;
@@ -276,6 +291,13 @@
     );
     --button-soft-color: var(--gray-1);
     --shadow-sm: 0 1px 3px 0 rgb(255 255 255 / 0.05);
+
+    /* Syntax highlighting - bump lightness for dark */
+    --syntax-tag: oklch(70% 0.15 var(--hue-primary));
+    --syntax-attr: oklch(65% 0.12 var(--hue-secondary));
+    --syntax-value: oklch(70% 0.15 145);
+    --syntax-keyword: oklch(70% 0.15 330);
+    --syntax-function: oklch(70% 0.12 60);
   }
 
   /* High contrast */
@@ -317,6 +339,13 @@
       );
       --button-soft-color: var(--gray-1);
       --shadow-sm: 0 1px 3px 0 rgb(255 255 255 / 0.05);
+
+      /* Syntax highlighting - bump lightness for dark */
+      --syntax-tag: oklch(70% 0.15 var(--hue-primary));
+      --syntax-attr: oklch(65% 0.12 var(--hue-secondary));
+      --syntax-value: oklch(70% 0.15 145);
+      --syntax-keyword: oklch(70% 0.15 330);
+      --syntax-function: oklch(70% 0.12 60);
     }
   }
 
@@ -756,9 +785,27 @@
     overflow-wrap: anywhere;
   }
   pre {
-    padding: var(--space-4);
+    padding: var(--code-block-padding);
     overflow-x: auto;
+    background-color: var(--code-block-bg);
+    border: 1px solid var(--code-block-border-color);
+    border-radius: var(--code-block-radius);
+    font-size: var(--code-block-font-size);
   }
+  pre code {
+    background: none;
+    padding: 0;
+    border: 0;
+    font-size: inherit;
+  }
+
+  /* Syntax highlighting */
+  :where([data-syntax="tag"]) { color: var(--syntax-tag); }
+  :where([data-syntax="attr"]) { color: var(--syntax-attr); }
+  :where([data-syntax="value"]) { color: var(--syntax-value); }
+  :where([data-syntax="comment"]) { color: var(--syntax-comment); font-style: italic; }
+  :where([data-syntax="keyword"]) { color: var(--syntax-keyword); }
+  :where([data-syntax="function"]) { color: var(--syntax-function); }
 
   hr {
     border: none;

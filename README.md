@@ -58,7 +58,7 @@ foundation; everything else is optional and additive.
 | Package | Path | Purpose |
 | --- | --- | --- |
 | Elements | `packages/elements/aura.css` | Core stylesheet: reset, tokens, typography, layout, components, utilities, a11y, print |
-| Composites | `packages/composites/aura-composites.css` | CSS-only app patterns (master-detail, tabs, combobox, splitter, tree, diagram) |
+| Composites | `packages/composites/aura-composites.css` | CSS-only app patterns (example, master-detail, tabs, combobox, splitter, tree, diagram) |
 | Brands | `packages/brands/` | Token override packs scoped to `data-brand` |
 | Components | `packages/components/` | Light-DOM custom elements for interactive behavior |
 | Diagram | `packages/diagram/` | Standalone spatial selection component for diagrams |
@@ -281,6 +281,56 @@ alternatives:
   </details>
 </section>
 ```
+
+### Example composite
+
+Use `data-ui="example"` for documentation blocks that pair a live preview with
+source code. Part of the Composites layer.
+
+```html
+<article data-ui="example">
+  <header data-part="header">
+    <strong>Tabs</strong>
+    <span data-part="meta">Live preview</span>
+  </header>
+  <div data-part="preview">
+    <!-- live demo here -->
+  </div>
+  <pre data-part="code"><code>&lt;aura-tabs&gt;...&lt;/aura-tabs&gt;</code></pre>
+</article>
+```
+
+The header is optional. Token hooks: `--example-border-color`,
+`--example-radius`, `--example-preview-padding`, `--example-code-bg`,
+`--example-code-padding`, `--example-code-font-size`.
+
+### Syntax highlighting
+
+The Elements layer ships lightweight syntax tokens for code blocks. Wrap spans
+in `data-syntax` attributes:
+
+```html
+<pre><code><span data-syntax="tag">&lt;div</span>
+  <span data-syntax="attr">data-layout</span>=<span data-syntax="value">"stack"</span><span data-syntax="tag">&gt;</span>
+  <span data-syntax="comment">&lt;!-- content --&gt;</span>
+<span data-syntax="tag">&lt;/div&gt;</span></code></pre>
+```
+
+Available values: `tag`, `attr`, `value`, `comment`, `keyword`, `function`.
+Colors derive from `--hue-primary` and `--hue-secondary`, so they shift
+automatically with brand packs. Dark mode bumps lightness by 15%.
+
+### Block code tokens
+
+`<pre>` blocks are styled with customizable tokens:
+
+| Token | Default |
+| --- | --- |
+| `--code-block-bg` | `var(--surface-raised)` |
+| `--code-block-border-color` | `var(--border)` |
+| `--code-block-padding` | `var(--space-3)` |
+| `--code-block-radius` | `var(--radius-lg)` |
+| `--code-block-font-size` | `var(--text-sm)` |
 
 ### Diagram composite
 

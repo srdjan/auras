@@ -157,6 +157,42 @@ application chrome:
 </article>
 ```
 
+### Example composite
+
+Use `data-ui="example"` for documentation blocks that pair a live preview with
+source code. Load `aura-composites.css` alongside the base stylesheet.
+
+```html
+<article data-ui="example">
+  <header data-part="header">
+    <strong>Tabs</strong>
+    <span data-part="meta">Live preview</span>
+  </header>
+  <div data-part="preview">
+    <!-- live demo -->
+  </div>
+  <pre data-part="code"><code>&lt;aura-tabs&gt;...&lt;/aura-tabs&gt;</code></pre>
+</article>
+```
+
+The header is optional. Token hooks: `--example-border-color`,
+`--example-radius`, `--example-preview-padding`, `--example-code-bg`,
+`--example-code-padding`, `--example-code-font-size`.
+
+### Syntax highlighting
+
+Wrap spans in `data-syntax` attributes for lightweight code coloring:
+
+```html
+<pre><code><span data-syntax="tag">&lt;div</span>
+  <span data-syntax="attr">data-layout</span>=<span data-syntax="value">"stack"</span><span data-syntax="tag">&gt;</span>
+<span data-syntax="tag">&lt;/div&gt;</span></code></pre>
+```
+
+Values: `tag`, `attr`, `value`, `comment`, `keyword`, `function`. Colors derive
+from `--hue-primary` and `--hue-secondary` and adapt to brand packs and dark
+mode automatically.
+
 ### Diagram composite
 
 Use `data-ui="diagram"` for static flow or architecture diagrams that should

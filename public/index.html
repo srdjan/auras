@@ -82,51 +82,6 @@
           margin-block-end: var(--space-4);
         }
 
-        [data-site="code-block"] {
-          background-color: var(--surface-raised);
-          border: 1px solid var(--border);
-          border-radius: var(--radius-lg);
-          padding: var(--space-3);
-          overflow-x: auto;
-          font-size: var(--text-sm);
-        }
-
-        [data-site="code-block"] code {
-          background: none;
-          padding: 0;
-          border: 0;
-          font-size: inherit;
-        }
-
-        [data-site="example"] {
-          border: 1px solid var(--border);
-          border-radius: var(--radius-lg);
-          overflow: hidden;
-        }
-
-        [data-site="example"] > [data-site="example-preview"] {
-          padding: var(--space-4);
-        }
-
-        [data-site="example"] > [data-site="example-code"] {
-          border-block-start: 1px solid var(--border);
-          padding: var(--space-3);
-          background-color: var(--surface-raised);
-          font-size: var(--text-sm);
-          overflow-x: auto;
-        }
-
-        [data-site="example"] > [data-site="example-code"] pre {
-          margin: 0;
-        }
-
-        [data-site="example"] > [data-site="example-code"] code {
-          background: none;
-          padding: 0;
-          border: 0;
-          font-size: inherit;
-        }
-
         [data-site="toolbar"] {
           position: sticky;
           top: 0;
@@ -301,21 +256,19 @@
             and a brand pack.
           </p>
 
-          <div data-site="code-block">
-            <pre><code>&lt;!-- Required: base elements --&gt;
-&lt;link rel="stylesheet" href="aura.css"&gt;
+          <pre><code><span data-syntax="comment">&lt;!-- Required: base elements --&gt;</span>
+<span data-syntax="tag">&lt;link</span> <span data-syntax="attr">rel</span>=<span data-syntax="value">"stylesheet"</span> <span data-syntax="attr">href</span>=<span data-syntax="value">"aura.css"</span><span data-syntax="tag">&gt;</span>
 
-&lt;!-- Optional: composites for higher-level CSS patterns --&gt;
-&lt;link rel="stylesheet" href="aura-composites.css"&gt;
+<span data-syntax="comment">&lt;!-- Optional: composites for higher-level CSS patterns --&gt;</span>
+<span data-syntax="tag">&lt;link</span> <span data-syntax="attr">rel</span>=<span data-syntax="value">"stylesheet"</span> <span data-syntax="attr">href</span>=<span data-syntax="value">"aura-composites.css"</span><span data-syntax="tag">&gt;</span>
 
-&lt;!-- Optional: interactive custom elements --&gt;
-&lt;script type="module" src="@aura/components/browser.js"&gt;&lt;/script&gt;
-&lt;script type="module" src="@aura/diagram/browser.js"&gt;&lt;/script&gt;
+<span data-syntax="comment">&lt;!-- Optional: interactive custom elements --&gt;</span>
+<span data-syntax="tag">&lt;script</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"module"</span> <span data-syntax="attr">src</span>=<span data-syntax="value">"@aura/components/browser.js"</span><span data-syntax="tag">&gt;&lt;/script&gt;</span>
+<span data-syntax="tag">&lt;script</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"module"</span> <span data-syntax="attr">src</span>=<span data-syntax="value">"@aura/diagram/browser.js"</span><span data-syntax="tag">&gt;&lt;/script&gt;</span>
 
-&lt;!-- Optional: brand pack --&gt;
-&lt;link rel="stylesheet" href="aura-brand.css"&gt;
-&lt;body data-brand="aura"&gt;</code></pre>
-          </div>
+<span data-syntax="comment">&lt;!-- Optional: brand pack --&gt;</span>
+<span data-syntax="tag">&lt;link</span> <span data-syntax="attr">rel</span>=<span data-syntax="value">"stylesheet"</span> <span data-syntax="attr">href</span>=<span data-syntax="value">"aura-brand.css"</span><span data-syntax="tag">&gt;</span>
+<span data-syntax="tag">&lt;body</span> <span data-syntax="attr">data-brand</span>=<span data-syntax="value">"aura"</span><span data-syntax="tag">&gt;</span></code></pre>
 
           <div data-layout="grid" data-gap="4" data-grid-min="md">
             <article data-surface="card" data-layout="stack" data-gap="2">
@@ -324,10 +277,8 @@
                 CSS layers ensure predictable specificity regardless of load
                 order.
               </p>
-              <div data-site="code-block">
-                <pre><code>reset > tokens > brands > defaults
+              <pre><code>reset > tokens > brands > defaults
   > layouts > components > utilities > print</code></pre>
-              </div>
             </article>
             <article data-surface="card" data-layout="stack" data-gap="2">
               <h3>Design tokens</h3>
@@ -335,11 +286,9 @@
                 OKLCH-based color system with fluid typography and consistent
                 spacing scale.
               </p>
-              <div data-site="code-block">
-                <pre><code>--space-1 through --space-16
+              <pre><code>--space-1 through --space-16
 --text-xs through --text-3xl
 --primary, --secondary, --accent</code></pre>
-              </div>
             </article>
           </div>
         </section>
@@ -360,8 +309,8 @@
           <!-- Typography -->
           <article data-surface="card" data-layout="stack" data-gap="3">
             <h3>Typography</h3>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <div data-layout="stack" data-gap="2">
                   <h1>Heading 1</h1>
                   <h2>Heading 2</h2>
@@ -381,19 +330,17 @@
                   </blockquote>
                 </div>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;h1&gt;Heading 1&lt;/h1&gt;
-&lt;p&gt;Body text with &lt;strong&gt;strong&lt;/strong&gt; and &lt;code&gt;code&lt;/code&gt;.&lt;/p&gt;
-&lt;blockquote&gt;&lt;p&gt;A quotation.&lt;/p&gt;&lt;/blockquote&gt;</code></pre>
-              </div>
-            </div>
+              <pre data-part="code"><code><span data-syntax="tag">&lt;h1&gt;</span>Heading 1<span data-syntax="tag">&lt;/h1&gt;</span>
+<span data-syntax="tag">&lt;p&gt;</span>Body text with <span data-syntax="tag">&lt;strong&gt;</span>strong<span data-syntax="tag">&lt;/strong&gt;</span> and <span data-syntax="tag">&lt;code&gt;</span>code<span data-syntax="tag">&lt;/code&gt;</span>.<span data-syntax="tag">&lt;/p&gt;</span>
+<span data-syntax="tag">&lt;blockquote&gt;&lt;p&gt;</span>A quotation.<span data-syntax="tag">&lt;/p&gt;&lt;/blockquote&gt;</span></code></pre>
+            </article>
           </article>
 
           <!-- Buttons -->
           <article data-surface="card" data-layout="stack" data-gap="3">
             <h3>Buttons</h3>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <div
                   data-layout="cluster"
                   data-gap="2"
@@ -410,21 +357,19 @@
                   <button type="button" disabled>Disabled</button>
                 </div>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;button type="button"&gt;Default&lt;/button&gt;
-&lt;button type="button" data-variant="solid"&gt;Solid&lt;/button&gt;
-&lt;button type="button" data-variant="soft"&gt;Soft&lt;/button&gt;
-&lt;button type="button" data-variant="ghost"&gt;Ghost&lt;/button&gt;
-&lt;button type="button" aria-busy="true"&gt;Loading&lt;/button&gt;</code></pre>
-              </div>
-            </div>
+              <pre data-part="code"><code><span data-syntax="tag">&lt;button</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"button"</span><span data-syntax="tag">&gt;</span>Default<span data-syntax="tag">&lt;/button&gt;</span>
+<span data-syntax="tag">&lt;button</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"button"</span> <span data-syntax="attr">data-variant</span>=<span data-syntax="value">"solid"</span><span data-syntax="tag">&gt;</span>Solid<span data-syntax="tag">&lt;/button&gt;</span>
+<span data-syntax="tag">&lt;button</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"button"</span> <span data-syntax="attr">data-variant</span>=<span data-syntax="value">"soft"</span><span data-syntax="tag">&gt;</span>Soft<span data-syntax="tag">&lt;/button&gt;</span>
+<span data-syntax="tag">&lt;button</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"button"</span> <span data-syntax="attr">data-variant</span>=<span data-syntax="value">"ghost"</span><span data-syntax="tag">&gt;</span>Ghost<span data-syntax="tag">&lt;/button&gt;</span>
+<span data-syntax="tag">&lt;button</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"button"</span> <span data-syntax="attr">aria-busy</span>=<span data-syntax="value">"true"</span><span data-syntax="tag">&gt;</span>Loading<span data-syntax="tag">&lt;/button&gt;</span></code></pre>
+            </article>
           </article>
 
           <!-- Notices -->
           <article data-surface="card" data-layout="stack" data-gap="3">
             <h3>Notices</h3>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <div data-layout="grid" data-gap="3" data-grid-min="sm">
                   <aside data-surface="notice" data-status="info">
                     <strong>Info</strong>
@@ -444,20 +389,18 @@
                   </aside>
                 </div>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;aside data-surface="notice" data-status="info"&gt;
-  &lt;strong&gt;Info&lt;/strong&gt;
-  &lt;p&gt;Neutral informational message.&lt;/p&gt;
-&lt;/aside&gt;</code></pre>
-              </div>
-            </div>
+              <pre data-part="code"><code><span data-syntax="tag">&lt;aside</span> <span data-syntax="attr">data-surface</span>=<span data-syntax="value">"notice"</span> <span data-syntax="attr">data-status</span>=<span data-syntax="value">"info"</span><span data-syntax="tag">&gt;</span>
+  <span data-syntax="tag">&lt;strong&gt;</span>Info<span data-syntax="tag">&lt;/strong&gt;</span>
+  <span data-syntax="tag">&lt;p&gt;</span>Neutral informational message.<span data-syntax="tag">&lt;/p&gt;</span>
+<span data-syntax="tag">&lt;/aside&gt;</span></code></pre>
+            </article>
           </article>
 
           <!-- Accordion -->
           <article data-surface="card" data-layout="stack" data-gap="3">
             <h3>Accordion</h3>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <section data-ui="accordion" aria-label="FAQ">
                   <details name="faq" open>
                     <summary>What is Aura?</summary>
@@ -482,22 +425,20 @@
                   </details>
                 </section>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;section data-ui="accordion"&gt;
+              <pre data-part="code"><code>&lt;section data-ui="accordion"&gt;
   &lt;details name="faq" open&gt;
     &lt;summary&gt;Question&lt;/summary&gt;
     &lt;p&gt;Answer.&lt;/p&gt;
   &lt;/details&gt;
 &lt;/section&gt;</code></pre>
-              </div>
-            </div>
+            </article>
           </article>
 
           <!-- Dialog -->
           <article data-surface="card" data-layout="stack" data-gap="3">
             <h3>Dialog</h3>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <button
                   id="open-dialog"
                   type="button"
@@ -530,14 +471,12 @@
                   </div>
                 </dialog>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;dialog id="my-dialog"&gt;
+              <pre data-part="code"><code>&lt;dialog id="my-dialog"&gt;
   &lt;h3&gt;Title&lt;/h3&gt;
   &lt;p&gt;Content.&lt;/p&gt;
   &lt;button onclick="this.closest('dialog').close()"&gt;Close&lt;/button&gt;
 &lt;/dialog&gt;</code></pre>
-              </div>
-            </div>
+            </article>
           </article>
         </section>
 
@@ -557,8 +496,8 @@
           <!-- Row -->
           <article data-surface="card" data-layout="stack" data-gap="3">
             <h3>Row, cluster, and stack</h3>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <div data-layout="stack" data-gap="3">
                   <div
                     data-layout="row"
@@ -590,19 +529,17 @@
                   </div>
                 </div>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;div data-layout="row" data-align="center" data-justify="between"&gt;...&lt;/div&gt;
+              <pre data-part="code"><code>&lt;div data-layout="row" data-align="center" data-justify="between"&gt;...&lt;/div&gt;
 &lt;div data-layout="cluster" data-gap="2"&gt;...&lt;/div&gt;
 &lt;div data-layout="stack" data-gap="2"&gt;...&lt;/div&gt;</code></pre>
-              </div>
-            </div>
+            </article>
           </article>
 
           <!-- Grid -->
           <article data-surface="card" data-layout="stack" data-gap="3">
             <h3>Grid</h3>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <div data-layout="grid" data-gap="3" data-grid-min="sm">
                   <div data-surface="card" data-layout="stack" data-gap="1">
                     <strong>Auto columns</strong>
@@ -622,20 +559,18 @@
                   </div>
                 </div>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;div data-layout="grid" data-gap="3" data-grid-min="sm"&gt;
+              <pre data-part="code"><code>&lt;div data-layout="grid" data-gap="3" data-grid-min="sm"&gt;
   &lt;div data-surface="card"&gt;...&lt;/div&gt;
   &lt;div data-surface="card"&gt;...&lt;/div&gt;
 &lt;/div&gt;</code></pre>
-              </div>
-            </div>
+            </article>
           </article>
 
           <!-- Container and mobile stacking -->
           <article data-surface="card" data-layout="stack" data-gap="3">
             <h3>Container and responsive stacking</h3>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <div
                   data-layout="row"
                   data-gap="3"
@@ -652,11 +587,9 @@
                   </div>
                 </div>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;body data-layout="container"&gt;...&lt;/body&gt;
+              <pre data-part="code"><code>&lt;body data-layout="container"&gt;...&lt;/body&gt;
 &lt;div data-layout="row" data-stack="mobile"&gt;...&lt;/div&gt;</code></pre>
-              </div>
-            </div>
+            </article>
           </article>
         </section>
 
@@ -673,8 +606,8 @@
             and validation - all styled through the base layer.
           </p>
 
-          <div data-site="example">
-            <div data-site="example-preview">
+          <article data-ui="example">
+            <div data-part="preview">
               <form
                 data-layout="stack"
                 data-gap="3"
@@ -743,14 +676,12 @@
                 </fieldset>
               </form>
             </div>
-            <div data-site="example-code">
-              <pre><code>&lt;label for="name"&gt;Name&lt;/label&gt;
+            <pre data-part="code"><code>&lt;label for="name"&gt;Name&lt;/label&gt;
 &lt;input id="name" type="text" required /&gt;
 
 &lt;label&gt;&lt;input type="checkbox" role="switch" /&gt; Toggle&lt;/label&gt;
 &lt;progress value="72" max="100"&gt;72%&lt;/progress&gt;</code></pre>
-            </div>
-          </div>
+          </article>
         </section>
 
         <!-- Components -->
@@ -767,10 +698,8 @@
             authored HTML stays visible and styleable.
           </p>
 
-          <div data-site="code-block">
-            <pre><code>&lt;script type="module" src="@aura/components/browser.js"&gt;&lt;/script&gt;
+          <pre><code>&lt;script type="module" src="@aura/components/browser.js"&gt;&lt;/script&gt;
 &lt;script type="module" src="@aura/diagram/browser.js"&gt;&lt;/script&gt;</code></pre>
-          </div>
 
           <!-- Tabs -->
           <article data-surface="card" data-layout="stack" data-gap="3">
@@ -780,8 +709,8 @@
               focus and panel visibility. The component only manages behavior -
               the Composites layer handles visual treatment.
             </p>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <div data-layout="stack" data-gap="3">
                   <p>
                     Selected:
@@ -858,8 +787,7 @@
                   </aura-tabs>
                 </div>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;aura-tabs data-ui="tabs" value="overview"&gt;
+              <pre data-part="code"><code>&lt;aura-tabs data-ui="tabs" value="overview"&gt;
   &lt;nav data-part="tablist"&gt;
     &lt;button data-part="trigger" data-value="overview"&gt;Overview&lt;/button&gt;
     &lt;button data-part="trigger" data-value="tokens"&gt;Tokens&lt;/button&gt;
@@ -869,8 +797,7 @@
     &lt;article data-part="panel" data-value="tokens" hidden&gt;...&lt;/article&gt;
   &lt;/section&gt;
 &lt;/aura-tabs&gt;</code></pre>
-              </div>
-            </div>
+            </article>
           </article>
 
           <!-- Master-detail -->
@@ -881,8 +808,8 @@
               detail panel. The Composites layer provides a responsive grid
               shell.
             </p>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <div data-layout="stack" data-gap="3">
                   <p>
                     Selected:
@@ -962,8 +889,7 @@
                   </aura-master-detail>
                 </div>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;aura-master-detail data-ui="master-detail" value="elements"&gt;
+              <pre data-part="code"><code>&lt;aura-master-detail data-ui="master-detail" value="elements"&gt;
   &lt;nav data-part="master"&gt;
     &lt;button data-part="trigger" data-value="elements"&gt;
       &lt;strong&gt;Elements&lt;/strong&gt;
@@ -974,8 +900,7 @@
     &lt;article data-part="panel" data-value="elements"&gt;...&lt;/article&gt;
   &lt;/section&gt;
 &lt;/aura-master-detail&gt;</code></pre>
-              </div>
-            </div>
+            </article>
           </article>
 
           <!-- Combobox -->
@@ -986,8 +911,8 @@
               keyboard selection, and optional linked panels to a native input
               and list.
             </p>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <div data-layout="stack" data-gap="3">
                   <p>
                     Selected:
@@ -1040,8 +965,7 @@
                   </aura-combobox>
                 </div>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;aura-combobox data-ui="combobox" value="tabs"&gt;
+              <pre data-part="code"><code>&lt;aura-combobox data-ui="combobox" value="tabs"&gt;
   &lt;label for="search"&gt;Search&lt;/label&gt;
   &lt;div data-part="control"&gt;
     &lt;input data-part="input" type="text" placeholder="Filter..." /&gt;
@@ -1053,8 +977,7 @@
   &lt;/ul&gt;
   &lt;p data-part="empty" hidden&gt;No matches.&lt;/p&gt;
 &lt;/aura-combobox&gt;</code></pre>
-              </div>
-            </div>
+            </article>
           </article>
 
           <!-- Splitter -->
@@ -1064,8 +987,8 @@
               <code>aura-splitter</code> adds keyboard resizing, pointer drag,
               and percent-based layout state to a two-pane layout.
             </p>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <div data-layout="stack" data-gap="3">
                   <p>
                     Split at:
@@ -1101,14 +1024,12 @@
                   </aura-splitter>
                 </div>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;aura-splitter data-ui="splitter" value="40" min="25" max="75" step="5"&gt;
+              <pre data-part="code"><code>&lt;aura-splitter data-ui="splitter" value="40" min="25" max="75" step="5"&gt;
   &lt;section data-part="pane" data-pane="primary"&gt;...&lt;/section&gt;
   &lt;button data-part="separator" aria-label="Resize"&gt;&lt;/button&gt;
   &lt;section data-part="pane" data-pane="secondary"&gt;...&lt;/section&gt;
 &lt;/aura-splitter&gt;</code></pre>
-              </div>
-            </div>
+            </article>
           </article>
 
           <!-- Tree -->
@@ -1118,8 +1039,8 @@
               <code>aura-tree</code> adds hierarchical selection, branch
               expansion, and spatial keyboard navigation to a nested list.
             </p>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <div data-layout="stack" data-gap="3">
                   <p>
                     Selected:
@@ -1216,8 +1137,7 @@
                   </aura-tree>
                 </div>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;aura-tree data-ui="tree" value="root"&gt;
+              <pre data-part="code"><code>&lt;aura-tree data-ui="tree" value="root"&gt;
   &lt;ul data-part="tree"&gt;
     &lt;li data-part="item" data-branch data-expanded&gt;
       &lt;button data-part="toggle"&gt;&lt;/button&gt;
@@ -1230,8 +1150,7 @@
     &lt;/li&gt;
   &lt;/ul&gt;
 &lt;/aura-tree&gt;</code></pre>
-              </div>
-            </div>
+            </article>
           </article>
 
           <!-- Diagram -->
@@ -1242,8 +1161,8 @@
               placement into interactive flow diagrams with spatial keyboard
               navigation and linked detail panels.
             </p>
-            <div data-site="example">
-              <div data-site="example-preview">
+            <article data-ui="example">
+              <div data-part="preview">
                 <div data-layout="stack" data-gap="3">
                   <p>
                     Selected:
@@ -1358,8 +1277,7 @@
                   </aura-diagram>
                 </div>
               </div>
-              <div data-site="example-code">
-                <pre><code>&lt;aura-diagram value="input" style="--diagram-columns: 7"&gt;
+              <pre data-part="code"><code>&lt;aura-diagram value="input" style="--diagram-columns: 7"&gt;
   &lt;div data-part="canvas"&gt;
     &lt;button data-part="node" data-kind="input" data-value="input"
       style="--diagram-column: 1 / span 2; --diagram-row: 1"&gt;
@@ -1375,8 +1293,7 @@
     &lt;article data-part="panel" data-value="input"&gt;...&lt;/article&gt;
   &lt;/section&gt;
 &lt;/aura-diagram&gt;</code></pre>
-              </div>
-            </div>
+            </article>
           </article>
         </section>
 
@@ -1402,11 +1319,9 @@
                 <code>@layer brands</code>. Apply it by setting
                 <code>data-brand</code> on the body.
               </p>
-              <div data-site="code-block">
-                <pre><code>&lt;body data-brand="aura"&gt;
+              <pre><code>&lt;body data-brand="aura"&gt;
 &lt;body data-brand="editorial"&gt;
 &lt;body&gt; &lt;!-- headless, no brand --&gt;</code></pre>
-              </div>
             </article>
 
             <article data-surface="card" data-layout="stack" data-gap="3">
@@ -1415,11 +1330,9 @@
                 Toggle dark mode, high contrast, and reduced motion through
                 attributes on the root element.
               </p>
-              <div data-site="code-block">
-                <pre><code>&lt;html data-theme="dark"&gt;
+              <pre><code>&lt;html data-theme="dark"&gt;
 &lt;html data-contrast="more"&gt;
 &lt;html data-motion="reduce"&gt;</code></pre>
-              </div>
             </article>
           </div>
 
