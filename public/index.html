@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-smooth>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,100 +9,129 @@
     <link rel="stylesheet" href="/packages/composites/aura-composites.css" />
     <style>
       @layer site {
+        /* Hero */
         [data-site="hero"] {
-          padding-block: var(--space-8);
+          padding-block: var(--space-16) var(--space-12);
           text-align: center;
+          background:
+            radial-gradient(
+              ellipse at 50% 0%,
+              color-mix(in oklch, var(--primary) 8%, transparent),
+              transparent 60%
+            ),
+            radial-gradient(
+              ellipse at 80% 50%,
+              color-mix(in oklch, var(--secondary) 4%, transparent),
+              transparent 50%
+            );
         }
-
         [data-site="hero-banner"] {
-          max-inline-size: 100%;
+          max-inline-size: min(100%, 48rem);
           height: auto;
           border-radius: var(--radius-lg);
           margin-inline: auto;
-          display: block;
+          box-shadow:
+            0 4px 8px -2px rgb(0 0 0 / 0.08),
+            0 16px 32px -4px rgb(0 0 0 / 0.12),
+            0 0 0 1px color-mix(in oklch, var(--border) 50%, transparent);
         }
-
-        /* Theme-aware image switching: default show light, hide dark */
-        [data-for-theme="dark"] { display: none; }
-
-        [data-theme~="dark"] [data-for-theme="light"] { display: none; }
-        [data-theme~="dark"] [data-for-theme="dark"] { display: inline; }
-        /* Special case: block display for hero banners in dark mode */
-        [data-theme~="dark"] img[data-site="hero-banner"][data-for-theme="dark"] { display: block; }
-
-        @media (prefers-color-scheme: dark) {
-          :root:not([data-theme]) [data-for-theme="light"] { display: none; }
-          :root:not([data-theme]) [data-for-theme="dark"] { display: inline; }
-          :root:not([data-theme]) img[data-site="hero-banner"][data-for-theme="dark"] { display: block; }
-        }
-
         [data-site="hero"] .lead {
-          font-size: var(--text-lg);
+          font-size: var(--text-xl);
           color: var(--text-muted);
           max-inline-size: 42rem;
           margin-inline: auto;
+          margin-block-start: var(--space-6);
           overflow-wrap: break-word;
         }
-
         [data-site="hero"] .lead code {
           word-break: break-all;
         }
 
+        /* Feature grid */
         [data-site="feature-grid"] {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
           gap: var(--space-4);
         }
-
         [data-site="feature-grid"] article {
-          padding: var(--space-4);
+          position: relative;
+          overflow: hidden;
         }
-
+        [data-site="feature-grid"] article::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(
+            circle at 50% 0%,
+            color-mix(in oklch, var(--primary) 6%, transparent),
+            transparent 70%
+          );
+          opacity: 0;
+          transition: opacity var(--transition-base);
+          pointer-events: none;
+        }
+        [data-site="feature-grid"] article:hover::before {
+          opacity: 1;
+        }
         [data-site="feature-grid"] article h3 {
+          position: relative;
           font-size: var(--text-base);
           margin-block-end: var(--space-1);
+          color: var(--primary);
         }
-
         [data-site="feature-grid"] article p {
+          position: relative;
           color: var(--text-muted);
           font-size: var(--text-sm);
         }
 
-        [data-site="section"] {
-          scroll-margin-block-start: var(--space-4);
-        }
-
-        [data-site="section"] > h2 {
-          font-size: var(--text-xl);
-          margin-block-end: var(--space-1);
-        }
-
-        [data-site="section"] > h2 + p {
-          color: var(--text-muted);
-          margin-block-end: var(--space-4);
-        }
-
+        /* Toolbar */
         [data-site="toolbar"] {
-          position: sticky;
-          top: 0;
-          z-index: 10;
           backdrop-filter: blur(12px);
           background-color: color-mix(
             in oklch,
             var(--bg) 85%,
             transparent
           );
-          border-block-end: 1px solid var(--border);
-          padding-block: var(--space-2);
+          border-block-end: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
           padding-inline: var(--space-4);
+          transition: box-shadow var(--transition-base);
         }
-
+        [data-site="toolbar"][data-scrolled] {
+          box-shadow: var(--shadow-sm);
+        }
         [data-site="toolbar"] button {
           font-size: var(--text-sm);
           padding-block: var(--space-1);
           padding-inline: var(--space-2);
+          min-block-size: auto;
         }
 
+        /* Section headings (via prose hgroup) */
+        [data-site="section"] hgroup > h2 {
+          font-size: var(--text-2xl);
+        }
+
+        /* Section entrance animation */
+        @supports (animation-timeline: view()) {
+          [data-site="section"] {
+            animation: site-section-reveal linear both;
+            animation-timeline: view();
+            animation-range: entry 0% entry 25%;
+          }
+        }
+        @keyframes site-section-reveal {
+          from {
+            opacity: 0;
+            transform: translateY(var(--space-4));
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        /* Color swatches */
         [data-site="swatch"] {
           display: inline-block;
           inline-size: 2.5rem;
@@ -111,57 +140,96 @@
           border: 1px solid color-mix(in oklch, var(--text-muted) 30%, transparent);
           box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--text-muted) 10%, transparent);
         }
-
         [data-site="swatch-row"] {
           display: flex;
           flex-wrap: wrap;
           gap: var(--space-2);
           align-items: center;
         }
-
         [data-site="swatch-row"] span {
           font-size: var(--text-sm);
           color: var(--text-muted);
           min-inline-size: 5rem;
         }
 
+        /* API reference table */
         [data-site="token-table"] td:first-child {
           font-family: var(--font-mono);
           font-size: var(--text-sm);
           white-space: nowrap;
+        }
+
+        /* Footer */
+        [data-site="footer"] {
+          margin-block-start: var(--space-12);
+          padding-block: var(--space-8);
+          border-block-start: 1px solid var(--border);
+          text-align: center;
+        }
+        [data-site="footer"] p {
+          color: var(--text-muted);
+          font-size: var(--text-sm);
+        }
+        [data-site="footer"] nav a {
+          color: var(--text-muted);
+          text-decoration: none;
+          font-size: var(--text-sm);
+          transition: color var(--transition-fast);
+        }
+        [data-site="footer"] nav a:hover {
+          color: var(--text);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+          [data-site="hero"] {
+            padding-block: var(--space-8) var(--space-6);
+          }
+          [data-site="hero"] .lead {
+            font-size: var(--text-base);
+          }
+          [data-site="section"] hgroup > h2 {
+            font-size: var(--text-xl);
+          }
+          :where([data-ui~="example"]) [data-part="code"] {
+            font-size: var(--text-xs);
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          [data-site="section"] {
+            animation: none;
+          }
         }
       }
     </style>
   </head>
   <body data-brand="aura">
     <!-- Sticky toolbar -->
-    <div data-site="toolbar">
+    <header data-ui="site-header" data-sticky data-site="toolbar">
       <div
         data-layout="row"
         data-align="center"
         data-justify="between"
         data-gap="2"
-        style="max-inline-size: 64rem; margin-inline: auto"
+        style="max-inline-size: 64rem; margin-inline: auto; inline-size: 100%"
       >
-        <div data-layout="cluster" data-gap="1" data-align="center">
-          <strong>Aura</strong>
-        </div>
-        <div data-layout="cluster" data-gap="2" data-align="center">
-          <button id="brand-headless" type="button" data-variant="ghost">
-            Headless
-          </button>
-          <button id="brand-aura" type="button" data-variant="solid">
-            Aura
-          </button>
-          <button id="brand-editorial" type="button" data-variant="ghost">
-            Editorial
-          </button>
-          <button id="toggle-dark" type="button" data-variant="soft">
+        <strong style="color: var(--primary)">Aura</strong>
+        <nav data-nav="inline" data-hide="mobile">
+          <ul>
+            <li><a href="#elements">Elements</a></li>
+            <li><a href="#layout">Layout</a></li>
+            <li><a href="#forms">Forms</a></li>
+            <li><a href="#components">Components</a></li>
+            <li><a href="#theming">Theming</a></li>
+            <li><a href="#api">API</a></li>
+          </ul>
+        </nav>
+        <button id="toggle-dark" type="button" data-variant="soft">
             Dark
           </button>
-        </div>
       </div>
-    </div>
+    </header>
 
     <div
       data-layout="container"
@@ -177,14 +245,14 @@
                 src="aura-banner-light.jpg"
                 alt="Aura - Headless CSS Framework"
                 data-site="hero-banner"
-                data-for-theme="light"
+                data-show-theme="light"
                 width="600" height="327"
               />
               <img
                 src="aura-banner-dark.jpg"
                 alt=""
                 data-site="hero-banner"
-                data-for-theme="dark"
+                data-show-theme="dark"
                 width="600" height="327"
               />
               <p class="lead">
@@ -208,8 +276,25 @@
               </a>
             </div>
 
+            <div
+              data-layout="cluster"
+              data-gap="2"
+              data-align="center"
+              data-justify="center"
+            >
+              <button id="brand-headless" type="button" data-variant="ghost">
+                Headless
+              </button>
+              <button id="brand-aura" type="button" data-variant="solid">
+                Aura
+              </button>
+              <button id="brand-editorial" type="button" data-variant="ghost">
+                Editorial
+              </button>
+            </div>
+
             <div data-site="feature-grid">
-              <article data-surface="card">
+              <article data-surface="card" data-interactive>
                 <h3>Headless by default</h3>
                 <p>
                   Structure without opinion. Readable typography, sensible
@@ -217,7 +302,7 @@
                   language.
                 </p>
               </article>
-              <article data-surface="card">
+              <article data-surface="card" data-interactive>
                 <h3>Attribute-driven</h3>
                 <p>
                   No class names to memorize. Use
@@ -225,14 +310,14 @@
                   <code>data-variant</code> and other semantic attributes.
                 </p>
               </article>
-              <article data-surface="card">
+              <article data-surface="card" data-interactive>
                 <h3>Three layers</h3>
                 <p>
                   Elements for base styles. Composites for CSS-only patterns.
                   Components for optional interactive custom elements.
                 </p>
               </article>
-              <article data-surface="card">
+              <article data-surface="card" data-interactive>
                 <h3>Pluggable brands</h3>
                 <p>
                   Layer a brand pack on top for a full design system. Switch
@@ -247,14 +332,19 @@
         <section
           id="get-started"
           data-site="section"
+          data-ui="prose"
+          data-scroll-target
           data-layout="stack"
           data-gap="4"
         >
-          <h2>Get started</h2>
-          <p>
-            Add the base stylesheet and optionally layer composites, components,
-            and a brand pack.
-          </p>
+          <hgroup>
+            <p>Quick start</p>
+            <h2>Get started</h2>
+            <p>
+              Add the base stylesheet and optionally layer composites, components,
+              and a brand pack.
+            </p>
+          </hgroup>
 
           <pre><code><span data-syntax="comment">&lt;!-- Required: base elements --&gt;</span>
 <span data-syntax="tag">&lt;link</span> <span data-syntax="attr">rel</span>=<span data-syntax="value">"stylesheet"</span> <span data-syntax="attr">href</span>=<span data-syntax="value">"aura.css"</span><span data-syntax="tag">&gt;</span>
@@ -297,14 +387,19 @@
         <section
           id="elements"
           data-site="section"
+          data-ui="prose"
+          data-scroll-target
           data-layout="stack"
           data-gap="4"
         >
-          <h2>Elements</h2>
-          <p>
-            The base layer provides typography, surfaces, buttons, notices,
-            forms, and utilities without requiring any classes.
-          </p>
+          <hgroup>
+            <p>Base layer</p>
+            <h2>Elements</h2>
+            <p>
+              Typography, surfaces, buttons, notices, forms, and utilities -
+              all styled without requiring any classes.
+            </p>
+          </hgroup>
 
           <!-- Typography -->
           <article data-surface="card" data-layout="stack" data-gap="3">
@@ -484,14 +579,19 @@
         <section
           id="layout"
           data-site="section"
+          data-ui="prose"
+          data-scroll-target
           data-layout="stack"
           data-gap="4"
         >
-          <h2>Layout</h2>
-          <p>
-            Directional layouts, responsive grids, alignment, gaps, and
-            stacking - all through data attributes.
-          </p>
+          <hgroup>
+            <p>Spatial primitives</p>
+            <h2>Layout</h2>
+            <p>
+              Directional layouts, responsive grids, alignment, gaps, and
+              stacking - all through data attributes.
+            </p>
+          </hgroup>
 
           <!-- Row -->
           <article data-surface="card" data-layout="stack" data-gap="3">
@@ -597,14 +697,19 @@
         <section
           id="forms"
           data-site="section"
+          data-ui="prose"
+          data-scroll-target
           data-layout="stack"
           data-gap="4"
         >
-          <h2>Forms</h2>
-          <p>
-            Text fields, selects, checkboxes, switches, ranges, progress bars,
-            and validation - all styled through the base layer.
-          </p>
+          <hgroup>
+            <p>Inputs</p>
+            <h2>Forms</h2>
+            <p>
+              Text fields, selects, checkboxes, switches, ranges, progress bars,
+              and validation - all styled through the base layer.
+            </p>
+          </hgroup>
 
           <article data-ui="example">
             <div data-part="preview">
@@ -688,15 +793,20 @@
         <section
           id="components"
           data-site="section"
+          data-ui="prose"
+          data-scroll-target
           data-layout="stack"
           data-gap="4"
         >
-          <h2>Components</h2>
-          <p>
-            Optional light-DOM custom elements that add keyboard navigation,
-            selection state, and panel coordination. No shadow DOM - your
-            authored HTML stays visible and styleable.
-          </p>
+          <hgroup>
+            <p>Interactive widgets</p>
+            <h2>Components</h2>
+            <p>
+              Optional light-DOM custom elements that add keyboard navigation,
+              selection state, and panel coordination. No shadow DOM - your
+              authored HTML stays visible and styleable.
+            </p>
+          </hgroup>
 
           <pre><code>&lt;script type="module" src="@aura/components/browser.js"&gt;&lt;/script&gt;
 &lt;script type="module" src="@aura/diagram/browser.js"&gt;&lt;/script&gt;</code></pre>
@@ -1173,10 +1283,7 @@
                     value="input"
                     activation="manual"
                     aria-label="Data pipeline"
-                    style="
-                      --diagram-columns: 7;
-                      --diagram-min-inline-size: 32rem;
-                    "
+                    style="--diagram-columns: 7"
                   >
                     <p data-part="caption">
                       A simple three-step data pipeline.
@@ -1301,15 +1408,20 @@
         <section
           id="theming"
           data-site="section"
+          data-ui="prose"
+          data-scroll-target
           data-layout="stack"
           data-gap="4"
         >
-          <h2>Theming</h2>
-          <p>
-            Switch between brands, toggle dark mode, and adjust contrast and
-            motion preferences - all through data attributes on the root
-            elements.
-          </p>
+          <hgroup>
+            <p>Brand packs</p>
+            <h2>Theming</h2>
+            <p>
+              Switch between brands, toggle dark mode, and adjust contrast and
+              motion preferences - all through data attributes on the root
+              elements.
+            </p>
+          </hgroup>
 
           <div data-layout="grid" data-gap="4" data-grid-min="md">
             <article data-surface="card" data-layout="stack" data-gap="3">
@@ -1400,31 +1512,36 @@
         <section
           id="accessibility"
           data-site="section"
+          data-ui="prose"
+          data-scroll-target
           data-layout="stack"
           data-gap="4"
         >
-          <h2>Accessibility</h2>
-          <p>
-            Aura bakes accessibility into every layer rather than treating it as
-            an afterthought.
-          </p>
+          <hgroup>
+            <p>Accessibility</p>
+            <h2>Built In, Not Bolted On</h2>
+            <p>
+              Aura bakes accessibility into every layer rather than treating it
+              as an afterthought.
+            </p>
+          </hgroup>
 
           <div data-layout="grid" data-gap="4" data-grid-min="sm">
-            <article data-surface="card" data-layout="stack" data-gap="2">
+            <article data-surface="card" data-interactive data-layout="stack" data-gap="2">
               <h3>Focus management</h3>
               <p>
                 <code>:focus-visible</code> outlines on all interactive
                 elements. Components use roving focus for keyboard navigation.
               </p>
             </article>
-            <article data-surface="card" data-layout="stack" data-gap="2">
+            <article data-surface="card" data-interactive data-layout="stack" data-gap="2">
               <h3>Motion preferences</h3>
               <p>
                 <code>prefers-reduced-motion</code> is respected by default.
                 Override with <code>data-motion="reduce"</code>.
               </p>
             </article>
-            <article data-surface="card" data-layout="stack" data-gap="2">
+            <article data-surface="card" data-interactive data-layout="stack" data-gap="2">
               <h3>Contrast modes</h3>
               <p>
                 <code>prefers-contrast: more/less</code> and
@@ -1432,7 +1549,7 @@
                 are supported.
               </p>
             </article>
-            <article data-surface="card" data-layout="stack" data-gap="2">
+            <article data-surface="card" data-interactive data-layout="stack" data-gap="2">
               <h3>ARIA integration</h3>
               <p>
                 Components manage <code>aria-selected</code>,
@@ -1447,14 +1564,19 @@
         <section
           id="api"
           data-site="section"
+          data-ui="prose"
+          data-scroll-target
           data-layout="stack"
           data-gap="4"
         >
-          <h2>Component API</h2>
-          <p>
-            All components share a consistent host contract for attributes,
-            methods, and events.
-          </p>
+          <hgroup>
+            <p>Component API</p>
+            <h2>A Consistent Host Contract</h2>
+            <p>
+              All components share a uniform interface for attributes, methods,
+              and events.
+            </p>
+          </hgroup>
 
           <article data-surface="card" data-layout="stack" data-gap="3">
             <table data-site="token-table">
@@ -1507,21 +1629,17 @@
         </section>
 
         <!-- Footer -->
-        <footer data-surface="card">
-          <div
-            data-layout="row"
-            data-align="center"
-            data-justify="between"
-            data-stack="mobile"
-            data-gap="2"
-          >
+        <footer data-site="footer">
+          <div data-layout="stack" data-gap="4" data-align="center">
+            <nav data-layout="cluster" data-gap="4" data-justify="center">
+              <a href="https://github.com/nicholasgasior/aura">GitHub</a>
+              <a href="/docs/user-guide.md">Docs</a>
+              <a href="#api">API Reference</a>
+            </nav>
             <p>
-              Aura is headless by default. Add
-              <code>data-brand</code> when you want a design system.
+              Headless by default. Add <code>data-brand</code> for a design system.
             </p>
-            <p style="color: var(--text-muted); font-size: var(--text-sm)">
-              Built entirely with Aura.
-            </p>
+            <p>Built entirely with Aura.</p>
           </div>
         </footer>
       </div>
@@ -1627,6 +1745,49 @@
         bindOutput("site-splitter", "splitter-out", "40");
         bindOutput("site-tree", "tree-out", "aura-css");
         bindOutput("site-diagram", "diagram-out", "input");
+
+        // Active nav link tracking via IntersectionObserver
+        const navLinks = document.querySelectorAll('[data-site="toolbar"] nav a');
+        const sections = Array.from(navLinks).map((link) => {
+          const id = link.getAttribute("href").slice(1);
+          return { id, link, el: document.getElementById(id) };
+        }).filter((s) => s.el);
+
+        if (sections.length) {
+          const sectionObserver = new IntersectionObserver(
+            (entries) => {
+              for (const entry of entries) {
+                const s = sections.find((s) => s.el === entry.target);
+                if (s) s.visible = entry.isIntersecting;
+              }
+              const active = sections.find((s) => s.visible);
+              for (const s of sections) {
+                if (active && s === active) {
+                  s.link.setAttribute("aria-current", "page");
+                } else {
+                  s.link.removeAttribute("aria-current");
+                }
+              }
+            },
+            { rootMargin: "-20% 0px -60% 0px" },
+          );
+          for (const s of sections) sectionObserver.observe(s.el);
+        }
+
+        // Toolbar scroll shadow via IntersectionObserver sentinel
+        const toolbar = document.querySelector('[data-site="toolbar"]');
+        if (toolbar) {
+          const sentinel = document.createElement("div");
+          sentinel.setAttribute("aria-hidden", "true");
+          sentinel.style.cssText = "height:1px;margin:0;padding:0;border:0;position:absolute;top:0;left:0;right:0;pointer-events:none;";
+          document.body.prepend(sentinel);
+          new IntersectionObserver(
+            ([entry]) => {
+              toolbar.toggleAttribute("data-scrolled", !entry.isIntersecting);
+            },
+            { threshold: 1 },
+          ).observe(sentinel);
+        }
       })();
     </script>
   </body>

@@ -751,6 +751,8 @@
 
   :where([data-ui~="example"]) > [data-part="preview"] {
     padding: var(--example-preview-padding);
+    min-inline-size: 0;
+    overflow-x: auto;
   }
 
   :where([data-ui~="example"]) > [data-part="code"] {
@@ -812,9 +814,21 @@
     --diagram-panel-padding: var(--space-4);
 
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--space-3);
     min-inline-size: 0;
+    contain: inline-size;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  @media (max-width: 40rem) {
+    :where([data-ui~="diagram"], aura-diagram) {
+      --diagram-min-inline-size: 28rem;
+      --diagram-row-size: 3.5rem;
+      --diagram-padding: var(--space-2);
+      --diagram-gap: var(--space-2);
+    }
   }
 
   @media (min-width: 64rem) {
@@ -841,7 +855,7 @@
     grid-auto-rows: minmax(var(--diagram-row-size), auto);
     gap: var(--diagram-gap);
     align-items: stretch;
-    inline-size: max(100%, var(--diagram-min-inline-size));
+    min-inline-size: var(--diagram-min-inline-size);
     padding: var(--diagram-padding);
     background: var(--diagram-canvas-bg);
     border: 1px solid var(--diagram-border-color);
@@ -1008,6 +1022,8 @@
 
   :where([data-ui~="example"]) > [data-part="preview"] {
     padding: var(--example-preview-padding);
+    min-inline-size: 0;
+    overflow-x: auto;
   }
 
   :where([data-ui~="example"]) > [data-part="code"] {
