@@ -76,5 +76,18 @@
       --primary-hover: color-mix(in oklch, var(--primary) 88%, black);
       --primary-subtle: color-mix(in oklch, var(--primary) 20%, white);
     }
+
+    [data-theme~="dark"] [data-brand="aura"],
+    [data-brand="aura"][data-theme~="dark"] {
+      --primary-hover: color-mix(in oklch, var(--primary) 80%, white);
+      --primary-subtle: color-mix(in oklch, var(--primary) 30%, var(--gray-10));
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme]) [data-brand="aura"] {
+        --primary-hover: color-mix(in oklch, var(--primary) 80%, white);
+        --primary-subtle: color-mix(in oklch, var(--primary) 30%, var(--gray-10));
+      }
+    }
   }
 }

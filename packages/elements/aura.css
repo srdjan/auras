@@ -285,6 +285,7 @@
   /* Dark theme */
   [data-theme~="dark"] {
     --primary-l: 70%;
+    --text-on-primary: black;
     --bg: oklch(8% 0 0);
     --text: var(--gray-0);
     --text-muted: var(--gray-5);
@@ -347,6 +348,7 @@
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme]) {
       --primary-l: 70%;
+      --text-on-primary: black;
       --bg: oklch(8% 0 0);
       --text: var(--gray-0);
       --text-muted: var(--gray-5);
@@ -602,6 +604,14 @@
       [role="button"]
     )[data-variant="soft"] {
       --button-hover-bg: color-mix(in oklch, var(--primary) 28%, white);
+    }
+    [data-theme~="dark"] :where(
+      button,
+      input[type="button"],
+      input[type="submit"],
+      [role="button"]
+    )[data-variant="soft"] {
+      --button-hover-bg: color-mix(in oklch, var(--primary) 40%, var(--gray-10));
     }
   }
   :where(

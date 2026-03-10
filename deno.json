@@ -6,8 +6,8 @@
     "dev": "deno run --allow-net --allow-read main.ts",
     "serve": "deno run --allow-net --allow-read main.ts",
     "deploy": "deployctl deploy --prod --entrypoint=main.ts",
-    "check": "deno check tests/aura-components.test.js tests/aura-combobox.test.js tests/aura-splitter.test.js tests/aura-tree.test.js tests/aura-diagram.test.js tests/aura-components.browser.test.js packages/components/browser.js packages/components/mod.ts packages/diagram/browser.js packages/diagram/mod.ts",
-    "test": "deno test --allow-env=WS_NO_BUFFER_UTIL,WS_NO_UTF_8_VALIDATE tests/aura-components.test.js tests/aura-combobox.test.js tests/aura-splitter.test.js tests/aura-tree.test.js tests/aura-diagram.test.js",
+    "check": "deno check tests/public-demo.test.js tests/aura-components.test.js tests/aura-combobox.test.js tests/aura-splitter.test.js tests/aura-tree.test.js tests/aura-diagram.test.js tests/aura-components.browser.test.js packages/components/browser.js packages/components/mod.ts packages/diagram/browser.js packages/diagram/mod.ts",
+    "test": "deno test --allow-read=public/index.html --allow-env=WS_NO_BUFFER_UTIL,WS_NO_UTF_8_VALIDATE tests/public-demo.test.js tests/aura-components.test.js tests/aura-combobox.test.js tests/aura-splitter.test.js tests/aura-tree.test.js tests/aura-diagram.test.js",
     "test:browser": "deno test --allow-env --allow-read --allow-write --allow-net --allow-run --allow-sys tests/aura-components.browser.test.js",
     "publish:components:dry-run": "deno publish --dry-run --allow-dirty --config packages/components/jsr.json",
     "publish:diagram:dry-run": "deno publish --dry-run --allow-dirty --config packages/diagram/jsr.json"

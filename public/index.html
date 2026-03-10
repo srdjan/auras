@@ -5,111 +5,164 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aura - Headless CSS Framework</title>
     <meta property="og:image" content="aura-banner-dark.jpg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300..800&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="/packages/elements/aura.css" />
     <link rel="stylesheet" href="/packages/composites/aura-composites.css" />
+    <link
+      id="brand-pack-aura"
+      rel="stylesheet"
+      href="/packages/brands/aura-brand.css"
+    />
     <style>
       @layer site {
-        /* Hero */
+        /* Smooth brand/theme transitions */
+        body {
+          transition: background-color 0.5s ease-out, color 0.3s ease-out;
+        }
+
+        /* ---- Hero ---- */
         [data-site="hero"] {
-          padding-block: var(--space-16) var(--space-12);
+          min-block-size: 100svh;
+          display: grid;
+          place-content: center;
           text-align: center;
+          padding-block: var(--space-16);
+          padding-inline: var(--space-4);
           background:
             radial-gradient(
-              ellipse at 50% 0%,
-              color-mix(in oklch, var(--primary) 8%, transparent),
-              transparent 60%
+              ellipse 80% 50% at 30% 20%,
+              color-mix(in oklch, var(--primary) 5%, transparent),
+              transparent
             ),
             radial-gradient(
-              ellipse at 80% 50%,
-              color-mix(in oklch, var(--secondary) 4%, transparent),
-              transparent 50%
-            );
-        }
-        [data-site="hero-banner"] {
-          max-inline-size: min(100%, 48rem);
-          height: auto;
-          border-radius: var(--radius-lg);
-          margin-inline: auto;
-          box-shadow:
-            0 4px 8px -2px rgb(0 0 0 / 0.08),
-            0 16px 32px -4px rgb(0 0 0 / 0.12),
-            0 0 0 1px color-mix(in oklch, var(--border) 50%, transparent);
-        }
-        [data-site="hero"] .lead {
-          font-size: var(--text-xl);
-          color: var(--text-muted);
-          max-inline-size: 42rem;
-          margin-inline: auto;
-          margin-block-start: var(--space-6);
-          overflow-wrap: break-word;
-        }
-        [data-site="hero"] .lead code {
-          word-break: break-all;
-        }
-
-        /* Feature grid */
-        [data-site="feature-grid"] {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
-          gap: var(--space-4);
-        }
-        [data-site="feature-grid"] article {
-          position: relative;
-          overflow: hidden;
-        }
-        [data-site="feature-grid"] article::before {
-          content: "";
-          position: absolute;
-          inset: 0;
-          background: radial-gradient(
-            circle at 50% 0%,
-            color-mix(in oklch, var(--primary) 6%, transparent),
-            transparent 70%
-          );
-          opacity: 0;
-          transition: opacity var(--transition-base);
-          pointer-events: none;
-        }
-        [data-site="feature-grid"] article:hover::before {
-          opacity: 1;
-        }
-        [data-site="feature-grid"] article h3 {
-          position: relative;
-          font-size: var(--text-base);
-          margin-block-end: var(--space-1);
-          color: var(--primary);
-        }
-        [data-site="feature-grid"] article p {
-          position: relative;
-          color: var(--text-muted);
-          font-size: var(--text-sm);
-        }
-
-        /* Toolbar */
-        [data-site="toolbar"] {
-          backdrop-filter: blur(12px);
-          background-color: color-mix(
-            in oklch,
-            var(--bg) 85%,
+            ellipse 60% 40% at 70% 80%,
+            color-mix(in oklch, var(--secondary) 3%, transparent),
             transparent
           );
-          border-block-end: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
+        }
+
+        [data-site="wordmark"] {
+          font-family: "Outfit", var(--font-sans);
+          font-size: clamp(4rem, 10vw, 7rem);
+          font-weight: 800;
+          letter-spacing: -0.05em;
+          line-height: 1;
+          color: var(--text);
+          margin: 0;
+        }
+
+        [data-site="hero"] .lead {
+          font-size: var(--text-lg);
+          color: var(--text-muted);
+          max-inline-size: 30rem;
+          margin-inline: auto;
+          line-height: var(--leading-relaxed);
+        }
+
+        /* Brand switcher - segmented control */
+        [data-site="brand-switcher"] {
+          display: inline-flex;
+          padding: 4px;
+          background-color: var(--surface-raised);
+          border-radius: calc(var(--button-radius, var(--radius-md)) + 4px);
+          border: 1px solid
+            color-mix(in oklch, var(--border) 50%, transparent);
+          gap: 2px;
+        }
+        [data-site="brand-switcher"] button {
+          padding: var(--space-2) var(--space-4);
+          border-radius: var(--button-radius, var(--radius-md));
+          border: none;
+          background: transparent;
+          color: var(--text-muted);
+          font-size: var(--text-sm);
+          font-weight: 500;
+          cursor: pointer;
+          transition:
+            background-color var(--transition-fast),
+            color var(--transition-fast),
+            box-shadow var(--transition-fast);
+          min-block-size: auto;
+        }
+        [data-site="brand-switcher"] button:hover {
+          color: var(--text);
+        }
+        [data-site="brand-switcher"] button[data-variant="solid"] {
+          background-color: var(--bg);
+          color: var(--text);
+          box-shadow: var(--shadow-sm);
+        }
+
+        /* ---- Toolbar ---- */
+        [data-site="toolbar"] {
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          background-color: color-mix(in oklch, var(--bg) 80%, transparent);
+          border-block-end: 1px solid
+            color-mix(in oklch, var(--border) 30%, transparent);
           padding-inline: var(--space-4);
-          transition: box-shadow var(--transition-base);
+          transition:
+            box-shadow var(--transition-base),
+            background-color 0.5s ease-out;
         }
         [data-site="toolbar"][data-scrolled] {
-          box-shadow: var(--shadow-sm);
+          box-shadow: 0 1px 3px rgb(0 0 0 / 0.06);
         }
         [data-site="toolbar"] button {
           font-size: var(--text-sm);
           padding-block: var(--space-1);
-          padding-inline: var(--space-2);
+          padding-inline: var(--space-3);
           min-block-size: auto;
         }
+        [data-site="toolbar"] nav a {
+          text-decoration: none;
+          color: var(--text-muted);
+          font-size: var(--text-sm);
+          transition: color var(--transition-fast);
+        }
+        [data-site="toolbar"] nav a:hover,
+        [data-site="toolbar"] nav a[aria-current="page"] {
+          color: var(--text);
+        }
+        [data-site="toolbar-inner"] {
+          max-inline-size: 64rem;
+          margin-inline: auto;
+          inline-size: 100%;
+        }
+        [data-site="toolbar-wordmark"] {
+          font-family: "Outfit", var(--font-sans);
+          font-weight: 700;
+          letter-spacing: -0.03em;
+        }
+        [data-site="toolbar-controls"] {
+          justify-content: flex-end;
+        }
 
-        /* Section headings (via prose hgroup) */
+        /* ---- Sections ---- */
+        [data-site="section"] {
+          padding-block-start: var(--space-16);
+        }
+
+        /* Section category label */
+        [data-site="section"] hgroup > p:first-child {
+          font-size: var(--text-xs);
+          font-weight: 600;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          color: var(--primary);
+          margin-block-end: var(--space-1);
+        }
+
         [data-site="section"] hgroup > h2 {
-          font-size: var(--text-2xl);
+          font-family: "Outfit", var(--font-sans);
+          font-size: clamp(1.75rem, 4vw, 2.5rem);
+          font-weight: 700;
+          letter-spacing: -0.03em;
         }
 
         /* Section entrance animation */
@@ -117,13 +170,13 @@
           [data-site="section"] {
             animation: site-section-reveal linear both;
             animation-timeline: view();
-            animation-range: entry 0% entry 25%;
+            animation-range: entry 0% entry 20%;
           }
         }
         @keyframes site-section-reveal {
           from {
             opacity: 0;
-            transform: translateY(var(--space-4));
+            transform: translateY(1.5rem);
           }
           to {
             opacity: 1;
@@ -131,14 +184,61 @@
           }
         }
 
-        /* Color swatches */
+        /* ---- Feature grid ---- */
+        [data-site="feature-grid"] {
+          display: grid;
+          grid-template-columns:
+            repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+          gap: var(--space-4);
+        }
+        [data-site="feature-grid"] article {
+          padding: var(--card-padding);
+          transition:
+            box-shadow var(--transition-fast),
+            translate var(--transition-fast);
+        }
+        [data-site="feature-grid"] article:hover {
+          box-shadow: var(--shadow-md);
+        }
+        @media (prefers-reduced-motion: no-preference) {
+          [data-site="feature-grid"] article:hover {
+            translate: 0 -2px;
+          }
+        }
+        [data-site="feature-grid"] article h3 {
+          font-family: "Outfit", var(--font-sans);
+          font-size: var(--text-base);
+          font-weight: 600;
+          color: var(--text);
+          margin-block-end: var(--space-2);
+        }
+        [data-site="feature-grid"] article h3::before {
+          content: "";
+          display: block;
+          inline-size: 1.5rem;
+          block-size: 2px;
+          background-color: var(--primary);
+          margin-block-end: var(--space-3);
+          border-radius: 1px;
+        }
+        [data-site="feature-grid"] article p {
+          color: var(--text-muted);
+          font-size: var(--text-sm);
+          line-height: var(--leading-relaxed);
+        }
+
+        /* ---- Swatches ---- */
         [data-site="swatch"] {
           display: inline-block;
           inline-size: 2.5rem;
           block-size: 2.5rem;
           border-radius: var(--radius-md);
-          border: 1px solid color-mix(in oklch, var(--text-muted) 30%, transparent);
-          box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--text-muted) 10%, transparent);
+          border: 1px solid
+            color-mix(in oklch, var(--text-muted) 20%, transparent);
+          transition: transform var(--transition-fast);
+        }
+        [data-site="swatch"]:hover {
+          transform: scale(1.15);
         }
         [data-site="swatch-row"] {
           display: flex;
@@ -152,18 +252,19 @@
           min-inline-size: 5rem;
         }
 
-        /* API reference table */
+        /* ---- API table ---- */
         [data-site="token-table"] td:first-child {
           font-family: var(--font-mono);
           font-size: var(--text-sm);
           white-space: nowrap;
         }
 
-        /* Footer */
+        /* ---- Footer ---- */
         [data-site="footer"] {
-          margin-block-start: var(--space-12);
-          padding-block: var(--space-8);
-          border-block-start: 1px solid var(--border);
+          margin-block-start: var(--space-16);
+          padding-block: var(--space-12);
+          border-block-start: 1px solid
+            color-mix(in oklch, var(--border) 50%, transparent);
           text-align: center;
         }
         [data-site="footer"] p {
@@ -179,26 +280,39 @@
         [data-site="footer"] nav a:hover {
           color: var(--text);
         }
+        [data-site="page-shell"] {
+          max-inline-size: 64rem;
+          padding-block-end: var(--space-8);
+        }
+        [data-site="split-pair"] > * {
+          flex: 1 1 0;
+        }
 
-        /* Responsive */
+        /* ---- Responsive ---- */
         @media (max-width: 640px) {
           [data-site="hero"] {
-            padding-block: var(--space-8) var(--space-6);
+            min-block-size: auto;
+            padding-block: var(--space-12) var(--space-8);
           }
-          [data-site="hero"] .lead {
-            font-size: var(--text-base);
+          [data-site="section"] {
+            padding-block-start: var(--space-8);
           }
-          [data-site="section"] hgroup > h2 {
-            font-size: var(--text-xl);
+          [data-site="brand-switcher"] {
+            flex-wrap: wrap;
+            justify-content: center;
           }
-          :where([data-ui~="example"]) [data-part="code"] {
-            font-size: var(--text-xs);
+          [data-site="toolbar-controls"] {
+            inline-size: 100%;
+            justify-content: center;
           }
         }
 
         @media (prefers-reduced-motion: reduce) {
           [data-site="section"] {
             animation: none;
+          }
+          body {
+            transition: none;
           }
         }
       }
@@ -212,9 +326,9 @@
         data-align="center"
         data-justify="between"
         data-gap="2"
-        style="max-inline-size: 64rem; margin-inline: auto; inline-size: 100%"
+        data-site="toolbar-inner"
       >
-        <strong style="color: var(--primary)">Aura</strong>
+        <strong data-site="toolbar-wordmark">Aura</strong>
         <nav data-nav="inline" data-hide="mobile">
           <ul>
             <li><a href="#elements">Elements</a></li>
@@ -225,108 +339,117 @@
             <li><a href="#api">API</a></li>
           </ul>
         </nav>
-        <button id="toggle-dark" type="button" data-variant="soft">
+        <div
+          data-layout="cluster"
+          data-gap="2"
+          data-align="center"
+          data-site="toolbar-controls"
+        >
+          <button
+            id="toggle-contrast"
+            type="button"
+            data-site="preference-toggle"
+            data-variant="ghost"
+            aria-pressed="false"
+          >
+            Contrast
+          </button>
+          <button
+            id="toggle-motion"
+            type="button"
+            data-site="preference-toggle"
+            data-variant="ghost"
+            aria-pressed="false"
+          >
+            Motion
+          </button>
+          <button
+            id="toggle-dark"
+            type="button"
+            data-site="preference-toggle"
+            data-variant="ghost"
+            aria-pressed="false"
+          >
             Dark
           </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <header data-site="hero">
+      <div data-layout="stack" data-gap="6" data-align="center">
+        <h1 data-site="wordmark">Aura</h1>
+        <p class="lead">
+          A headless CSS framework built on semantic HTML and
+          <code>data-*</code> attributes. No classes, no build step, no
+          JavaScript required.
+        </p>
+
+        <div data-site="brand-switcher">
+          <button id="brand-headless" type="button">Headless</button>
+          <button id="brand-aura" type="button" data-variant="solid">
+            Aura
+          </button>
+          <button id="brand-editorial" type="button">Editorial</button>
+        </div>
+
+        <div
+          data-layout="cluster"
+          data-gap="2"
+          data-align="center"
+          data-justify="center"
+        >
+          <a href="#get-started" role="button" data-variant="solid">
+            Get started
+          </a>
+          <a href="#components" role="button" data-variant="ghost">
+            Components
+          </a>
+        </div>
       </div>
     </header>
 
     <div
       data-layout="container"
-      style="max-inline-size: 64rem; padding-block-end: var(--space-8)"
+      data-site="page-shell"
     >
       <div data-layout="stack" data-gap="8">
-        <!-- Hero -->
-        <header data-site="hero">
-          <div data-layout="stack" data-gap="4">
-            <div>
-              <h1 data-visually-hidden>Aura - Headless CSS Framework</h1>
-              <img
-                src="aura-banner-light.jpg"
-                alt="Aura - Headless CSS Framework"
-                data-site="hero-banner"
-                data-show-theme="light"
-                width="600" height="327"
-              />
-              <img
-                src="aura-banner-dark.jpg"
-                alt=""
-                data-site="hero-banner"
-                data-show-theme="dark"
-                width="600" height="327"
-              />
-              <p class="lead">
-                A headless CSS framework built on semantic HTML and
-                <code>data-*</code> attributes. No classes, no mandatory build
-                step, no JavaScript required for the base layer.
+        <!-- Feature highlights -->
+        <section data-site="section">
+          <div data-site="feature-grid">
+            <article data-surface="card" data-interactive>
+              <h3>Headless by default</h3>
+              <p>
+                Structure without opinion. Readable typography, sensible
+                spacing, and semantic surfaces that do not force a visual
+                language.
               </p>
-            </div>
-
-            <div
-              data-layout="cluster"
-              data-gap="2"
-              data-align="center"
-              data-justify="center"
-            >
-              <a href="#get-started" role="button" data-variant="solid">
-                Get started
-              </a>
-              <a href="#components" role="button" data-variant="soft">
-                Components
-              </a>
-            </div>
-
-            <div
-              data-layout="cluster"
-              data-gap="2"
-              data-align="center"
-              data-justify="center"
-            >
-              <button id="brand-headless" type="button" data-variant="ghost">
-                Headless
-              </button>
-              <button id="brand-aura" type="button" data-variant="solid">
-                Aura
-              </button>
-              <button id="brand-editorial" type="button" data-variant="ghost">
-                Editorial
-              </button>
-            </div>
-
-            <div data-site="feature-grid">
-              <article data-surface="card" data-interactive>
-                <h3>Headless by default</h3>
-                <p>
-                  Structure without opinion. Readable typography, sensible
-                  spacing, and semantic surfaces that do not force a visual
-                  language.
-                </p>
-              </article>
-              <article data-surface="card" data-interactive>
-                <h3>Attribute-driven</h3>
-                <p>
-                  No class names to memorize. Use
-                  <code>data-layout</code>, <code>data-surface</code>,
-                  <code>data-variant</code> and other semantic attributes.
-                </p>
-              </article>
-              <article data-surface="card" data-interactive>
-                <h3>Three layers</h3>
-                <p>
-                  Elements for base styles. Composites for CSS-only patterns.
-                  Components for optional interactive custom elements.
-                </p>
-              </article>
-              <article data-surface="card" data-interactive>
-                <h3>Pluggable brands</h3>
-                <p>
-                  Layer a brand pack on top for a full design system. Switch
-                  brands at runtime with a single attribute change.
-                </p>
-              </article>
-            </div>
+            </article>
+            <article data-surface="card" data-interactive>
+              <h3>Attribute-driven</h3>
+              <p>
+                No class names to memorize. Use
+                <code>data-layout</code>, <code>data-surface</code>,
+                <code>data-variant</code> and other semantic attributes.
+              </p>
+            </article>
+            <article data-surface="card" data-interactive>
+              <h3>Three layers</h3>
+              <p>
+                Elements for base styles. Composites for CSS-only patterns.
+                Components for optional interactive custom elements.
+              </p>
+            </article>
+            <article data-surface="card" data-interactive>
+              <h3>Pluggable brands</h3>
+              <p>
+                Layer a brand pack on top for a full design system. Switch
+                brands at runtime with a single attribute change.
+              </p>
+            </article>
           </div>
-        </header>
+        </section>
 
         <!-- Get started -->
         <section
@@ -341,12 +464,13 @@
             <p>Quick start</p>
             <h2>Get started</h2>
             <p>
-              Add the base stylesheet and optionally layer composites, components,
-              and a brand pack.
+              Add the base stylesheet and optionally layer composites,
+              components, and a brand pack.
             </p>
           </hgroup>
 
-          <pre><code><span data-syntax="comment">&lt;!-- Required: base elements --&gt;</span>
+          <pre>
+<code><span data-syntax="comment">&lt;!-- Required: base elements --&gt;</span>
 <span data-syntax="tag">&lt;link</span> <span data-syntax="attr">rel</span>=<span data-syntax="value">"stylesheet"</span> <span data-syntax="attr">href</span>=<span data-syntax="value">"aura.css"</span><span data-syntax="tag">&gt;</span>
 
 <span data-syntax="comment">&lt;!-- Optional: composites for higher-level CSS patterns --&gt;</span>
@@ -367,7 +491,8 @@
                 CSS layers ensure predictable specificity regardless of load
                 order.
               </p>
-              <pre><code>reset > tokens > brands > defaults
+              <pre>
+<code>reset > tokens > brands > defaults
   > layouts > components > utilities > print</code></pre>
             </article>
             <article data-surface="card" data-layout="stack" data-gap="2">
@@ -376,7 +501,8 @@
                 OKLCH-based color system with fluid typography and consistent
                 spacing scale.
               </p>
-              <pre><code>--space-1 through --space-16
+              <pre>
+<code>--space-1 through --space-16
 --text-xs through --text-3xl
 --primary, --secondary, --accent</code></pre>
             </article>
@@ -396,8 +522,8 @@
             <p>Base layer</p>
             <h2>Elements</h2>
             <p>
-              Typography, surfaces, buttons, notices, forms, and utilities -
-              all styled without requiring any classes.
+              Typography, surfaces, buttons, notices, forms, and utilities - all
+              styled without requiring any classes.
             </p>
           </hgroup>
 
@@ -425,7 +551,10 @@
                   </blockquote>
                 </div>
               </div>
-              <pre data-part="code"><code><span data-syntax="tag">&lt;h1&gt;</span>Heading 1<span data-syntax="tag">&lt;/h1&gt;</span>
+              <pre
+                data-part="code"
+              >
+<code><span data-syntax="tag">&lt;h1&gt;</span>Heading 1<span data-syntax="tag">&lt;/h1&gt;</span>
 <span data-syntax="tag">&lt;p&gt;</span>Body text with <span data-syntax="tag">&lt;strong&gt;</span>strong<span data-syntax="tag">&lt;/strong&gt;</span> and <span data-syntax="tag">&lt;code&gt;</span>code<span data-syntax="tag">&lt;/code&gt;</span>.<span data-syntax="tag">&lt;/p&gt;</span>
 <span data-syntax="tag">&lt;blockquote&gt;&lt;p&gt;</span>A quotation.<span data-syntax="tag">&lt;/p&gt;&lt;/blockquote&gt;</span></code></pre>
             </article>
@@ -452,7 +581,10 @@
                   <button type="button" disabled>Disabled</button>
                 </div>
               </div>
-              <pre data-part="code"><code><span data-syntax="tag">&lt;button</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"button"</span><span data-syntax="tag">&gt;</span>Default<span data-syntax="tag">&lt;/button&gt;</span>
+              <pre
+                data-part="code"
+              >
+<code><span data-syntax="tag">&lt;button</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"button"</span><span data-syntax="tag">&gt;</span>Default<span data-syntax="tag">&lt;/button&gt;</span>
 <span data-syntax="tag">&lt;button</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"button"</span> <span data-syntax="attr">data-variant</span>=<span data-syntax="value">"solid"</span><span data-syntax="tag">&gt;</span>Solid<span data-syntax="tag">&lt;/button&gt;</span>
 <span data-syntax="tag">&lt;button</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"button"</span> <span data-syntax="attr">data-variant</span>=<span data-syntax="value">"soft"</span><span data-syntax="tag">&gt;</span>Soft<span data-syntax="tag">&lt;/button&gt;</span>
 <span data-syntax="tag">&lt;button</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"button"</span> <span data-syntax="attr">data-variant</span>=<span data-syntax="value">"ghost"</span><span data-syntax="tag">&gt;</span>Ghost<span data-syntax="tag">&lt;/button&gt;</span>
@@ -484,7 +616,10 @@
                   </aside>
                 </div>
               </div>
-              <pre data-part="code"><code><span data-syntax="tag">&lt;aside</span> <span data-syntax="attr">data-surface</span>=<span data-syntax="value">"notice"</span> <span data-syntax="attr">data-status</span>=<span data-syntax="value">"info"</span><span data-syntax="tag">&gt;</span>
+              <pre
+                data-part="code"
+              >
+<code><span data-syntax="tag">&lt;aside</span> <span data-syntax="attr">data-surface</span>=<span data-syntax="value">"notice"</span> <span data-syntax="attr">data-status</span>=<span data-syntax="value">"info"</span><span data-syntax="tag">&gt;</span>
   <span data-syntax="tag">&lt;strong&gt;</span>Info<span data-syntax="tag">&lt;/strong&gt;</span>
   <span data-syntax="tag">&lt;p&gt;</span>Neutral informational message.<span data-syntax="tag">&lt;/p&gt;</span>
 <span data-syntax="tag">&lt;/aside&gt;</span></code></pre>
@@ -508,7 +643,8 @@
                     <summary>Does it require JavaScript?</summary>
                     <p>
                       The base Elements and Composites layers are pure CSS. The
-                      Components layer adds optional interactive custom elements.
+                      Components layer adds optional interactive custom
+                      elements.
                     </p>
                   </details>
                   <details name="faq">
@@ -520,7 +656,10 @@
                   </details>
                 </section>
               </div>
-              <pre data-part="code"><code>&lt;section data-ui="accordion"&gt;
+              <pre
+                data-part="code"
+              >
+<code>&lt;section data-ui="accordion"&gt;
   &lt;details name="faq" open&gt;
     &lt;summary&gt;Question&lt;/summary&gt;
     &lt;p&gt;Answer.&lt;/p&gt;
@@ -545,8 +684,8 @@
                 <dialog id="site-dialog">
                   <h3>Dialog</h3>
                   <p>
-                    Native dialogs inherit active tokens, lock page scroll,
-                    and use a motion-safe entry transition.
+                    Native dialogs inherit active tokens, lock page scroll, and
+                    use a motion-safe entry transition.
                   </p>
                   <div
                     data-layout="cluster"
@@ -566,7 +705,10 @@
                   </div>
                 </dialog>
               </div>
-              <pre data-part="code"><code>&lt;dialog id="my-dialog"&gt;
+              <pre
+                data-part="code"
+              >
+<code>&lt;dialog id="my-dialog"&gt;
   &lt;h3&gt;Title&lt;/h3&gt;
   &lt;p&gt;Content.&lt;/p&gt;
   &lt;button onclick="this.closest('dialog').close()"&gt;Close&lt;/button&gt;
@@ -629,7 +771,10 @@
                   </div>
                 </div>
               </div>
-              <pre data-part="code"><code>&lt;div data-layout="row" data-align="center" data-justify="between"&gt;...&lt;/div&gt;
+              <pre
+                data-part="code"
+              >
+<code>&lt;div data-layout="row" data-align="center" data-justify="between"&gt;...&lt;/div&gt;
 &lt;div data-layout="cluster" data-gap="2"&gt;...&lt;/div&gt;
 &lt;div data-layout="stack" data-gap="2"&gt;...&lt;/div&gt;</code></pre>
             </article>
@@ -659,7 +804,10 @@
                   </div>
                 </div>
               </div>
-              <pre data-part="code"><code>&lt;div data-layout="grid" data-gap="3" data-grid-min="sm"&gt;
+              <pre
+                data-part="code"
+              >
+<code>&lt;div data-layout="grid" data-gap="3" data-grid-min="sm"&gt;
   &lt;div data-surface="card"&gt;...&lt;/div&gt;
   &lt;div data-surface="card"&gt;...&lt;/div&gt;
 &lt;/div&gt;</code></pre>
@@ -676,18 +824,24 @@
                   data-gap="3"
                   data-align="center"
                   data-stack="mobile"
+                  data-site="split-pair"
                 >
-                  <div data-surface="card" style="flex: 1">
+                  <div data-surface="card">
                     <strong>Left</strong>
                     <p>Stacks vertically on mobile.</p>
                   </div>
-                  <div data-surface="card" style="flex: 1">
+                  <div data-surface="card">
                     <strong>Right</strong>
-                    <p>Use <code>data-stack="mobile"</code> for this behavior.</p>
+                    <p>
+                      Use <code>data-stack="mobile"</code> for this behavior.
+                    </p>
                   </div>
                 </div>
               </div>
-              <pre data-part="code"><code>&lt;body data-layout="container"&gt;...&lt;/body&gt;
+              <pre
+                data-part="code"
+              >
+<code>&lt;body data-layout="container"&gt;...&lt;/body&gt;
 &lt;div data-layout="row" data-stack="mobile"&gt;...&lt;/div&gt;</code></pre>
             </article>
           </article>
@@ -781,7 +935,10 @@
                 </fieldset>
               </form>
             </div>
-            <pre data-part="code"><code>&lt;label for="name"&gt;Name&lt;/label&gt;
+            <pre
+              data-part="code"
+            >
+<code>&lt;label for="name"&gt;Name&lt;/label&gt;
 &lt;input id="name" type="text" required /&gt;
 
 &lt;label&gt;&lt;input type="checkbox" role="switch" /&gt; Toggle&lt;/label&gt;
@@ -808,16 +965,17 @@
             </p>
           </hgroup>
 
-          <pre><code>&lt;script type="module" src="@aura/components/browser.js"&gt;&lt;/script&gt;
+          <pre>
+<code>&lt;script type="module" src="@aura/components/browser.js"&gt;&lt;/script&gt;
 &lt;script type="module" src="@aura/diagram/browser.js"&gt;&lt;/script&gt;</code></pre>
 
           <!-- Tabs -->
           <article data-surface="card" data-layout="stack" data-gap="3">
             <h3>Tabs</h3>
             <p>
-              <code>aura-tabs</code> coordinates tab selection with roving
-              focus and panel visibility. The component only manages behavior -
-              the Composites layer handles visual treatment.
+              <code>aura-tabs</code> coordinates tab selection with roving focus
+              and panel visibility. The component only manages behavior - the
+              Composites layer handles visual treatment.
             </p>
             <article data-ui="example">
               <div data-part="preview">
@@ -897,7 +1055,10 @@
                   </aura-tabs>
                 </div>
               </div>
-              <pre data-part="code"><code>&lt;aura-tabs data-ui="tabs" value="overview"&gt;
+              <pre
+                data-part="code"
+              >
+<code>&lt;aura-tabs data-ui="tabs" value="overview"&gt;
   &lt;nav data-part="tablist"&gt;
     &lt;button data-part="trigger" data-value="overview"&gt;Overview&lt;/button&gt;
     &lt;button data-part="trigger" data-value="tokens"&gt;Tokens&lt;/button&gt;
@@ -979,8 +1140,8 @@
                         <h4>Composites</h4>
                         <p>
                           Higher-level CSS patterns like master-detail shells,
-                          tab bars, tree views, and diagram canvases.
-                          No JavaScript required.
+                          tab bars, tree views, and diagram canvases. No
+                          JavaScript required.
                         </p>
                       </article>
                       <article
@@ -999,7 +1160,10 @@
                   </aura-master-detail>
                 </div>
               </div>
-              <pre data-part="code"><code>&lt;aura-master-detail data-ui="master-detail" value="elements"&gt;
+              <pre
+                data-part="code"
+              >
+<code>&lt;aura-master-detail data-ui="master-detail" value="elements"&gt;
   &lt;nav data-part="master"&gt;
     &lt;button data-part="trigger" data-value="elements"&gt;
       &lt;strong&gt;Elements&lt;/strong&gt;
@@ -1048,7 +1212,8 @@
                         type="button"
                         data-part="toggle"
                         aria-label="Toggle options"
-                      ></button>
+                      >
+                      </button>
                       <input
                         type="hidden"
                         data-part="value"
@@ -1075,7 +1240,10 @@
                   </aura-combobox>
                 </div>
               </div>
-              <pre data-part="code"><code>&lt;aura-combobox data-ui="combobox" value="tabs"&gt;
+              <pre
+                data-part="code"
+              >
+<code>&lt;aura-combobox data-ui="combobox" value="tabs"&gt;
   &lt;label for="search"&gt;Search&lt;/label&gt;
   &lt;div data-part="control"&gt;
     &lt;input data-part="input" type="text" placeholder="Filter..." /&gt;
@@ -1122,7 +1290,8 @@
                       type="button"
                       data-part="separator"
                       aria-label="Resize panes"
-                    ></button>
+                    >
+                    </button>
                     <section data-part="pane" data-pane="secondary">
                       <h4>Secondary</h4>
                       <p>
@@ -1134,7 +1303,10 @@
                   </aura-splitter>
                 </div>
               </div>
-              <pre data-part="code"><code>&lt;aura-splitter data-ui="splitter" value="40" min="25" max="75" step="5"&gt;
+              <pre
+                data-part="code"
+              >
+<code>&lt;aura-splitter data-ui="splitter" value="40" min="25" max="75" step="5"&gt;
   &lt;section data-part="pane" data-pane="primary"&gt;...&lt;/section&gt;
   &lt;button data-part="separator" aria-label="Resize"&gt;&lt;/button&gt;
   &lt;section data-part="pane" data-pane="secondary"&gt;...&lt;/section&gt;
@@ -1162,12 +1334,18 @@
                     value="aura-css"
                   >
                     <ul data-part="tree" aria-label="Package structure">
-                      <li data-part="item" data-branch data-expanded>
+                      <li
+                        data-part="item"
+                        data-value="elements"
+                        data-branch
+                        data-expanded
+                      >
                         <button
                           type="button"
                           data-part="toggle"
                           aria-label="Toggle elements"
-                        ></button>
+                        >
+                        </button>
                         <button
                           type="button"
                           data-part="node"
@@ -1177,7 +1355,7 @@
                           <p>Base layer</p>
                         </button>
                         <ul data-part="group">
-                          <li data-part="item">
+                          <li data-part="item" data-value="aura-css">
                             <button
                               type="button"
                               data-part="node"
@@ -1189,12 +1367,13 @@
                           </li>
                         </ul>
                       </li>
-                      <li data-part="item" data-branch>
+                      <li data-part="item" data-value="composites" data-branch>
                         <button
                           type="button"
                           data-part="toggle"
                           aria-label="Toggle composites"
-                        ></button>
+                        >
+                        </button>
                         <button
                           type="button"
                           data-part="node"
@@ -1204,7 +1383,7 @@
                           <p>CSS patterns</p>
                         </button>
                         <ul data-part="group" hidden>
-                          <li data-part="item">
+                          <li data-part="item" data-value="composites-css">
                             <button
                               type="button"
                               data-part="node"
@@ -1216,12 +1395,13 @@
                           </li>
                         </ul>
                       </li>
-                      <li data-part="item" data-branch>
+                      <li data-part="item" data-value="components" data-branch>
                         <button
                           type="button"
                           data-part="toggle"
                           aria-label="Toggle components"
-                        ></button>
+                        >
+                        </button>
                         <button
                           type="button"
                           data-part="node"
@@ -1231,7 +1411,7 @@
                           <p>Custom elements</p>
                         </button>
                         <ul data-part="group" hidden>
-                          <li data-part="item">
+                          <li data-part="item" data-value="browser-js">
                             <button
                               type="button"
                               data-part="node"
@@ -1247,7 +1427,10 @@
                   </aura-tree>
                 </div>
               </div>
-              <pre data-part="code"><code>&lt;aura-tree data-ui="tree" value="root"&gt;
+              <pre
+                data-part="code"
+              >
+<code>&lt;aura-tree data-ui="tree" value="root"&gt;
   &lt;ul data-part="tree"&gt;
     &lt;li data-part="item" data-branch data-expanded&gt;
       &lt;button data-part="toggle"&gt;&lt;/button&gt;
@@ -1295,10 +1478,7 @@
                         data-part="node"
                         data-kind="input"
                         data-value="input"
-                        style="
-                          --diagram-column: 1 / span 2;
-                          --diagram-row: 1;
-                        "
+                        style="--diagram-column: 1 / span 2; --diagram-row: 1"
                       >
                         <strong>Ingest</strong>
                         <p>Receive raw data.</p>
@@ -1323,10 +1503,7 @@
                         data-part="node"
                         data-kind="process"
                         data-value="transform"
-                        style="
-                          --diagram-column: 4 / span 2;
-                          --diagram-row: 1;
-                        "
+                        style="--diagram-column: 4 / span 2; --diagram-row: 1"
                       >
                         <strong>Transform</strong>
                         <p>Clean and normalize.</p>
@@ -1384,7 +1561,10 @@
                   </aura-diagram>
                 </div>
               </div>
-              <pre data-part="code"><code>&lt;aura-diagram value="input" style="--diagram-columns: 7"&gt;
+              <pre
+                data-part="code"
+              >
+<code>&lt;aura-diagram value="input" style="--diagram-columns: 7"&gt;
   &lt;div data-part="canvas"&gt;
     &lt;button data-part="node" data-kind="input" data-value="input"
       style="--diagram-column: 1 / span 2; --diagram-row: 1"&gt;
@@ -1431,7 +1611,8 @@
                 <code>@layer brands</code>. Apply it by setting
                 <code>data-brand</code> on the body.
               </p>
-              <pre><code>&lt;body data-brand="aura"&gt;
+              <pre>
+<code>&lt;body data-brand="aura"&gt;
 &lt;body data-brand="editorial"&gt;
 &lt;body&gt; &lt;!-- headless, no brand --&gt;</code></pre>
             </article>
@@ -1442,7 +1623,8 @@
                 Toggle dark mode, high contrast, and reduced motion through
                 attributes on the root element.
               </p>
-              <pre><code>&lt;html data-theme="dark"&gt;
+              <pre>
+<code>&lt;html data-theme="dark"&gt;
 &lt;html data-contrast="more"&gt;
 &lt;html data-motion="reduce"&gt;</code></pre>
             </article>
@@ -1460,49 +1642,59 @@
                 <div
                   data-site="swatch"
                   style="background-color: var(--primary)"
-                ></div>
+                >
+                </div>
                 <div
                   data-site="swatch"
                   style="background-color: var(--primary-hover)"
-                ></div>
+                >
+                </div>
                 <div
                   data-site="swatch"
                   style="background-color: var(--primary-subtle)"
-                ></div>
+                >
+                </div>
               </div>
               <div data-site="swatch-row">
                 <span>Surface</span>
                 <div
                   data-site="swatch"
                   style="background-color: var(--bg)"
-                ></div>
+                >
+                </div>
                 <div
                   data-site="swatch"
                   style="background-color: var(--surface)"
-                ></div>
+                >
+                </div>
                 <div
                   data-site="swatch"
                   style="background-color: var(--surface-raised)"
-                ></div>
+                >
+                </div>
               </div>
               <div data-site="swatch-row">
                 <span>Status</span>
                 <div
                   data-site="swatch"
                   style="background-color: var(--color-info)"
-                ></div>
+                >
+                </div>
                 <div
                   data-site="swatch"
                   style="background-color: var(--color-success)"
-                ></div>
+                >
+                </div>
                 <div
                   data-site="swatch"
                   style="background-color: var(--color-warning)"
-                ></div>
+                >
+                </div>
                 <div
                   data-site="swatch"
                   style="background-color: var(--color-error)"
-                ></div>
+                >
+                </div>
               </div>
             </div>
           </article>
@@ -1527,29 +1719,49 @@
           </hgroup>
 
           <div data-layout="grid" data-gap="4" data-grid-min="sm">
-            <article data-surface="card" data-interactive data-layout="stack" data-gap="2">
+            <article
+              data-surface="card"
+              data-interactive
+              data-layout="stack"
+              data-gap="2"
+            >
               <h3>Focus management</h3>
               <p>
                 <code>:focus-visible</code> outlines on all interactive
                 elements. Components use roving focus for keyboard navigation.
               </p>
             </article>
-            <article data-surface="card" data-interactive data-layout="stack" data-gap="2">
+            <article
+              data-surface="card"
+              data-interactive
+              data-layout="stack"
+              data-gap="2"
+            >
               <h3>Motion preferences</h3>
               <p>
                 <code>prefers-reduced-motion</code> is respected by default.
                 Override with <code>data-motion="reduce"</code>.
               </p>
             </article>
-            <article data-surface="card" data-interactive data-layout="stack" data-gap="2">
+            <article
+              data-surface="card"
+              data-interactive
+              data-layout="stack"
+              data-gap="2"
+            >
               <h3>Contrast modes</h3>
               <p>
                 <code>prefers-contrast: more/less</code> and
-                <code>forced-colors: active</code> (Windows High Contrast)
-                are supported.
+                <code>forced-colors: active</code> (Windows High Contrast) are
+                supported.
               </p>
             </article>
-            <article data-surface="card" data-interactive data-layout="stack" data-gap="2">
+            <article
+              data-surface="card"
+              data-interactive
+              data-layout="stack"
+              data-gap="2"
+            >
               <h3>ARIA integration</h3>
               <p>
                 Components manage <code>aria-selected</code>,
@@ -1637,7 +1849,8 @@
               <a href="#api">API Reference</a>
             </nav>
             <p>
-              Headless by default. Add <code>data-brand</code> for a design system.
+              Headless by default. Add <code>data-brand</code> for a design
+              system.
             </p>
             <p>Built entirely with Aura.</p>
           </div>
@@ -1657,6 +1870,10 @@
           editorial: document.getElementById("brand-editorial"),
         };
         const darkButton = document.getElementById("toggle-dark");
+        const contrastButton = document.getElementById(
+          "toggle-contrast",
+        );
+        const motionButton = document.getElementById("toggle-motion");
         const brandStylesheets = {
           aura: "/packages/brands/aura-brand.css",
           editorial: "/packages/brands/aura-brand-editorial.css",
@@ -1665,7 +1882,7 @@
         function ensureBrandStylesheet(brand) {
           const href = brandStylesheets[brand];
           if (!href) return;
-          const id = "brand-" + brand;
+          const id = "brand-pack-" + brand;
           if (document.getElementById(id)) return;
           const link = document.createElement("link");
           link.id = id;
@@ -1690,21 +1907,57 @@
           });
         }
 
+        function syncPreferenceButton(button, active) {
+          if (!button) return;
+          button.setAttribute("aria-pressed", String(active));
+          button.setAttribute(
+            "data-variant",
+            active ? "soft" : "ghost",
+          );
+        }
+
+        function syncPreferenceButtons() {
+          syncPreferenceButton(
+            darkButton,
+            root.getAttribute("data-theme") === "dark",
+          );
+          syncPreferenceButton(
+            contrastButton,
+            root.getAttribute("data-contrast") === "more",
+          );
+          syncPreferenceButton(
+            motionButton,
+            root.getAttribute("data-motion") === "reduce",
+          );
+        }
+
         Object.entries(brandButtons).forEach(([brand, btn]) => {
           if (!btn) return;
           btn.addEventListener("click", () => setBrand(brand));
         });
 
-        darkButton.addEventListener("click", () => {
-          const isDark = root.getAttribute("data-theme") === "dark";
-          if (isDark) {
-            root.removeAttribute("data-theme");
-            darkButton.textContent = "Dark";
+        function toggleRootAttribute(attribute, value) {
+          const isActive = root.getAttribute(attribute) === value;
+          if (isActive) {
+            root.removeAttribute(attribute);
           } else {
-            root.setAttribute("data-theme", "dark");
-            darkButton.textContent = "Light";
+            root.setAttribute(attribute, value);
           }
+          syncPreferenceButtons();
+        }
+
+        darkButton?.addEventListener("click", () => {
+          toggleRootAttribute("data-theme", "dark");
         });
+        contrastButton?.addEventListener("click", () => {
+          toggleRootAttribute("data-contrast", "more");
+        });
+        motionButton?.addEventListener("click", () => {
+          toggleRootAttribute("data-motion", "reduce");
+        });
+
+        setBrand(body.getAttribute("data-brand") || "headless");
+        syncPreferenceButtons();
 
         // Dialog
         const dialog = document.getElementById("site-dialog");
@@ -1747,7 +2000,9 @@
         bindOutput("site-diagram", "diagram-out", "input");
 
         // Active nav link tracking via IntersectionObserver
-        const navLinks = document.querySelectorAll('[data-site="toolbar"] nav a');
+        const navLinks = document.querySelectorAll(
+          '[data-site="toolbar"] nav a',
+        );
         const sections = Array.from(navLinks).map((link) => {
           const id = link.getAttribute("href").slice(1);
           return { id, link, el: document.getElementById(id) };
@@ -1779,11 +2034,15 @@
         if (toolbar) {
           const sentinel = document.createElement("div");
           sentinel.setAttribute("aria-hidden", "true");
-          sentinel.style.cssText = "height:1px;margin:0;padding:0;border:0;position:absolute;top:0;left:0;right:0;pointer-events:none;";
+          sentinel.style.cssText =
+            "height:1px;margin:0;padding:0;border:0;position:absolute;top:0;left:0;right:0;pointer-events:none;";
           document.body.prepend(sentinel);
           new IntersectionObserver(
             ([entry]) => {
-              toolbar.toggleAttribute("data-scrolled", !entry.isIntersecting);
+              toolbar.toggleAttribute(
+                "data-scrolled",
+                !entry.isIntersecting,
+              );
             },
             { threshold: 1 },
           ).observe(sentinel);

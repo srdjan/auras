@@ -93,79 +93,112 @@ Deno.test(
         await page.waitForSelector("aura-master-detail");
         await page.waitForSelector("aura-tabs");
 
-        await expectText(page, "#combobox-selection", "elements");
-        await expectText(page, "#manual-combobox-selection", "elements");
-        await expectText(page, "#diagram-selection", "received");
-        await expectText(page, "#splitter-value", "42");
-        await expectText(page, "#tree-selection", "master-detail");
-        await expectText(page, "#master-detail-selection", "elements");
-        await expectText(page, "#manual-master-detail-selection", "elements");
-        await expectText(page, "#tabs-selection", "overview");
-        await expectText(page, "#manual-tabs-selection", "overview");
+        await expectAttribute(page, "body", "data-brand", "aura");
+        await expectAttribute(page, "#brand-headless", "data-variant", "ghost");
+        await expectAttribute(page, "#brand-aura", "data-variant", "solid");
+        await expectAttribute(
+          page,
+          "#brand-editorial",
+          "data-variant",
+          "ghost",
+        );
+        await expectLinkHref(
+          page,
+          "#brand-pack-aura",
+          "/packages/brands/aura-brand.css",
+        );
 
-        await page.locator('#combobox-auto-pilot [data-part="input"]').focus();
-        await page.keyboard.press("ArrowDown");
-        await page.keyboard.press("ArrowDown");
-        await expectText(page, "#combobox-selection", "master-detail");
+        await expectText(page, "#combobox-out", "tabs");
+        await expectText(page, "#diagram-out", "input");
+        await expectText(page, "#splitter-out", "40");
+        await expectText(page, "#tree-out", "aura-css");
+        await expectText(page, "#md-out", "elements");
+        await expectText(page, "#tabs-out", "overview");
 
-        await page.locator('#combobox-manual-pilot [data-part="input"]')
-          .focus();
-        await page.keyboard.press("ArrowDown");
-        await page.keyboard.press("ArrowDown");
-        await expectText(page, "#manual-combobox-selection", "elements");
-        await page.keyboard.press("Enter");
-        await expectText(page, "#manual-combobox-selection", "master-detail");
+        await page.click("#brand-editorial");
+        await expectAttribute(page, "body", "data-brand", "editorial");
+        await expectAttribute(
+          page,
+          "#brand-editorial",
+          "data-variant",
+          "solid",
+        );
+        await expectLinkHref(
+          page,
+          "#brand-pack-editorial",
+          "/packages/brands/aura-brand-editorial.css",
+        );
 
-        await page.locator('#splitter-pilot [data-part="separator"]').focus();
+        await page.click("#brand-headless");
+        await expectMissingAttribute(page, "body", "data-brand");
+        await expectAttribute(page, "#brand-headless", "data-variant", "solid");
+
+        await page.click("#brand-aura");
+        await expectAttribute(page, "body", "data-brand", "aura");
+        await expectAttribute(page, "#brand-aura", "data-variant", "solid");
+
+        await page.click("#toggle-contrast");
+        await expectAttribute(page, "html", "data-contrast", "more");
+        await expectAttribute(page, "#toggle-contrast", "aria-pressed", "true");
+
+        await page.click("#toggle-motion");
+        await expectAttribute(page, "html", "data-motion", "reduce");
+        await expectAttribute(page, "#toggle-motion", "aria-pressed", "true");
+
+        await page.click("#toggle-dark");
+        await expectAttribute(page, "html", "data-theme", "dark");
+        await expectAttribute(page, "#toggle-dark", "aria-pressed", "true");
+
+        await page.locator('#site-combobox [data-part="input"]').click();
+        await page.click(
+          '#site-combobox [data-part="option"][data-value="master-detail"]',
+        );
+        await expectText(page, "#combobox-out", "master-detail");
+
+        await page.locator('#site-splitter [data-part="separator"]').focus();
         await page.keyboard.press("ArrowRight");
-        await expectText(page, "#splitter-value", "47");
+        await expectText(page, "#splitter-out", "45");
 
-        await page
-          .locator('#diagram-pilot [data-part="node"][data-value="received"]')
-          .focus();
-        await page.keyboard.press("ArrowRight");
-        await expectText(page, "#diagram-selection", "received");
-        await page.keyboard.press("Enter");
-        await expectText(page, "#diagram-selection", "validate");
+        await page.click(
+          '#site-diagram [data-part="node"][data-value="transform"]',
+        );
+        await expectText(page, "#diagram-out", "transform");
 
-        await page
-          .locator(
-            '#tree-pilot [data-part="item"][data-value="master-detail"] > [data-part="node"]',
-          )
-          .focus();
-        await page.keyboard.press("ArrowDown");
-        await expectText(page, "#tree-selection", "tabs");
-        await page.keyboard.press("ArrowLeft");
-        await expectText(page, "#tree-selection", "components");
-        await page.keyboard.press("ArrowLeft");
-        await expectTreeBranchHidden(page, "components");
+        await page.click(
+          '#site-tree [data-part="node"][data-value="components"]',
+        );
+        await expectText(page, "#tree-out", "components");
+        await page.click('#site-tree [aria-label="Toggle components"]');
+        await expectAttribute(
+          page,
+          '#site-tree [data-part="item"][data-value="components"]',
+          "data-expanded",
+          "",
+        );
+        await page.click(
+          '#site-tree [data-part="node"][data-value="browser-js"]',
+        );
+        await expectText(page, "#tree-out", "browser-js");
+        await page.click('#site-tree [aria-label="Toggle components"]');
+        await expectText(page, "#tree-out", "components");
+        await expectHidden(
+          page,
+          '#site-tree [data-part="item"][data-value="components"] > [data-part="group"]',
+          true,
+        );
 
-        await page
-          .locator('#layer-pilot [data-part="trigger"][data-value="elements"]')
-          .focus();
-        await page.keyboard.press("ArrowDown");
-        await expectText(page, "#master-detail-selection", "composites");
+        await page.click(
+          '#site-md [data-part="trigger"][data-value="composites"]',
+        );
+        await expectText(page, "#md-out", "composites");
 
-        await page
-          .locator(
-            '#tabs-auto-pilot [data-part="trigger"][data-value="overview"]',
-          )
-          .focus();
-        await page.keyboard.press("ArrowRight");
-        await expectText(page, "#tabs-selection", "tokens");
-
-        await page
-          .locator(
-            '#tabs-manual-pilot [data-part="trigger"][data-value="overview"]',
-          )
-          .focus();
-        await page.keyboard.press("ArrowRight");
-        await expectText(page, "#manual-tabs-selection", "overview");
-        await page.keyboard.press("Enter");
-        await expectText(page, "#manual-tabs-selection", "tokens");
+        await page.click(
+          '#site-tabs [data-part="trigger"][data-value="tokens"]',
+        );
+        await expectText(page, "#tabs-out", "tokens");
 
         const activeTabValue = await page
-          .locator('#tabs-manual-pilot [data-part="trigger"][data-active]')
+          .locator('#site-tabs [data-part="trigger"][data-active]')
           .getAttribute("data-value");
 
         assertEquals(activeTabValue, "tokens");
@@ -189,15 +222,44 @@ async function expectText(page, selector, expectedText) {
   );
 }
 
-async function expectTreeBranchHidden(page, value) {
-  await page.waitForFunction((value) => {
-    const item = document.querySelector(
-      `#tree-pilot [data-part="item"][data-value="${value}"]`,
-    );
-    const group = item?.querySelector(':scope > [data-part="group"]');
+async function expectAttribute(page, selector, attribute, expectedValue) {
+  await page.waitForFunction(
+    ({ selector, attribute, expectedValue }) => {
+      return document.querySelector(selector)?.getAttribute(attribute) ===
+        expectedValue;
+    },
+    { selector, attribute, expectedValue },
+  );
+}
 
-    return Boolean(
-      item && group && !item.hasAttribute("data-expanded") && group.hidden,
-    );
-  }, value);
+async function expectMissingAttribute(page, selector, attribute) {
+  await page.waitForFunction(
+    ({ selector, attribute }) => {
+      const element = document.querySelector(selector);
+      return Boolean(element) && !element.hasAttribute(attribute);
+    },
+    { selector, attribute },
+  );
+}
+
+async function expectHidden(page, selector, expectedHidden) {
+  await page.waitForFunction(
+    ({ selector, expectedHidden }) => {
+      const element = document.querySelector(selector);
+      return element instanceof HTMLElement &&
+        element.hidden === expectedHidden;
+    },
+    { selector, expectedHidden },
+  );
+}
+
+async function expectLinkHref(page, selector, hrefSuffix) {
+  await page.waitForFunction(
+    ({ selector, hrefSuffix }) => {
+      const element = document.querySelector(selector);
+      return element instanceof HTMLLinkElement &&
+        element.href.endsWith(hrefSuffix);
+    },
+    { selector, hrefSuffix },
+  );
 }
