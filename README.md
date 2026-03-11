@@ -738,8 +738,15 @@ deno task test       # unit tests (happy-dom)
 deno task test:browser  # headless browser smoke tests
 ```
 
-The same `main.ts` entry point serves both `deno task dev` and Deno Deploy.
-It maps `/` to `./public` and `/packages/` to `./packages/`.
+The `main.ts` entry point serves both `deno task dev` and Deno Deploy. It maps
+`/` to `./public` and `/packages/` to `./packages/`.
+
+### Static deployment
+
+The `public/` directory is self-contained and can be deployed to any static host
+(Netlify, Cloudflare Pages, S3, etc.) without a build step. It includes
+collocated copies of all CSS and JS assets under `public/packages/` so that
+every `<link>` and `<script>` reference in `index.html` resolves locally.
 
 ## Browser support
 
@@ -779,7 +786,7 @@ Auras targets modern evergreen browsers. Key features and their support:
 | `packages/components/src/combobox.ts`      | Combobox runtime for `auras-combobox`                                     |
 | `packages/components/src/splitter.ts`      | Splitter runtime for `auras-splitter`                                     |
 | `packages/components/src/tree.ts`          | Tree runtime for `auras-tree`                                             |
-| `public/`                                  | Demo site for local testing and Deno Deploy                              |
+| `public/`                                  | Self-contained demo site, deployable as a static folder                  |
 | `main.ts`                                  | Deno Deploy entry point (static file server)                             |
 | `deno.json`                                | Deno tasks for dev server, type checking, and tests                      |
 | `deno.lock`                                | Locked JSR and npm test dependencies                                     |
