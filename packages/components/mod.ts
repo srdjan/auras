@@ -1,31 +1,31 @@
 export {
-  AURA_COMBOBOX_TAG_NAME,
-  AuraCombobox,
-  registerAuraCombobox,
+  AURAS_COMBOBOX_TAG_NAME,
+  AurasCombobox,
+  registerAurasCombobox,
 } from "./src/combobox.ts";
 export {
-  AURA_SPLITTER_TAG_NAME,
-  AuraSplitter,
-  registerAuraSplitter,
+  AURAS_SPLITTER_TAG_NAME,
+  AurasSplitter,
+  registerAurasSplitter,
 } from "./src/splitter.ts";
 export {
-  AURA_MASTER_DETAIL_TAG_NAME,
-  AuraMasterDetail,
-  registerAuraMasterDetail,
+  AURAS_MASTER_DETAIL_TAG_NAME,
+  AurasMasterDetail,
+  registerAurasMasterDetail,
 } from "./src/master-detail.ts";
-export { AURA_TREE_TAG_NAME, AuraTree, registerAuraTree } from "./src/tree.ts";
-export { AURA_TABS_TAG_NAME, AuraTabs, registerAuraTabs } from "./src/tabs.ts";
+export { AURAS_TREE_TAG_NAME, AurasTree, registerAurasTree } from "./src/tree.ts";
+export { AURAS_TABS_TAG_NAME, AurasTabs, registerAurasTabs } from "./src/tabs.ts";
 
-import { registerAuraCombobox } from "./src/combobox.ts";
-import { registerAuraMasterDetail } from "./src/master-detail.ts";
-import { registerAuraSplitter } from "./src/splitter.ts";
-import { registerAuraTree } from "./src/tree.ts";
-import { registerAuraTabs } from "./src/tabs.ts";
+import { registerAurasCombobox } from "./src/combobox.ts";
+import { registerAurasMasterDetail } from "./src/master-detail.ts";
+import { registerAurasSplitter } from "./src/splitter.ts";
+import { registerAurasTree } from "./src/tree.ts";
+import { registerAurasTabs } from "./src/tabs.ts";
 
-export function registerAuraComponents(): void {
-  registerAuraCombobox();
-  registerAuraMasterDetail();
-  registerAuraSplitter();
-  registerAuraTree();
-  registerAuraTabs();
+export function registerAurasComponents(): void {
+  registerAurasCombobox();
+  registerAurasMasterDetail();
+  registerAurasSplitter();
+  registerAurasTree();
+  registerAurasTabs();
 }

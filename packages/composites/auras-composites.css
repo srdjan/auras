@@ -1,7 +1,7 @@
-/* Optional Aura composites layer. Load this after aura.css when you want
+/* Optional Auras composites layer. Load this after auras.css when you want
    higher-level CSS patterns without pulling in behavior. */
 @layer composites {
-  :where([data-ui~="master-detail"], aura-master-detail) {
+  :where([data-ui~="master-detail"], auras-master-detail) {
     --master-detail-gap: var(--space-4);
     --master-detail-master-width: 18rem;
     --master-detail-master-padding: var(--space-2);
@@ -26,14 +26,14 @@
   }
 
   @media (min-width: 48rem) {
-    :where([data-ui~="master-detail"], aura-master-detail) {
+    :where([data-ui~="master-detail"], auras-master-detail) {
       grid-template-columns:
         minmax(15rem, var(--master-detail-master-width))
         minmax(0, 1fr);
     }
   }
 
-  :where([data-ui~="master-detail"], aura-master-detail) [data-part="master"] {
+  :where([data-ui~="master-detail"], auras-master-detail) [data-part="master"] {
     display: grid;
     gap: var(--space-1);
     align-content: start;
@@ -44,7 +44,7 @@
     box-shadow: var(--master-detail-master-shadow);
   }
 
-  :where([data-ui~="master-detail"], aura-master-detail)
+  :where([data-ui~="master-detail"], auras-master-detail)
     :where(button, a)[data-part="trigger"] {
     inline-size: 100%;
     min-block-size: auto;
@@ -60,18 +60,18 @@
     box-shadow: none;
   }
 
-  :where([data-ui~="master-detail"], aura-master-detail)
+  :where([data-ui~="master-detail"], auras-master-detail)
     :where(button, a)[data-part="trigger"]:hover {
     background-color: var(--master-detail-trigger-bg-hover);
   }
 
-  :where([data-ui~="master-detail"], aura-master-detail)
+  :where([data-ui~="master-detail"], auras-master-detail)
     [data-part="trigger"][data-active] {
     background-color: var(--master-detail-trigger-bg-active);
     border-color: var(--master-detail-trigger-border-color-active);
   }
 
-  :where([data-ui~="master-detail"], aura-master-detail)
+  :where([data-ui~="master-detail"], auras-master-detail)
     [data-part="trigger"]
     > :where(p, small) {
     margin: 0;
@@ -80,29 +80,29 @@
     line-height: var(--leading-normal);
   }
 
-  :where([data-ui~="master-detail"], aura-master-detail)
+  :where([data-ui~="master-detail"], auras-master-detail)
     [data-part="trigger"][data-active]
     > :where(p, small) {
     color: var(--text);
   }
 
-  :where([data-ui~="master-detail"], aura-master-detail) [data-part="detail"] {
+  :where([data-ui~="master-detail"], auras-master-detail) [data-part="detail"] {
     display: grid;
     min-inline-size: 0;
   }
 
-  :where([data-ui~="master-detail"], aura-master-detail) [data-part="panel"] {
+  :where([data-ui~="master-detail"], auras-master-detail) [data-part="panel"] {
     display: grid;
     gap: var(--space-3);
     min-inline-size: 0;
   }
 
-  :where([data-ui~="master-detail"], aura-master-detail)
+  :where([data-ui~="master-detail"], auras-master-detail)
     [data-part="panel"][hidden] {
     display: none !important;
   }
 
-  :where([data-ui~="tabs"], aura-tabs) {
+  :where([data-ui~="tabs"], auras-tabs) {
     --tabs-gap: var(--space-4);
     --tabs-list-gap: var(--space-2);
     --tabs-list-padding: var(--space-2);
@@ -121,7 +121,7 @@
     gap: var(--tabs-gap);
   }
 
-  :where([data-ui~="tabs"], aura-tabs) [data-part="tablist"] {
+  :where([data-ui~="tabs"], auras-tabs) [data-part="tablist"] {
     display: flex;
     flex-wrap: wrap;
     gap: var(--tabs-list-gap);
@@ -130,7 +130,7 @@
     border-block-end: 1px solid var(--tabs-rule-color);
   }
 
-  :where([data-ui~="tabs"], aura-tabs) :where(button, a)[data-part="trigger"] {
+  :where([data-ui~="tabs"], auras-tabs) :where(button, a)[data-part="trigger"] {
     min-block-size: auto;
     box-shadow: none;
     border: 1px solid var(--tabs-trigger-border-color);
@@ -140,32 +140,32 @@
     padding-block: var(--space-2);
   }
 
-  :where([data-ui~="tabs"], aura-tabs)
+  :where([data-ui~="tabs"], auras-tabs)
     :where(button, a)[data-part="trigger"]:hover {
     background-color: var(--tabs-trigger-bg-hover);
   }
 
-  :where([data-ui~="tabs"], aura-tabs) [data-part="trigger"][data-active] {
+  :where([data-ui~="tabs"], auras-tabs) [data-part="trigger"][data-active] {
     background-color: var(--tabs-trigger-bg-active);
     border-color: var(--tabs-trigger-border-color-active);
   }
 
-  :where([data-ui~="tabs"], aura-tabs) [data-part="panels"] {
+  :where([data-ui~="tabs"], auras-tabs) [data-part="panels"] {
     display: grid;
     min-inline-size: 0;
   }
 
-  :where([data-ui~="tabs"], aura-tabs) [data-part="panel"] {
+  :where([data-ui~="tabs"], auras-tabs) [data-part="panel"] {
     display: grid;
     gap: var(--space-3);
     min-inline-size: 0;
   }
 
-  :where([data-ui~="tabs"], aura-tabs) [data-part="panel"][hidden] {
+  :where([data-ui~="tabs"], auras-tabs) [data-part="panel"][hidden] {
     display: none !important;
   }
 
-  :where([data-ui~="combobox"], aura-combobox) {
+  :where([data-ui~="combobox"], auras-combobox) {
     --combobox-gap: var(--space-3);
     --combobox-control-gap: var(--space-2);
     --combobox-control-bg: var(--surface);
@@ -199,11 +199,11 @@
     min-inline-size: 0;
   }
 
-  :where([data-ui~="combobox"], aura-combobox) > label {
+  :where([data-ui~="combobox"], auras-combobox) > label {
     font-weight: 500;
   }
 
-  :where([data-ui~="combobox"], aura-combobox) [data-part="control"] {
+  :where([data-ui~="combobox"], auras-combobox) [data-part="control"] {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
@@ -215,7 +215,7 @@
     overflow: clip;
   }
 
-  :where([data-ui~="combobox"], aura-combobox)
+  :where([data-ui~="combobox"], auras-combobox)
     [data-part="control"]
     > [data-part="input"] {
     inline-size: 100%;
@@ -228,20 +228,20 @@
     padding-block: var(--combobox-input-padding-block);
   }
 
-  :where([data-ui~="combobox"], aura-combobox)
+  :where([data-ui~="combobox"], auras-combobox)
     [data-part="control"]
     > [data-part="input"]:focus {
     outline: none;
   }
 
-  :where([data-ui~="combobox"], aura-combobox)
+  :where([data-ui~="combobox"], auras-combobox)
     [data-part="control"]:focus-within {
     border-color: var(--focus-ring);
     box-shadow: 0 0 0 3px
       color-mix(in oklch, var(--focus-ring) 22%, transparent);
   }
 
-  :where([data-ui~="combobox"], aura-combobox)
+  :where([data-ui~="combobox"], auras-combobox)
     [data-part="control"]
     > [data-part="toggle"] {
     inline-size: var(--combobox-toggle-size);
@@ -256,7 +256,7 @@
     box-shadow: none;
   }
 
-  :where([data-ui~="combobox"], aura-combobox)
+  :where([data-ui~="combobox"], auras-combobox)
     [data-part="control"]
     > [data-part="toggle"]::before {
     content: "";
@@ -268,13 +268,13 @@
     transition: transform 160ms ease;
   }
 
-  :where([data-ui~="combobox"], aura-combobox[open])
+  :where([data-ui~="combobox"], auras-combobox[open])
     [data-part="control"]
     > [data-part="toggle"]::before {
     transform: rotate(225deg) translateY(-0.05rem);
   }
 
-  :where([data-ui~="combobox"], aura-combobox) [data-part="listbox"] {
+  :where([data-ui~="combobox"], auras-combobox) [data-part="listbox"] {
     display: grid;
     gap: var(--space-1);
     margin: 0;
@@ -289,11 +289,11 @@
     box-shadow: var(--combobox-list-shadow);
   }
 
-  :where([data-ui~="combobox"], aura-combobox) [data-part="listbox"][hidden] {
+  :where([data-ui~="combobox"], auras-combobox) [data-part="listbox"][hidden] {
     display: none !important;
   }
 
-  :where([data-ui~="combobox"], aura-combobox) [data-part="option"] {
+  :where([data-ui~="combobox"], auras-combobox) [data-part="option"] {
     display: grid;
     gap: var(--space-1);
     padding-inline: var(--combobox-option-padding-inline);
@@ -304,35 +304,35 @@
     user-select: none;
   }
 
-  :where([data-ui~="combobox"], aura-combobox) [data-part="option"]:hover {
+  :where([data-ui~="combobox"], auras-combobox) [data-part="option"]:hover {
     background-color: var(--combobox-option-bg-hover);
   }
 
-  :where([data-ui~="combobox"], aura-combobox)
+  :where([data-ui~="combobox"], auras-combobox)
     [data-part="option"][data-active],
-  :where([data-ui~="combobox"], aura-combobox)
+  :where([data-ui~="combobox"], auras-combobox)
     [data-part="option"][data-selected] {
     background-color: var(--combobox-option-bg-active);
     border-color: var(--combobox-option-border-color-active);
   }
 
-  :where([data-ui~="combobox"], aura-combobox) [data-part="empty"] {
+  :where([data-ui~="combobox"], auras-combobox) [data-part="empty"] {
     margin: 0;
     color: var(--text-muted);
     font-size: var(--text-sm);
   }
 
-  :where([data-ui~="combobox"], aura-combobox) [data-part="empty"][hidden] {
+  :where([data-ui~="combobox"], auras-combobox) [data-part="empty"][hidden] {
     display: none !important;
   }
 
-  :where([data-ui~="combobox"], aura-combobox) [data-part="panels"] {
+  :where([data-ui~="combobox"], auras-combobox) [data-part="panels"] {
     display: grid;
     gap: var(--space-3);
     min-inline-size: 0;
   }
 
-  :where([data-ui~="combobox"], aura-combobox) [data-part="panel"] {
+  :where([data-ui~="combobox"], auras-combobox) [data-part="panel"] {
     display: grid;
     gap: var(--space-3);
     min-inline-size: 0;
@@ -343,11 +343,11 @@
     box-shadow: var(--combobox-panel-shadow);
   }
 
-  :where([data-ui~="combobox"], aura-combobox) [data-part="panel"][hidden] {
+  :where([data-ui~="combobox"], auras-combobox) [data-part="panel"][hidden] {
     display: none !important;
   }
 
-  :where([data-ui~="splitter"], aura-splitter) {
+  :where([data-ui~="splitter"], auras-splitter) {
     --splitter-gap: 0;
     --splitter-handle-size: 0.875rem;
     --splitter-pane-min-block-size: 18rem;
@@ -378,7 +378,7 @@
   }
 
   @media (min-width: 48rem) {
-    :where([data-ui~="splitter"], aura-splitter) {
+    :where([data-ui~="splitter"], auras-splitter) {
       grid-template-columns:
         minmax(0, var(--splitter-primary-size, 50%))
         var(--splitter-handle-size)
@@ -386,11 +386,11 @@
     }
   }
 
-  :where([data-ui~="splitter"], aura-splitter)[data-dragging] {
+  :where([data-ui~="splitter"], auras-splitter)[data-dragging] {
     user-select: none;
   }
 
-  :where([data-ui~="splitter"], aura-splitter) [data-part="pane"] {
+  :where([data-ui~="splitter"], auras-splitter) [data-part="pane"] {
     min-inline-size: 0;
     min-block-size: var(--splitter-pane-min-block-size);
     overflow: auto;
@@ -401,7 +401,7 @@
   }
 
   /* Narrow viewport (stacked): vertical-style borders and cursor */
-  :where([data-ui~="splitter"], aura-splitter)
+  :where([data-ui~="splitter"], auras-splitter)
     [data-part="pane"][data-pane="primary"] {
     border-start-start-radius: var(--radius-lg);
     border-start-end-radius: var(--radius-lg);
@@ -409,7 +409,7 @@
     border-block-end-width: 0;
   }
 
-  :where([data-ui~="splitter"], aura-splitter)
+  :where([data-ui~="splitter"], auras-splitter)
     [data-part="pane"][data-pane="secondary"] {
     border-end-start-radius: var(--radius-lg);
     border-end-end-radius: var(--radius-lg);
@@ -417,7 +417,7 @@
     border-block-start-width: 0;
   }
 
-  :where([data-ui~="splitter"], aura-splitter) [data-part="separator"] {
+  :where([data-ui~="splitter"], auras-splitter) [data-part="separator"] {
     position: relative;
     padding: 0;
     border: 0;
@@ -430,7 +430,7 @@
 
   /* Wide viewport: horizontal-style borders and cursor */
   @media (min-width: 48rem) {
-    :where([data-ui~="splitter"], aura-splitter)
+    :where([data-ui~="splitter"], auras-splitter)
       [data-part="pane"][data-pane="primary"] {
       border-start-start-radius: var(--radius-lg);
       border-start-end-radius: 0;
@@ -439,7 +439,7 @@
       border-block-end-width: 1px;
     }
 
-    :where([data-ui~="splitter"], aura-splitter)
+    :where([data-ui~="splitter"], auras-splitter)
       [data-part="pane"][data-pane="secondary"] {
       border-start-end-radius: var(--radius-lg);
       border-end-start-radius: 0;
@@ -448,13 +448,13 @@
       border-block-start-width: 1px;
     }
 
-    :where([data-ui~="splitter"], aura-splitter) [data-part="separator"] {
+    :where([data-ui~="splitter"], auras-splitter) [data-part="separator"] {
       cursor: col-resize;
     }
   }
 
   /* Explicit vertical orientation overrides at all viewport widths */
-  :where([data-ui~="splitter"], aura-splitter)[orientation="vertical"] {
+  :where([data-ui~="splitter"], auras-splitter)[orientation="vertical"] {
     grid-template-columns: none;
     grid-template-rows:
       minmax(0, var(--splitter-primary-size, 50%))
@@ -462,7 +462,7 @@
       minmax(0, calc(100% - var(--splitter-primary-size, 50%)));
   }
 
-  :where([data-ui~="splitter"], aura-splitter)[orientation="vertical"]
+  :where([data-ui~="splitter"], auras-splitter)[orientation="vertical"]
     [data-part="pane"][data-pane="primary"] {
     border-start-start-radius: var(--radius-lg);
     border-start-end-radius: var(--radius-lg);
@@ -471,7 +471,7 @@
     border-block-end-width: 0;
   }
 
-  :where([data-ui~="splitter"], aura-splitter)[orientation="vertical"]
+  :where([data-ui~="splitter"], auras-splitter)[orientation="vertical"]
     [data-part="pane"][data-pane="secondary"] {
     border-end-start-radius: var(--radius-lg);
     border-end-end-radius: var(--radius-lg);
@@ -480,18 +480,18 @@
     border-block-start-width: 0;
   }
 
-  :where([data-ui~="splitter"], aura-splitter)[orientation="vertical"]
+  :where([data-ui~="splitter"], auras-splitter)[orientation="vertical"]
     [data-part="separator"] {
     cursor: row-resize;
   }
 
-  :where([data-ui~="splitter"], aura-splitter)
+  :where([data-ui~="splitter"], auras-splitter)
     [data-part="separator"]:where(:hover, :focus-visible) {
     background-color: var(--splitter-handle-bg-hover);
   }
 
   /* Narrow viewport: horizontal grip (stacked layout) */
-  :where([data-ui~="splitter"], aura-splitter) [data-part="separator"]::before {
+  :where([data-ui~="splitter"], auras-splitter) [data-part="separator"]::before {
     content: "";
     position: absolute;
     inset: 50%;
@@ -508,7 +508,7 @@
 
   /* Wide viewport: vertical grip (side-by-side layout) */
   @media (min-width: 48rem) {
-    :where([data-ui~="splitter"], aura-splitter) [data-part="separator"]::before {
+    :where([data-ui~="splitter"], auras-splitter) [data-part="separator"]::before {
       inline-size: 0.2rem;
       block-size: 2.25rem;
       background: radial-gradient(
@@ -520,7 +520,7 @@
   }
 
   /* Explicit vertical orientation: always horizontal grip */
-  :where([data-ui~="splitter"], aura-splitter)[orientation="vertical"]
+  :where([data-ui~="splitter"], auras-splitter)[orientation="vertical"]
     [data-part="separator"]::before {
     inline-size: 2.25rem;
     block-size: 0.2rem;
@@ -531,7 +531,7 @@
     ) center / 0.55rem 0.2rem repeat-x;
   }
 
-  :where([data-ui~="tree"], aura-tree) {
+  :where([data-ui~="tree"], auras-tree) {
     --tree-gap: var(--space-4);
     --tree-indent: var(--space-4);
     --tree-rule-color: var(--border);
@@ -562,13 +562,13 @@
   }
 
   @media (min-width: 64rem) {
-    :where(aura-tree[data-has-panels]) {
+    :where(auras-tree[data-has-panels]) {
       grid-template-columns: minmax(18rem, 22rem) minmax(0, 1fr);
       align-items: start;
     }
   }
 
-  :where([data-ui~="tree"], aura-tree) [data-part="tree"] {
+  :where([data-ui~="tree"], auras-tree) [data-part="tree"] {
     display: grid;
     gap: var(--space-1);
     align-content: start;
@@ -581,23 +581,23 @@
     list-style: none;
   }
 
-  :where([data-ui~="tree"], aura-tree) [data-part="tree"],
-  :where([data-ui~="tree"], aura-tree) [data-part="group"] {
+  :where([data-ui~="tree"], auras-tree) [data-part="tree"],
+  :where([data-ui~="tree"], auras-tree) [data-part="group"] {
     margin: 0;
     padding-inline-start: 0;
   }
 
-  :where([data-ui~="tree"], aura-tree) [data-part="item"] {
+  :where([data-ui~="tree"], auras-tree) [data-part="item"] {
     display: grid;
     gap: var(--space-2);
   }
 
-  :where([data-ui~="tree"], aura-tree) [data-part="item"][data-branch] {
+  :where([data-ui~="tree"], auras-tree) [data-part="item"][data-branch] {
     grid-template-columns: var(--tree-toggle-size) minmax(0, 1fr);
     align-items: start;
   }
 
-  :where([data-ui~="tree"], aura-tree) [data-part="item"] > [data-part="node"] {
+  :where([data-ui~="tree"], auras-tree) [data-part="item"] > [data-part="node"] {
     grid-column: 1 / -1;
     inline-size: 100%;
     min-block-size: auto;
@@ -614,27 +614,27 @@
     box-shadow: none;
   }
 
-  :where([data-ui~="tree"], aura-tree)
+  :where([data-ui~="tree"], auras-tree)
     [data-part="item"][data-branch]
     > [data-part="node"] {
     grid-column: 2;
   }
 
-  :where([data-ui~="tree"], aura-tree)
+  :where([data-ui~="tree"], auras-tree)
     [data-part="item"]
     > [data-part="node"]:hover {
     background-color: var(--tree-node-bg-hover);
   }
 
-  :where([data-ui~="tree"], aura-tree)
+  :where([data-ui~="tree"], auras-tree)
     [data-part="item"][data-active]
     > [data-part="node"],
-  :where([data-ui~="tree"], aura-tree) [data-part="node"][data-active] {
+  :where([data-ui~="tree"], auras-tree) [data-part="node"][data-active] {
     background-color: var(--tree-node-bg-active);
     border-color: var(--tree-node-border-color-active);
   }
 
-  :where([data-ui~="tree"], aura-tree)
+  :where([data-ui~="tree"], auras-tree)
     [data-part="item"]
     > [data-part="node"]
     > :where(p, small) {
@@ -644,7 +644,7 @@
     line-height: var(--leading-normal);
   }
 
-  :where([data-ui~="tree"], aura-tree)
+  :where([data-ui~="tree"], auras-tree)
     [data-part="item"]
     > [data-part="toggle"] {
     grid-column: 1;
@@ -661,7 +661,7 @@
     box-shadow: none;
   }
 
-  :where([data-ui~="tree"], aura-tree)
+  :where([data-ui~="tree"], auras-tree)
     [data-part="item"][data-branch]
     > [data-part="toggle"]::before {
     content: "";
@@ -673,13 +673,13 @@
     transition: transform 160ms ease;
   }
 
-  :where([data-ui~="tree"], aura-tree)
+  :where([data-ui~="tree"], auras-tree)
     [data-part="item"][data-expanded]
     > [data-part="toggle"]::before {
     transform: rotate(45deg);
   }
 
-  :where([data-ui~="tree"], aura-tree) [data-part="group"] {
+  :where([data-ui~="tree"], auras-tree) [data-part="group"] {
     display: grid;
     gap: var(--space-1);
     min-inline-size: 0;
@@ -689,18 +689,18 @@
     list-style: none;
   }
 
-  :where([data-ui~="tree"], aura-tree) [data-part="group"][hidden] {
+  :where([data-ui~="tree"], auras-tree) [data-part="group"][hidden] {
     display: none !important;
   }
 
-  :where([data-ui~="tree"], aura-tree) [data-part="panels"] {
+  :where([data-ui~="tree"], auras-tree) [data-part="panels"] {
     display: grid;
     gap: var(--space-3);
     min-inline-size: 0;
     align-content: start;
   }
 
-  :where([data-ui~="tree"], aura-tree) [data-part="panel"] {
+  :where([data-ui~="tree"], auras-tree) [data-part="panel"] {
     display: grid;
     gap: var(--space-3);
     min-inline-size: 0;
@@ -711,7 +711,7 @@
     box-shadow: var(--tree-panel-shadow);
   }
 
-  :where([data-ui~="tree"], aura-tree) [data-part="panel"][hidden] {
+  :where([data-ui~="tree"], auras-tree) [data-part="panel"][hidden] {
     display: none !important;
   }
 
@@ -780,7 +780,7 @@
     font-size: inherit;
   }
 
-  :where([data-ui~="diagram"], aura-diagram) {
+  :where([data-ui~="diagram"], auras-diagram) {
     --diagram-gap: var(--space-4);
     --diagram-columns: 12;
     --diagram-row-size: 4.5rem;
@@ -823,7 +823,7 @@
   }
 
   @media (max-width: 40rem) {
-    :where([data-ui~="diagram"], aura-diagram) {
+    :where([data-ui~="diagram"], auras-diagram) {
       --diagram-min-inline-size: 28rem;
       --diagram-row-size: 3.5rem;
       --diagram-padding: var(--space-2);
@@ -832,24 +832,24 @@
   }
 
   @media (min-width: 64rem) {
-    :where(aura-diagram) {
+    :where(auras-diagram) {
       grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 1fr);
       align-items: start;
     }
 
-    :where(aura-diagram) > [data-part="caption"] {
+    :where(auras-diagram) > [data-part="caption"] {
       grid-column: 1 / -1;
     }
   }
 
-  :where([data-ui~="diagram"], aura-diagram)
+  :where([data-ui~="diagram"], auras-diagram)
     > :where(figcaption, [data-part="caption"]) {
     color: var(--text-muted);
     font-size: var(--text-sm);
     line-height: var(--leading-normal);
   }
 
-  :where([data-ui~="diagram"], aura-diagram) [data-part="canvas"] {
+  :where([data-ui~="diagram"], auras-diagram) [data-part="canvas"] {
     display: grid;
     grid-template-columns: repeat(var(--diagram-columns), minmax(0, 1fr));
     grid-auto-rows: minmax(var(--diagram-row-size), auto);
@@ -862,14 +862,14 @@
     border-radius: var(--radius-lg);
   }
 
-  :where(aura-diagram) [data-part="panels"] {
+  :where(auras-diagram) [data-part="panels"] {
     display: grid;
     gap: var(--space-3);
     min-inline-size: 0;
     align-content: start;
   }
 
-  :where(aura-diagram) [data-part="panel"] {
+  :where(auras-diagram) [data-part="panel"] {
     display: grid;
     gap: var(--space-3);
     min-inline-size: 0;
@@ -880,18 +880,18 @@
     box-shadow: var(--diagram-panel-shadow);
   }
 
-  :where(aura-diagram) [data-part="panel"][hidden] {
+  :where(auras-diagram) [data-part="panel"][hidden] {
     display: none !important;
   }
 
-  :where([data-ui~="diagram"], aura-diagram) [data-part="node"],
-  :where([data-ui~="diagram"], aura-diagram) [data-part="connector"] {
+  :where([data-ui~="diagram"], auras-diagram) [data-part="node"],
+  :where([data-ui~="diagram"], auras-diagram) [data-part="connector"] {
     grid-column: var(--diagram-column, auto);
     grid-row: var(--diagram-row, auto);
     min-inline-size: 0;
   }
 
-  :where([data-ui~="diagram"], aura-diagram) [data-part="node"] {
+  :where([data-ui~="diagram"], auras-diagram) [data-part="node"] {
     --diagram-node-accent: var(--primary);
 
     display: grid;
@@ -905,7 +905,7 @@
     box-shadow: var(--diagram-node-shadow);
   }
 
-  :where(aura-diagram)
+  :where(auras-diagram)
     :where(button, a, [role="button"], [tabindex])[data-part="node"] {
     inline-size: 100%;
     min-block-size: auto;
@@ -915,12 +915,12 @@
     box-shadow: var(--diagram-node-shadow);
   }
 
-  :where(aura-diagram) [data-part="node"][data-active] {
+  :where(auras-diagram) [data-part="node"][data-active] {
     background-color: var(--diagram-node-bg-active);
     border-color: var(--diagram-node-border-color-active);
   }
 
-  :where([data-ui~="diagram"], aura-diagram)
+  :where([data-ui~="diagram"], auras-diagram)
     [data-part="node"]
     > :where(h3, strong) {
     margin: 0;
@@ -928,7 +928,7 @@
     line-height: var(--leading-tight);
   }
 
-  :where([data-ui~="diagram"], aura-diagram)
+  :where([data-ui~="diagram"], auras-diagram)
     [data-part="node"]
     > :where(p, small) {
     margin: 0;
@@ -937,27 +937,27 @@
     line-height: var(--leading-normal);
   }
 
-  :where([data-ui~="diagram"], aura-diagram)
+  :where([data-ui~="diagram"], auras-diagram)
     [data-part="node"][data-kind="input"] {
     --diagram-node-accent: var(--color-info);
   }
 
-  :where([data-ui~="diagram"], aura-diagram)
+  :where([data-ui~="diagram"], auras-diagram)
     [data-part="node"][data-kind="process"] {
     --diagram-node-accent: var(--primary);
   }
 
-  :where([data-ui~="diagram"], aura-diagram)
+  :where([data-ui~="diagram"], auras-diagram)
     [data-part="node"][data-kind="decision"] {
     --diagram-node-accent: var(--color-warning);
   }
 
-  :where([data-ui~="diagram"], aura-diagram)
+  :where([data-ui~="diagram"], auras-diagram)
     [data-part="node"][data-kind="output"] {
     --diagram-node-accent: var(--color-success);
   }
 
-  :where([data-ui~="diagram"], aura-diagram) [data-part="connector"] {
+  :where([data-ui~="diagram"], auras-diagram) [data-part="connector"] {
     display: grid;
     place-items: center;
     color: var(--diagram-connector-color);
@@ -965,13 +965,13 @@
     pointer-events: none;
   }
 
-  :where([data-ui~="diagram"], aura-diagram) [data-part="connector"] svg {
+  :where([data-ui~="diagram"], auras-diagram) [data-part="connector"] svg {
     inline-size: 100%;
     block-size: 100%;
     overflow: visible;
   }
 
-  :where([data-ui~="diagram"], aura-diagram)
+  :where([data-ui~="diagram"], auras-diagram)
     [data-part="connector"]
     :where(path, polyline, line) {
     fill: none;
@@ -981,7 +981,7 @@
     stroke-linejoin: round;
   }
 
-  :where([data-ui~="diagram"], aura-diagram)
+  :where([data-ui~="diagram"], auras-diagram)
     [data-part="connector"]
     [data-marker="arrow"] {
     fill: currentColor;

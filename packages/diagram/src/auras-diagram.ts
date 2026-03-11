@@ -2,7 +2,7 @@ const CANVAS_SELECTOR = '[data-part="canvas"]';
 const NODE_SELECTOR = '[data-part="node"][data-value]';
 const PANEL_SELECTOR = '[data-part="panel"][data-value]';
 
-type AuraActivation = "auto" | "manual";
+type AurasActivation = "auto" | "manual";
 
 type SelectionOptions = {
   dispatch: boolean;
@@ -17,7 +17,7 @@ type DiagramLayout = {
   order: number;
 };
 
-export type AuraDiagramEntry = {
+export type AurasDiagramEntry = {
   value: string;
   node: HTMLElement;
   panel: HTMLElement | null;
@@ -26,7 +26,7 @@ export type AuraDiagramEntry = {
 
 let generatedIdSequence = 0;
 
-function normalizeActivation(value: string | null | undefined): AuraActivation {
+function normalizeActivation(value: string | null | undefined): AurasActivation {
   return value === "manual" ? "manual" : "auto";
 }
 
@@ -153,7 +153,7 @@ function getDiagramDirection(
 }
 
 function getNextDiagramIndex(
-  entries: AuraDiagramEntry[],
+  entries: AurasDiagramEntry[],
   currentIndex: number,
   key: string,
   directionality: "ltr" | "rtl",
@@ -215,13 +215,13 @@ function isNativeInteractiveElement(node: HTMLElement): boolean {
   );
 }
 
-export const AURA_DIAGRAM_TAG_NAME = "aura-diagram";
+export const AURAS_DIAGRAM_TAG_NAME = "auras-diagram";
 
-export class AuraDiagram extends HTMLElement {
+export class AurasDiagram extends HTMLElement {
   static observedAttributes = ["value", "activation"];
 
   private _canvas: HTMLElement | null = null;
-  private _entries: AuraDiagramEntry[] = [];
+  private _entries: AurasDiagramEntry[] = [];
   private _syncingValue = false;
 
   constructor() {
@@ -280,11 +280,11 @@ export class AuraDiagram extends HTMLElement {
     this.setAttribute("value", String(value));
   }
 
-  get activation(): AuraActivation {
+  get activation(): AurasActivation {
     return normalizeActivation(this.getAttribute("activation"));
   }
 
-  set activation(value: AuraActivation | string | null) {
+  set activation(value: AurasActivation | string | null) {
     const normalizedValue = normalizeActivation(value);
     if (normalizedValue === "auto") {
       this.removeAttribute("activation");
@@ -322,7 +322,7 @@ export class AuraDiagram extends HTMLElement {
       }
     }
 
-    const entries: AuraDiagramEntry[] = [];
+    const entries: AurasDiagramEntry[] = [];
     let order = 0;
     for (const node of canvas.querySelectorAll<HTMLElement>(NODE_SELECTOR)) {
       const value = node.getAttribute("data-value");
@@ -398,7 +398,7 @@ export class AuraDiagram extends HTMLElement {
     return this._select(value, options);
   }
 
-  private _applyEntrySemantics(entry: AuraDiagramEntry): void {
+  private _applyEntrySemantics(entry: AurasDiagramEntry): void {
     if (
       !isNativeInteractiveElement(entry.node) &&
       !entry.node.hasAttribute("role")
@@ -414,13 +414,13 @@ export class AuraDiagram extends HTMLElement {
 
     entry.node.setAttribute(
       "aria-controls",
-      ensureElementId(entry.panel, "aura-diagram-panel"),
+      ensureElementId(entry.panel, "auras-diagram-panel"),
     );
     entry.node.setAttribute("aria-expanded", "false");
     entry.panel.setAttribute("role", "region");
     entry.panel.setAttribute(
       "aria-labelledby",
-      ensureElementId(entry.node, "aura-diagram-node"),
+      ensureElementId(entry.node, "auras-diagram-node"),
     );
   }
 
@@ -466,7 +466,7 @@ export class AuraDiagram extends HTMLElement {
 
     if (options.dispatch && didChange) {
       this.dispatchEvent(
-        new CustomEvent("aura-change", {
+        new CustomEvent("auras-change", {
           detail: {
             value: entry.value,
             node: entry.node,
@@ -562,10 +562,10 @@ export class AuraDiagram extends HTMLElement {
   }
 }
 
-export function registerAuraDiagram(): typeof AuraDiagram {
-  if (!customElements.get(AURA_DIAGRAM_TAG_NAME)) {
-    customElements.define(AURA_DIAGRAM_TAG_NAME, AuraDiagram);
+export function registerAurasDiagram(): typeof AurasDiagram {
+  if (!customElements.get(AURAS_DIAGRAM_TAG_NAME)) {
+    customElements.define(AURAS_DIAGRAM_TAG_NAME, AurasDiagram);
   }
 
-  return AuraDiagram;
+  return AurasDiagram;
 }

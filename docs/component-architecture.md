@@ -1,6 +1,6 @@
-# Aura Component Architecture
+# Auras Component Architecture
 
-This note defines the next iteration of Aura beyond the current element-level
+This note defines the next iteration of Auras beyond the current element-level
 CSS library.
 
 Related docs:
@@ -11,7 +11,7 @@ Related docs:
 
 ## Goal
 
-Keep Aura's current identity intact:
+Keep Auras' current identity intact:
 
 - semantic HTML first
 - token-driven styling
@@ -19,16 +19,16 @@ Keep Aura's current identity intact:
 - optional JavaScript
 - easy theming and debugging
 
-Add a higher layer for common app patterns without turning Aura into a
+Add a higher layer for common app patterns without turning Auras into a
 framework-sized UI system.
 
 ## Layer Model
 
-Aura should evolve as three explicit layers:
+Auras should evolve as three explicit layers:
 
 ### 1. Elements
 
-`packages/elements/aura.css`
+`packages/elements/auras.css`
 
 Responsibility:
 
@@ -48,7 +48,7 @@ Rules:
 
 ### 2. Composites
 
-`packages/composites/aura-composites.css`
+`packages/composites/auras-composites.css`
 
 Responsibility:
 
@@ -75,7 +75,7 @@ Rules:
 
 ### 3. Components
 
-`jsr:@aura/components`, `jsr:@aura/diagram`
+`jsr:@auras/components`, `jsr:@auras/diagram`
 
 Responsibility:
 
@@ -104,15 +104,15 @@ Rules:
 Recommended package boundaries:
 
 ```text
-/packages/elements/aura.css
-/packages/composites/aura-composites.css
-/packages/brands/aura-brand.css
-/packages/brands/aura-brand-editorial.css
+/packages/elements/auras.css
+/packages/composites/auras-composites.css
+/packages/brands/auras-brand.css
+/packages/brands/auras-brand-editorial.css
 /packages/diagram/browser.js
 /packages/diagram/jsr.json
 /packages/diagram/README.md
 /packages/diagram/mod.ts
-/packages/diagram/src/aura-diagram.ts
+/packages/diagram/src/auras-diagram.ts
 /packages/components/browser.js
 /packages/components/jsr.json
 /packages/components/README.md
@@ -129,15 +129,15 @@ Recommended package boundaries:
 
 Recommended publishing shape:
 
-- `@aura/elements`: Elements layer stylesheet
-- `@aura/composites`: optional CSS-only higher-level patterns
-- `jsr:@aura/diagram`: optional Deno-first interactive diagram package
-- `jsr:@aura/components`: optional Deno-first light-DOM interactive components
+- `@auras/elements`: Elements layer stylesheet
+- `@auras/composites`: optional CSS-only higher-level patterns
+- `jsr:@auras/diagram`: optional Deno-first interactive diagram package
+- `jsr:@auras/components`: optional Deno-first light-DOM interactive components
 
 Current repo structure:
 
-- `packages/elements/aura.css` is the canonical Elements stylesheet source
-- `packages/composites/aura-composites.css` is the canonical Composites
+- `packages/elements/auras.css` is the canonical Elements stylesheet source
+- `packages/composites/auras-composites.css` is the canonical Composites
   stylesheet source
 - `packages/brands/` contains the canonical brand stylesheet sources
 - `packages/diagram/mod.ts` is the Deno-first TypeScript surface for the diagram
@@ -173,7 +173,7 @@ Examples:
 Some interactions are still light-DOM components, but distinct enough to live
 outside the general-purpose Components package.
 
-`aura-diagram` v1 is one of those packages.
+`auras-diagram` v1 is one of those packages.
 
 It should do exactly this:
 
@@ -194,7 +194,7 @@ It should not do this in v1:
 
 ## Light DOM Contract
 
-If Aura ships interactive components, their DOM contract must stay explicit.
+If Auras ships interactive components, their DOM contract must stay explicit.
 
 Rules:
 
@@ -220,9 +220,9 @@ Implementation detail that should stay private:
 
 ## Pilot Components
 
-The first behavioral pilot was `aura-master-detail`. The second is `aura-tabs`.
-The third is `aura-tree`. The fourth is `aura-combobox`. The fifth is
-`aura-splitter`.
+The first behavioral pilot was `auras-master-detail`. The second is `auras-tabs`.
+The third is `auras-tree`. The fourth is `auras-combobox`. The fifth is
+`auras-splitter`.
 
 Why these first:
 
@@ -230,9 +230,9 @@ Why these first:
 - useful without becoming framework-sized
 - accessibility is tractable
 - lower complexity than grid or command palette
-- works well with Aura's existing layout and card primitives
+- works well with Auras' existing layout and card primitives
 
-## `aura-master-detail` v1 Scope
+## `auras-master-detail` v1 Scope
 
 The pilot should do exactly this:
 
@@ -259,7 +259,7 @@ It should not do this in v1:
 Suggested authoring model:
 
 ```html
-<aura-master-detail value="ada">
+<auras-master-detail value="ada">
   <nav data-part="master" aria-label="People">
     <button type="button" data-part="trigger" data-value="ada">Ada</button>
     <button type="button" data-part="trigger" data-value="grace">Grace</button>
@@ -275,12 +275,12 @@ Suggested authoring model:
       Margaret detail
     </article>
   </section>
-</aura-master-detail>
+</auras-master-detail>
 ```
 
 Required parts:
 
-- one host: `<aura-master-detail>`
+- one host: `<auras-master-detail>`
 - one master container: `[data-part="master"]`
 - one or more triggers: `[data-part="trigger"][data-value]`
 - one detail container: `[data-part="detail"]`
@@ -312,7 +312,7 @@ Methods:
 
 Events:
 
-- `aura-change`
+- `auras-change`
   - detail: `{ value: string, trigger: HTMLElement, panel: HTMLElement }`
 
 ## Runtime Behavior
@@ -333,7 +333,7 @@ On selection change:
 - update host `value`
 - update trigger attributes
 - update panel visibility
-- dispatch `aura-change` only when the selected value actually changes
+- dispatch `auras-change` only when the selected value actually changes
 
 ## Accessibility
 
@@ -358,7 +358,7 @@ Recommendation:
 Public styling hooks for the pilot:
 
 - host:
-  - `aura-master-detail`
+  - `auras-master-detail`
   - `[value]`
   - `[activation]`
 - descendants:
@@ -368,7 +368,7 @@ Public styling hooks for the pilot:
   - `[data-part="panel"]`
   - `[data-active]`
 
-This lets `@aura/composites` provide a default shell without hard-coding the
+This lets `@auras/composites` provide a default shell without hard-coding the
 components package into the CSS layer.
 
 ## Suggested CSS Pairing
@@ -376,25 +376,25 @@ components package into the CSS layer.
 The companion composite stylesheet should handle only layout and visual states:
 
 ```html
-<link rel="stylesheet" href="packages/elements/aura.css" />
-<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<link rel="stylesheet" href="packages/elements/auras.css" />
+<link rel="stylesheet" href="packages/composites/auras-composites.css" />
 <script type="module" src="packages/components/browser.js"></script>
 ```
 
 Example responsibility split:
 
-- `packages/composites/aura-composites.css`
+- `packages/composites/auras-composites.css`
   - 2-column master/detail layout
   - mobile stack behavior
   - selected trigger visuals
   - panel spacing and surface styles
-- `aura-master-detail`
+- `auras-master-detail`
   - selected value
   - keyboard model
   - focus model
   - panel visibility
 
-## `aura-tabs` v1 Scope
+## `auras-tabs` v1 Scope
 
 The second pilot should do exactly this:
 
@@ -416,7 +416,7 @@ It should not do this in v1:
 Suggested authoring model:
 
 ```html
-<aura-tabs value="overview">
+<auras-tabs value="overview">
   <nav data-part="tablist" aria-label="Release views">
     <button type="button" data-part="trigger" data-value="overview">
       Overview
@@ -436,12 +436,12 @@ Suggested authoring model:
       Behavior panel
     </article>
   </section>
-</aura-tabs>
+</auras-tabs>
 ```
 
 Required parts:
 
-- one host: `<aura-tabs>`
+- one host: `<auras-tabs>`
 - one tablist container: `[data-part="tablist"]`
 - one or more tab triggers: `[data-part="trigger"][data-value]`
 - one panel container: `[data-part="panels"]`
@@ -453,7 +453,7 @@ Host API:
 - `activation="auto|manual"`
 - `show(value: string): void`
 - `focusCurrent(): void`
-- `aura-change`
+- `auras-change`
 
 Accessibility contract:
 
@@ -463,7 +463,7 @@ Accessibility contract:
 - use Left and Right for navigation, respecting document direction
 - keep inactive panels `hidden`
 
-## `aura-tree` v1 Scope
+## `auras-tree` v1 Scope
 
 The third pilot should do exactly this:
 
@@ -486,8 +486,8 @@ It should not do this in v1:
 Suggested authoring model:
 
 ```html
-<aura-tree value="master-detail">
-  <ul data-part="tree" aria-label="Aura components">
+<auras-tree value="master-detail">
+  <ul data-part="tree" aria-label="Auras components">
     <li data-part="item" data-value="elements">
       <button type="button" data-part="node">Elements</button>
     </li>
@@ -518,12 +518,12 @@ Suggested authoring model:
     <article data-part="panel" data-value="master-detail" hidden>...</article>
     <article data-part="panel" data-value="tabs" hidden>...</article>
   </section>
-</aura-tree>
+</auras-tree>
 ```
 
 Required parts:
 
-- one host: `<aura-tree>`
+- one host: `<auras-tree>`
 - one tree container: `[data-part="tree"]`
 - one or more items: `[data-part="item"][data-value]`
 - one node per item: `[data-part="node"]`
@@ -540,9 +540,9 @@ Host API:
 - `expand(value: string): boolean`
 - `collapse(value: string): boolean`
 - `toggle(value: string): boolean`
-- `aura-change`
+- `auras-change`
 
-## `aura-combobox` v1 Scope
+## `auras-combobox` v1 Scope
 
 The fourth pilot should do exactly this:
 
@@ -564,7 +564,7 @@ It should not do this in v1:
 Suggested authoring model:
 
 ```html
-<aura-combobox value="elements" activation="manual">
+<auras-combobox value="elements" activation="manual">
   <label for="component-search">Search components</label>
 
   <div data-part="control">
@@ -591,12 +591,12 @@ Suggested authoring model:
     <article data-part="panel" data-value="master-detail" hidden>...</article>
     <article data-part="panel" data-value="tabs" hidden>...</article>
   </section>
-</aura-combobox>
+</auras-combobox>
 ```
 
 Required parts:
 
-- one host: `<aura-combobox>`
+- one host: `<auras-combobox>`
 - one text input: `[data-part="input"]`
 - one popup listbox: `[data-part="listbox"]`
 - one or more options: `[data-part="option"][data-value]`
@@ -615,9 +615,9 @@ Host API:
 - `openListbox(): boolean`
 - `closeListbox(): boolean`
 - `toggleListbox(): boolean`
-- `aura-change`
+- `auras-change`
 
-## `aura-splitter` v1 Scope
+## `auras-splitter` v1 Scope
 
 The fifth pilot should do exactly this:
 
@@ -638,7 +638,7 @@ It should not do this in v1:
 Suggested authoring model:
 
 ```html
-<aura-splitter value="42" min="30" max="70" step="5">
+<auras-splitter value="42" min="30" max="70" step="5">
   <section data-part="pane" data-pane="primary">...</section>
   <button
     type="button"
@@ -647,12 +647,12 @@ Suggested authoring model:
   >
   </button>
   <section data-part="pane" data-pane="secondary">...</section>
-</aura-splitter>
+</auras-splitter>
 ```
 
 Required parts:
 
-- one host: `<aura-splitter>`
+- one host: `<auras-splitter>`
 - one primary pane: `[data-part="pane"][data-pane="primary"]`
 - one separator: `[data-part="separator"]`
 - one secondary pane: `[data-part="pane"][data-pane="secondary"]`
@@ -666,31 +666,31 @@ Host API:
 - `step`
 - `setPosition(value: number): boolean`
 - `focusHandle(): void`
-- `aura-change`
+- `auras-change`
 
 ## Build Order
 
 Recommended order for implementation:
 
-1. Extract `packages/composites/aura-composites.css` as a separate optional
+1. Extract `packages/composites/auras-composites.css` as a separate optional
    layer.
 2. Add one visual composite for master-detail shell with no JavaScript.
-3. Implement `aura-master-detail` in `jsr:@aura/components` against the
+3. Implement `auras-master-detail` in `jsr:@auras/components` against the
    documented markup contract.
-4. Validate the shared host API with `aura-tabs`.
+4. Validate the shared host API with `auras-tabs`.
 5. Extend the same package with hierarchical selection and expansion in
-   `aura-tree`.
+   `auras-tree`.
 6. Extend the same package with local filtering and popup state in
-   `aura-combobox`.
-7. Extend the same package with two-pane resize behavior in `aura-splitter`.
+   `auras-combobox`.
+7. Extend the same package with two-pane resize behavior in `auras-splitter`.
 8. Only then move on to listbox or grid.
 
 ## Follow-On Components
 
 After the pilot is stable:
 
-- `aura-data-grid`
-- `aura-listbox`
+- `auras-data-grid`
+- `auras-listbox`
 
 Only add them if they preserve the same rules:
 

@@ -1,6 +1,6 @@
 {
   "$schema": "https://jsr.io/schema/config-file.v1.json",
-  "name": "@aura/components",
+  "name": "@auras/components",
   "version": "0.2.0",
   "license": "MIT",
   "compilerOptions": {

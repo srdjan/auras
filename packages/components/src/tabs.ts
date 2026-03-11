@@ -1,15 +1,15 @@
 import {
-  type AuraSelectableEntry,
-  AuraSelectablePanelsElement,
+  type AurasSelectableEntry,
+  AurasSelectablePanelsElement,
   ensureElementId,
   getDirectionality,
 } from "./shared/selectable-panels.ts";
 
 const TABLIST_SELECTOR = '[data-part="tablist"]';
 const PANELS_SELECTOR = '[data-part="panels"]';
-export const AURA_TABS_TAG_NAME = "aura-tabs";
+export const AURAS_TABS_TAG_NAME = "auras-tabs";
 
-export class AuraTabs extends AuraSelectablePanelsElement {
+export class AurasTabs extends AurasSelectablePanelsElement {
   protected override _getContainerSelector(): string {
     return TABLIST_SELECTOR;
   }
@@ -19,7 +19,7 @@ export class AuraTabs extends AuraSelectablePanelsElement {
   }
 
   protected override _getPanelIdPrefix(): string {
-    return "aura-tabs-panel";
+    return "auras-tabs-panel";
   }
 
   protected override _setContainerSemantics(container: HTMLElement): void {
@@ -27,19 +27,19 @@ export class AuraTabs extends AuraSelectablePanelsElement {
     container.setAttribute("aria-orientation", "horizontal");
   }
 
-  protected override _applyEntrySemantics(entry: AuraSelectableEntry): void {
+  protected override _applyEntrySemantics(entry: AurasSelectableEntry): void {
     entry.trigger.setAttribute("role", "tab");
     entry.trigger.setAttribute("aria-selected", "false");
     entry.trigger.setAttribute(
       "id",
-      ensureElementId(entry.trigger, "aura-tabs-trigger"),
+      ensureElementId(entry.trigger, "auras-tabs-trigger"),
     );
     entry.panel.setAttribute("role", "tabpanel");
     entry.panel.setAttribute("aria-labelledby", entry.trigger.id);
   }
 
   protected override _applySelectionState(
-    entry: AuraSelectableEntry,
+    entry: AurasSelectableEntry,
     isActive: boolean,
   ): void {
     entry.trigger.setAttribute("aria-selected", String(isActive));
@@ -71,10 +71,10 @@ export class AuraTabs extends AuraSelectablePanelsElement {
   }
 }
 
-export function registerAuraTabs(): typeof AuraTabs {
-  if (!customElements.get(AURA_TABS_TAG_NAME)) {
-    customElements.define(AURA_TABS_TAG_NAME, AuraTabs);
+export function registerAurasTabs(): typeof AurasTabs {
+  if (!customElements.get(AURAS_TABS_TAG_NAME)) {
+    customElements.define(AURAS_TABS_TAG_NAME, AurasTabs);
   }
 
-  return AuraTabs;
+  return AurasTabs;
 }

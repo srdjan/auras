@@ -1,4 +1,4 @@
-/* Sample editorial brand pack. Load this on top of aura-css.css to demonstrate
+/* Sample editorial brand pack. Load this on top of auras.css to demonstrate
    how a different design system can plug into the same semantic API. */
 @layer brands {
   [data-brand="editorial"] {

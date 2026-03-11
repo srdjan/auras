@@ -1,12 +1,12 @@
-# `@aura/diagram`
+# `@auras/diagram`
 
-Optional light-DOM diagram controller for Aura.
+Optional light-DOM diagram controller for Auras.
 
 Related docs:
 
-- [Aura CSS User Guide](../../docs/user-guide.md)
-- [Aura Component Architecture](../../docs/component-architecture.md)
-- [@aura/components](../components/README.md)
+- [Auras CSS User Guide](../../docs/user-guide.md)
+- [Auras Component Architecture](../../docs/component-architecture.md)
+- [@auras/components](../components/README.md)
 
 This package enhances the existing CSS diagram shell with:
 
@@ -18,11 +18,11 @@ This package enhances the existing CSS diagram shell with:
 It does not do auto-layout, routing, zoom, or drag and drop.
 
 ```ts
-import { registerAuraDiagram } from "jsr:@aura/diagram";
+import { registerAurasDiagram } from "jsr:@auras/diagram";
 
-registerAuraDiagram();
+registerAurasDiagram();
 ```
 
-Load `/packages/composites/aura-composites.css` for the visual diagram shell.
+Load `/packages/composites/auras-composites.css` for the visual diagram shell.
 
 For no-build browser usage in this repo, load `/packages/diagram/browser.js`.

@@ -180,9 +180,9 @@ function isNativeInteractiveElement(node) {
   );
 }
 
-export const AURA_DIAGRAM_TAG_NAME = "aura-diagram";
+export const AURAS_DIAGRAM_TAG_NAME = "auras-diagram";
 
-export class AuraDiagram extends HTMLElement {
+export class AurasDiagram extends HTMLElement {
   static observedAttributes = ["value", "activation"];
 
   constructor() {
@@ -375,13 +375,13 @@ export class AuraDiagram extends HTMLElement {
 
     entry.node.setAttribute(
       "aria-controls",
-      ensureElementId(entry.panel, "aura-diagram-panel"),
+      ensureElementId(entry.panel, "auras-diagram-panel"),
     );
     entry.node.setAttribute("aria-expanded", "false");
     entry.panel.setAttribute("role", "region");
     entry.panel.setAttribute(
       "aria-labelledby",
-      ensureElementId(entry.node, "aura-diagram-node"),
+      ensureElementId(entry.node, "auras-diagram-node"),
     );
   }
 
@@ -422,7 +422,7 @@ export class AuraDiagram extends HTMLElement {
 
     if (options.dispatch && didChange) {
       this.dispatchEvent(
-        new CustomEvent("aura-change", {
+        new CustomEvent("auras-change", {
           detail: {
             value: entry.value,
             node: entry.node,
@@ -518,12 +518,12 @@ export class AuraDiagram extends HTMLElement {
   }
 }
 
-export function registerAuraDiagram() {
-  if (!customElements.get(AURA_DIAGRAM_TAG_NAME)) {
-    customElements.define(AURA_DIAGRAM_TAG_NAME, AuraDiagram);
+export function registerAurasDiagram() {
+  if (!customElements.get(AURAS_DIAGRAM_TAG_NAME)) {
+    customElements.define(AURAS_DIAGRAM_TAG_NAME, AurasDiagram);
   }
 
-  return AuraDiagram;
+  return AurasDiagram;
 }
 
-registerAuraDiagram();
+registerAurasDiagram();

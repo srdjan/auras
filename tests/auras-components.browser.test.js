@@ -86,16 +86,16 @@ Deno.test(
 
         await page.goto(`${origin}/public/index.html`);
 
-        await page.waitForSelector("aura-combobox");
-        await page.waitForSelector("aura-diagram");
-        await page.waitForSelector("aura-splitter");
-        await page.waitForSelector("aura-tree");
-        await page.waitForSelector("aura-master-detail");
-        await page.waitForSelector("aura-tabs");
+        await page.waitForSelector("auras-combobox");
+        await page.waitForSelector("auras-diagram");
+        await page.waitForSelector("auras-splitter");
+        await page.waitForSelector("auras-tree");
+        await page.waitForSelector("auras-master-detail");
+        await page.waitForSelector("auras-tabs");
 
-        await expectAttribute(page, "body", "data-brand", "aura");
+        await expectAttribute(page, "body", "data-brand", "auras");
         await expectAttribute(page, "#brand-headless", "data-variant", "ghost");
-        await expectAttribute(page, "#brand-aura", "data-variant", "solid");
+        await expectAttribute(page, "#brand-auras", "data-variant", "solid");
         await expectAttribute(
           page,
           "#brand-editorial",
@@ -104,14 +104,14 @@ Deno.test(
         );
         await expectLinkHref(
           page,
-          "#brand-pack-aura",
-          "/packages/brands/aura-brand.css",
+          "#brand-pack-auras",
+          "/packages/brands/auras-brand.css",
         );
 
         await expectText(page, "#combobox-out", "tabs");
         await expectText(page, "#diagram-out", "input");
         await expectText(page, "#splitter-out", "40");
-        await expectText(page, "#tree-out", "aura-css");
+        await expectText(page, "#tree-out", "auras-css");
         await expectText(page, "#md-out", "elements");
         await expectText(page, "#tabs-out", "overview");
 
@@ -126,16 +126,16 @@ Deno.test(
         await expectLinkHref(
           page,
           "#brand-pack-editorial",
-          "/packages/brands/aura-brand-editorial.css",
+          "/packages/brands/auras-brand-editorial.css",
         );
 
         await page.click("#brand-headless");
         await expectMissingAttribute(page, "body", "data-brand");
         await expectAttribute(page, "#brand-headless", "data-variant", "solid");
 
-        await page.click("#brand-aura");
-        await expectAttribute(page, "body", "data-brand", "aura");
-        await expectAttribute(page, "#brand-aura", "data-variant", "solid");
+        await page.click("#brand-auras");
+        await expectAttribute(page, "body", "data-brand", "auras");
+        await expectAttribute(page, "#brand-auras", "data-variant", "solid");
 
         await page.click("#toggle-contrast");
         await expectAttribute(page, "html", "data-contrast", "more");

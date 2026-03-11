@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aura CSS: Headless CSS Framework for Semantic HTML</title>
+    <title>Auras CSS: Headless CSS Framework for Semantic HTML</title>
     <meta
       name="description"
-      content="Aura CSS is a headless-first CSS framework for semantic HTML, token-driven styling, brand packs, and optional light-DOM components. No classes or required build step."
+      content="Auras CSS is a headless-first CSS framework for semantic HTML, token-driven styling, brand packs, and optional light-DOM components. No classes or required build step."
     />
     <meta
       name="robots"
@@ -15,10 +15,10 @@
     <meta name="theme-color" content="#ffffff" />
     <link rel="canonical" href="{{SITE_ORIGIN}}/" />
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Aura CSS" />
+    <meta property="og:site_name" content="Auras CSS" />
     <meta
       property="og:title"
-      content="Aura CSS: Headless CSS Framework for Semantic HTML"
+      content="Auras CSS: Headless CSS Framework for Semantic HTML"
     />
     <meta
       property="og:description"
@@ -27,18 +27,18 @@
     <meta property="og:url" content="{{SITE_ORIGIN}}/" />
     <meta
       property="og:image"
-      content="{{SITE_ORIGIN}}/aura-banner-dark.jpg"
+      content="{{SITE_ORIGIN}}/auras-banner-dark.jpg"
     />
     <meta property="og:image:width" content="600" />
     <meta property="og:image:height" content="327" />
     <meta
       property="og:image:alt"
-      content="Aura CSS framework social preview"
+      content="Auras CSS framework social preview"
     />
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
-      content="Aura CSS: Headless CSS Framework for Semantic HTML"
+      content="Auras CSS: Headless CSS Framework for Semantic HTML"
     />
     <meta
       name="twitter:description"
@@ -46,11 +46,11 @@
     />
     <meta
       name="twitter:image"
-      content="{{SITE_ORIGIN}}/aura-banner-dark.jpg"
+      content="{{SITE_ORIGIN}}/auras-banner-dark.jpg"
     />
     <meta
       name="twitter:image:alt"
-      content="Aura CSS framework social preview"
+      content="Auras CSS framework social preview"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -58,21 +58,21 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@300..800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/packages/elements/aura.css" />
-    <link rel="stylesheet" href="/packages/composites/aura-composites.css" />
+    <link rel="stylesheet" href="/packages/elements/auras.css" />
+    <link rel="stylesheet" href="/packages/composites/auras-composites.css" />
     <link
-      id="brand-pack-aura"
+      id="brand-pack-auras"
       rel="stylesheet"
-      href="/packages/brands/aura-brand.css"
+      href="/packages/brands/auras-brand.css"
     />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "SoftwareSourceCode",
-        "name": "Aura CSS",
+        "name": "Auras CSS",
         "description": "A headless-first CSS framework for semantic HTML, token-driven styling, brand packs, and optional light-DOM components.",
         "url": "{{SITE_ORIGIN}}/",
-        "codeRepository": "https://github.com/nicholasgasior/aura",
+        "codeRepository": "https://github.com/nicholasgasior/auras",
         "programmingLanguage": [
           "CSS",
           "HTML",
@@ -81,7 +81,7 @@
         ],
         "author": {
           "@type": "Organization",
-          "name": "Aura CSS"
+          "name": "Auras CSS"
         },
         "license": "https://opensource.org/licenses/MIT"
       }
@@ -386,7 +386,7 @@
       }
     </style>
   </head>
-  <body data-brand="aura">
+  <body data-brand="auras">
     <!-- Sticky toolbar -->
     <header data-ui="site-header" data-sticky data-site="toolbar">
       <div
@@ -396,7 +396,7 @@
         data-gap="2"
         data-site="toolbar-inner"
       >
-        <strong data-site="toolbar-wordmark">Aura</strong>
+        <strong data-site="toolbar-wordmark">Auras</strong>
         <nav
           data-nav="inline"
           data-hide="mobile"
@@ -452,7 +452,7 @@
       <!-- Hero -->
       <header data-site="hero">
         <div data-layout="stack" data-gap="6" data-align="center">
-          <h1 data-site="wordmark">Aura</h1>
+          <h1 data-site="wordmark">Auras</h1>
           <p class="lead">
             A headless CSS framework built on semantic HTML and
             <code>data-*</code> attributes. No classes, no build step, no
@@ -465,8 +465,8 @@
             aria-label="Brand pack preview"
           >
             <button id="brand-headless" type="button">Headless</button>
-            <button id="brand-aura" type="button" data-variant="solid">
-              Aura
+            <button id="brand-auras" type="button" data-variant="solid">
+              Auras
             </button>
             <button id="brand-editorial" type="button">Editorial</button>
           </div>
@@ -548,18 +548,18 @@
 
             <pre>
 <code><span data-syntax="comment">&lt;!-- Required: base elements --&gt;</span>
-<span data-syntax="tag">&lt;link</span> <span data-syntax="attr">rel</span>=<span data-syntax="value">"stylesheet"</span> <span data-syntax="attr">href</span>=<span data-syntax="value">"aura.css"</span><span data-syntax="tag">&gt;</span>
+<span data-syntax="tag">&lt;link</span> <span data-syntax="attr">rel</span>=<span data-syntax="value">"stylesheet"</span> <span data-syntax="attr">href</span>=<span data-syntax="value">"auras.css"</span><span data-syntax="tag">&gt;</span>
 
 <span data-syntax="comment">&lt;!-- Optional: composites for higher-level CSS patterns --&gt;</span>
-<span data-syntax="tag">&lt;link</span> <span data-syntax="attr">rel</span>=<span data-syntax="value">"stylesheet"</span> <span data-syntax="attr">href</span>=<span data-syntax="value">"aura-composites.css"</span><span data-syntax="tag">&gt;</span>
+<span data-syntax="tag">&lt;link</span> <span data-syntax="attr">rel</span>=<span data-syntax="value">"stylesheet"</span> <span data-syntax="attr">href</span>=<span data-syntax="value">"auras-composites.css"</span><span data-syntax="tag">&gt;</span>
 
 <span data-syntax="comment">&lt;!-- Optional: interactive custom elements --&gt;</span>
-<span data-syntax="tag">&lt;script</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"module"</span> <span data-syntax="attr">src</span>=<span data-syntax="value">"@aura/components/browser.js"</span><span data-syntax="tag">&gt;&lt;/script&gt;</span>
-<span data-syntax="tag">&lt;script</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"module"</span> <span data-syntax="attr">src</span>=<span data-syntax="value">"@aura/diagram/browser.js"</span><span data-syntax="tag">&gt;&lt;/script&gt;</span>
+<span data-syntax="tag">&lt;script</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"module"</span> <span data-syntax="attr">src</span>=<span data-syntax="value">"@auras/components/browser.js"</span><span data-syntax="tag">&gt;&lt;/script&gt;</span>
+<span data-syntax="tag">&lt;script</span> <span data-syntax="attr">type</span>=<span data-syntax="value">"module"</span> <span data-syntax="attr">src</span>=<span data-syntax="value">"@auras/diagram/browser.js"</span><span data-syntax="tag">&gt;&lt;/script&gt;</span>
 
 <span data-syntax="comment">&lt;!-- Optional: brand pack --&gt;</span>
-<span data-syntax="tag">&lt;link</span> <span data-syntax="attr">rel</span>=<span data-syntax="value">"stylesheet"</span> <span data-syntax="attr">href</span>=<span data-syntax="value">"aura-brand.css"</span><span data-syntax="tag">&gt;</span>
-<span data-syntax="tag">&lt;body</span> <span data-syntax="attr">data-brand</span>=<span data-syntax="value">"aura"</span><span data-syntax="tag">&gt;</span></code></pre>
+<span data-syntax="tag">&lt;link</span> <span data-syntax="attr">rel</span>=<span data-syntax="value">"stylesheet"</span> <span data-syntax="attr">href</span>=<span data-syntax="value">"auras-brand.css"</span><span data-syntax="tag">&gt;</span>
+<span data-syntax="tag">&lt;body</span> <span data-syntax="attr">data-brand</span>=<span data-syntax="value">"auras"</span><span data-syntax="tag">&gt;</span></code></pre>
 
             <div data-layout="grid" data-gap="4" data-grid-min="md">
               <article data-surface="card" data-layout="stack" data-gap="2">
@@ -710,7 +710,7 @@
                 <div data-part="preview">
                   <section data-ui="accordion" aria-label="FAQ">
                     <details name="faq" open>
-                      <summary>What is Aura?</summary>
+                      <summary>What is Auras?</summary>
                       <p>
                         A headless CSS framework that provides structure through
                         semantic HTML and data attributes, not class names.
@@ -1050,14 +1050,14 @@
             </hgroup>
 
             <pre>
-<code>&lt;script type="module" src="@aura/components/browser.js"&gt;&lt;/script&gt;
-&lt;script type="module" src="@aura/diagram/browser.js"&gt;&lt;/script&gt;</code></pre>
+<code>&lt;script type="module" src="@auras/components/browser.js"&gt;&lt;/script&gt;
+&lt;script type="module" src="@auras/diagram/browser.js"&gt;&lt;/script&gt;</code></pre>
 
             <!-- Tabs -->
             <article data-surface="card" data-layout="stack" data-gap="3">
               <h3>Tabs</h3>
               <p>
-                <code>aura-tabs</code> coordinates tab selection with roving
+                <code>auras-tabs</code> coordinates tab selection with roving
                 focus and panel visibility. The component only manages behavior
                 - the Composites layer handles visual treatment.
               </p>
@@ -1068,7 +1068,7 @@
                       Selected:
                       <code id="tabs-out">overview</code>
                     </p>
-                    <aura-tabs
+                    <auras-tabs
                       id="site-tabs"
                       data-ui="tabs"
                       value="overview"
@@ -1136,13 +1136,13 @@
                           </p>
                         </article>
                       </section>
-                    </aura-tabs>
+                    </auras-tabs>
                   </div>
                 </div>
                 <pre
                   data-part="code"
                 >
-<code>&lt;aura-tabs data-ui="tabs" value="overview"&gt;
+<code>&lt;auras-tabs data-ui="tabs" value="overview"&gt;
   &lt;nav data-part="tablist"&gt;
     &lt;button data-part="trigger" data-value="overview"&gt;Overview&lt;/button&gt;
     &lt;button data-part="trigger" data-value="tokens"&gt;Tokens&lt;/button&gt;
@@ -1151,7 +1151,7 @@
     &lt;article data-part="panel" data-value="overview"&gt;...&lt;/article&gt;
     &lt;article data-part="panel" data-value="tokens" hidden&gt;...&lt;/article&gt;
   &lt;/section&gt;
-&lt;/aura-tabs&gt;</code></pre>
+&lt;/auras-tabs&gt;</code></pre>
               </article>
             </article>
 
@@ -1159,7 +1159,7 @@
             <article data-surface="card" data-layout="stack" data-gap="3">
               <h3>Master-detail</h3>
               <p>
-                <code>aura-master-detail</code> coordinates a sidebar list with
+                <code>auras-master-detail</code> coordinates a sidebar list with
                 a detail panel. The Composites layer provides a responsive grid
                 shell.
               </p>
@@ -1170,7 +1170,7 @@
                       Selected:
                       <code id="md-out">elements</code>
                     </p>
-                    <aura-master-detail
+                    <auras-master-detail
                       id="site-md"
                       data-ui="master-detail"
                       value="elements"
@@ -1241,13 +1241,13 @@
                           </p>
                         </article>
                       </section>
-                    </aura-master-detail>
+                    </auras-master-detail>
                   </div>
                 </div>
                 <pre
                   data-part="code"
                 >
-<code>&lt;aura-master-detail data-ui="master-detail" value="elements"&gt;
+<code>&lt;auras-master-detail data-ui="master-detail" value="elements"&gt;
   &lt;nav data-part="master"&gt;
     &lt;button data-part="trigger" data-value="elements"&gt;
       &lt;strong&gt;Elements&lt;/strong&gt;
@@ -1257,7 +1257,7 @@
   &lt;section data-part="detail"&gt;
     &lt;article data-part="panel" data-value="elements"&gt;...&lt;/article&gt;
   &lt;/section&gt;
-&lt;/aura-master-detail&gt;</code></pre>
+&lt;/auras-master-detail&gt;</code></pre>
               </article>
             </article>
 
@@ -1265,7 +1265,7 @@
             <article data-surface="card" data-layout="stack" data-gap="3">
               <h3>Combobox</h3>
               <p>
-                <code>aura-combobox</code> adds filtering, active option state,
+                <code>auras-combobox</code> adds filtering, active option state,
                 keyboard selection, and optional linked panels to a native input
                 and list.
               </p>
@@ -1276,7 +1276,7 @@
                       Selected:
                       <code id="combobox-out">tabs</code>
                     </p>
-                    <aura-combobox
+                    <auras-combobox
                       id="site-combobox"
                       data-ui="combobox"
                       value="tabs"
@@ -1321,13 +1321,13 @@
                       </ul>
 
                       <p data-part="empty" hidden>No matches found.</p>
-                    </aura-combobox>
+                    </auras-combobox>
                   </div>
                 </div>
                 <pre
                   data-part="code"
                 >
-<code>&lt;aura-combobox data-ui="combobox" value="tabs"&gt;
+<code>&lt;auras-combobox data-ui="combobox" value="tabs"&gt;
   &lt;label for="search"&gt;Search&lt;/label&gt;
   &lt;div data-part="control"&gt;
     &lt;input data-part="input" type="text" placeholder="Filter..." /&gt;
@@ -1338,7 +1338,7 @@
     &lt;li data-part="option" data-value="tabs"&gt;Tabs&lt;/li&gt;
   &lt;/ul&gt;
   &lt;p data-part="empty" hidden&gt;No matches.&lt;/p&gt;
-&lt;/aura-combobox&gt;</code></pre>
+&lt;/auras-combobox&gt;</code></pre>
               </article>
             </article>
 
@@ -1346,7 +1346,7 @@
             <article data-surface="card" data-layout="stack" data-gap="3">
               <h3>Splitter</h3>
               <p>
-                <code>aura-splitter</code> adds keyboard resizing, pointer drag,
+                <code>auras-splitter</code> adds keyboard resizing, pointer drag,
                 and percent-based layout state to a two-pane layout.
               </p>
               <article data-ui="example">
@@ -1356,7 +1356,7 @@
                       Split at:
                       <code id="splitter-out">40</code>%
                     </p>
-                    <aura-splitter
+                    <auras-splitter
                       id="site-splitter"
                       data-ui="splitter"
                       value="40"
@@ -1381,20 +1381,20 @@
                         <p>
                           The split value is exposed through the
                           <code>value</code> attribute and the
-                          <code>aura-change</code> event.
+                          <code>auras-change</code> event.
                         </p>
                       </section>
-                    </aura-splitter>
+                    </auras-splitter>
                   </div>
                 </div>
                 <pre
                   data-part="code"
                 >
-<code>&lt;aura-splitter data-ui="splitter" value="40" min="25" max="75" step="5"&gt;
+<code>&lt;auras-splitter data-ui="splitter" value="40" min="25" max="75" step="5"&gt;
   &lt;section data-part="pane" data-pane="primary"&gt;...&lt;/section&gt;
   &lt;button data-part="separator" aria-label="Resize"&gt;&lt;/button&gt;
   &lt;section data-part="pane" data-pane="secondary"&gt;...&lt;/section&gt;
-&lt;/aura-splitter&gt;</code></pre>
+&lt;/auras-splitter&gt;</code></pre>
               </article>
             </article>
 
@@ -1402,7 +1402,7 @@
             <article data-surface="card" data-layout="stack" data-gap="3">
               <h3>Tree</h3>
               <p>
-                <code>aura-tree</code> adds hierarchical selection, branch
+                <code>auras-tree</code> adds hierarchical selection, branch
                 expansion, and spatial keyboard navigation to a nested list.
               </p>
               <article data-ui="example">
@@ -1410,12 +1410,12 @@
                   <div data-layout="stack" data-gap="3">
                     <p>
                       Selected:
-                      <code id="tree-out">aura-css</code>
+                      <code id="tree-out">auras.css</code>
                     </p>
-                    <aura-tree
+                    <auras-tree
                       id="site-tree"
                       data-ui="tree"
-                      value="aura-css"
+                      value="auras.css"
                     >
                       <ul data-part="tree" aria-label="Package structure">
                         <li
@@ -1439,13 +1439,13 @@
                             <p>Base layer</p>
                           </button>
                           <ul data-part="group">
-                            <li data-part="item" data-value="aura-css">
+                            <li data-part="item" data-value="auras.css">
                               <button
                                 type="button"
                                 data-part="node"
-                                data-value="aura-css"
+                                data-value="auras.css"
                               >
-                                <strong>aura.css</strong>
+                                <strong>auras.css</strong>
                                 <p>Core framework</p>
                               </button>
                             </li>
@@ -1477,7 +1477,7 @@
                                 data-part="node"
                                 data-value="composites-css"
                               >
-                                <strong>aura-composites.css</strong>
+                                <strong>auras-composites.css</strong>
                                 <p>Optional patterns</p>
                               </button>
                             </li>
@@ -1516,13 +1516,13 @@
                           </ul>
                         </li>
                       </ul>
-                    </aura-tree>
+                    </auras-tree>
                   </div>
                 </div>
                 <pre
                   data-part="code"
                 >
-<code>&lt;aura-tree data-ui="tree" value="root"&gt;
+<code>&lt;auras-tree data-ui="tree" value="root"&gt;
   &lt;ul data-part="tree"&gt;
     &lt;li data-part="item" data-branch data-expanded&gt;
       &lt;button data-part="toggle"&gt;&lt;/button&gt;
@@ -1534,7 +1534,7 @@
       &lt;/ul&gt;
     &lt;/li&gt;
   &lt;/ul&gt;
-&lt;/aura-tree&gt;</code></pre>
+&lt;/auras-tree&gt;</code></pre>
               </article>
             </article>
 
@@ -1542,7 +1542,7 @@
             <article data-surface="card" data-layout="stack" data-gap="3">
               <h3>Diagram</h3>
               <p>
-                <code>aura-diagram</code> turns semantic content with CSS Grid
+                <code>auras-diagram</code> turns semantic content with CSS Grid
                 placement into interactive flow diagrams with spatial keyboard
                 navigation and linked detail panels.
               </p>
@@ -1553,7 +1553,7 @@
                       Selected:
                       <code id="diagram-out">input</code>
                     </p>
-                    <aura-diagram
+                    <auras-diagram
                       id="site-diagram"
                       value="input"
                       activation="manual"
@@ -1654,13 +1654,13 @@
                           </p>
                         </article>
                       </section>
-                    </aura-diagram>
+                    </auras-diagram>
                   </div>
                 </div>
                 <pre
                   data-part="code"
                 >
-<code>&lt;aura-diagram value="input" style="--diagram-columns: 7"&gt;
+<code>&lt;auras-diagram value="input" style="--diagram-columns: 7"&gt;
   &lt;div data-part="canvas"&gt;
     &lt;button data-part="node" data-kind="input" data-value="input"
       style="--diagram-column: 1 / span 2; --diagram-row: 1"&gt;
@@ -1675,7 +1675,7 @@
   &lt;section data-part="panels"&gt;
     &lt;article data-part="panel" data-value="input"&gt;...&lt;/article&gt;
   &lt;/section&gt;
-&lt;/aura-diagram&gt;</code></pre>
+&lt;/auras-diagram&gt;</code></pre>
               </article>
             </article>
           </section>
@@ -1709,7 +1709,7 @@
                   <code>data-brand</code> on the body.
                 </p>
                 <pre>
-<code>&lt;body data-brand="aura"&gt;
+<code>&lt;body data-brand="auras"&gt;
 &lt;body data-brand="editorial"&gt;
 &lt;body&gt; &lt;!-- headless, no brand --&gt;</code></pre>
               </article>
@@ -1810,7 +1810,7 @@
               <p>Accessibility</p>
               <h2>Built In, Not Bolted On</h2>
               <p>
-                Aura bakes accessibility into every layer rather than treating
+                Auras bakes accessibility into every layer rather than treating
                 it as an afterthought.
               </p>
             </hgroup>
@@ -1925,7 +1925,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>aura-change</td>
+                    <td>auras-change</td>
                     <td>Event</td>
                     <td>
                       Dispatched on selection change.
@@ -1947,7 +1947,7 @@
                 aria-label="Project links"
               >
                 <a
-                  href="https://github.com/nicholasgasior/aura"
+                  href="https://github.com/nicholasgasior/auras"
                   rel="noopener noreferrer"
                 >GitHub</a>
                 <a href="/docs/">Docs</a>
@@ -1957,7 +1957,7 @@
                 Headless by default. Add <code>data-brand</code> for a design
                 system.
               </p>
-              <p>Built entirely with Aura.</p>
+              <p>Built entirely with Auras.</p>
             </div>
           </footer>
         </div>
@@ -1972,7 +1972,7 @@
         const body = document.body;
         const brandButtons = {
           headless: document.getElementById("brand-headless"),
-          aura: document.getElementById("brand-aura"),
+          auras: document.getElementById("brand-auras"),
           editorial: document.getElementById("brand-editorial"),
         };
         const darkButton = document.getElementById("toggle-dark");
@@ -1981,8 +1981,8 @@
         );
         const motionButton = document.getElementById("toggle-motion");
         const brandStylesheets = {
-          aura: "/packages/brands/aura-brand.css",
-          editorial: "/packages/brands/aura-brand-editorial.css",
+          auras: "/packages/brands/auras-brand.css",
+          editorial: "/packages/brands/auras-brand-editorial.css",
         };
 
         function ensureBrandStylesheet(brand) {
@@ -2093,7 +2093,7 @@
           const out = document.getElementById(outputId);
           if (!el || !out) return;
           out.textContent = el.getAttribute("value") || fallback;
-          el.addEventListener("aura-change", (e) => {
+          el.addEventListener("auras-change", (e) => {
             out.textContent = e.detail.value;
           });
         }
@@ -2102,7 +2102,7 @@
         bindOutput("site-md", "md-out", "elements");
         bindOutput("site-combobox", "combobox-out", "tabs");
         bindOutput("site-splitter", "splitter-out", "40");
-        bindOutput("site-tree", "tree-out", "aura-css");
+        bindOutput("site-tree", "tree-out", "auras.css");
         bindOutput("site-diagram", "diagram-out", "input");
 
         // Active nav link tracking via IntersectionObserver

@@ -11,7 +11,7 @@ import {
 } from "../site/docs.ts";
 
 Deno.test("extractHeadings ignores fenced code blocks and creates stable ids", () => {
-  const markdown = `# Aura CSS
+  const markdown = `# Auras CSS
 
 ## Quick Start
 
@@ -24,7 +24,7 @@ Deno.test("extractHeadings ignores fenced code blocks and creates stable ids", (
 `;
 
   assertEquals(extractHeadings(markdown), [
-    { depth: 1, text: "Aura CSS", id: "aura-css" },
+    { depth: 1, text: "Auras CSS", id: "auras-css" },
     { depth: 2, text: "Quick Start", id: "quick-start" },
     { depth: 2, text: "Quick Start", id: "quick-start-2" },
     { depth: 3, text: "Components", id: "components" },
@@ -61,19 +61,19 @@ Deno.test("getRedirectPath normalizes raw markdown and legacy homepage paths", (
 });
 
 Deno.test("renderSitemap includes the homepage and documentation pages", () => {
-  const sitemap = renderSitemap("https://aura.example");
+  const sitemap = renderSitemap("https://auras.example");
 
-  assertStringIncludes(sitemap, "<loc>https://aura.example/</loc>");
-  assertStringIncludes(sitemap, "<loc>https://aura.example/docs/</loc>");
+  assertStringIncludes(sitemap, "<loc>https://auras.example/</loc>");
+  assertStringIncludes(sitemap, "<loc>https://auras.example/docs/</loc>");
   assertStringIncludes(
     sitemap,
-    "<loc>https://aura.example/docs/user-guide/</loc>",
+    "<loc>https://auras.example/docs/user-guide/</loc>",
   );
 });
 
 Deno.test("slugifyHeading strips inline markdown noise", () => {
   assertEquals(
-    slugifyHeading("`aura-tabs` v1 Scope"),
-    "aura-tabs-v1-scope",
+    slugifyHeading("`auras-tabs` v1 Scope"),
+    "auras-tabs-v1-scope",
   );
 });

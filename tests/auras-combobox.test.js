@@ -21,11 +21,11 @@ Object.assign(globalThis, {
 
 await testWindow.happyDOM.whenAsyncComplete();
 
-const { registerAuraComponents } = await import(
+const { registerAurasComponents } = await import(
   "../packages/components/mod.ts"
 );
 
-registerAuraComponents();
+registerAurasComponents();
 
 function connectHost(tagName, markup) {
   document.body.innerHTML = markup;
@@ -42,9 +42,9 @@ function connectHost(tagName, markup) {
 
 function renderCombobox(attributes = "") {
   const host = connectHost(
-    "aura-combobox",
+    "auras-combobox",
     `
-      <aura-combobox ${attributes}>
+      <auras-combobox ${attributes}>
         <label for="component-search">Component</label>
 
         <div data-part="control">
@@ -83,7 +83,7 @@ function renderCombobox(attributes = "") {
             Diagram panel
           </article>
         </section>
-      </aura-combobox>
+      </auras-combobox>
     `,
   );
 
@@ -136,13 +136,13 @@ Deno.test(
 );
 
 Deno.test(
-  "combobox toggle and option clicks select a value and dispatch aura-change",
+  "combobox toggle and option clicks select a value and dispatch auras-change",
   () => {
     const { host, input, toggle, listbox, getOption, getPanel } =
       renderCombobox('value="elements"');
     const changes = [];
 
-    host.addEventListener("aura-change", (event) => {
+    host.addEventListener("auras-change", (event) => {
       changes.push(event.detail.value);
     });
 
@@ -194,7 +194,7 @@ Deno.test(
     );
     const changes = [];
 
-    host.addEventListener("aura-change", (event) => {
+    host.addEventListener("auras-change", (event) => {
       changes.push(event.detail.value);
     });
 
@@ -221,7 +221,7 @@ Deno.test(
     );
     const changes = [];
 
-    host.addEventListener("aura-change", (event) => {
+    host.addEventListener("auras-change", (event) => {
       changes.push(event.detail.value);
     });
 

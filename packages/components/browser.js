@@ -171,7 +171,7 @@ class AuraSelectablePanelsElement extends HTMLElement {
   }
 
   _getPanelIdPrefix() {
-    return "aura-panel";
+    return "auras-panel";
   }
 
   _setContainerSemantics() {}
@@ -309,7 +309,7 @@ class AuraSelectablePanelsElement extends HTMLElement {
 
     if (options.dispatch && didChange) {
       this.dispatchEvent(
-        new CustomEvent("aura-change", {
+        new CustomEvent("auras-change", {
           detail: {
             value: entry.value,
             trigger: entry.trigger,
@@ -404,7 +404,7 @@ class AuraSelectablePanelsElement extends HTMLElement {
   }
 }
 
-class AuraCombobox extends HTMLElement {
+class AurasCombobox extends HTMLElement {
   static observedAttributes = ["value", "activation", "open"];
 
   constructor() {
@@ -671,7 +671,7 @@ class AuraCombobox extends HTMLElement {
       return;
     }
 
-    const listboxId = ensureElementId(this._listbox, "aura-combobox-listbox");
+    const listboxId = ensureElementId(this._listbox, "auras-combobox-listbox");
 
     this._input.setAttribute("role", "combobox");
     this._input.setAttribute("aria-autocomplete", "list");
@@ -685,7 +685,7 @@ class AuraCombobox extends HTMLElement {
       entry.option.setAttribute("role", "option");
       entry.option.setAttribute(
         "id",
-        ensureElementId(entry.option, "aura-combobox-option"),
+        ensureElementId(entry.option, "auras-combobox-option"),
       );
       entry.option.setAttribute("aria-selected", "false");
 
@@ -771,7 +771,7 @@ class AuraCombobox extends HTMLElement {
 
     if (options.dispatch && didChange) {
       this.dispatchEvent(
-        new CustomEvent("aura-change", {
+        new CustomEvent("auras-change", {
           detail: {
             value: entry.value,
             option: entry.option,
@@ -1115,13 +1115,13 @@ class AuraCombobox extends HTMLElement {
   }
 }
 
-const AURA_COMBOBOX_TAG_NAME = "aura-combobox";
-const AURA_MASTER_DETAIL_TAG_NAME = "aura-master-detail";
-const AURA_SPLITTER_TAG_NAME = "aura-splitter";
-const AURA_TREE_TAG_NAME = "aura-tree";
-const AURA_TABS_TAG_NAME = "aura-tabs";
+const AURAS_COMBOBOX_TAG_NAME = "auras-combobox";
+const AURAS_MASTER_DETAIL_TAG_NAME = "auras-master-detail";
+const AURAS_SPLITTER_TAG_NAME = "auras-splitter";
+const AURAS_TREE_TAG_NAME = "auras-tree";
+const AURAS_TABS_TAG_NAME = "auras-tabs";
 
-class AuraMasterDetail extends AuraSelectablePanelsElement {
+class AurasMasterDetail extends AuraSelectablePanelsElement {
   _getContainerSelector() {
     return MASTER_SELECTOR;
   }
@@ -1131,7 +1131,7 @@ class AuraMasterDetail extends AuraSelectablePanelsElement {
   }
 
   _getPanelIdPrefix() {
-    return "aura-master-detail-panel";
+    return "auras-master-detail-panel";
   }
 
   _applyEntrySemantics(entry) {
@@ -1175,7 +1175,7 @@ class AuraMasterDetail extends AuraSelectablePanelsElement {
   }
 }
 
-class AuraTabs extends AuraSelectablePanelsElement {
+class AurasTabs extends AuraSelectablePanelsElement {
   _getContainerSelector() {
     return TABLIST_SELECTOR;
   }
@@ -1185,7 +1185,7 @@ class AuraTabs extends AuraSelectablePanelsElement {
   }
 
   _getPanelIdPrefix() {
-    return "aura-tabs-panel";
+    return "auras-tabs-panel";
   }
 
   _setContainerSemantics(container) {
@@ -1198,7 +1198,7 @@ class AuraTabs extends AuraSelectablePanelsElement {
     entry.trigger.setAttribute("aria-selected", "false");
     entry.trigger.setAttribute(
       "id",
-      ensureElementId(entry.trigger, "aura-tabs-trigger"),
+      ensureElementId(entry.trigger, "auras-tabs-trigger"),
     );
     entry.panel.setAttribute("role", "tabpanel");
     entry.panel.setAttribute("aria-labelledby", entry.trigger.id);
@@ -1231,7 +1231,7 @@ class AuraTabs extends AuraSelectablePanelsElement {
   }
 }
 
-class AuraTree extends HTMLElement {
+class AurasTree extends HTMLElement {
   static observedAttributes = ["value", "activation"];
 
   constructor() {
@@ -1494,7 +1494,7 @@ class AuraTree extends HTMLElement {
     entry.node.setAttribute("role", "treeitem");
     entry.node.setAttribute(
       "id",
-      ensureElementId(entry.node, "aura-tree-node"),
+      ensureElementId(entry.node, "auras-tree-node"),
     );
     entry.node.setAttribute("aria-level", String(entry.level));
     entry.node.setAttribute("aria-setsize", String(entry.setSize));
@@ -1504,7 +1504,7 @@ class AuraTree extends HTMLElement {
     const controlIds = [];
 
     if (entry.group) {
-      const groupId = ensureElementId(entry.group, "aura-tree-group");
+      const groupId = ensureElementId(entry.group, "auras-tree-group");
       entry.group.setAttribute("role", "group");
       controlIds.push(groupId);
 
@@ -1513,7 +1513,7 @@ class AuraTree extends HTMLElement {
       if (entry.toggle) {
         entry.toggle.setAttribute(
           "id",
-          ensureElementId(entry.toggle, "aura-tree-toggle"),
+          ensureElementId(entry.toggle, "auras-tree-toggle"),
         );
         entry.toggle.setAttribute("aria-controls", groupId);
         entry.toggle.setAttribute("aria-expanded", "false");
@@ -1525,9 +1525,9 @@ class AuraTree extends HTMLElement {
       entry.panel.setAttribute("role", "region");
       entry.panel.setAttribute(
         "aria-labelledby",
-        ensureElementId(entry.node, "aura-tree-node"),
+        ensureElementId(entry.node, "auras-tree-node"),
       );
-      controlIds.push(ensureElementId(entry.panel, "aura-tree-panel"));
+      controlIds.push(ensureElementId(entry.panel, "auras-tree-panel"));
     }
 
     if (controlIds.length > 0) {
@@ -1581,7 +1581,7 @@ class AuraTree extends HTMLElement {
 
     if (options.dispatch && didChange) {
       this.dispatchEvent(
-        new CustomEvent("aura-change", {
+        new CustomEvent("auras-change", {
           detail: {
             value: entry.value,
             item: entry.item,
@@ -1898,7 +1898,7 @@ class AuraTree extends HTMLElement {
   }
 }
 
-class AuraSplitter extends HTMLElement {
+class AurasSplitter extends HTMLElement {
   static observedAttributes = ["value", "orientation", "min", "max", "step"];
 
   constructor() {
@@ -2043,10 +2043,10 @@ class AuraSplitter extends HTMLElement {
       return;
     }
 
-    const primaryId = ensureElementId(this._primaryPane, "aura-splitter-pane");
+    const primaryId = ensureElementId(this._primaryPane, "auras-splitter-pane");
     const secondaryId = ensureElementId(
       this._secondaryPane,
-      "aura-splitter-pane",
+      "auras-splitter-pane",
     );
 
     this._separator.setAttribute("role", "separator");
@@ -2142,7 +2142,7 @@ class AuraSplitter extends HTMLElement {
 
     if (options.dispatch && didChange) {
       this.dispatchEvent(
-        new CustomEvent("aura-change", {
+        new CustomEvent("auras-change", {
           detail: {
             value: normalizedValue,
             separator: this._separator,
@@ -2288,71 +2288,71 @@ function clampSplitterPercent(value, min, max) {
   return Math.round(Math.min(max, Math.max(min, value)));
 }
 
-function registerAuraCombobox() {
-  if (!customElements.get(AURA_COMBOBOX_TAG_NAME)) {
-    customElements.define(AURA_COMBOBOX_TAG_NAME, AuraCombobox);
+function registerAurasCombobox() {
+  if (!customElements.get(AURAS_COMBOBOX_TAG_NAME)) {
+    customElements.define(AURAS_COMBOBOX_TAG_NAME, AurasCombobox);
   }
 
-  return AuraCombobox;
+  return AurasCombobox;
 }
 
-function registerAuraSplitter() {
-  if (!customElements.get(AURA_SPLITTER_TAG_NAME)) {
-    customElements.define(AURA_SPLITTER_TAG_NAME, AuraSplitter);
+function registerAurasSplitter() {
+  if (!customElements.get(AURAS_SPLITTER_TAG_NAME)) {
+    customElements.define(AURAS_SPLITTER_TAG_NAME, AurasSplitter);
   }
 
-  return AuraSplitter;
+  return AurasSplitter;
 }
 
-function registerAuraMasterDetail() {
-  if (!customElements.get(AURA_MASTER_DETAIL_TAG_NAME)) {
-    customElements.define(AURA_MASTER_DETAIL_TAG_NAME, AuraMasterDetail);
+function registerAurasMasterDetail() {
+  if (!customElements.get(AURAS_MASTER_DETAIL_TAG_NAME)) {
+    customElements.define(AURAS_MASTER_DETAIL_TAG_NAME, AurasMasterDetail);
   }
 
-  return AuraMasterDetail;
+  return AurasMasterDetail;
 }
 
-function registerAuraTabs() {
-  if (!customElements.get(AURA_TABS_TAG_NAME)) {
-    customElements.define(AURA_TABS_TAG_NAME, AuraTabs);
+function registerAurasTabs() {
+  if (!customElements.get(AURAS_TABS_TAG_NAME)) {
+    customElements.define(AURAS_TABS_TAG_NAME, AurasTabs);
   }
 
-  return AuraTabs;
+  return AurasTabs;
 }
 
-function registerAuraTree() {
-  if (!customElements.get(AURA_TREE_TAG_NAME)) {
-    customElements.define(AURA_TREE_TAG_NAME, AuraTree);
+function registerAurasTree() {
+  if (!customElements.get(AURAS_TREE_TAG_NAME)) {
+    customElements.define(AURAS_TREE_TAG_NAME, AurasTree);
   }
 
-  return AuraTree;
+  return AurasTree;
 }
 
-function registerAuraComponents() {
-  registerAuraCombobox();
-  registerAuraMasterDetail();
-  registerAuraSplitter();
-  registerAuraTree();
-  registerAuraTabs();
+function registerAurasComponents() {
+  registerAurasCombobox();
+  registerAurasMasterDetail();
+  registerAurasSplitter();
+  registerAurasTree();
+  registerAurasTabs();
 }
 
-registerAuraComponents();
+registerAurasComponents();
 
 export {
-  AURA_COMBOBOX_TAG_NAME,
-  AURA_MASTER_DETAIL_TAG_NAME,
-  AURA_SPLITTER_TAG_NAME,
-  AURA_TABS_TAG_NAME,
-  AURA_TREE_TAG_NAME,
-  AuraCombobox,
-  AuraMasterDetail,
-  AuraSplitter,
-  AuraTabs,
-  AuraTree,
-  registerAuraCombobox,
-  registerAuraComponents,
-  registerAuraMasterDetail,
-  registerAuraSplitter,
-  registerAuraTabs,
-  registerAuraTree,
+  AURAS_COMBOBOX_TAG_NAME,
+  AURAS_MASTER_DETAIL_TAG_NAME,
+  AURAS_SPLITTER_TAG_NAME,
+  AURAS_TABS_TAG_NAME,
+  AURAS_TREE_TAG_NAME,
+  AurasCombobox,
+  AurasMasterDetail,
+  AurasSplitter,
+  AurasTabs,
+  AurasTree,
+  registerAurasCombobox,
+  registerAurasComponents,
+  registerAurasMasterDetail,
+  registerAurasSplitter,
+  registerAurasTabs,
+  registerAurasTree,
 };

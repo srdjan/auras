@@ -22,11 +22,11 @@ Object.assign(globalThis, {
 
 await testWindow.happyDOM.whenAsyncComplete();
 
-const { registerAuraComponents } = await import(
+const { registerAurasComponents } = await import(
   "../packages/components/mod.ts"
 );
 
-registerAuraComponents();
+registerAurasComponents();
 
 function connectHost(tagName, markup) {
   document.body.innerHTML = markup;
@@ -43,10 +43,10 @@ function connectHost(tagName, markup) {
 
 function renderTree(attributes = "", expandedAttribute = "") {
   const host = connectHost(
-    "aura-tree",
+    "auras-tree",
     `
-      <aura-tree ${attributes}>
-        <ul data-part="tree" aria-label="Aura package map">
+      <auras-tree ${attributes}>
+        <ul data-part="tree" aria-label="Auras package map">
           <li data-part="item" data-value="elements">
             <button type="button" data-part="node">Elements</button>
           </li>
@@ -91,7 +91,7 @@ function renderTree(attributes = "", expandedAttribute = "") {
             Diagram panel
           </article>
         </section>
-      </aura-tree>
+      </auras-tree>
     `,
   );
 
@@ -167,7 +167,7 @@ Deno.test("tree auto activation follows visible navigation and branch expansion"
   const { host, getNode, getGroup } = renderTree('value="elements"');
   const changes = [];
 
-  host.addEventListener("aura-change", (event) => {
+  host.addEventListener("auras-change", (event) => {
     changes.push(event.detail.value);
   });
 
@@ -214,7 +214,7 @@ Deno.test("tree manual activation keeps focus movement separate from selection",
   );
   const changes = [];
 
-  host.addEventListener("aura-change", (event) => {
+  host.addEventListener("auras-change", (event) => {
     changes.push(event.detail.value);
   });
 
@@ -250,7 +250,7 @@ Deno.test("tree collapsing a branch with the active descendant selects the branc
   );
   const changes = [];
 
-  host.addEventListener("aura-change", (event) => {
+  host.addEventListener("auras-change", (event) => {
     changes.push(event.detail.value);
   });
 
@@ -268,7 +268,7 @@ Deno.test("tree toggle clicks expand and collapse branches without stray selecti
   const { host, getToggle, getGroup } = renderTree('value="elements"');
   const changes = [];
 
-  host.addEventListener("aura-change", (event) => {
+  host.addEventListener("auras-change", (event) => {
     changes.push(event.detail.value);
   });
 

@@ -1,7 +1,7 @@
-/* Sample Aura brand pack. Load this on top of aura-css.css to opt into a
+/* Sample Auras brand pack. Load this on top of auras.css to opt into a
    branded design system while keeping the headless core unchanged. */
 @layer brands {
-  [data-brand="aura"] {
+  [data-brand="auras"] {
     --primary-l: 55%;
     --primary-c: 0.15;
     --primary: oklch(var(--primary-l) var(--primary-c) var(--hue-primary));
@@ -54,8 +54,8 @@
   }
 
   /* Dark mode brand overrides */
-  [data-theme~="dark"] [data-brand="aura"],
-  [data-brand="aura"][data-theme~="dark"] {
+  [data-theme~="dark"] [data-brand="auras"],
+  [data-brand="auras"][data-theme~="dark"] {
     --gray-10: oklch(20% 0.006 var(--hue-primary));
     --gray-11: oklch(13% 0.005 var(--hue-primary));
     --gray-12: oklch(9% 0.004 var(--hue-primary));
@@ -63,7 +63,7 @@
   }
 
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme]) [data-brand="aura"] {
+    :root:not([data-theme]) [data-brand="auras"] {
       --gray-10: oklch(20% 0.006 var(--hue-primary));
       --gray-11: oklch(13% 0.005 var(--hue-primary));
       --gray-12: oklch(9% 0.004 var(--hue-primary));
@@ -72,19 +72,19 @@
   }
 
   @supports (color: color-mix(in oklch, black, white)) {
-    [data-brand="aura"] {
+    [data-brand="auras"] {
       --primary-hover: color-mix(in oklch, var(--primary) 88%, black);
       --primary-subtle: color-mix(in oklch, var(--primary) 20%, white);
     }
 
-    [data-theme~="dark"] [data-brand="aura"],
-    [data-brand="aura"][data-theme~="dark"] {
+    [data-theme~="dark"] [data-brand="auras"],
+    [data-brand="auras"][data-theme~="dark"] {
       --primary-hover: color-mix(in oklch, var(--primary) 80%, white);
       --primary-subtle: color-mix(in oklch, var(--primary) 30%, var(--gray-10));
     }
 
     @media (prefers-color-scheme: dark) {
-      :root:not([data-theme]) [data-brand="aura"] {
+      :root:not([data-theme]) [data-brand="auras"] {
         --primary-hover: color-mix(in oklch, var(--primary) 80%, white);
         --primary-subtle: color-mix(in oklch, var(--primary) 30%, var(--gray-10));
       }

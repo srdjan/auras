@@ -18,44 +18,44 @@ export type DocHeading = {
   id: string;
 };
 
-const SOCIAL_IMAGE_PATH = "/aura-banner-dark.jpg";
+const SOCIAL_IMAGE_PATH = "/auras-banner-dark.jpg";
 
 export const DOC_PAGES: ReadonlyArray<DocPage> = [
   {
     route: "/docs/user-guide/",
     sourcePath: "./docs/user-guide.md",
-    title: "Aura CSS User Guide",
+    title: "Auras CSS User Guide",
     description:
-      "Installation, layout primitives, tokens, theming, utilities, and interactive component patterns for Aura CSS.",
+      "Installation, layout primitives, tokens, theming, utilities, and interactive component patterns for Auras CSS.",
     category: "Guide",
     related: [
       {
         href: "/docs/component-architecture/",
         label: "Component architecture",
       },
-      { href: "/docs/packages/components/", label: "@aura/components" },
-      { href: "/docs/packages/diagram/", label: "@aura/diagram" },
+      { href: "/docs/packages/components/", label: "@auras/components" },
+      { href: "/docs/packages/diagram/", label: "@auras/diagram" },
     ],
   },
   {
     route: "/docs/component-architecture/",
     sourcePath: "./docs/component-architecture.md",
-    title: "Aura CSS Component Architecture",
+    title: "Auras CSS Component Architecture",
     description:
-      "How Aura CSS is structured into Elements, Composites, and light-DOM Components, plus the public styling and behavior contract.",
+      "How Auras CSS is structured into Elements, Composites, and light-DOM Components, plus the public styling and behavior contract.",
     category: "Architecture",
     related: [
       { href: "/docs/user-guide/", label: "User guide" },
-      { href: "/docs/packages/components/", label: "@aura/components" },
-      { href: "/docs/packages/diagram/", label: "@aura/diagram" },
+      { href: "/docs/packages/components/", label: "@auras/components" },
+      { href: "/docs/packages/diagram/", label: "@auras/diagram" },
     ],
   },
   {
     route: "/docs/packages/components/",
     sourcePath: "./packages/components/README.md",
-    title: "@aura/components",
+    title: "@auras/components",
     description:
-      "Light-DOM interactive components for Aura CSS, including tabs, combobox, splitter, tree, and master-detail.",
+      "Light-DOM interactive components for Auras CSS, including tabs, combobox, splitter, tree, and master-detail.",
     category: "Package Docs",
     related: [
       { href: "/docs/user-guide/", label: "User guide" },
@@ -63,15 +63,15 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
         href: "/docs/component-architecture/",
         label: "Component architecture",
       },
-      { href: "/docs/packages/diagram/", label: "@aura/diagram" },
+      { href: "/docs/packages/diagram/", label: "@auras/diagram" },
     ],
   },
   {
     route: "/docs/packages/diagram/",
     sourcePath: "./packages/diagram/README.md",
-    title: "@aura/diagram",
+    title: "@auras/diagram",
     description:
-      "Optional light-DOM diagram controller for Aura CSS with selection state, roving focus, and keyboard navigation.",
+      "Optional light-DOM diagram controller for Auras CSS with selection state, roving focus, and keyboard navigation.",
     category: "Package Docs",
     related: [
       { href: "/docs/user-guide/", label: "User guide" },
@@ -79,7 +79,7 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
         href: "/docs/component-architecture/",
         label: "Component architecture",
       },
-      { href: "/docs/packages/components/", label: "@aura/components" },
+      { href: "/docs/packages/components/", label: "@auras/components" },
     ],
   },
 ] as const;
@@ -140,7 +140,7 @@ function footerLinks(): string {
   const links = [
     { href: "/", label: "Home" },
     { href: "/docs/", label: "Docs" },
-    { href: "https://github.com/nicholasgasior/aura", label: "GitHub" },
+    { href: "https://github.com/nicholasgasior/auras", label: "GitHub" },
   ];
 
   return links.map((link) => {
@@ -477,7 +477,7 @@ function renderPageHead(options: {
 }): string {
   const canonicalUrl = absoluteUrl(options.origin, options.path);
   const socialImageUrl = absoluteUrl(options.origin, SOCIAL_IMAGE_PATH);
-  const fullTitle = `${options.title} | Aura CSS`;
+  const fullTitle = `${options.title} | Auras CSS`;
 
   return `<!DOCTYPE html>
 <html lang="en" data-smooth>
@@ -490,7 +490,7 @@ function renderPageHead(options: {
     <link rel="canonical" href="${canonicalUrl}" />
     <meta name="theme-color" content="#ffffff" />
     <meta property="og:type" content="${options.pageType}" />
-    <meta property="og:site_name" content="Aura CSS" />
+    <meta property="og:site_name" content="Auras CSS" />
     <meta property="og:title" content="${escapeHtml(fullTitle)}" />
     <meta property="og:description" content="${
     escapeHtml(options.description)
@@ -499,17 +499,17 @@ function renderPageHead(options: {
     <meta property="og:image" content="${socialImageUrl}" />
     <meta property="og:image:width" content="600" />
     <meta property="og:image:height" content="327" />
-    <meta property="og:image:alt" content="Aura CSS social preview" />
+    <meta property="og:image:alt" content="Auras CSS social preview" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeHtml(fullTitle)}" />
     <meta name="twitter:description" content="${
     escapeHtml(options.description)
   }" />
     <meta name="twitter:image" content="${socialImageUrl}" />
-    <meta name="twitter:image:alt" content="Aura CSS social preview" />
-    <link rel="stylesheet" href="/packages/elements/aura.css" />
-    <link rel="stylesheet" href="/packages/composites/aura-composites.css" />
-    <link rel="stylesheet" href="/packages/brands/aura-brand.css" />
+    <meta name="twitter:image:alt" content="Auras CSS social preview" />
+    <link rel="stylesheet" href="/packages/elements/auras.css" />
+    <link rel="stylesheet" href="/packages/composites/auras-composites.css" />
+    <link rel="stylesheet" href="/packages/brands/auras-brand.css" />
     <style>${docsPageStyles()}</style>
     ${options.structuredData.map(jsonLdScript).join("\n    ")}
   </head>`;
@@ -560,11 +560,11 @@ function articleStructuredData(
     url: absoluteUrl(origin, page.route),
     author: {
       "@type": "Organization",
-      name: "Aura CSS",
+      name: "Auras CSS",
     },
     publisher: {
       "@type": "Organization",
-      name: "Aura CSS",
+      name: "Auras CSS",
     },
     mainEntityOfPage: absoluteUrl(origin, page.route),
     articleSection: page.category,
@@ -581,9 +581,9 @@ function softwareStructuredData(origin: string): unknown {
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "Aura CSS Documentation",
+    name: "Auras CSS Documentation",
     description:
-      "Guides, architecture notes, and package documentation for Aura CSS.",
+      "Guides, architecture notes, and package documentation for Auras CSS.",
     url: absoluteUrl(origin, "/docs/"),
     isPartOf: absoluteUrl(origin, "/"),
     hasPart: DOC_PAGES.map((page) => ({
@@ -632,8 +632,8 @@ function renderFooter(currentPath: string): string {
         </nav>
         <p>${
     currentPath === "/"
-      ? "Aura CSS is headless by default and SEO-ready with semantic HTML."
-      : "Aura CSS documentation is served as semantic HTML with token-driven styling."
+      ? "Auras CSS is headless by default and SEO-ready with semantic HTML."
+      : "Auras CSS documentation is served as semantic HTML with token-driven styling."
   }</p>
       </div>
     </div>
@@ -698,7 +698,7 @@ export async function renderDocPage(
       ],
     })
   }
-  <body data-brand="aura">
+  <body data-brand="auras">
     <header data-ui="site-header" data-sticky data-site="docs-toolbar">
       <div
         data-layout="row"
@@ -707,7 +707,7 @@ export async function renderDocPage(
         data-gap="2"
         data-site="docs-toolbar-inner"
       >
-        <a href="/" data-site="docs-wordmark">Aura CSS</a>
+        <a href="/" data-site="docs-wordmark">Auras CSS</a>
         <nav aria-label="Documentation" data-nav="inline" data-hide="mobile">
           <ul>${docsNavItems(page.route)}</ul>
         </nav>
@@ -752,9 +752,9 @@ export function renderDocsIndex(origin: string): string {
     renderPageHead({
       origin,
       path: "/docs/",
-      title: "Aura CSS Documentation",
+      title: "Auras CSS Documentation",
       description:
-        "Guides, architecture notes, and package documentation for Aura CSS.",
+        "Guides, architecture notes, and package documentation for Auras CSS.",
       pageType: "website",
       structuredData: [
         softwareStructuredData(origin),
@@ -762,7 +762,7 @@ export function renderDocsIndex(origin: string): string {
       ],
     })
   }
-  <body data-brand="aura">
+  <body data-brand="auras">
     <header data-ui="site-header" data-sticky data-site="docs-toolbar">
       <div
         data-layout="row"
@@ -771,7 +771,7 @@ export function renderDocsIndex(origin: string): string {
         data-gap="2"
         data-site="docs-toolbar-inner"
       >
-        <a href="/" data-site="docs-wordmark">Aura CSS</a>
+        <a href="/" data-site="docs-wordmark">Auras CSS</a>
         <nav aria-label="Documentation" data-nav="inline">
           <ul>${docsNavItems("/docs/")}</ul>
         </nav>
@@ -781,9 +781,9 @@ export function renderDocsIndex(origin: string): string {
       ${renderBreadcrumbHtml(breadcrumbItems)}
       <header data-site="page-header">
         <p>Documentation</p>
-        <h1>Aura CSS Docs</h1>
+        <h1>Auras CSS Docs</h1>
         <p>
-          Crawlable guides and package references for Aura CSS, served as
+          Crawlable guides and package references for Auras CSS, served as
           semantic HTML with canonical URLs, breadcrumb metadata, and internal
           links.
         </p>

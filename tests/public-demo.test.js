@@ -5,13 +5,13 @@ const html = await Deno.readTextFile(
 );
 
 Deno.test(
-  "public demo loads the Aura brand pack by default and exposes preference toggles",
+  "public demo loads the Auras brand pack by default and exposes preference toggles",
   () => {
     assertMatch(
       html,
-      /<link\s+id="brand-pack-aura"\s+rel="stylesheet"\s+href="\/packages\/brands\/aura-brand\.css"/,
+      /<link\s+id="brand-pack-auras"\s+rel="stylesheet"\s+href="\/packages\/brands\/auras-brand\.css"/,
     );
-    assertMatch(html, /<body\s+data-brand="aura">/);
+    assertMatch(html, /<body\s+data-brand="auras">/);
     assertMatch(
       html,
       /<button\s+id="toggle-contrast"[\s\S]*?aria-pressed="false"/,

@@ -1,14 +1,14 @@
 import {
-  type AuraSelectableEntry,
-  AuraSelectablePanelsElement,
+  type AurasSelectableEntry,
+  AurasSelectablePanelsElement,
   getDirectionality,
 } from "./shared/selectable-panels.ts";
 
 const MASTER_SELECTOR = '[data-part="master"]';
 const DETAIL_SELECTOR = '[data-part="detail"]';
-export const AURA_MASTER_DETAIL_TAG_NAME = "aura-master-detail";
+export const AURAS_MASTER_DETAIL_TAG_NAME = "auras-master-detail";
 
-export class AuraMasterDetail extends AuraSelectablePanelsElement {
+export class AurasMasterDetail extends AurasSelectablePanelsElement {
   protected override _getContainerSelector(): string {
     return MASTER_SELECTOR;
   }
@@ -18,15 +18,15 @@ export class AuraMasterDetail extends AuraSelectablePanelsElement {
   }
 
   protected override _getPanelIdPrefix(): string {
-    return "aura-master-detail-panel";
+    return "auras-master-detail-panel";
   }
 
-  protected override _applyEntrySemantics(entry: AuraSelectableEntry): void {
+  protected override _applyEntrySemantics(entry: AurasSelectableEntry): void {
     entry.trigger.setAttribute("aria-expanded", "false");
   }
 
   protected override _applySelectionState(
-    entry: AuraSelectableEntry,
+    entry: AurasSelectableEntry,
     isActive: boolean,
   ): void {
     entry.trigger.setAttribute("aria-expanded", String(isActive));
@@ -68,10 +68,10 @@ export class AuraMasterDetail extends AuraSelectablePanelsElement {
   }
 }
 
-export function registerAuraMasterDetail(): typeof AuraMasterDetail {
-  if (!customElements.get(AURA_MASTER_DETAIL_TAG_NAME)) {
-    customElements.define(AURA_MASTER_DETAIL_TAG_NAME, AuraMasterDetail);
+export function registerAurasMasterDetail(): typeof AurasMasterDetail {
+  if (!customElements.get(AURAS_MASTER_DETAIL_TAG_NAME)) {
+    customElements.define(AURAS_MASTER_DETAIL_TAG_NAME, AurasMasterDetail);
   }
 
-  return AuraMasterDetail;
+  return AurasMasterDetail;
 }

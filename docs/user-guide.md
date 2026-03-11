@@ -1,6 +1,6 @@
-# Aura CSS User Guide
+# Auras CSS User Guide
 
-Aura CSS is a headless-first CSS framework for semantic HTML. This guide covers
+Auras CSS is a headless-first CSS framework for semantic HTML. This guide covers
 the current repository as it exists today: a static core stylesheet, two sample
 brand packs, and a demo page you can use to verify behavior without a build
 step.
@@ -16,7 +16,7 @@ Related docs:
 1. Run a local static server from the repo root:
 
 ```sh
-cd /Users/srdjans/Code/MetadorHome/metador.aura
+cd /Users/srdjans/Code/MetadorHome/metador.auras
 deno task dev
 ```
 
@@ -25,7 +25,7 @@ deno task dev
 3. Add the core stylesheet to any HTML page:
 
 ```html
-<link rel="stylesheet" href="packages/elements/aura.css" />
+<link rel="stylesheet" href="packages/elements/auras.css" />
 ```
 
 4. When you want a branded look, load a brand pack and set `data-brand`:
@@ -36,14 +36,14 @@ deno task dev
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="packages/elements/aura.css" />
-    <link rel="stylesheet" href="packages/brands/aura-brand.css" />
-    <title>Aura Example</title>
+    <link rel="stylesheet" href="packages/elements/auras.css" />
+    <link rel="stylesheet" href="packages/brands/auras-brand.css" />
+    <title>Auras Example</title>
   </head>
-  <body data-brand="aura">
+  <body data-brand="auras">
     <main data-layout="container">
       <section data-surface="card">
-        <h1>Hello Aura</h1>
+        <h1>Hello Auras</h1>
         <p>Semantic HTML first. Attributes only where they add behavior.</p>
       </section>
     </main>
@@ -54,15 +54,15 @@ deno task dev
 5. When you want the optional higher layers, load them explicitly:
 
 ```html
-<link rel="stylesheet" href="packages/elements/aura.css" />
-<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<link rel="stylesheet" href="packages/elements/auras.css" />
+<link rel="stylesheet" href="packages/composites/auras-composites.css" />
 <script type="module" src="packages/diagram/browser.js"></script>
 <script type="module" src="packages/components/browser.js"></script>
 ```
 
 ## Mental Model
 
-- `packages/elements/aura.css` is the Elements layer. It gives you reset,
+- `packages/elements/auras.css` is the Elements layer. It gives you reset,
   tokens, typography, layout primitives, components, utilities, accessibility
   defaults, and print styles.
 - Start with semantic HTML. Add `data-*` attributes only when you want layout,
@@ -142,7 +142,7 @@ Notices and accordions use the same headless pattern:
 <section data-ui="accordion">
   <details name="faq" open>
     <summary>What changed?</summary>
-    <p>Aura can now style grouped accordions without classes.</p>
+    <p>Auras can now style grouped accordions without classes.</p>
   </details>
 </section>
 ```
@@ -159,14 +159,14 @@ application chrome:
     <h2>Readable measure and stronger rhythm</h2>
     <p>Ideal for guides, release notes, and editorial content.</p>
   </hgroup>
-  <p>Aura keeps this behavior opt-in so general UI stays restrained.</p>
+  <p>Auras keeps this behavior opt-in so general UI stays restrained.</p>
 </article>
 ```
 
 ### Example composite
 
 Use `data-ui="example"` for documentation blocks that pair a live preview with
-source code. Load `aura-composites.css` alongside the base stylesheet.
+source code. Load `auras-composites.css` alongside the base stylesheet.
 
 ```html
 <article data-ui="example">
@@ -179,7 +179,7 @@ source code. Load `aura-composites.css` alongside the base stylesheet.
   </div>
   <pre
     data-part="code"
-  ><code>&lt;aura-tabs&gt;...&lt;/aura-tabs&gt;</code></pre>
+  ><code>&lt;auras-tabs&gt;...&lt;/auras-tabs&gt;</code></pre>
 </article>
 ```
 
@@ -241,14 +241,14 @@ the pattern stays inspectable and easy to override.
 ### Diagram component
 
 If the same diagram needs selection state and keyboard movement, add the
-separate optional `aura-diagram` package:
+separate optional `auras-diagram` package:
 
 ```html
-<link rel="stylesheet" href="packages/elements/aura.css" />
-<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<link rel="stylesheet" href="packages/elements/auras.css" />
+<link rel="stylesheet" href="packages/composites/auras-composites.css" />
 <script type="module" src="packages/diagram/browser.js"></script>
 
-<aura-diagram value="received" activation="manual" aria-label="Order flow">
+<auras-diagram value="received" activation="manual" aria-label="Order flow">
   <p data-part="caption">Interactive flow</p>
 
   <div data-part="canvas">
@@ -274,10 +274,10 @@ separate optional `aura-diagram` package:
     <article data-part="panel" data-value="received">...</article>
     <article data-part="panel" data-value="validate" hidden>...</article>
   </section>
-</aura-diagram>
+</auras-diagram>
 ```
 
-`aura-diagram` keeps the authored diagram markup in light DOM and adds only:
+`auras-diagram` keeps the authored diagram markup in light DOM and adds only:
 
 - active node state
 - roving focus
@@ -286,20 +286,20 @@ separate optional `aura-diagram` package:
 
 ### Master-detail
 
-`aura-master-detail` pairs with the Composites stylesheet for a selection-driven
+`auras-master-detail` pairs with the Composites stylesheet for a selection-driven
 layout:
 
 ```html
-<link rel="stylesheet" href="packages/elements/aura.css" />
-<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<link rel="stylesheet" href="packages/elements/auras.css" />
+<link rel="stylesheet" href="packages/composites/auras-composites.css" />
 <script type="module" src="packages/components/browser.js"></script>
 
-<aura-master-detail
+<auras-master-detail
   data-ui="master-detail"
   value="elements"
   activation="manual"
 >
-  <nav data-part="master" aria-label="Aura layers">
+  <nav data-part="master" aria-label="Auras layers">
     <button type="button" data-part="trigger" data-value="elements">
       Elements
     </button>
@@ -316,7 +316,7 @@ layout:
     <article data-part="panel" data-value="composites" hidden>...</article>
     <article data-part="panel" data-value="components" hidden>...</article>
   </section>
-</aura-master-detail>
+</auras-master-detail>
 ```
 
 Use `activation="manual"` when focus movement and selection should be separate
@@ -324,15 +324,15 @@ actions.
 
 ### Combobox
 
-`aura-combobox` keeps the authored input and listbox in light DOM while adding
+`auras-combobox` keeps the authored input and listbox in light DOM while adding
 filtering, active-option state, and optional linked panels:
 
 ```html
-<link rel="stylesheet" href="packages/elements/aura.css" />
-<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<link rel="stylesheet" href="packages/elements/auras.css" />
+<link rel="stylesheet" href="packages/composites/auras-composites.css" />
 <script type="module" src="packages/components/browser.js"></script>
 
-<aura-combobox data-ui="combobox" value="elements" activation="manual">
+<auras-combobox data-ui="combobox" value="elements" activation="manual">
   <label for="component-search">Search components</label>
 
   <div data-part="control">
@@ -364,7 +364,7 @@ filtering, active-option state, and optional linked panels:
     <article data-part="panel" data-value="master-detail" hidden>...</article>
     <article data-part="panel" data-value="tabs" hidden>...</article>
   </section>
-</aura-combobox>
+</auras-combobox>
 ```
 
 Use `activation="manual"` when arrow keys should move the highlighted result
@@ -372,15 +372,15 @@ before `Enter` commits the selected value.
 
 ### Splitter
 
-`aura-splitter` keeps both panes and the separator in authored light DOM while
+`auras-splitter` keeps both panes and the separator in authored light DOM while
 adding keyboard resize, pointer drag, and percent-based primary pane state:
 
 ```html
-<link rel="stylesheet" href="packages/elements/aura.css" />
-<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<link rel="stylesheet" href="packages/elements/auras.css" />
+<link rel="stylesheet" href="packages/composites/auras-composites.css" />
 <script type="module" src="packages/components/browser.js"></script>
 
-<aura-splitter data-ui="splitter" value="42" min="30" max="70" step="5">
+<auras-splitter data-ui="splitter" value="42" min="30" max="70" step="5">
   <section data-part="pane" data-pane="primary">...</section>
   <button
     type="button"
@@ -389,7 +389,7 @@ adding keyboard resize, pointer drag, and percent-based primary pane state:
   >
   </button>
   <section data-part="pane" data-pane="secondary">...</section>
-</aura-splitter>
+</auras-splitter>
 ```
 
 Focus the separator and use the arrow keys, or drag it with the pointer, to
@@ -397,16 +397,16 @@ change the split. `Home` and `End` jump to the configured min and max.
 
 ### Tree
 
-`aura-tree` keeps the authored nested list in light DOM and adds hierarchy,
+`auras-tree` keeps the authored nested list in light DOM and adds hierarchy,
 branch expansion, roving focus, and optional linked panels:
 
 ```html
-<link rel="stylesheet" href="packages/elements/aura.css" />
-<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<link rel="stylesheet" href="packages/elements/auras.css" />
+<link rel="stylesheet" href="packages/composites/auras-composites.css" />
 <script type="module" src="packages/components/browser.js"></script>
 
-<aura-tree data-ui="tree" value="master-detail" activation="manual">
-  <ul data-part="tree" aria-label="Aura components">
+<auras-tree data-ui="tree" value="master-detail" activation="manual">
+  <ul data-part="tree" aria-label="Auras components">
     <li data-part="item" data-value="elements">
       <button type="button" data-part="node">Elements</button>
     </li>
@@ -437,7 +437,7 @@ branch expansion, roving focus, and optional linked panels:
     <article data-part="panel" data-value="master-detail" hidden>...</article>
     <article data-part="panel" data-value="tabs" hidden>...</article>
   </section>
-</aura-tree>
+</auras-tree>
 ```
 
 Use `activation="manual"` when `Up`/`Down`/`Left`/`Right` should move focus
@@ -445,15 +445,15 @@ through the visible hierarchy before `Enter` or `Space` commits the selection.
 
 ### Tabs
 
-`aura-tabs` uses the same host contract as `aura-master-detail`, but with honest
+`auras-tabs` uses the same host contract as `auras-master-detail`, but with honest
 tab semantics:
 
 ```html
-<link rel="stylesheet" href="packages/elements/aura.css" />
-<link rel="stylesheet" href="packages/composites/aura-composites.css" />
+<link rel="stylesheet" href="packages/elements/auras.css" />
+<link rel="stylesheet" href="packages/composites/auras-composites.css" />
 <script type="module" src="packages/components/browser.js"></script>
 
-<aura-tabs data-ui="tabs" value="overview" activation="manual">
+<auras-tabs data-ui="tabs" value="overview" activation="manual">
   <nav data-part="tablist" aria-label="Release views">
     <button type="button" data-part="trigger" data-value="overview">
       Overview
@@ -471,7 +471,7 @@ tab semantics:
     <article data-part="panel" data-value="tokens" hidden>...</article>
     <article data-part="panel" data-value="behavior" hidden>...</article>
   </section>
-</aura-tabs>
+</auras-tabs>
 ```
 
 Use `activation="manual"` when horizontal arrow-key focus should move before the
@@ -514,7 +514,7 @@ Included behaviors:
 
 ### Utilities
 
-Aura also exposes small, semantic helpers:
+Auras also exposes small, semantic helpers:
 
 ```html
 <p data-status="success">Saved successfully.</p>
@@ -535,8 +535,8 @@ Aura also exposes small, semantic helpers:
 
 The repo currently ships with two sample packs:
 
-- `packages/brands/aura-brand.css` activates when `data-brand="aura"`
-- `packages/brands/aura-brand-editorial.css` activates when
+- `packages/brands/auras-brand.css` activates when `data-brand="auras"`
+- `packages/brands/auras-brand-editorial.css` activates when
   `data-brand="editorial"`
 
 To make your own, create a new CSS file and override tokens in `@layer brands`:
@@ -559,9 +559,9 @@ Then load it after the core stylesheet and set `data-brand="custom"` on
 `public/index.html` is the fastest way to validate the framework:
 
 - `Headless core`: removes `data-brand`
-- `Aura pack`: loads `packages/brands/aura-brand.css` and sets
-  `data-brand="aura"`
-- `Editorial pack`: loads `packages/brands/aura-brand-editorial.css` and sets
+- `Auras pack`: loads `packages/brands/auras-brand.css` and sets
+  `data-brand="auras"`
+- `Editorial pack`: loads `packages/brands/auras-brand-editorial.css` and sets
   `data-brand="editorial"`
 - `Toggle dark`: toggles `data-theme="dark"` on `<html>`
 - `Enable high contrast`: toggles `data-contrast="more"` on `<html>`
@@ -587,29 +587,29 @@ The demo also exercises:
 
 | File                                       | Purpose                                          |
 | ------------------------------------------ | ------------------------------------------------ |
-| `tests/aura-components.browser.test.js`    | Browser smoke coverage for the optional packages |
-| `tests/aura-combobox.test.js`              | Deno behavioral coverage for `aura-combobox`     |
-| `tests/aura-splitter.test.js`              | Deno behavioral coverage for `aura-splitter`     |
-| `tests/aura-diagram.test.js`               | Deno behavioral coverage for `aura-diagram`      |
-| `tests/aura-components.test.js`            | Deno behavioral coverage for Components          |
-| `tests/aura-tree.test.js`                  | Deno behavioral coverage for `aura-tree`         |
-| `packages/elements/aura.css`               | Elements layer stylesheet source                 |
-| `packages/composites/aura-composites.css`  | Composites layer stylesheet source               |
-| `packages/brands/aura-brand.css`           | Aura brand stylesheet source                     |
-| `packages/brands/aura-brand-editorial.css` | Editorial brand stylesheet source                |
+| `tests/auras-components.browser.test.js`    | Browser smoke coverage for the optional packages |
+| `tests/auras-combobox.test.js`              | Deno behavioral coverage for `auras-combobox`     |
+| `tests/auras-splitter.test.js`              | Deno behavioral coverage for `auras-splitter`     |
+| `tests/auras-diagram.test.js`               | Deno behavioral coverage for `auras-diagram`      |
+| `tests/auras-components.test.js`            | Deno behavioral coverage for Components          |
+| `tests/auras-tree.test.js`                  | Deno behavioral coverage for `auras-tree`         |
+| `packages/elements/auras.css`               | Elements layer stylesheet source                 |
+| `packages/composites/auras-composites.css`  | Composites layer stylesheet source               |
+| `packages/brands/auras-brand.css`           | Auras brand stylesheet source                     |
+| `packages/brands/auras-brand-editorial.css` | Editorial brand stylesheet source                |
 | `packages/diagram/browser.js`              | Browser-friendly no-build diagram entrypoint     |
 | `packages/diagram/mod.ts`                  | Deno-first diagram package surface               |
-| `packages/diagram/jsr.json`                | JSR package metadata for `@aura/diagram`         |
-| `packages/diagram/README.md`               | Package-level usage note for `@aura/diagram`     |
+| `packages/diagram/jsr.json`                | JSR package metadata for `@auras/diagram`         |
+| `packages/diagram/README.md`               | Package-level usage note for `@auras/diagram`     |
 | `packages/diagram/src/`                    | Diagram package runtime module                   |
 | `packages/components/browser.js`           | Browser-friendly no-build Components entrypoint  |
 | `packages/components/mod.ts`               | Deno-first Components package surface            |
 | `packages/components/jsr.json`             | JSR package metadata                             |
 | `packages/components/README.md`            | Package-level usage note                         |
 | `packages/components/src/`                 | Shared logic plus per-component modules          |
-| `packages/components/src/combobox.ts`      | `aura-combobox` runtime module                   |
-| `packages/components/src/splitter.ts`      | `aura-splitter` runtime module                   |
-| `packages/components/src/tree.ts`          | `aura-tree` runtime module                       |
+| `packages/components/src/combobox.ts`      | `auras-combobox` runtime module                   |
+| `packages/components/src/splitter.ts`      | `auras-splitter` runtime module                   |
+| `packages/components/src/tree.ts`          | `auras-tree` runtime module                       |
 | `deno.json`                                | Deno tasks for dev server, checking, and tests   |
 | `deno.lock`                                | Locked JSR and npm test dependencies             |
 | `main.ts`                                  | Deno Deploy entry point (static file server)     |
@@ -622,7 +622,7 @@ The demo also exercises:
 Run these checks after changes:
 
 ```sh
-cd /Users/srdjans/Code/MetadorHome/metador.aura
+cd /Users/srdjans/Code/MetadorHome/metador.auras
 deno task check
 deno task test
 deno task test:browser
@@ -637,7 +637,7 @@ If Chrome is not installed at the default macOS path, set
 Then verify:
 
 1. Open `http://localhost:8000`.
-2. Switch between `Headless core`, `Aura pack`, and `Editorial pack`.
+2. Switch between `Headless core`, `Auras pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
 4. Review the prose, static diagram, interactive diagram, combobox, splitter,
    tree, notice, accordion, master-detail, and tabs examples.

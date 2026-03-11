@@ -18,11 +18,11 @@ Object.assign(globalThis, {
 
 await testWindow.happyDOM.whenAsyncComplete();
 
-const { registerAuraComponents } = await import(
+const { registerAurasComponents } = await import(
   "../packages/components/mod.ts"
 );
 
-registerAuraComponents();
+registerAurasComponents();
 
 function connectHost(tagName, markup) {
   document.body.innerHTML = markup;
@@ -39,9 +39,9 @@ function connectHost(tagName, markup) {
 
 function renderSplitter(attributes = "") {
   const host = connectHost(
-    "aura-splitter",
+    "auras-splitter",
     `
-      <aura-splitter ${attributes}>
+      <auras-splitter ${attributes}>
         <section data-part="pane" data-pane="primary">Primary</section>
         <button
           type="button"
@@ -49,7 +49,7 @@ function renderSplitter(attributes = "") {
           aria-label="Resize panes"
         ></button>
         <section data-part="pane" data-pane="secondary">Secondary</section>
-      </aura-splitter>
+      </auras-splitter>
     `,
   );
 
@@ -108,13 +108,13 @@ Deno.test(
   },
 );
 
-Deno.test("splitter keyboard resizing updates value and dispatches aura-change", () => {
+Deno.test("splitter keyboard resizing updates value and dispatches auras-change", () => {
   const { host, separator } = renderSplitter(
     'value="45" min="25" max="75" step="10"',
   );
   const changes = [];
 
-  host.addEventListener("aura-change", (event) => {
+  host.addEventListener("auras-change", (event) => {
     changes.push(event.detail.value);
   });
 
@@ -149,7 +149,7 @@ Deno.test("splitter drag updates the position within bounds", () => {
   const { host, separator } = renderSplitter('value="45" min="25" max="75"');
   const changes = [];
 
-  host.addEventListener("aura-change", (event) => {
+  host.addEventListener("auras-change", (event) => {
     changes.push(event.detail.value);
   });
 

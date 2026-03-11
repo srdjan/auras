@@ -22,16 +22,16 @@ Object.assign(globalThis, {
 
 await testWindow.happyDOM.whenAsyncComplete();
 
-const { registerAuraDiagram } = await import("../packages/diagram/mod.ts");
+const { registerAurasDiagram } = await import("../packages/diagram/mod.ts");
 
-registerAuraDiagram();
+registerAurasDiagram();
 
 function connectHost(markup) {
   document.body.innerHTML = markup;
 
-  const host = document.querySelector("aura-diagram");
+  const host = document.querySelector("auras-diagram");
   if (!host) {
-    throw new Error("Expected aura-diagram host");
+    throw new Error("Expected auras-diagram host");
   }
 
   host.connectedCallback();
@@ -42,7 +42,7 @@ function connectHost(markup) {
 function renderDiagram(attributes = "") {
   const host = connectHost(
     `
-      <aura-diagram ${attributes}>
+      <auras-diagram ${attributes}>
         <p data-part="caption">Order flow</p>
 
         <div data-part="canvas">
@@ -92,7 +92,7 @@ function renderDiagram(attributes = "") {
             Review panel
           </article>
         </section>
-      </aura-diagram>
+      </auras-diagram>
     `,
   );
 
@@ -109,7 +109,7 @@ function renderDiagram(attributes = "") {
 function renderDiagramWithoutPanels(attributes = "") {
   const host = connectHost(
     `
-      <aura-diagram ${attributes}>
+      <auras-diagram ${attributes}>
         <div data-part="canvas">
           <button
             type="button"
@@ -128,7 +128,7 @@ function renderDiagramWithoutPanels(attributes = "") {
             Validate
           </button>
         </div>
-      </aura-diagram>
+      </auras-diagram>
     `,
   );
 
@@ -166,12 +166,12 @@ Deno.test(
 );
 
 Deno.test(
-  "diagram clicking a node updates selection and dispatches aura-change",
+  "diagram clicking a node updates selection and dispatches auras-change",
   () => {
     const { host, nodes, panels } = renderDiagram('value="received"');
     const changes = [];
 
-    host.addEventListener("aura-change", (event) => {
+    host.addEventListener("auras-change", (event) => {
       changes.push(event.detail.value);
     });
 
@@ -188,7 +188,7 @@ Deno.test("diagram auto activation follows spatial arrow navigation", () => {
   const { host, nodes } = renderDiagram('value="received"');
   const changes = [];
 
-  host.addEventListener("aura-change", (event) => {
+  host.addEventListener("auras-change", (event) => {
     changes.push(event.detail.value);
   });
 
@@ -213,7 +213,7 @@ Deno.test(
     );
     const changes = [];
 
-    host.addEventListener("aura-change", (event) => {
+    host.addEventListener("auras-change", (event) => {
       changes.push(event.detail.value);
     });
 
@@ -258,7 +258,7 @@ Deno.test("diagram works without linked panels", () => {
   const { host, nodes } = renderDiagramWithoutPanels('value="received"');
   const changes = [];
 
-  host.addEventListener("aura-change", (event) => {
+  host.addEventListener("auras-change", (event) => {
     changes.push({
       value: event.detail.value,
       panel: event.detail.panel,

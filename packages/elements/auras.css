@@ -1,4 +1,4 @@
-/* ===== AURA CSS MVP – WITH ENHANCEMENTS ===== */
+/* ===== AURAS CSS MVP – WITH ENHANCEMENTS ===== */
 @layer reset, tokens, brands, defaults, layouts, components, utilities, print;
 
 /* Register key theme tokens so runtime theme updates animate predictably. */
@@ -835,7 +835,7 @@
   }
   @media (prefers-reduced-motion: no-preference) {
     progress:indeterminate::after {
-      animation: aura-progress-indeterminate
+      animation: auras-progress-indeterminate
         var(--progress-indeterminate-duration) linear infinite;
     }
     [dir="rtl"] progress:indeterminate::after {
@@ -1452,7 +1452,7 @@
     :where([aria-busy="true"]):not(html):not(input):not(select):not(
       textarea
     ):not(progress)::before {
-      animation: aura-spin 0.7s linear infinite;
+      animation: auras-spin 0.7s linear infinite;
     }
   }
 
@@ -1516,13 +1516,13 @@
     }
   }
 
-  @keyframes aura-spin {
+  @keyframes auras-spin {
     to {
       transform: rotate(1turn);
     }
   }
 
-  @keyframes aura-progress-indeterminate {
+  @keyframes auras-progress-indeterminate {
     0% {
       transform: translateX(-100%);
     }

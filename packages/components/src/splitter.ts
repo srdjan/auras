@@ -7,9 +7,9 @@ const PRIMARY_PANE_SELECTOR = '[data-part="pane"][data-pane="primary"]';
 const SECONDARY_PANE_SELECTOR = '[data-part="pane"][data-pane="secondary"]';
 const SEPARATOR_SELECTOR = '[data-part="separator"]';
 
-type AuraSplitterOrientation = "horizontal" | "vertical";
+type AurasSplitterOrientation = "horizontal" | "vertical";
 
-type AuraSplitterBounds = {
+type AurasSplitterBounds = {
   min: number;
   max: number;
   step: number;
@@ -19,9 +19,9 @@ type SelectionOptions = {
   dispatch: boolean;
 };
 
-export const AURA_SPLITTER_TAG_NAME = "aura-splitter";
+export const AURAS_SPLITTER_TAG_NAME = "auras-splitter";
 
-export class AuraSplitter extends HTMLElement {
+export class AurasSplitter extends HTMLElement {
   static observedAttributes = ["value", "orientation", "min", "max", "step"];
 
   private _primaryPane: HTMLElement | null = null;
@@ -94,11 +94,11 @@ export class AuraSplitter extends HTMLElement {
     this.setAttribute("value", String(value));
   }
 
-  get orientation(): AuraSplitterOrientation {
+  get orientation(): AurasSplitterOrientation {
     return normalizeOrientation(this.getAttribute("orientation"));
   }
 
-  set orientation(value: AuraSplitterOrientation | string | null) {
+  set orientation(value: AurasSplitterOrientation | string | null) {
     if (normalizeOrientation(value) === "horizontal") {
       this.removeAttribute("orientation");
       return;
@@ -172,10 +172,10 @@ export class AuraSplitter extends HTMLElement {
       return;
     }
 
-    const primaryId = ensureElementId(this._primaryPane, "aura-splitter-pane");
+    const primaryId = ensureElementId(this._primaryPane, "auras-splitter-pane");
     const secondaryId = ensureElementId(
       this._secondaryPane,
-      "aura-splitter-pane",
+      "auras-splitter-pane",
     );
 
     this._separator.setAttribute("role", "separator");
@@ -221,7 +221,7 @@ export class AuraSplitter extends HTMLElement {
     );
   }
 
-  private _getBounds(): AuraSplitterBounds {
+  private _getBounds(): AurasSplitterBounds {
     const min = clampPercent(
       parseNumericAttribute(this.getAttribute("min"), 20),
       0,
@@ -271,7 +271,7 @@ export class AuraSplitter extends HTMLElement {
 
     if (options.dispatch && didChange) {
       this.dispatchEvent(
-        new CustomEvent("aura-change", {
+        new CustomEvent("auras-change", {
           detail: {
             value: normalizedValue,
             separator: this._separator,
@@ -395,17 +395,17 @@ export class AuraSplitter extends HTMLElement {
   }
 }
 
-export function registerAuraSplitter(): typeof AuraSplitter {
-  if (!customElements.get(AURA_SPLITTER_TAG_NAME)) {
-    customElements.define(AURA_SPLITTER_TAG_NAME, AuraSplitter);
+export function registerAurasSplitter(): typeof AurasSplitter {
+  if (!customElements.get(AURAS_SPLITTER_TAG_NAME)) {
+    customElements.define(AURAS_SPLITTER_TAG_NAME, AurasSplitter);
   }
 
-  return AuraSplitter;
+  return AurasSplitter;
 }
 
 function normalizeOrientation(
   value: string | null | undefined,
-): AuraSplitterOrientation {
+): AurasSplitterOrientation {
   return value === "vertical" ? "vertical" : "horizontal";
 }
 

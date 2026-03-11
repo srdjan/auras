@@ -18,11 +18,11 @@ Object.assign(globalThis, {
 
 await testWindow.happyDOM.whenAsyncComplete();
 
-const { registerAuraComponents } = await import(
+const { registerAurasComponents } = await import(
   "../packages/components/mod.ts"
 );
 
-registerAuraComponents();
+registerAurasComponents();
 
 function connectHost(tagName, markup) {
   document.body.innerHTML = markup;
@@ -39,9 +39,9 @@ function connectHost(tagName, markup) {
 
 function renderMasterDetail(attributes = "") {
   const host = connectHost(
-    "aura-master-detail",
+    "auras-master-detail",
     `
-      <aura-master-detail ${attributes}>
+      <auras-master-detail ${attributes}>
         <nav data-part="master" aria-label="Layers">
           <button type="button" data-part="trigger" data-value="elements">
             Elements
@@ -63,7 +63,7 @@ function renderMasterDetail(attributes = "") {
             Components detail
           </article>
         </section>
-      </aura-master-detail>
+      </auras-master-detail>
     `,
   );
 
@@ -79,9 +79,9 @@ function renderMasterDetail(attributes = "") {
 
 function renderTabs(attributes = "") {
   const host = connectHost(
-    "aura-tabs",
+    "auras-tabs",
     `
-      <aura-tabs ${attributes}>
+      <auras-tabs ${attributes}>
         <nav data-part="tablist" aria-label="Product views">
           <button type="button" data-part="trigger" data-value="overview">
             Overview
@@ -103,7 +103,7 @@ function renderTabs(attributes = "") {
             Behavior panel
           </article>
         </section>
-      </aura-tabs>
+      </auras-tabs>
     `,
   );
 
@@ -144,12 +144,12 @@ Deno.test(
 );
 
 Deno.test(
-  "master-detail clicking a trigger updates selection and dispatches aura-change",
+  "master-detail clicking a trigger updates selection and dispatches auras-change",
   () => {
     const { host, triggers, panels } = renderMasterDetail('value="elements"');
     const changes = [];
 
-    host.addEventListener("aura-change", (event) => {
+    host.addEventListener("auras-change", (event) => {
       changes.push(event.detail.value);
     });
 
@@ -163,12 +163,12 @@ Deno.test(
 );
 
 Deno.test(
-  "master-detail reselecting the active item does not dispatch aura-change",
+  "master-detail reselecting the active item does not dispatch auras-change",
   () => {
     const { host, triggers } = renderMasterDetail('value="elements"');
     const changes = [];
 
-    host.addEventListener("aura-change", (event) => {
+    host.addEventListener("auras-change", (event) => {
       changes.push(event.detail.value);
     });
 
@@ -186,7 +186,7 @@ Deno.test(
     const { host, triggers } = renderMasterDetail('value="elements"');
     const changes = [];
 
-    host.addEventListener("aura-change", (event) => {
+    host.addEventListener("auras-change", (event) => {
       changes.push(event.detail.value);
     });
 
@@ -219,7 +219,7 @@ Deno.test(
     );
     const changes = [];
 
-    host.addEventListener("aura-change", (event) => {
+    host.addEventListener("auras-change", (event) => {
       changes.push(event.detail.value);
     });
 
@@ -289,12 +289,12 @@ Deno.test(
 );
 
 Deno.test(
-  "tabs clicking a trigger updates selection and dispatches aura-change",
+  "tabs clicking a trigger updates selection and dispatches auras-change",
   () => {
     const { host, triggers, panels } = renderTabs('value="overview"');
     const changes = [];
 
-    host.addEventListener("aura-change", (event) => {
+    host.addEventListener("auras-change", (event) => {
       changes.push(event.detail.value);
     });
 
@@ -314,7 +314,7 @@ Deno.test(
     const { host, triggers } = renderTabs('value="overview"');
     const changes = [];
 
-    host.addEventListener("aura-change", (event) => {
+    host.addEventListener("auras-change", (event) => {
       changes.push(event.detail.value);
     });
 
@@ -347,7 +347,7 @@ Deno.test(
     );
     const changes = [];
 
-    host.addEventListener("aura-change", (event) => {
+    host.addEventListener("auras-change", (event) => {
       changes.push(event.detail.value);
     });
 

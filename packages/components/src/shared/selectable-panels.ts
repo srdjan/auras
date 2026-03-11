@@ -1,13 +1,13 @@
 const TRIGGER_SELECTOR = '[data-part="trigger"][data-value]';
 const PANEL_SELECTOR = '[data-part="panel"][data-value]';
 
-type AuraActivation = "auto" | "manual";
+type AurasActivation = "auto" | "manual";
 type SelectionOptions = {
   dispatch: boolean;
   focus: boolean;
 };
 
-export type AuraSelectableEntry = {
+export type AurasSelectableEntry = {
   value: string;
   trigger: HTMLElement;
   panel: HTMLElement;
@@ -17,7 +17,7 @@ let generatedIdSequence = 0;
 
 export function normalizeActivation(
   value: string | null | undefined,
-): AuraActivation {
+): AurasActivation {
   return value === "manual" ? "manual" : "auto";
 }
 
@@ -52,11 +52,11 @@ export function upgradeProperty<T extends object, K extends keyof T>(
   node[name] = value;
 }
 
-export class AuraSelectablePanelsElement extends HTMLElement {
+export class AurasSelectablePanelsElement extends HTMLElement {
   static observedAttributes = ["value", "activation"];
 
   protected _container: HTMLElement | null = null;
-  protected _entries: AuraSelectableEntry[] = [];
+  protected _entries: AurasSelectableEntry[] = [];
   protected _syncingValue = false;
 
   constructor() {
@@ -115,11 +115,11 @@ export class AuraSelectablePanelsElement extends HTMLElement {
     this.setAttribute("value", String(value));
   }
 
-  get activation(): AuraActivation {
+  get activation(): AurasActivation {
     return normalizeActivation(this.getAttribute("activation"));
   }
 
-  set activation(value: AuraActivation | string | null) {
+  set activation(value: AurasActivation | string | null) {
     const normalizedValue = normalizeActivation(value);
     if (normalizedValue === "auto") {
       this.removeAttribute("activation");
@@ -151,15 +151,15 @@ export class AuraSelectablePanelsElement extends HTMLElement {
   }
 
   protected _getPanelIdPrefix(): string {
-    return "aura-panel";
+    return "auras-panel";
   }
 
   protected _setContainerSemantics(_container: HTMLElement): void {}
 
-  protected _applyEntrySemantics(_entry: AuraSelectableEntry): void {}
+  protected _applyEntrySemantics(_entry: AurasSelectableEntry): void {}
 
   protected _applySelectionState(
-    _entry: AuraSelectableEntry,
+    _entry: AurasSelectableEntry,
     _isActive: boolean,
   ): void {}
 
@@ -196,7 +196,7 @@ export class AuraSelectablePanelsElement extends HTMLElement {
       }
     }
 
-    const entries: AuraSelectableEntry[] = [];
+    const entries: AurasSelectableEntry[] = [];
     for (
       const trigger of container.querySelectorAll<HTMLElement>(TRIGGER_SELECTOR)
     ) {
@@ -299,7 +299,7 @@ export class AuraSelectablePanelsElement extends HTMLElement {
 
     if (options.dispatch && didChange) {
       this.dispatchEvent(
-        new CustomEvent("aura-change", {
+        new CustomEvent("auras-change", {
           detail: {
             value: entry.value,
             trigger: entry.trigger,

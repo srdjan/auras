@@ -12,7 +12,7 @@ const OPTION_SELECTOR = '[data-part="option"][data-value]';
 const EMPTY_SELECTOR = '[data-part="empty"]';
 const PANEL_SELECTOR = '[data-part="panel"][data-value]';
 
-type AuraActivation = "auto" | "manual";
+type AurasActivation = "auto" | "manual";
 
 type SelectionOptions = {
   dispatch: boolean;
@@ -21,7 +21,7 @@ type SelectionOptions = {
   syncInput: boolean;
 };
 
-type AuraComboboxEntry = {
+type AurasComboboxEntry = {
   value: string;
   label: string;
   searchText: string;
@@ -29,9 +29,9 @@ type AuraComboboxEntry = {
   panel: HTMLElement | null;
 };
 
-export const AURA_COMBOBOX_TAG_NAME = "aura-combobox";
+export const AURAS_COMBOBOX_TAG_NAME = "auras-combobox";
 
-export class AuraCombobox extends HTMLElement {
+export class AurasCombobox extends HTMLElement {
   static observedAttributes = ["value", "activation", "open"];
 
   private _input: HTMLInputElement | null = null;
@@ -39,8 +39,8 @@ export class AuraCombobox extends HTMLElement {
   private _listbox: HTMLElement | null = null;
   private _emptyState: HTMLElement | null = null;
   private _valueInput: HTMLInputElement | null = null;
-  private _entries: AuraComboboxEntry[] = [];
-  private _entriesByValue = new Map<string, AuraComboboxEntry>();
+  private _entries: AurasComboboxEntry[] = [];
+  private _entriesByValue = new Map<string, AurasComboboxEntry>();
   private _activeValue: string | null = null;
   private _isQuerying = false;
   private _syncingValue = false;
@@ -129,11 +129,11 @@ export class AuraCombobox extends HTMLElement {
     this.setAttribute("value", String(value));
   }
 
-  get activation(): AuraActivation {
+  get activation(): AurasActivation {
     return normalizeActivation(this.getAttribute("activation"));
   }
 
-  set activation(value: AuraActivation | string | null) {
+  set activation(value: AurasActivation | string | null) {
     const normalizedValue = normalizeActivation(value);
     if (normalizedValue === "auto") {
       this.removeAttribute("activation");
@@ -212,7 +212,7 @@ export class AuraCombobox extends HTMLElement {
       }
     }
 
-    const entries: AuraComboboxEntry[] = [];
+    const entries: AurasComboboxEntry[] = [];
     const seenValues = new Set<string>();
     for (
       const option of listbox.querySelectorAll<HTMLElement>(OPTION_SELECTOR)
@@ -226,7 +226,7 @@ export class AuraCombobox extends HTMLElement {
       const label = option.getAttribute("data-label")?.trim() ||
         option.textContent?.trim() || value;
 
-      const entry: AuraComboboxEntry = {
+      const entry: AurasComboboxEntry = {
         value,
         label,
         searchText: label.toLocaleLowerCase(),
@@ -305,7 +305,7 @@ export class AuraCombobox extends HTMLElement {
       return;
     }
 
-    const listboxId = ensureElementId(this._listbox, "aura-combobox-listbox");
+    const listboxId = ensureElementId(this._listbox, "auras-combobox-listbox");
 
     this._input.setAttribute("role", "combobox");
     this._input.setAttribute("aria-autocomplete", "list");
@@ -319,7 +319,7 @@ export class AuraCombobox extends HTMLElement {
       entry.option.setAttribute("role", "option");
       entry.option.setAttribute(
         "id",
-        ensureElementId(entry.option, "aura-combobox-option"),
+        ensureElementId(entry.option, "auras-combobox-option"),
       );
       entry.option.setAttribute("aria-selected", "false");
 
@@ -405,7 +405,7 @@ export class AuraCombobox extends HTMLElement {
 
     if (options.dispatch && didChange) {
       this.dispatchEvent(
-        new CustomEvent("aura-change", {
+        new CustomEvent("auras-change", {
           detail: {
             value: entry.value,
             option: entry.option,
@@ -420,7 +420,7 @@ export class AuraCombobox extends HTMLElement {
     return true;
   }
 
-  private _commitSelectedLabel(entry: AuraComboboxEntry): void {
+  private _commitSelectedLabel(entry: AurasComboboxEntry): void {
     if (!this._input) {
       return;
     }
@@ -522,14 +522,14 @@ export class AuraCombobox extends HTMLElement {
     return this._input?.value.trim().toLocaleLowerCase() ?? "";
   }
 
-  private _isEntryVisible(entry: AuraComboboxEntry, query: string): boolean {
+  private _isEntryVisible(entry: AurasComboboxEntry, query: string): boolean {
     if (query === "") {
       return true;
     }
     return entry.searchText.includes(query);
   }
 
-  private _getVisibleEntries(): AuraComboboxEntry[] {
+  private _getVisibleEntries(): AurasComboboxEntry[] {
     const query = this._getQuery();
     return this._entries.filter((entry) => this._isEntryVisible(entry, query));
   }
@@ -752,10 +752,10 @@ export class AuraCombobox extends HTMLElement {
   }
 }
 
-export function registerAuraCombobox(): typeof AuraCombobox {
-  if (!customElements.get(AURA_COMBOBOX_TAG_NAME)) {
-    customElements.define(AURA_COMBOBOX_TAG_NAME, AuraCombobox);
+export function registerAurasCombobox(): typeof AurasCombobox {
+  if (!customElements.get(AURAS_COMBOBOX_TAG_NAME)) {
+    customElements.define(AURAS_COMBOBOX_TAG_NAME, AurasCombobox);
   }
 
-  return AuraCombobox;
+  return AurasCombobox;
 }

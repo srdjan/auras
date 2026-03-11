@@ -12,7 +12,7 @@ const TOGGLE_SELECTOR = '[data-part="toggle"]';
 const GROUP_SELECTOR = '[data-part="group"]';
 const PANEL_SELECTOR = '[data-part="panel"][data-value]';
 
-type AuraActivation = "auto" | "manual";
+type AurasActivation = "auto" | "manual";
 
 type SelectionOptions = {
   dispatch: boolean;
@@ -24,7 +24,7 @@ type ExpansionOptions = {
   focusNode: boolean;
 };
 
-export type AuraTreeEntry = {
+export type AurasTreeEntry = {
   value: string;
   item: HTMLElement;
   node: HTMLElement;
@@ -68,14 +68,14 @@ function isNativeInteractiveElement(node: HTMLElement): boolean {
   );
 }
 
-export const AURA_TREE_TAG_NAME = "aura-tree";
+export const AURAS_TREE_TAG_NAME = "auras-tree";
 
-export class AuraTree extends HTMLElement {
+export class AurasTree extends HTMLElement {
   static observedAttributes = ["value", "activation"];
 
   private _tree: HTMLElement | null = null;
-  private _entries: AuraTreeEntry[] = [];
-  private _entriesByValue = new Map<string, AuraTreeEntry>();
+  private _entries: AurasTreeEntry[] = [];
+  private _entriesByValue = new Map<string, AurasTreeEntry>();
   private _syncingValue = false;
 
   constructor() {
@@ -134,11 +134,11 @@ export class AuraTree extends HTMLElement {
     this.setAttribute("value", String(value));
   }
 
-  get activation(): AuraActivation {
+  get activation(): AurasActivation {
     return normalizeActivation(this.getAttribute("activation"));
   }
 
-  set activation(value: AuraActivation | string | null) {
+  set activation(value: AurasActivation | string | null) {
     const normalizedValue = normalizeActivation(value);
     if (normalizedValue === "auto") {
       this.removeAttribute("activation");
@@ -275,8 +275,8 @@ export class AuraTree extends HTMLElement {
     panelsByValue: Map<string, HTMLElement>,
     parentValue: string | null = null,
     level = 1,
-  ): AuraTreeEntry[] {
-    const entries: AuraTreeEntry[] = [];
+  ): AurasTreeEntry[] {
+    const entries: AurasTreeEntry[] = [];
     const directItems = getDirectChildElements(container, ITEM_SELECTOR);
     const setSize = directItems.length;
 
@@ -293,7 +293,7 @@ export class AuraTree extends HTMLElement {
         : [];
       const toggle = getDirectChildElement(item, TOGGLE_SELECTOR);
 
-      const entry: AuraTreeEntry = {
+      const entry: AurasTreeEntry = {
         value,
         item,
         node,
@@ -337,14 +337,14 @@ export class AuraTree extends HTMLElement {
     this.removeAttribute("activation");
   }
 
-  private _applyEntrySemantics(entry: AuraTreeEntry): void {
+  private _applyEntrySemantics(entry: AurasTreeEntry): void {
     entry.item.setAttribute("data-level", String(entry.level));
 
     entry.node.setAttribute("role", "treeitem");
 
     entry.node.setAttribute(
       "id",
-      ensureElementId(entry.node, "aura-tree-node"),
+      ensureElementId(entry.node, "auras-tree-node"),
     );
     entry.node.setAttribute("aria-level", String(entry.level));
     entry.node.setAttribute("aria-setsize", String(entry.setSize));
@@ -354,7 +354,7 @@ export class AuraTree extends HTMLElement {
     const controlIds: string[] = [];
 
     if (entry.group) {
-      const groupId = ensureElementId(entry.group, "aura-tree-group");
+      const groupId = ensureElementId(entry.group, "auras-tree-group");
       entry.group.setAttribute("role", "group");
       controlIds.push(groupId);
 
@@ -363,7 +363,7 @@ export class AuraTree extends HTMLElement {
       if (entry.toggle) {
         entry.toggle.setAttribute(
           "id",
-          ensureElementId(entry.toggle, "aura-tree-toggle"),
+          ensureElementId(entry.toggle, "auras-tree-toggle"),
         );
         entry.toggle.setAttribute("aria-controls", groupId);
         entry.toggle.setAttribute("aria-expanded", "false");
@@ -375,9 +375,9 @@ export class AuraTree extends HTMLElement {
       entry.panel.setAttribute("role", "region");
       entry.panel.setAttribute(
         "aria-labelledby",
-        ensureElementId(entry.node, "aura-tree-node"),
+        ensureElementId(entry.node, "auras-tree-node"),
       );
-      controlIds.push(ensureElementId(entry.panel, "aura-tree-panel"));
+      controlIds.push(ensureElementId(entry.panel, "auras-tree-panel"));
     }
 
     if (controlIds.length > 0) {
@@ -431,7 +431,7 @@ export class AuraTree extends HTMLElement {
 
     if (options.dispatch && didChange) {
       this.dispatchEvent(
-        new CustomEvent("aura-change", {
+        new CustomEvent("auras-change", {
           detail: {
             value: entry.value,
             item: entry.item,
@@ -446,7 +446,7 @@ export class AuraTree extends HTMLElement {
     return true;
   }
 
-  private _expandAncestors(entry: AuraTreeEntry): void {
+  private _expandAncestors(entry: AurasTreeEntry): void {
     let currentParentValue = entry.parentValue;
 
     while (currentParentValue) {
@@ -460,11 +460,11 @@ export class AuraTree extends HTMLElement {
     }
   }
 
-  private _isExpanded(entry: AuraTreeEntry): boolean {
+  private _isExpanded(entry: AurasTreeEntry): boolean {
     return entry.group ? entry.item.hasAttribute("data-expanded") : false;
   }
 
-  private _syncExpandedState(entry: AuraTreeEntry, expanded: boolean): void {
+  private _syncExpandedState(entry: AurasTreeEntry, expanded: boolean): void {
     if (!entry.group) {
       return;
     }
@@ -479,7 +479,7 @@ export class AuraTree extends HTMLElement {
   }
 
   private _setExpanded(
-    entry: AuraTreeEntry,
+    entry: AurasTreeEntry,
     expanded: boolean,
     options: ExpansionOptions,
   ): boolean {
@@ -511,8 +511,8 @@ export class AuraTree extends HTMLElement {
   }
 
   private _isDescendantOf(
-    entry: AuraTreeEntry,
-    ancestor: AuraTreeEntry,
+    entry: AurasTreeEntry,
+    ancestor: AurasTreeEntry,
   ): boolean {
     let currentParentValue = entry.parentValue;
 
@@ -528,7 +528,7 @@ export class AuraTree extends HTMLElement {
     return false;
   }
 
-  private _getVisibleEntries(): AuraTreeEntry[] {
+  private _getVisibleEntries(): AurasTreeEntry[] {
     return this._entries.filter((entry) => {
       let currentParentValue = entry.parentValue;
 
@@ -549,7 +549,7 @@ export class AuraTree extends HTMLElement {
     });
   }
 
-  private _moveFocus(entry: AuraTreeEntry): void {
+  private _moveFocus(entry: AurasTreeEntry): void {
     entry.node.focus();
 
     if (this.activation === "auto") {
@@ -712,7 +712,7 @@ export class AuraTree extends HTMLElement {
     }
   }
 
-  private _handleRightArrow(entry: AuraTreeEntry, event: KeyboardEvent): void {
+  private _handleRightArrow(entry: AurasTreeEntry, event: KeyboardEvent): void {
     if (entry.group && !this._isExpanded(entry)) {
       event.preventDefault();
       this._setExpanded(entry, true, {
@@ -734,7 +734,7 @@ export class AuraTree extends HTMLElement {
     this._moveFocus(firstChildEntry);
   }
 
-  private _handleLeftArrow(entry: AuraTreeEntry, event: KeyboardEvent): void {
+  private _handleLeftArrow(entry: AurasTreeEntry, event: KeyboardEvent): void {
     if (entry.group && this._isExpanded(entry)) {
       event.preventDefault();
       this._setExpanded(entry, false, {
@@ -758,10 +758,10 @@ export class AuraTree extends HTMLElement {
   }
 }
 
-export function registerAuraTree(): typeof AuraTree {
-  if (!customElements.get(AURA_TREE_TAG_NAME)) {
-    customElements.define(AURA_TREE_TAG_NAME, AuraTree);
+export function registerAurasTree(): typeof AurasTree {
+  if (!customElements.get(AURAS_TREE_TAG_NAME)) {
+    customElements.define(AURAS_TREE_TAG_NAME, AurasTree);
   }
 
-  return AuraTree;
+  return AurasTree;
 }
