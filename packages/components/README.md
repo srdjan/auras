@@ -2,6 +2,12 @@
 
 Light-DOM interactive components for Aura.
 
+Related docs:
+
+- [Aura CSS User Guide](../../docs/user-guide.md)
+- [Aura Component Architecture](../../docs/component-architecture.md)
+- [@aura/diagram](../diagram/README.md)
+
 Current exports:
 
 - `AuraCombobox`

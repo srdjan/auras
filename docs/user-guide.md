@@ -5,6 +5,12 @@ the current repository as it exists today: a static core stylesheet, two sample
 brand packs, and a demo page you can use to verify behavior without a build
 step.
 
+Related docs:
+
+- [Component Architecture](./component-architecture.md)
+- [Components package README](../packages/components/README.md)
+- [Diagram package README](../packages/diagram/README.md)
+
 ## Quick Start
 
 1. Run a local static server from the repo root:
@@ -67,9 +73,9 @@ deno task dev
   - `data-brand` goes on `<body>` in the current examples.
   - `data-theme="dark"`, `data-contrast="more"`, and `data-motion="reduce"` go
     on `<html>`.
-- The framework does not require JavaScript. The JS in `public/index.html`
-  only powers the optional interactive layer and the demo controls. The package
-  and browser sources live under `packages/diagram` and `packages/components`.
+- The framework does not require JavaScript. The JS in `public/index.html` only
+  powers the optional interactive layer and the demo controls. The package and
+  browser sources live under `packages/diagram` and `packages/components`.
 
 ## Common Patterns
 
@@ -171,7 +177,9 @@ source code. Load `aura-composites.css` alongside the base stylesheet.
   <div data-part="preview">
     <!-- live demo -->
   </div>
-  <pre data-part="code"><code>&lt;aura-tabs&gt;...&lt;/aura-tabs&gt;</code></pre>
+  <pre
+    data-part="code"
+  ><code>&lt;aura-tabs&gt;...&lt;/aura-tabs&gt;</code></pre>
 </article>
 ```
 
@@ -184,7 +192,8 @@ The header is optional. Token hooks: `--example-border-color`,
 Wrap spans in `data-syntax` attributes for lightweight code coloring:
 
 ```html
-<pre><code><span data-syntax="tag">&lt;div</span>
+<pre>
+<code><span data-syntax="tag">&lt;div</span>
   <span data-syntax="attr">data-layout</span>=<span data-syntax="value">"stack"</span><span data-syntax="tag">&gt;</span>
 <span data-syntax="tag">&lt;/div&gt;</span></code></pre>
 ```
@@ -635,21 +644,21 @@ Then verify:
 5. Use arrow keys inside the interactive diagram and confirm focus moves across
    the grid; in manual activation, `Enter` or `Space` should update the detail
    panel.
-6. Use arrow keys inside the combobox and confirm the selected value
-   stays in sync with the current panel; in manual mode, `Enter` should commit
-   the highlighted result.
+6. Use arrow keys inside the combobox and confirm the selected value stays in
+   sync with the current panel; in manual mode, `Enter` should commit the
+   highlighted result.
 7. Focus the splitter handle and confirm arrow keys update the split value; drag
    the divider with the pointer and confirm the primary pane size changes.
-8. Use arrow keys inside the tree and confirm the selected node and panel
-   stay in sync while branch expansion and collapse follow the current focus.
+8. Use arrow keys inside the tree and confirm the selected node and panel stay
+   in sync while branch expansion and collapse follow the current focus.
 9. Use arrow keys inside the auto-activation master-detail and confirm the
    detail panel follows the active trigger.
-10. Use arrow keys inside the manual-activation master-detail and confirm
-    focus moves first, then `Enter` or `Space` updates the detail panel.
-11. Use arrow keys inside the auto-activation tabs and confirm the active
-    tab and visible panel stay in sync.
-12. Use arrow keys inside the manual-activation tabs and confirm focus
-    moves first, then `Enter` or `Space` updates the panel.
+10. Use arrow keys inside the manual-activation master-detail and confirm focus
+    moves first, then `Enter` or `Space` updates the detail panel.
+11. Use arrow keys inside the auto-activation tabs and confirm the active tab
+    and visible panel stay in sync.
+12. Use arrow keys inside the manual-activation tabs and confirm focus moves
+    first, then `Enter` or `Space` updates the panel.
 13. Open the dialog and confirm the backdrop and page scroll lock.
 14. Submit the form with empty required fields and confirm validation, busy
     states, select chevrons, progress, and meter styles.

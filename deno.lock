@@ -11,10 +11,12 @@
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/media-types@^1.1.0": "1.1.0",
     "jsr:@std/net@^1.0.6": "1.0.6",
+    "jsr:@std/path@^1.0.8": "1.1.4",
     "jsr:@std/path@^1.1.4": "1.1.4",
     "jsr:@std/streams@^1.0.17": "1.0.17",
     "npm:@happy-dom/global-registrator@*": "20.8.3",
     "npm:happy-dom@*": "20.8.3",
+    "npm:marked@15": "15.0.12",
     "npm:playwright-core@*": "1.58.2"
   },
   "jsr": {
@@ -49,7 +51,7 @@
         "jsr:@std/html",
         "jsr:@std/media-types",
         "jsr:@std/net",
-        "jsr:@std/path",
+        "jsr:@std/path@^1.1.4",
         "jsr:@std/streams"
       ]
     },
@@ -108,6 +110,10 @@
         "whatwg-mimetype",
         "ws"
       ]
+    },
+    "marked@15.0.12": {
+      "integrity": "sha512-8dD6FusOQSrpv9Z1rdNMdlSgQOIP880DHqnohobOmYLElGEqAL/JvxvuxZO16r4HtjTlfPRDC1hbvxC9dPN2nA==",
+      "bin": true
     },
     "playwright-core@1.58.2": {
       "integrity": "sha512-yZkEtftgwS8CsfYo7nm0KE8jsvm6i/PTgVtB8DL726wNf6H2IMsDuxCpJj59KDaxCtSnrWan2AeDqM7JBaultg==",

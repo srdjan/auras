@@ -2,6 +2,12 @@
 
 Optional light-DOM diagram controller for Aura.
 
+Related docs:
+
+- [Aura CSS User Guide](../../docs/user-guide.md)
+- [Aura Component Architecture](../../docs/component-architecture.md)
+- [@aura/components](../components/README.md)
+
 This package enhances the existing CSS diagram shell with:
 
 - active node selection

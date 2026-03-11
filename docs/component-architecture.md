@@ -3,6 +3,12 @@
 This note defines the next iteration of Aura beyond the current element-level
 CSS library.
 
+Related docs:
+
+- [User Guide](./user-guide.md)
+- [Components package README](../packages/components/README.md)
+- [Diagram package README](../packages/diagram/README.md)
+
 ## Goal
 
 Keep Aura's current identity intact:
