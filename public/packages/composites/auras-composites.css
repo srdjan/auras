@@ -1,0 +1,1047 @@
+/* Optional Auras composites layer. Load this after auras.css when you want
+   higher-level CSS patterns without pulling in behavior. */
+@layer composites {
+  :where([data-ui~="master-detail"], auras-master-detail) {
+    --master-detail-gap: var(--space-4);
+    --master-detail-master-width: 18rem;
+    --master-detail-master-padding: var(--space-2);
+    --master-detail-master-bg: var(--surface);
+    --master-detail-master-border-color: var(--border);
+    --master-detail-master-shadow: var(--shadow-sm);
+    --master-detail-trigger-radius: var(--radius-md);
+    --master-detail-trigger-padding: var(--space-3);
+    --master-detail-trigger-border-color: transparent;
+    --master-detail-trigger-bg: transparent;
+    --master-detail-trigger-bg-hover: var(--surface-raised);
+    --master-detail-trigger-bg-active: var(--primary-subtle);
+    --master-detail-trigger-border-color-active: color-mix(
+      in oklch,
+      var(--primary) 38%,
+      var(--border)
+    );
+
+    display: grid;
+    gap: var(--master-detail-gap);
+    align-items: start;
+  }
+
+  @media (min-width: 48rem) {
+    :where([data-ui~="master-detail"], auras-master-detail) {
+      grid-template-columns:
+        minmax(15rem, var(--master-detail-master-width))
+        minmax(0, 1fr);
+    }
+  }
+
+  :where([data-ui~="master-detail"], auras-master-detail) [data-part="master"] {
+    display: grid;
+    gap: var(--space-1);
+    align-content: start;
+    padding: var(--master-detail-master-padding);
+    background-color: var(--master-detail-master-bg);
+    border: 1px solid var(--master-detail-master-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--master-detail-master-shadow);
+  }
+
+  :where([data-ui~="master-detail"], auras-master-detail)
+    :where(button, a)[data-part="trigger"] {
+    inline-size: 100%;
+    min-block-size: auto;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-1);
+    text-align: left;
+    background-color: var(--master-detail-trigger-bg);
+    border: 1px solid var(--master-detail-trigger-border-color);
+    border-radius: var(--master-detail-trigger-radius);
+    padding: var(--master-detail-trigger-padding);
+    box-shadow: none;
+  }
+
+  :where([data-ui~="master-detail"], auras-master-detail)
+    :where(button, a)[data-part="trigger"]:hover {
+    background-color: var(--master-detail-trigger-bg-hover);
+  }
+
+  :where([data-ui~="master-detail"], auras-master-detail)
+    [data-part="trigger"][data-active] {
+    background-color: var(--master-detail-trigger-bg-active);
+    border-color: var(--master-detail-trigger-border-color-active);
+  }
+
+  :where([data-ui~="master-detail"], auras-master-detail)
+    [data-part="trigger"]
+    > :where(p, small) {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+
+  :where([data-ui~="master-detail"], auras-master-detail)
+    [data-part="trigger"][data-active]
+    > :where(p, small) {
+    color: var(--text);
+  }
+
+  :where([data-ui~="master-detail"], auras-master-detail) [data-part="detail"] {
+    display: grid;
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="master-detail"], auras-master-detail) [data-part="panel"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="master-detail"], auras-master-detail)
+    [data-part="panel"][hidden] {
+    display: none !important;
+  }
+
+  :where([data-ui~="tabs"], auras-tabs) {
+    --tabs-gap: var(--space-4);
+    --tabs-list-gap: var(--space-2);
+    --tabs-list-padding: var(--space-2);
+    --tabs-rule-color: var(--border);
+    --tabs-trigger-bg: transparent;
+    --tabs-trigger-bg-hover: var(--surface-raised);
+    --tabs-trigger-bg-active: var(--primary-subtle);
+    --tabs-trigger-border-color: transparent;
+    --tabs-trigger-border-color-active: color-mix(
+      in oklch,
+      var(--primary) 38%,
+      var(--border)
+    );
+
+    display: grid;
+    gap: var(--tabs-gap);
+  }
+
+  :where([data-ui~="tabs"], auras-tabs) [data-part="tablist"] {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--tabs-list-gap);
+    align-items: center;
+    padding-block-end: var(--tabs-list-padding);
+    border-block-end: 1px solid var(--tabs-rule-color);
+  }
+
+  :where([data-ui~="tabs"], auras-tabs) :where(button, a)[data-part="trigger"] {
+    min-block-size: auto;
+    box-shadow: none;
+    border: 1px solid var(--tabs-trigger-border-color);
+    border-radius: var(--radius-full);
+    background-color: var(--tabs-trigger-bg);
+    padding-inline: var(--space-3);
+    padding-block: var(--space-2);
+  }
+
+  :where([data-ui~="tabs"], auras-tabs)
+    :where(button, a)[data-part="trigger"]:hover {
+    background-color: var(--tabs-trigger-bg-hover);
+  }
+
+  :where([data-ui~="tabs"], auras-tabs) [data-part="trigger"][data-active] {
+    background-color: var(--tabs-trigger-bg-active);
+    border-color: var(--tabs-trigger-border-color-active);
+  }
+
+  :where([data-ui~="tabs"], auras-tabs) [data-part="panels"] {
+    display: grid;
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="tabs"], auras-tabs) [data-part="panel"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="tabs"], auras-tabs) [data-part="panel"][hidden] {
+    display: none !important;
+  }
+
+  :where([data-ui~="combobox"], auras-combobox) {
+    --combobox-gap: var(--space-3);
+    --combobox-control-gap: var(--space-2);
+    --combobox-control-bg: var(--surface);
+    --combobox-control-border-color: var(--border);
+    --combobox-control-shadow: var(--shadow-sm);
+    --combobox-control-radius: var(--radius-lg);
+    --combobox-input-padding-inline: var(--space-3);
+    --combobox-input-padding-block: var(--space-2);
+    --combobox-toggle-size: 2.75rem;
+    --combobox-list-max-block-size: 16rem;
+    --combobox-list-bg: var(--surface);
+    --combobox-list-border-color: var(--border);
+    --combobox-list-shadow: var(--shadow-md);
+    --combobox-option-padding-inline: var(--space-3);
+    --combobox-option-padding-block: var(--space-2);
+    --combobox-option-bg-hover: var(--surface-raised);
+    --combobox-option-bg-active: var(--primary-subtle);
+    --combobox-option-border-color: transparent;
+    --combobox-option-border-color-active: color-mix(
+      in oklch,
+      var(--primary) 38%,
+      var(--border)
+    );
+    --combobox-panel-bg: var(--surface);
+    --combobox-panel-border-color: var(--border);
+    --combobox-panel-shadow: var(--shadow-sm);
+    --combobox-panel-padding: var(--space-4);
+
+    display: grid;
+    gap: var(--combobox-gap);
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="combobox"], auras-combobox) > label {
+    font-weight: 500;
+  }
+
+  :where([data-ui~="combobox"], auras-combobox) [data-part="control"] {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    min-inline-size: 0;
+    background-color: var(--combobox-control-bg);
+    border: 1px solid var(--combobox-control-border-color);
+    border-radius: var(--combobox-control-radius);
+    box-shadow: var(--combobox-control-shadow);
+    overflow: clip;
+  }
+
+  :where([data-ui~="combobox"], auras-combobox)
+    [data-part="control"]
+    > [data-part="input"] {
+    inline-size: 100%;
+    min-inline-size: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    padding-inline: var(--combobox-input-padding-inline);
+    padding-block: var(--combobox-input-padding-block);
+  }
+
+  :where([data-ui~="combobox"], auras-combobox)
+    [data-part="control"]
+    > [data-part="input"]:focus {
+    outline: none;
+  }
+
+  :where([data-ui~="combobox"], auras-combobox)
+    [data-part="control"]:focus-within {
+    border-color: var(--focus-ring);
+    box-shadow: 0 0 0 3px
+      color-mix(in oklch, var(--focus-ring) 22%, transparent);
+  }
+
+  :where([data-ui~="combobox"], auras-combobox)
+    [data-part="control"]
+    > [data-part="toggle"] {
+    inline-size: var(--combobox-toggle-size);
+    block-size: 100%;
+    min-block-size: calc(var(--combobox-toggle-size) - 0.25rem);
+    padding: 0;
+    border: 0;
+    border-inline-start: 1px solid var(--combobox-control-border-color);
+    border-radius: 0;
+    background: transparent;
+    color: var(--text-muted);
+    box-shadow: none;
+  }
+
+  :where([data-ui~="combobox"], auras-combobox)
+    [data-part="control"]
+    > [data-part="toggle"]::before {
+    content: "";
+    inline-size: 0.65rem;
+    block-size: 0.65rem;
+    border-inline-end: 2px solid currentColor;
+    border-block-end: 2px solid currentColor;
+    transform: rotate(45deg) translateY(-0.15rem);
+    transition: transform 160ms ease;
+  }
+
+  :where([data-ui~="combobox"], auras-combobox[open])
+    [data-part="control"]
+    > [data-part="toggle"]::before {
+    transform: rotate(225deg) translateY(-0.05rem);
+  }
+
+  :where([data-ui~="combobox"], auras-combobox) [data-part="listbox"] {
+    display: grid;
+    gap: var(--space-1);
+    margin: 0;
+    padding: var(--space-1);
+    list-style: none;
+    min-inline-size: 0;
+    max-block-size: var(--combobox-list-max-block-size);
+    overflow: auto;
+    background-color: var(--combobox-list-bg);
+    border: 1px solid var(--combobox-list-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--combobox-list-shadow);
+  }
+
+  :where([data-ui~="combobox"], auras-combobox) [data-part="listbox"][hidden] {
+    display: none !important;
+  }
+
+  :where([data-ui~="combobox"], auras-combobox) [data-part="option"] {
+    display: grid;
+    gap: var(--space-1);
+    padding-inline: var(--combobox-option-padding-inline);
+    padding-block: var(--combobox-option-padding-block);
+    border: 1px solid var(--combobox-option-border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  :where([data-ui~="combobox"], auras-combobox) [data-part="option"]:hover {
+    background-color: var(--combobox-option-bg-hover);
+  }
+
+  :where([data-ui~="combobox"], auras-combobox)
+    [data-part="option"][data-active],
+  :where([data-ui~="combobox"], auras-combobox)
+    [data-part="option"][data-selected] {
+    background-color: var(--combobox-option-bg-active);
+    border-color: var(--combobox-option-border-color-active);
+  }
+
+  :where([data-ui~="combobox"], auras-combobox) [data-part="empty"] {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+  }
+
+  :where([data-ui~="combobox"], auras-combobox) [data-part="empty"][hidden] {
+    display: none !important;
+  }
+
+  :where([data-ui~="combobox"], auras-combobox) [data-part="panels"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="combobox"], auras-combobox) [data-part="panel"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+    padding: var(--combobox-panel-padding);
+    background-color: var(--combobox-panel-bg);
+    border: 1px solid var(--combobox-panel-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--combobox-panel-shadow);
+  }
+
+  :where([data-ui~="combobox"], auras-combobox) [data-part="panel"][hidden] {
+    display: none !important;
+  }
+
+  :where([data-ui~="splitter"], auras-splitter) {
+    --splitter-gap: 0;
+    --splitter-handle-size: 0.875rem;
+    --splitter-pane-min-block-size: 18rem;
+    --splitter-pane-padding: var(--space-4);
+    --splitter-pane-bg: var(--surface);
+    --splitter-pane-border-color: var(--border);
+    --splitter-pane-shadow: var(--shadow-sm);
+    --splitter-handle-bg: color-mix(
+      in oklch,
+      var(--surface-raised) 78%,
+      var(--border)
+    );
+    --splitter-handle-bg-hover: color-mix(
+      in oklch,
+      var(--primary-subtle) 62%,
+      var(--surface-raised)
+    );
+    --splitter-handle-grip: color-mix(
+      in oklch,
+      var(--text-muted) 55%,
+      transparent
+    );
+
+    display: grid;
+    gap: var(--splitter-gap);
+    min-inline-size: 0;
+    align-items: stretch;
+  }
+
+  @media (min-width: 48rem) {
+    :where([data-ui~="splitter"], auras-splitter) {
+      grid-template-columns:
+        minmax(0, var(--splitter-primary-size, 50%))
+        var(--splitter-handle-size)
+        minmax(0, calc(100% - var(--splitter-primary-size, 50%)));
+    }
+  }
+
+  :where([data-ui~="splitter"], auras-splitter)[data-dragging] {
+    user-select: none;
+  }
+
+  :where([data-ui~="splitter"], auras-splitter) [data-part="pane"] {
+    min-inline-size: 0;
+    min-block-size: var(--splitter-pane-min-block-size);
+    overflow: auto;
+    padding: var(--splitter-pane-padding);
+    background-color: var(--splitter-pane-bg);
+    border: 1px solid var(--splitter-pane-border-color);
+    box-shadow: var(--splitter-pane-shadow);
+  }
+
+  /* Narrow viewport (stacked): vertical-style borders and cursor */
+  :where([data-ui~="splitter"], auras-splitter)
+    [data-part="pane"][data-pane="primary"] {
+    border-start-start-radius: var(--radius-lg);
+    border-start-end-radius: var(--radius-lg);
+    border-end-start-radius: 0;
+    border-block-end-width: 0;
+  }
+
+  :where([data-ui~="splitter"], auras-splitter)
+    [data-part="pane"][data-pane="secondary"] {
+    border-end-start-radius: var(--radius-lg);
+    border-end-end-radius: var(--radius-lg);
+    border-start-end-radius: 0;
+    border-block-start-width: 0;
+  }
+
+  :where([data-ui~="splitter"], auras-splitter) [data-part="separator"] {
+    position: relative;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background-color: var(--splitter-handle-bg);
+    color: inherit;
+    box-shadow: none;
+    cursor: row-resize;
+  }
+
+  /* Wide viewport: horizontal-style borders and cursor */
+  @media (min-width: 48rem) {
+    :where([data-ui~="splitter"], auras-splitter)
+      [data-part="pane"][data-pane="primary"] {
+      border-start-start-radius: var(--radius-lg);
+      border-start-end-radius: 0;
+      border-end-start-radius: var(--radius-lg);
+      border-inline-end-width: 0;
+      border-block-end-width: 1px;
+    }
+
+    :where([data-ui~="splitter"], auras-splitter)
+      [data-part="pane"][data-pane="secondary"] {
+      border-start-end-radius: var(--radius-lg);
+      border-end-start-radius: 0;
+      border-end-end-radius: var(--radius-lg);
+      border-inline-start-width: 0;
+      border-block-start-width: 1px;
+    }
+
+    :where([data-ui~="splitter"], auras-splitter) [data-part="separator"] {
+      cursor: col-resize;
+    }
+  }
+
+  /* Explicit vertical orientation overrides at all viewport widths */
+  :where([data-ui~="splitter"], auras-splitter)[orientation="vertical"] {
+    grid-template-columns: none;
+    grid-template-rows:
+      minmax(0, var(--splitter-primary-size, 50%))
+      var(--splitter-handle-size)
+      minmax(0, calc(100% - var(--splitter-primary-size, 50%)));
+  }
+
+  :where([data-ui~="splitter"], auras-splitter)[orientation="vertical"]
+    [data-part="pane"][data-pane="primary"] {
+    border-start-start-radius: var(--radius-lg);
+    border-start-end-radius: var(--radius-lg);
+    border-end-start-radius: 0;
+    border-inline-end-width: 1px;
+    border-block-end-width: 0;
+  }
+
+  :where([data-ui~="splitter"], auras-splitter)[orientation="vertical"]
+    [data-part="pane"][data-pane="secondary"] {
+    border-end-start-radius: var(--radius-lg);
+    border-end-end-radius: var(--radius-lg);
+    border-start-end-radius: 0;
+    border-inline-start-width: 1px;
+    border-block-start-width: 0;
+  }
+
+  :where([data-ui~="splitter"], auras-splitter)[orientation="vertical"]
+    [data-part="separator"] {
+    cursor: row-resize;
+  }
+
+  :where([data-ui~="splitter"], auras-splitter)
+    [data-part="separator"]:where(:hover, :focus-visible) {
+    background-color: var(--splitter-handle-bg-hover);
+  }
+
+  /* Narrow viewport: horizontal grip (stacked layout) */
+  :where([data-ui~="splitter"], auras-splitter) [data-part="separator"]::before {
+    content: "";
+    position: absolute;
+    inset: 50%;
+    inline-size: 2.25rem;
+    block-size: 0.2rem;
+    border-radius: var(--radius-full);
+    background: radial-gradient(
+      circle at center,
+      var(--splitter-handle-grip) 0.08rem,
+      transparent 0.09rem
+    ) center / 0.55rem 0.2rem repeat-x;
+    transform: translate(-50%, -50%);
+  }
+
+  /* Wide viewport: vertical grip (side-by-side layout) */
+  @media (min-width: 48rem) {
+    :where([data-ui~="splitter"], auras-splitter) [data-part="separator"]::before {
+      inline-size: 0.2rem;
+      block-size: 2.25rem;
+      background: radial-gradient(
+        circle at center,
+        var(--splitter-handle-grip) 0.08rem,
+        transparent 0.09rem
+      ) center / 0.2rem 0.55rem repeat-y;
+    }
+  }
+
+  /* Explicit vertical orientation: always horizontal grip */
+  :where([data-ui~="splitter"], auras-splitter)[orientation="vertical"]
+    [data-part="separator"]::before {
+    inline-size: 2.25rem;
+    block-size: 0.2rem;
+    background: radial-gradient(
+      circle at center,
+      var(--splitter-handle-grip) 0.08rem,
+      transparent 0.09rem
+    ) center / 0.55rem 0.2rem repeat-x;
+  }
+
+  :where([data-ui~="tree"], auras-tree) {
+    --tree-gap: var(--space-4);
+    --tree-indent: var(--space-4);
+    --tree-rule-color: var(--border);
+    --tree-tree-padding: var(--space-2);
+    --tree-tree-bg: var(--surface);
+    --tree-tree-border-color: var(--border);
+    --tree-tree-shadow: var(--shadow-sm);
+    --tree-node-padding-inline: var(--space-3);
+    --tree-node-padding-block: var(--space-2);
+    --tree-node-bg: transparent;
+    --tree-node-bg-hover: var(--surface-raised);
+    --tree-node-bg-active: var(--primary-subtle);
+    --tree-node-border-color: transparent;
+    --tree-node-border-color-active: color-mix(
+      in oklch,
+      var(--primary) 38%,
+      var(--border)
+    );
+    --tree-toggle-size: 1.5rem;
+    --tree-panel-bg: var(--surface);
+    --tree-panel-border-color: var(--border);
+    --tree-panel-shadow: var(--shadow-sm);
+    --tree-panel-padding: var(--space-4);
+
+    display: grid;
+    gap: var(--tree-gap);
+    min-inline-size: 0;
+  }
+
+  @media (min-width: 64rem) {
+    :where(auras-tree[data-has-panels]) {
+      grid-template-columns: minmax(18rem, 22rem) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  :where([data-ui~="tree"], auras-tree) [data-part="tree"] {
+    display: grid;
+    gap: var(--space-1);
+    align-content: start;
+    min-inline-size: 0;
+    padding: var(--tree-tree-padding);
+    background-color: var(--tree-tree-bg);
+    border: 1px solid var(--tree-tree-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--tree-tree-shadow);
+    list-style: none;
+  }
+
+  :where([data-ui~="tree"], auras-tree) [data-part="tree"],
+  :where([data-ui~="tree"], auras-tree) [data-part="group"] {
+    margin: 0;
+    padding-inline-start: 0;
+  }
+
+  :where([data-ui~="tree"], auras-tree) [data-part="item"] {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  :where([data-ui~="tree"], auras-tree) [data-part="item"][data-branch] {
+    grid-template-columns: var(--tree-toggle-size) minmax(0, 1fr);
+    align-items: start;
+  }
+
+  :where([data-ui~="tree"], auras-tree) [data-part="item"] > [data-part="node"] {
+    grid-column: 1 / -1;
+    inline-size: 100%;
+    min-block-size: auto;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-1);
+    text-align: left;
+    background-color: var(--tree-node-bg);
+    border: 1px solid var(--tree-node-border-color);
+    border-radius: var(--radius-md);
+    padding-block: var(--tree-node-padding-block);
+    padding-inline: var(--tree-node-padding-inline);
+    box-shadow: none;
+  }
+
+  :where([data-ui~="tree"], auras-tree)
+    [data-part="item"][data-branch]
+    > [data-part="node"] {
+    grid-column: 2;
+  }
+
+  :where([data-ui~="tree"], auras-tree)
+    [data-part="item"]
+    > [data-part="node"]:hover {
+    background-color: var(--tree-node-bg-hover);
+  }
+
+  :where([data-ui~="tree"], auras-tree)
+    [data-part="item"][data-active]
+    > [data-part="node"],
+  :where([data-ui~="tree"], auras-tree) [data-part="node"][data-active] {
+    background-color: var(--tree-node-bg-active);
+    border-color: var(--tree-node-border-color-active);
+  }
+
+  :where([data-ui~="tree"], auras-tree)
+    [data-part="item"]
+    > [data-part="node"]
+    > :where(p, small) {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+
+  :where([data-ui~="tree"], auras-tree)
+    [data-part="item"]
+    > [data-part="toggle"] {
+    grid-column: 1;
+    align-self: center;
+    justify-self: center;
+    inline-size: var(--tree-toggle-size);
+    block-size: var(--tree-toggle-size);
+    min-block-size: var(--tree-toggle-size);
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--radius-full);
+    background-color: transparent;
+    color: var(--text-muted);
+    box-shadow: none;
+  }
+
+  :where([data-ui~="tree"], auras-tree)
+    [data-part="item"][data-branch]
+    > [data-part="toggle"]::before {
+    content: "";
+    inline-size: 0.55rem;
+    block-size: 0.55rem;
+    border-inline-end: 2px solid currentColor;
+    border-block-end: 2px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 160ms ease;
+  }
+
+  :where([data-ui~="tree"], auras-tree)
+    [data-part="item"][data-expanded]
+    > [data-part="toggle"]::before {
+    transform: rotate(45deg);
+  }
+
+  :where([data-ui~="tree"], auras-tree) [data-part="group"] {
+    display: grid;
+    gap: var(--space-1);
+    min-inline-size: 0;
+    margin-inline-start: calc(var(--tree-toggle-size) + var(--space-2));
+    padding-inline-start: var(--tree-indent);
+    border-inline-start: 1px solid var(--tree-rule-color);
+    list-style: none;
+  }
+
+  :where([data-ui~="tree"], auras-tree) [data-part="group"][hidden] {
+    display: none !important;
+  }
+
+  :where([data-ui~="tree"], auras-tree) [data-part="panels"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+    align-content: start;
+  }
+
+  :where([data-ui~="tree"], auras-tree) [data-part="panel"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+    padding: var(--tree-panel-padding);
+    background-color: var(--tree-panel-bg);
+    border: 1px solid var(--tree-panel-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--tree-panel-shadow);
+  }
+
+  :where([data-ui~="tree"], auras-tree) [data-part="panel"][hidden] {
+    display: none !important;
+  }
+
+  /* ===== Example composite ===== */
+  :where([data-ui~="example"]) {
+    --example-border-color: var(--border);
+    --example-radius: var(--radius-lg);
+    --example-preview-padding: var(--space-4);
+    --example-code-bg: var(--surface-raised);
+    --example-code-padding: var(--space-3);
+    --example-code-font-size: var(--text-sm);
+
+    border: 1px solid var(--example-border-color);
+    border-radius: var(--example-radius);
+    overflow: hidden;
+  }
+
+  :where([data-ui~="example"]) > [data-part="header"] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--example-code-bg);
+    border-block-end: 1px solid var(--example-border-color);
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  :where([data-ui~="example"]) > [data-part="header"] [data-part="meta"] {
+    color: var(--text-muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  :where([data-ui~="example"]) > [data-part="preview"] {
+    padding: var(--example-preview-padding);
+    min-inline-size: 0;
+    overflow-x: auto;
+  }
+
+  :where([data-ui~="example"]) > [data-part="code"] {
+    border-block-start: 1px solid var(--example-border-color);
+    padding: var(--example-code-padding);
+    background-color: var(--example-code-bg);
+    font-size: var(--example-code-font-size);
+    overflow-x: auto;
+  }
+
+  :where([data-ui~="example"]) > [data-part="code"] pre,
+  :where([data-ui~="example"]) > pre[data-part="code"] {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    padding: 0;
+  }
+
+  :where([data-ui~="example"]) > [data-part="code"] code,
+  :where([data-ui~="example"]) > pre[data-part="code"] code {
+    background: none;
+    padding: 0;
+    border: 0;
+    font-size: inherit;
+  }
+
+  :where([data-ui~="diagram"], auras-diagram) {
+    --diagram-gap: var(--space-4);
+    --diagram-columns: 12;
+    --diagram-row-size: 4.5rem;
+    --diagram-padding: var(--space-4);
+    --diagram-min-inline-size: 42rem;
+    --diagram-border-color: var(--border);
+    --diagram-canvas-bg: linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--surface-raised) 65%, var(--surface)),
+      var(--surface)
+    );
+    --diagram-node-bg: var(--surface);
+    --diagram-node-border-color: var(--border);
+    --diagram-node-shadow: var(--shadow-sm);
+    --diagram-connector-color: color-mix(
+      in oklch,
+      var(--text) 42%,
+      var(--primary)
+    );
+    --diagram-connector-stroke: 2.5;
+    --diagram-connector-min-block-size: calc(var(--diagram-row-size) * 0.8);
+    --diagram-node-bg-active: var(--primary-subtle);
+    --diagram-node-border-color-active: color-mix(
+      in oklch,
+      var(--primary) 38%,
+      var(--border)
+    );
+    --diagram-panel-bg: var(--surface);
+    --diagram-panel-border-color: var(--border);
+    --diagram-panel-shadow: var(--shadow-sm);
+    --diagram-panel-padding: var(--space-4);
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    min-inline-size: 0;
+    contain: inline-size;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  @media (max-width: 40rem) {
+    :where([data-ui~="diagram"], auras-diagram) {
+      --diagram-min-inline-size: 28rem;
+      --diagram-row-size: 3.5rem;
+      --diagram-padding: var(--space-2);
+      --diagram-gap: var(--space-2);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    :where(auras-diagram) {
+      grid-template-columns: minmax(0, 1.65fr) minmax(18rem, 1fr);
+      align-items: start;
+    }
+
+    :where(auras-diagram) > [data-part="caption"] {
+      grid-column: 1 / -1;
+    }
+  }
+
+  :where([data-ui~="diagram"], auras-diagram)
+    > :where(figcaption, [data-part="caption"]) {
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+
+  :where([data-ui~="diagram"], auras-diagram) [data-part="canvas"] {
+    display: grid;
+    grid-template-columns: repeat(var(--diagram-columns), minmax(0, 1fr));
+    grid-auto-rows: minmax(var(--diagram-row-size), auto);
+    gap: var(--diagram-gap);
+    align-items: stretch;
+    min-inline-size: var(--diagram-min-inline-size);
+    padding: var(--diagram-padding);
+    background: var(--diagram-canvas-bg);
+    border: 1px solid var(--diagram-border-color);
+    border-radius: var(--radius-lg);
+  }
+
+  :where(auras-diagram) [data-part="panels"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+    align-content: start;
+  }
+
+  :where(auras-diagram) [data-part="panel"] {
+    display: grid;
+    gap: var(--space-3);
+    min-inline-size: 0;
+    padding: var(--diagram-panel-padding);
+    background-color: var(--diagram-panel-bg);
+    border: 1px solid var(--diagram-panel-border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--diagram-panel-shadow);
+  }
+
+  :where(auras-diagram) [data-part="panel"][hidden] {
+    display: none !important;
+  }
+
+  :where([data-ui~="diagram"], auras-diagram) [data-part="node"],
+  :where([data-ui~="diagram"], auras-diagram) [data-part="connector"] {
+    grid-column: var(--diagram-column, auto);
+    grid-row: var(--diagram-row, auto);
+    min-inline-size: 0;
+  }
+
+  :where([data-ui~="diagram"], auras-diagram) [data-part="node"] {
+    --diagram-node-accent: var(--primary);
+
+    display: grid;
+    align-content: start;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    background-color: var(--diagram-node-bg);
+    border: 1px solid var(--diagram-node-border-color);
+    border-inline-start: 0.35rem solid var(--diagram-node-accent);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--diagram-node-shadow);
+  }
+
+  :where(auras-diagram)
+    :where(button, a, [role="button"], [tabindex])[data-part="node"] {
+    inline-size: 100%;
+    min-block-size: auto;
+    text-align: left;
+    justify-content: flex-start;
+    align-items: flex-start;
+    box-shadow: var(--diagram-node-shadow);
+  }
+
+  :where(auras-diagram) [data-part="node"][data-active] {
+    background-color: var(--diagram-node-bg-active);
+    border-color: var(--diagram-node-border-color-active);
+  }
+
+  :where([data-ui~="diagram"], auras-diagram)
+    [data-part="node"]
+    > :where(h3, strong) {
+    margin: 0;
+    font-size: var(--text-base);
+    line-height: var(--leading-tight);
+  }
+
+  :where([data-ui~="diagram"], auras-diagram)
+    [data-part="node"]
+    > :where(p, small) {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+  }
+
+  :where([data-ui~="diagram"], auras-diagram)
+    [data-part="node"][data-kind="input"] {
+    --diagram-node-accent: var(--color-info);
+  }
+
+  :where([data-ui~="diagram"], auras-diagram)
+    [data-part="node"][data-kind="process"] {
+    --diagram-node-accent: var(--primary);
+  }
+
+  :where([data-ui~="diagram"], auras-diagram)
+    [data-part="node"][data-kind="decision"] {
+    --diagram-node-accent: var(--color-warning);
+  }
+
+  :where([data-ui~="diagram"], auras-diagram)
+    [data-part="node"][data-kind="output"] {
+    --diagram-node-accent: var(--color-success);
+  }
+
+  :where([data-ui~="diagram"], auras-diagram) [data-part="connector"] {
+    display: grid;
+    place-items: center;
+    color: var(--diagram-connector-color);
+    min-block-size: var(--diagram-connector-min-block-size);
+    pointer-events: none;
+  }
+
+  :where([data-ui~="diagram"], auras-diagram) [data-part="connector"] svg {
+    inline-size: 100%;
+    block-size: 100%;
+    overflow: visible;
+  }
+
+  :where([data-ui~="diagram"], auras-diagram)
+    [data-part="connector"]
+    :where(path, polyline, line) {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: var(--diagram-connector-stroke);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  :where([data-ui~="diagram"], auras-diagram)
+    [data-part="connector"]
+    [data-marker="arrow"] {
+    fill: currentColor;
+    stroke: none;
+  }
+
+  /* ---------- Example (documentation demo block) ---------- */
+  :where([data-ui~="example"]) {
+    --example-border-color: var(--border);
+    --example-radius: var(--radius-lg);
+    --example-preview-padding: var(--space-4);
+    --example-code-bg: var(--surface-raised);
+    --example-code-padding: var(--space-3);
+    --example-code-font-size: var(--text-sm);
+
+    border: 1px solid var(--example-border-color);
+    border-radius: var(--example-radius);
+    overflow: hidden;
+  }
+
+  :where([data-ui~="example"]) > [data-part="header"] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--example-preview-padding);
+    border-block-end: 1px solid var(--example-border-color);
+    background-color: var(--example-code-bg);
+    font-size: var(--text-sm);
+  }
+
+  :where([data-ui~="example"]) > [data-part="header"] [data-part="meta"] {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  :where([data-ui~="example"]) > [data-part="preview"] {
+    padding: var(--example-preview-padding);
+    min-inline-size: 0;
+    overflow-x: auto;
+  }
+
+  :where([data-ui~="example"]) > [data-part="code"] {
+    border-block-start: 1px solid var(--example-border-color);
+    padding: var(--example-code-padding);
+    background-color: var(--example-code-bg);
+    font-size: var(--example-code-font-size);
+    overflow-x: auto;
+  }
+
+  :where([data-ui~="example"]) > [data-part="code"] pre {
+    margin: 0;
+  }
+
+  :where([data-ui~="example"]) > [data-part="code"] code {
+    background: none;
+    padding: 0;
+    border: 0;
+    font-size: inherit;
+  }
+}

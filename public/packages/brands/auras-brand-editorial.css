@@ -1,0 +1,57 @@
+/* Sample editorial brand pack. Load this on top of auras.css to demonstrate
+   how a different design system can plug into the same semantic API. */
+@layer brands {
+  [data-brand="editorial"] {
+    --font-sans:
+      "Iowan Old Style", "Palatino Linotype", "Book Antiqua", "URW Palladio L",
+      Georgia, serif;
+
+    --hue-primary: 28;
+    --hue-secondary: 205;
+
+    --primary-l: 56%;
+    --primary-c: 0.11;
+    --primary: oklch(var(--primary-l) var(--primary-c) var(--hue-primary));
+    --primary-hover: oklch(
+      calc(var(--primary-l) - 5%)
+      var(--primary-c)
+      var(--hue-primary)
+    );
+    --primary-subtle: oklch(
+      calc(var(--primary-l) + 18%)
+      0.035
+      var(--hue-primary)
+    );
+
+    --secondary-l: 48%;
+    --secondary-c: 0.07;
+    --secondary: oklch(
+      var(--secondary-l)
+      var(--secondary-c)
+      var(--hue-secondary)
+    );
+    --secondary-hover: oklch(
+      calc(var(--secondary-l) - 5%)
+      var(--secondary-c)
+      var(--hue-secondary)
+    );
+
+    --focus-ring: var(--primary);
+    --radius-sm: 0;
+    --radius-md: 0.125rem;
+    --button-radius: 0;
+    --field-radius: 0;
+    --nav-gap: var(--space-3);
+    --card-padding: var(--space-8);
+    --card-border-color: var(--border-strong);
+    --card-shadow: none;
+    --page-padding-block: var(--space-6);
+  }
+
+  @supports (color: color-mix(in oklch, black, white)) {
+    [data-brand="editorial"] {
+      --primary-hover: color-mix(in oklch, var(--primary) 82%, black);
+      --primary-subtle: color-mix(in oklch, var(--primary) 16%, white);
+    }
+  }
+}

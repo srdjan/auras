@@ -1,0 +1,93 @@
+/* Sample Auras brand pack. Load this on top of auras.css to opt into a
+   branded design system while keeping the headless core unchanged. */
+@layer brands {
+  [data-brand="auras"] {
+    --primary-l: 55%;
+    --primary-c: 0.15;
+    --primary: oklch(var(--primary-l) var(--primary-c) var(--hue-primary));
+    --primary-hover: oklch(
+      calc(var(--primary-l) - 5%)
+      var(--primary-c)
+      var(--hue-primary)
+    );
+    --primary-subtle: oklch(
+      calc(var(--primary-l) + 20%)
+      0.05
+      var(--hue-primary)
+    );
+
+    --secondary-l: 60%;
+    --secondary-c: 0.1;
+    --secondary: oklch(
+      var(--secondary-l)
+      var(--secondary-c)
+      var(--hue-secondary)
+    );
+    --secondary-hover: oklch(
+      calc(var(--secondary-l) - 5%)
+      var(--secondary-c)
+      var(--hue-secondary)
+    );
+
+    /* Tinted grays - barely perceptible primary-hue warmth */
+    --gray-0: oklch(98% 0.004 var(--hue-primary));
+    --gray-1: oklch(95% 0.004 var(--hue-primary));
+    --gray-2: oklch(92% 0.005 var(--hue-primary));
+    --gray-3: oklch(88% 0.005 var(--hue-primary));
+
+    --link: var(--primary);
+    --link-visited: var(--secondary);
+    --focus-ring: var(--primary);
+    --button-solid-bg: var(--primary);
+    --button-soft-bg: var(--primary-subtle);
+    --page-padding-block: var(--space-6);
+    --card-shadow: var(--shadow-sm);
+    --card-border-color: color-mix(in oklch, var(--border) 60%, transparent);
+
+    /* Radius bump */
+    --radius-md: 0.625rem;
+    --button-radius: var(--radius-md);
+    --field-radius: var(--radius-md);
+
+    /* Dialog */
+    --dialog-backdrop-blur: 0.65rem;
+  }
+
+  /* Dark mode brand overrides */
+  [data-theme~="dark"] [data-brand="auras"],
+  [data-brand="auras"][data-theme~="dark"] {
+    --gray-10: oklch(20% 0.006 var(--hue-primary));
+    --gray-11: oklch(13% 0.005 var(--hue-primary));
+    --gray-12: oklch(9% 0.004 var(--hue-primary));
+    --card-border-color: color-mix(in oklch, var(--border) 50%, transparent);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) [data-brand="auras"] {
+      --gray-10: oklch(20% 0.006 var(--hue-primary));
+      --gray-11: oklch(13% 0.005 var(--hue-primary));
+      --gray-12: oklch(9% 0.004 var(--hue-primary));
+      --card-border-color: color-mix(in oklch, var(--border) 50%, transparent);
+    }
+  }
+
+  @supports (color: color-mix(in oklch, black, white)) {
+    [data-brand="auras"] {
+      --primary-hover: color-mix(in oklch, var(--primary) 88%, black);
+      --primary-subtle: color-mix(in oklch, var(--primary) 20%, white);
+    }
+
+    [data-theme~="dark"] [data-brand="auras"],
+    [data-brand="auras"][data-theme~="dark"] {
+      --primary-hover: color-mix(in oklch, var(--primary) 80%, white);
+      --primary-subtle: color-mix(in oklch, var(--primary) 30%, var(--gray-10));
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme]) [data-brand="auras"] {
+        --primary-hover: color-mix(in oklch, var(--primary) 80%, white);
+        --primary-subtle: color-mix(in oklch, var(--primary) 30%, var(--gray-10));
+      }
+    }
+  }
+}
