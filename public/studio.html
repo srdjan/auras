@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en" data-smooth>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Theme Studio - Auras CSS</title>
+    <meta
+      name="description"
+      content="Visually customize Auras CSS design tokens and export a production-ready brand pack. No build step required."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href="{{SITE_ORIGIN}}/studio.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Auras CSS" />
+    <meta
+      property="og:title"
+      content="Theme Studio - Auras CSS"
+    />
+    <meta
+      property="og:description"
+      content="Visually customize Auras CSS design tokens and export a production-ready brand pack."
+    />
+    <meta property="og:url" content="{{SITE_ORIGIN}}/studio.html" />
+    <meta
+      property="og:image"
+      content="{{SITE_ORIGIN}}/auras-banner-dark.jpg"
+    />
+    <meta property="og:image:width" content="600" />
+    <meta property="og:image:height" content="327" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Theme Studio - Auras CSS"
+    />
+    <meta
+      name="twitter:description"
+      content="Visually customize Auras CSS design tokens and export a production-ready brand pack."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/packages/elements/auras.css" />
+    <link rel="stylesheet" href="/packages/composites/auras-composites.css" />
+    <style>
+      @layer site {
+        body {
+          margin: 0;
+          transition: background-color 0.5s ease-out, color 0.3s ease-out;
+        }
+
+        /* ---- Toolbar (shared with index.html) ---- */
+        [data-site="toolbar"] {
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          background-color: color-mix(in oklch, var(--bg) 80%, transparent);
+          border-block-end: 1px solid
+            color-mix(in oklch, var(--border) 30%, transparent);
+          padding-inline: var(--space-4);
+          transition:
+            box-shadow var(--transition-base),
+            background-color 0.5s ease-out;
+        }
+        [data-site="toolbar"][data-scrolled] {
+          box-shadow: 0 1px 3px rgb(0 0 0 / 0.06);
+        }
+        @supports (container-type: scroll-state) {
+          @container scroll-state(stuck: top) {
+            [data-site="toolbar"] {
+              box-shadow: 0 1px 3px rgb(0 0 0 / 0.06);
+            }
+          }
+        }
+        [data-site="toolbar"] button {
+          font-size: var(--text-sm);
+          padding-block: var(--space-1);
+          padding-inline: var(--space-3);
+          min-block-size: auto;
+        }
+        [data-site="toolbar"] nav a {
+          text-decoration: none;
+          color: var(--text-muted);
+          font-size: var(--text-sm);
+          transition: color var(--transition-fast);
+        }
+        [data-site="toolbar"] nav a:hover,
+        [data-site="toolbar"] nav a[aria-current="page"] {
+          color: var(--text);
+        }
+        [data-site="github-link"] {
+          color: var(--text-muted);
+          display: grid;
+          place-items: center;
+          transition: color var(--transition-fast);
+        }
+        [data-site="github-link"]:hover {
+          color: var(--text);
+        }
+        [data-site="toolbar-inner"] {
+          max-inline-size: 80rem;
+          margin-inline: auto;
+          inline-size: 100%;
+        }
+        [data-site="toolbar-wordmark"] {
+          font-family: "Outfit", var(--font-sans);
+          font-weight: 700;
+          letter-spacing: -0.03em;
+        }
+
+        /* ---- Studio layout ---- */
+        [data-studio="shell"] {
+          display: grid;
+          grid-template-columns: minmax(18rem, 22rem) minmax(0, 1fr);
+          block-size: calc(100svh - 3rem);
+          overflow: hidden;
+        }
+        [data-studio="controls"] {
+          overflow-y: auto;
+          padding: var(--space-4);
+          border-inline-end: 1px solid var(--border);
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-4);
+        }
+        [data-studio="preview-wrapper"] {
+          overflow-y: auto;
+          padding: var(--space-6);
+          background: var(--bg);
+          transition: background-color 0.3s ease-out;
+        }
+
+        /* Control fieldsets */
+        [data-studio="controls"] fieldset {
+          border: 1px solid var(--border);
+          border-radius: var(--radius-md);
+          padding: var(--space-3);
+        }
+        [data-studio="controls"] fieldset legend {
+          font-size: var(--text-sm);
+          font-weight: 600;
+          padding-inline: var(--space-2);
+          color: var(--text);
+        }
+        [data-studio="controls"] label {
+          font-size: var(--text-sm);
+          color: var(--text-muted);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: var(--space-2);
+        }
+        [data-studio="controls"] label span {
+          min-inline-size: 5.5rem;
+        }
+        [data-studio="controls"] input[type="range"] {
+          flex: 1;
+          min-inline-size: 0;
+        }
+        [data-studio="controls"] output {
+          font-family: var(--font-mono);
+          font-size: var(--text-xs);
+          min-inline-size: 3rem;
+          text-align: end;
+          color: var(--text-muted);
+        }
+        [data-studio="controls"] select {
+          inline-size: 100%;
+        }
+
+        /* Color swatch */
+        [data-studio="swatch"] {
+          display: inline-block;
+          inline-size: 1.75rem;
+          block-size: 1.75rem;
+          border-radius: var(--radius-sm);
+          border: 1px solid color-mix(in oklch, var(--text-muted) 25%, transparent);
+          vertical-align: middle;
+          flex-shrink: 0;
+          transition: background-color 0.15s ease-out;
+        }
+
+        /* Hue slider gradient track */
+        input[data-studio="hue-slider"] {
+          accent-color: oklch(60% 0.2 var(--_hue, 0));
+        }
+
+        /* Preview header */
+        [data-studio="preview-header"] {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding-block-end: var(--space-3);
+          margin-block-end: var(--space-4);
+          border-block-end: 1px solid var(--border);
+        }
+        [data-studio="preview-header"] h2 {
+          font-family: "Outfit", var(--font-sans);
+          font-size: var(--text-base);
+          font-weight: 600;
+          margin: 0;
+        }
+        [data-studio="preview-header"] button {
+          font-size: var(--text-xs);
+          padding-block: var(--space-1);
+          padding-inline: var(--space-2);
+          min-block-size: auto;
+        }
+
+        /* Actions bar */
+        [data-studio="actions"] {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-2);
+        }
+        [data-studio="actions"] button {
+          flex: 1 1 auto;
+          font-size: var(--text-sm);
+          min-block-size: auto;
+          padding-block: var(--space-2);
+        }
+
+        /* Export dialog */
+        [data-studio="export-dialog"] {
+          max-inline-size: 24rem;
+          inline-size: 90vw;
+        }
+        [data-studio="export-dialog"] form {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-3);
+        }
+
+        /* Toast notification */
+        [data-studio="toast"] {
+          position: fixed;
+          inset-block-end: var(--space-4);
+          inset-inline-start: 50%;
+          translate: -50% 0;
+          background: var(--gray-11);
+          color: var(--gray-0);
+          padding: var(--space-2) var(--space-4);
+          border-radius: var(--radius-md);
+          font-size: var(--text-sm);
+          opacity: 0;
+          transition: opacity 0.2s ease-out;
+          pointer-events: none;
+          z-index: 100;
+        }
+        [data-studio="toast"][data-visible] {
+          opacity: 1;
+        }
+
+        /* ---- Responsive ---- */
+        @media (max-width: 48rem) {
+          [data-studio="shell"] {
+            grid-template-columns: 1fr;
+            block-size: auto;
+            overflow: visible;
+          }
+          [data-studio="controls"] {
+            border-inline-end: none;
+            border-block-end: 1px solid var(--border);
+            max-block-size: 50svh;
+          }
+          [data-studio="preview-wrapper"] {
+            min-block-size: 100svh;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          body,
+          [data-studio="preview-wrapper"],
+          [data-studio="swatch"] {
+            transition: none;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Toolbar -->
+    <header data-ui="site-header" data-sticky data-site="toolbar">
+      <div
+        data-layout="row"
+        data-align="center"
+        data-justify="between"
+        data-gap="2"
+        data-site="toolbar-inner"
+      >
+        <a href="/" style="text-decoration: none; color: inherit">
+          <strong data-site="toolbar-wordmark">Auras</strong>
+        </a>
+        <nav data-nav="inline" data-hide="mobile" aria-label="Site navigation">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/#elements">Elements</a></li>
+            <li><a href="/#components">Components</a></li>
+            <li><a href="/#theming">Theming</a></li>
+            <li><a href="/studio.html" aria-current="page">Studio</a></li>
+          </ul>
+        </nav>
+        <div data-layout="cluster" data-gap="2" data-align="center">
+          <button
+            id="toggle-dark"
+            type="button"
+            data-variant="ghost"
+            aria-pressed="false"
+          >
+            Dark
+          </button>
+          <a
+            href="https://github.com/srdjan/auras"
+            rel="noopener noreferrer"
+            aria-label="GitHub repository"
+            data-site="github-link"
+          >
+            <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main data-studio="shell">
+      <!-- Controls panel -->
+      <aside data-studio="controls">
+        <div>
+          <h1 style="font-family: 'Outfit', var(--font-sans); font-size: var(--text-lg); font-weight: 700; letter-spacing: -0.02em; margin: 0">
+            Theme Studio
+          </h1>
+          <p style="font-size: var(--text-sm); color: var(--text-muted); margin: 0; margin-block-start: var(--space-1)">
+            Customize tokens, preview live, export a brand pack.
+          </p>
+        </div>
+
+        <!-- Primary color -->
+        <fieldset>
+          <legend>Primary color</legend>
+          <div data-layout="stack" data-gap="2">
+            <label>
+              <span>Hue</span>
+              <input
+                type="range"
+                id="ctrl-hp"
+                min="0"
+                max="360"
+                step="1"
+                value="260"
+                data-studio="hue-slider"
+              />
+              <output id="out-hp">260</output>
+              <div data-studio="swatch" id="swatch-primary"></div>
+            </label>
+            <label>
+              <span>Lightness</span>
+              <input type="range" id="ctrl-pl" min="25" max="75" step="1" value="45" />
+              <output id="out-pl">45%</output>
+            </label>
+            <label>
+              <span>Chroma</span>
+              <input type="range" id="ctrl-pc" min="0.01" max="0.25" step="0.005" value="0.03" />
+              <output id="out-pc">0.03</output>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Secondary color -->
+        <fieldset>
+          <legend>Secondary color</legend>
+          <div data-layout="stack" data-gap="2">
+            <label>
+              <span>Hue</span>
+              <input
+                type="range"
+                id="ctrl-hs"
+                min="0"
+                max="360"
+                step="1"
+                value="200"
+                data-studio="hue-slider"
+              />
+              <output id="out-hs">200</output>
+              <div data-studio="swatch" id="swatch-secondary"></div>
+            </label>
+            <label>
+              <span>Lightness</span>
+              <input type="range" id="ctrl-sl" min="25" max="75" step="1" value="50" />
+              <output id="out-sl">50%</output>
+            </label>
+            <label>
+              <span>Chroma</span>
+              <input type="range" id="ctrl-sc" min="0.01" max="0.25" step="0.005" value="0.02" />
+              <output id="out-sc">0.02</output>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Typography -->
+        <fieldset>
+          <legend>Typography</legend>
+          <div data-layout="stack" data-gap="2">
+            <label>
+              <span>Font</span>
+              <select id="ctrl-ff">
+                <option value="0">System Default</option>
+                <option value="1">Serif / Palatino</option>
+                <option value="2">Charter</option>
+                <option value="3">Geometric Sans</option>
+                <option value="4">Humanist Sans</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Shape -->
+        <fieldset>
+          <legend>Shape</legend>
+          <div data-layout="stack" data-gap="2">
+            <label>
+              <span>Roundness</span>
+              <input type="range" id="ctrl-rm" min="0" max="1.5" step="0.0625" value="0.5" />
+              <output id="out-rm">0.5</output>
+            </label>
+            <label>
+              <span>Shadows</span>
+              <select id="ctrl-sh">
+                <option value="0">None</option>
+                <option value="1">Subtle</option>
+                <option value="2">Medium</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Cards -->
+        <fieldset>
+          <legend>Cards</legend>
+          <div data-layout="stack" data-gap="2">
+            <label>
+              <span>Border</span>
+              <input type="range" id="ctrl-cbo" min="0" max="100" step="5" value="100" />
+              <output id="out-cbo">100%</output>
+            </label>
+            <label>
+              <span>Padding</span>
+              <select id="ctrl-cp">
+                <option value="0">Compact</option>
+                <option value="1" selected>Default</option>
+                <option value="2">Spacious</option>
+              </select>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- Gray tinting -->
+        <fieldset>
+          <legend>Grays</legend>
+          <label style="justify-content: flex-start; gap: var(--space-3)">
+            <input type="checkbox" id="ctrl-gt" role="switch" />
+            <span style="min-inline-size: auto">Tint grays with primary hue</span>
+          </label>
+        </fieldset>
+
+        <!-- Actions -->
+        <div data-studio="actions">
+          <button type="button" id="btn-export" data-variant="solid">
+            Export Brand Pack
+          </button>
+          <button type="button" id="btn-copy-link">
+            Copy Link
+          </button>
+          <button type="button" id="btn-reset" data-variant="ghost">
+            Reset
+          </button>
+        </div>
+      </aside>
+
+      <!-- Preview panel -->
+      <section data-studio="preview-wrapper">
+        <div data-studio="preview-header">
+          <h2>Preview</h2>
+          <button
+            type="button"
+            id="toggle-preview-dark"
+            data-variant="ghost"
+            aria-pressed="false"
+          >
+            Dark mode
+          </button>
+        </div>
+
+        <div id="studio-preview" data-layout="stack" data-gap="6">
+          <!-- Nav -->
+          <nav data-nav="inline" aria-label="Preview navigation">
+            <ul>
+              <li><a href="#" onclick="event.preventDefault()" aria-current="page">Home</a></li>
+              <li><a href="#" onclick="event.preventDefault()">About</a></li>
+              <li><a href="#" onclick="event.preventDefault()">Blog</a></li>
+              <li><a href="#" onclick="event.preventDefault()">Contact</a></li>
+            </ul>
+          </nav>
+
+          <!-- Typography -->
+          <div data-layout="stack" data-gap="2">
+            <h1 style="font-size: var(--text-3xl)">Theme Preview</h1>
+            <h2 style="font-size: var(--text-xl)">Secondary Heading</h2>
+            <p>
+              Body text with <strong>bold emphasis</strong>,
+              <em>italic text</em>, <code>inline code</code>,
+              and <a href="#" onclick="event.preventDefault()">hyperlinks</a>.
+              The design tokens you configure on the left are applied to this
+              entire preview in real time.
+            </p>
+            <blockquote>
+              <p>A blockquote showing border accent and text styling.</p>
+            </blockquote>
+          </div>
+
+          <!-- Buttons -->
+          <div data-layout="cluster" data-gap="2">
+            <button type="button" data-variant="solid">Solid</button>
+            <button type="button" data-variant="soft">Soft</button>
+            <button type="button" data-variant="ghost">Ghost</button>
+            <button type="button">Default</button>
+          </div>
+
+          <!-- Cards -->
+          <div data-layout="grid" data-gap="3" data-grid-min="sm">
+            <article data-surface="card">
+              <div data-layout="stack" data-gap="2">
+                <h3>Card Title</h3>
+                <p style="color: var(--text-muted); font-size: var(--text-sm)">
+                  Card content showing border, shadow, padding, and radius
+                  from your token configuration.
+                </p>
+              </div>
+            </article>
+            <article data-surface="card">
+              <div data-layout="stack" data-gap="2">
+                <h3>Another Card</h3>
+                <p style="color: var(--text-muted); font-size: var(--text-sm)">
+                  A second card for visual rhythm. Adjust shadow and
+                  border controls to see the difference.
+                </p>
+              </div>
+            </article>
+          </div>
+
+          <!-- Notices -->
+          <div data-surface="notice" data-status="info">
+            <p><strong>Info:</strong> This notice adapts to your theme tokens automatically.</p>
+          </div>
+          <div data-surface="notice" data-status="success">
+            <p><strong>Success:</strong> Semantic status colors remain consistent across themes.</p>
+          </div>
+
+          <!-- Form -->
+          <form onsubmit="event.preventDefault()" data-layout="stack" data-gap="3">
+            <div data-layout="stack" data-gap="1">
+              <label for="preview-name">Name</label>
+              <input id="preview-name" type="text" placeholder="Ada Lovelace" />
+            </div>
+            <div data-layout="stack" data-gap="1">
+              <label for="preview-email">Email</label>
+              <input id="preview-email" type="email" placeholder="ada@example.com" />
+            </div>
+            <div data-layout="stack" data-gap="1">
+              <label for="preview-select">Role</label>
+              <select id="preview-select">
+                <option>Choose one</option>
+                <option>Designer</option>
+                <option>Developer</option>
+                <option>Both</option>
+              </select>
+            </div>
+            <label>
+              <input type="checkbox" role="switch" checked />
+              Enable notifications
+            </label>
+            <progress value="65" max="100">65%</progress>
+            <div data-layout="cluster" data-gap="2">
+              <button type="submit" data-variant="solid">Submit</button>
+              <button type="reset" data-variant="ghost">Cancel</button>
+            </div>
+          </form>
+
+          <!-- Accordion -->
+          <details data-ui="accordion">
+            <summary>Accordion item</summary>
+            <div>
+              <p>Expandable content area styled by your theme tokens.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <!-- Export dialog -->
+    <dialog id="export-dialog" data-studio="export-dialog">
+      <form method="dialog" data-layout="stack" data-gap="3">
+        <h3 style="margin: 0">Export Brand Pack</h3>
+        <p style="font-size: var(--text-sm); color: var(--text-muted); margin: 0">
+          Choose a name for your brand. This becomes the
+          <code>data-brand</code> attribute value.
+        </p>
+        <div data-layout="stack" data-gap="1">
+          <label for="export-brand-name">Brand name</label>
+          <input
+            id="export-brand-name"
+            type="text"
+            value="custom"
+            pattern="[a-z0-9][a-z0-9-]*"
+            required
+            placeholder="my-brand"
+          />
+        </div>
+        <div data-layout="row" data-gap="2" data-justify="end">
+          <button type="button" id="export-cancel" data-variant="ghost">Cancel</button>
+          <button type="submit" id="export-confirm" data-variant="solid">Download CSS</button>
+        </div>
+      </form>
+    </dialog>
+
+    <!-- Toast -->
+    <div data-studio="toast" id="toast" aria-live="polite"></div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        // ---- Constants ----
+
+        const FONT_STACKS = [
+          'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+          '"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif',
+          'Charter, "Bitstream Charter", "Sitka Text", Cambria, serif',
+          'Avenir, Montserrat, Corbel, "URW Gothic", source-sans-pro, sans-serif',
+          'Seravek, "Gill Sans Nova", Ubuntu, Calibri, sans-serif',
+        ];
+
+        const SHADOW_PRESETS = [
+          "none",
+          "0 1px 2px 0 rgb(0 0 0 / 0.05), 0 1px 3px 0 rgb(0 0 0 / 0.08)",
+          "0 2px 4px -1px rgb(0 0 0 / 0.06), 0 4px 8px -1px rgb(0 0 0 / 0.1)",
+        ];
+
+        const PADDING_PRESETS = [
+          "var(--space-4)",
+          "var(--space-6)",
+          "var(--space-8)",
+        ];
+
+        const DEFAULTS = {
+          hp: 260,
+          pl: 45,
+          pc: 0.03,
+          hs: 200,
+          sl: 50,
+          sc: 0.02,
+          ff: 0,
+          rm: 0.5,
+          sh: 0,
+          cbo: 100,
+          cp: 1,
+          gt: 0,
+        };
+
+        // ---- DOM refs ----
+
+        const preview = document.getElementById("studio-preview");
+        const previewWrapper = preview.closest('[data-studio="preview-wrapper"]');
+        const root = document.documentElement;
+
+        const controls = {
+          hp: document.getElementById("ctrl-hp"),
+          pl: document.getElementById("ctrl-pl"),
+          pc: document.getElementById("ctrl-pc"),
+          hs: document.getElementById("ctrl-hs"),
+          sl: document.getElementById("ctrl-sl"),
+          sc: document.getElementById("ctrl-sc"),
+          ff: document.getElementById("ctrl-ff"),
+          rm: document.getElementById("ctrl-rm"),
+          sh: document.getElementById("ctrl-sh"),
+          cbo: document.getElementById("ctrl-cbo"),
+          cp: document.getElementById("ctrl-cp"),
+          gt: document.getElementById("ctrl-gt"),
+        };
+
+        const outputs = {
+          hp: document.getElementById("out-hp"),
+          pl: document.getElementById("out-pl"),
+          pc: document.getElementById("out-pc"),
+          hs: document.getElementById("out-hs"),
+          sl: document.getElementById("out-sl"),
+          sc: document.getElementById("out-sc"),
+          rm: document.getElementById("out-rm"),
+          cbo: document.getElementById("out-cbo"),
+        };
+
+        const swatchPrimary = document.getElementById("swatch-primary");
+        const swatchSecondary = document.getElementById("swatch-secondary");
+        const toastEl = document.getElementById("toast");
+
+        // ---- State ----
+
+        var state = Object.assign({}, DEFAULTS);
+
+        // ---- Read state from controls ----
+
+        function readState() {
+          return {
+            hp: Number(controls.hp.value),
+            pl: Number(controls.pl.value),
+            pc: Number(controls.pc.value),
+            hs: Number(controls.hs.value),
+            sl: Number(controls.sl.value),
+            sc: Number(controls.sc.value),
+            ff: Number(controls.ff.value),
+            rm: Number(controls.rm.value),
+            sh: Number(controls.sh.value),
+            cbo: Number(controls.cbo.value),
+            cp: Number(controls.cp.value),
+            gt: controls.gt.checked ? 1 : 0,
+          };
+        }
+
+        // ---- Apply state to preview ----
+
+        function applyToPreview(s) {
+          var el = preview;
+
+          el.style.setProperty("--hue-primary", s.hp);
+          el.style.setProperty("--primary-l", s.pl + "%");
+          el.style.setProperty("--primary-c", s.pc);
+          el.style.setProperty("--primary", "oklch(" + s.pl + "% " + s.pc + " " + s.hp + ")");
+          el.style.setProperty(
+            "--primary-hover",
+            "oklch(" + (s.pl - 5) + "% " + s.pc + " " + s.hp + ")"
+          );
+          el.style.setProperty(
+            "--primary-subtle",
+            "oklch(" + (s.pl + 20) + "% 0.05 " + s.hp + ")"
+          );
+
+          el.style.setProperty("--hue-secondary", s.hs);
+          el.style.setProperty("--secondary-l", s.sl + "%");
+          el.style.setProperty("--secondary-c", s.sc);
+          el.style.setProperty("--secondary", "oklch(" + s.sl + "% " + s.sc + " " + s.hs + ")");
+          el.style.setProperty(
+            "--secondary-hover",
+            "oklch(" + (s.sl - 5) + "% " + s.sc + " " + s.hs + ")"
+          );
+
+          if (s.ff > 0) {
+            el.style.setProperty("--font-sans", FONT_STACKS[s.ff]);
+          } else {
+            el.style.removeProperty("--font-sans");
+          }
+
+          el.style.setProperty("--radius-sm", (s.rm * 0.5).toFixed(3) + "rem");
+          el.style.setProperty("--radius-md", s.rm + "rem");
+          el.style.setProperty("--radius-lg", (s.rm * 2).toFixed(3) + "rem");
+          el.style.setProperty("--button-radius", "var(--radius-md)");
+          el.style.setProperty("--field-radius", "var(--radius-md)");
+          el.style.setProperty("--card-shadow", SHADOW_PRESETS[s.sh]);
+          el.style.setProperty(
+            "--card-border-color",
+            "color-mix(in oklch, var(--border) " + s.cbo + "%, transparent)"
+          );
+          el.style.setProperty("--card-padding", PADDING_PRESETS[s.cp]);
+          el.style.setProperty("--link", "var(--primary)");
+          el.style.setProperty("--focus-ring", "var(--primary)");
+          el.style.setProperty("--button-solid-bg", "var(--primary)");
+          el.style.setProperty("--button-soft-bg", "var(--primary-subtle)");
+          el.style.setProperty("--progress-bar-bg", "var(--primary)");
+          el.style.setProperty("--switch-track-bg-checked", "var(--primary)");
+          el.style.setProperty("--notice-accent-color", "var(--primary)");
+
+          if (s.gt) {
+            el.style.setProperty("--gray-0", "oklch(98% 0.004 " + s.hp + ")");
+            el.style.setProperty("--gray-1", "oklch(95% 0.004 " + s.hp + ")");
+            el.style.setProperty("--gray-2", "oklch(92% 0.005 " + s.hp + ")");
+            el.style.setProperty("--gray-3", "oklch(88% 0.005 " + s.hp + ")");
+          } else {
+            el.style.removeProperty("--gray-0");
+            el.style.removeProperty("--gray-1");
+            el.style.removeProperty("--gray-2");
+            el.style.removeProperty("--gray-3");
+          }
+
+          swatchPrimary.style.backgroundColor =
+            "oklch(" + s.pl + "% " + s.pc + " " + s.hp + ")";
+          swatchSecondary.style.backgroundColor =
+            "oklch(" + s.sl + "% " + s.sc + " " + s.hs + ")";
+
+          outputs.hp.textContent = s.hp;
+          outputs.pl.textContent = s.pl + "%";
+          outputs.pc.textContent = s.pc.toFixed(3);
+          outputs.hs.textContent = s.hs;
+          outputs.sl.textContent = s.sl + "%";
+          outputs.sc.textContent = s.sc.toFixed(3);
+          outputs.rm.textContent = s.rm;
+          outputs.cbo.textContent = s.cbo + "%";
+        }
+
+        // ---- URL hash ----
+
+        function encodeHash(s) {
+          var pairs = [];
+          for (var key in s) {
+            if (s[key] !== DEFAULTS[key]) {
+              pairs.push(encodeURIComponent(key) + "=" + encodeURIComponent(s[key]));
+            }
+          }
+          return pairs.length ? "#" + pairs.join("&") : "";
+        }
+
+        function decodeHash() {
+          var hash = location.hash.slice(1);
+          if (!hash) return Object.assign({}, DEFAULTS);
+          var s = Object.assign({}, DEFAULTS);
+          var params = new URLSearchParams(hash);
+          params.forEach(function (value, key) {
+            if (key in DEFAULTS) {
+              s[key] = parseFloat(value);
+            }
+          });
+          return s;
+        }
+
+        function pushHash(s) {
+          var h = encodeHash(s);
+          history.replaceState(null, "", h || location.pathname);
+        }
+
+        // ---- Sync controls from state ----
+
+        function syncControls(s) {
+          controls.hp.value = s.hp;
+          controls.pl.value = s.pl;
+          controls.pc.value = s.pc;
+          controls.hs.value = s.hs;
+          controls.sl.value = s.sl;
+          controls.sc.value = s.sc;
+          controls.ff.value = s.ff;
+          controls.rm.value = s.rm;
+          controls.sh.value = s.sh;
+          controls.cbo.value = s.cbo;
+          controls.cp.value = s.cp;
+          controls.gt.checked = s.gt === 1;
+        }
+
+        // ---- Main update loop ----
+
+        var hashTimer = null;
+        function update() {
+          state = readState();
+          applyToPreview(state);
+          clearTimeout(hashTimer);
+          hashTimer = setTimeout(function () { pushHash(state); }, 180);
+        }
+
+        // Bind all controls
+        Object.values(controls).forEach(function (ctrl) {
+          var eventName = ctrl.type === "checkbox" ? "change" : "input";
+          ctrl.addEventListener(eventName, update);
+        });
+
+        // ---- CSS export ----
+
+        function generateBrandPack(s, brandName) {
+          var ff = s.ff > 0 ? FONT_STACKS[s.ff] : null;
+          var shadow = SHADOW_PRESETS[s.sh];
+          var padding = PADDING_PRESETS[s.cp];
+          var border = s.cbo;
+          var tinted = s.gt === 1;
+
+          var lines = [];
+          lines.push("/* " + brandName + " brand pack - generated by Auras Theme Studio */");
+          lines.push("/* Usage: <body data-brand=\"" + brandName + "\"> */");
+          lines.push("@layer brands {");
+          lines.push('  [data-brand="' + brandName + '"] {');
+
+          lines.push("    --hue-primary: " + s.hp + ";");
+          lines.push("    --primary-l: " + s.pl + "%;");
+          lines.push("    --primary-c: " + s.pc + ";");
+          lines.push("    --primary: oklch(var(--primary-l) var(--primary-c) var(--hue-primary));");
+          lines.push("    --primary-hover: oklch(calc(var(--primary-l) - 5%) var(--primary-c) var(--hue-primary));");
+          lines.push("    --primary-subtle: oklch(calc(var(--primary-l) + 20%) 0.05 var(--hue-primary));");
+          lines.push("");
+
+          lines.push("    --hue-secondary: " + s.hs + ";");
+          lines.push("    --secondary-l: " + s.sl + "%;");
+          lines.push("    --secondary-c: " + s.sc + ";");
+          lines.push("    --secondary: oklch(var(--secondary-l) var(--secondary-c) var(--hue-secondary));");
+          lines.push("    --secondary-hover: oklch(calc(var(--secondary-l) - 5%) var(--secondary-c) var(--hue-secondary));");
+          lines.push("");
+
+          if (ff) {
+            lines.push("    --font-sans: " + ff + ";");
+            lines.push("");
+          }
+
+          if (tinted) {
+            lines.push("    /* Tinted grays - barely perceptible primary-hue warmth */");
+            lines.push("    --gray-0: oklch(98% 0.004 var(--hue-primary));");
+            lines.push("    --gray-1: oklch(95% 0.004 var(--hue-primary));");
+            lines.push("    --gray-2: oklch(92% 0.005 var(--hue-primary));");
+            lines.push("    --gray-3: oklch(88% 0.005 var(--hue-primary));");
+            lines.push("");
+          }
+
+          lines.push("    --link: var(--primary);");
+          lines.push("    --focus-ring: var(--primary);");
+          lines.push("    --button-solid-bg: var(--primary);");
+          lines.push("    --button-soft-bg: var(--primary-subtle);");
+          lines.push("");
+
+          lines.push("    --radius-sm: " + (s.rm * 0.5).toFixed(3) + "rem;");
+          lines.push("    --radius-md: " + s.rm + "rem;");
+          lines.push("    --radius-lg: " + (s.rm * 2).toFixed(3) + "rem;");
+          lines.push("    --button-radius: var(--radius-md);");
+          lines.push("    --field-radius: var(--radius-md);");
+          lines.push("");
+
+          lines.push("    --card-shadow: " + shadow + ";");
+          lines.push("    --card-border-color: color-mix(in oklch, var(--border) " + border + "%, transparent);");
+          lines.push("    --card-padding: " + padding + ";");
+
+          lines.push("  }");
+          lines.push("");
+
+          if (tinted) {
+            lines.push('  [data-theme~="dark"] [data-brand="' + brandName + '"],');
+            lines.push('  [data-brand="' + brandName + '"][data-theme~="dark"] {');
+            lines.push("    --gray-10: oklch(20% 0.006 var(--hue-primary));");
+            lines.push("    --gray-11: oklch(13% 0.005 var(--hue-primary));");
+            lines.push("    --gray-12: oklch(9% 0.004 var(--hue-primary));");
+            lines.push("    --card-border-color: color-mix(in oklch, var(--border) " + Math.max(border - 10, 30) + "%, transparent);");
+            lines.push("  }");
+            lines.push("");
+
+            lines.push("  @media (prefers-color-scheme: dark) {");
+            lines.push('    :root:not([data-theme]) [data-brand="' + brandName + '"] {');
+            lines.push("      --gray-10: oklch(20% 0.006 var(--hue-primary));");
+            lines.push("      --gray-11: oklch(13% 0.005 var(--hue-primary));");
+            lines.push("      --gray-12: oklch(9% 0.004 var(--hue-primary));");
+            lines.push("    }");
+            lines.push("  }");
+            lines.push("");
+          }
+
+          lines.push("  @supports (color: color-mix(in oklch, black, white)) {");
+          lines.push('    [data-brand="' + brandName + '"] {');
+          lines.push("      --primary-hover: color-mix(in oklch, var(--primary) 88%, black);");
+          lines.push("      --primary-subtle: color-mix(in oklch, var(--primary) 20%, white);");
+          lines.push("    }");
+          lines.push("");
+          lines.push('    [data-theme~="dark"] [data-brand="' + brandName + '"],');
+          lines.push('    [data-brand="' + brandName + '"][data-theme~="dark"] {');
+          lines.push("      --primary-hover: color-mix(in oklch, var(--primary) 80%, white);");
+          lines.push("      --primary-subtle: color-mix(in oklch, var(--primary) 30%, var(--gray-10));");
+          lines.push("    }");
+          lines.push("");
+          lines.push("    @media (prefers-color-scheme: dark) {");
+          lines.push('      :root:not([data-theme]) [data-brand="' + brandName + '"] {');
+          lines.push("        --primary-hover: color-mix(in oklch, var(--primary) 80%, white);");
+          lines.push("        --primary-subtle: color-mix(in oklch, var(--primary) 30%, var(--gray-10));");
+          lines.push("      }");
+          lines.push("    }");
+          lines.push("  }");
+          lines.push("}");
+          lines.push("");
+
+          return lines.join("\n");
+        }
+
+        function downloadFile(content, filename) {
+          var blob = new Blob([content], { type: "text/css" });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement("a");
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }
+
+        // ---- Toast ----
+
+        var toastTimer = null;
+        function showToast(message) {
+          toastEl.textContent = message;
+          toastEl.setAttribute("data-visible", "");
+          clearTimeout(toastTimer);
+          toastTimer = setTimeout(function () {
+            toastEl.removeAttribute("data-visible");
+          }, 2000);
+        }
+
+        // ---- Export dialog ----
+
+        var exportDialog = document.getElementById("export-dialog");
+        var exportInput = document.getElementById("export-brand-name");
+
+        document.getElementById("btn-export").addEventListener("click", function () {
+          if (typeof exportDialog.showModal === "function") {
+            exportDialog.showModal();
+          } else {
+            exportDialog.setAttribute("open", "");
+          }
+          exportInput.select();
+        });
+
+        document.getElementById("export-cancel").addEventListener("click", function () {
+          if (typeof exportDialog.close === "function") {
+            exportDialog.close();
+          } else {
+            exportDialog.removeAttribute("open");
+          }
+        });
+
+        exportDialog.addEventListener("submit", function () {
+          var brandName = exportInput.value.trim().toLowerCase().replace(/[^a-z0-9-]/g, "-") || "custom";
+          var css = generateBrandPack(state, brandName);
+          downloadFile(css, brandName + "-brand.css");
+          showToast("Exported " + brandName + "-brand.css");
+        });
+
+        // ---- Copy link ----
+
+        document.getElementById("btn-copy-link").addEventListener("click", function () {
+          var hash = encodeHash(state);
+          var url = location.origin + location.pathname + hash;
+          navigator.clipboard.writeText(url).then(function () {
+            showToast("Link copied to clipboard");
+          });
+        });
+
+        // ---- Reset ----
+
+        document.getElementById("btn-reset").addEventListener("click", function () {
+          state = Object.assign({}, DEFAULTS);
+          syncControls(state);
+          applyToPreview(state);
+          pushHash(state);
+          showToast("Reset to defaults");
+        });
+
+        // ---- Preview dark mode toggle ----
+
+        var previewDarkBtn = document.getElementById("toggle-preview-dark");
+
+        previewDarkBtn.addEventListener("click", function () {
+          var isDark = preview.getAttribute("data-theme") === "dark";
+          if (isDark) {
+            previewWrapper.removeAttribute("data-theme");
+            preview.removeAttribute("data-theme");
+          } else {
+            previewWrapper.setAttribute("data-theme", "dark");
+            preview.setAttribute("data-theme", "dark");
+          }
+          previewDarkBtn.setAttribute("aria-pressed", String(!isDark));
+          previewDarkBtn.setAttribute("data-variant", !isDark ? "soft" : "ghost");
+        });
+
+        // ---- Page dark mode toggle ----
+
+        var pageDarkBtn = document.getElementById("toggle-dark");
+        pageDarkBtn.addEventListener("click", function () {
+          var isDark = root.getAttribute("data-theme") === "dark";
+          if (isDark) {
+            root.removeAttribute("data-theme");
+          } else {
+            root.setAttribute("data-theme", "dark");
+          }
+          pageDarkBtn.setAttribute("aria-pressed", String(!isDark));
+          pageDarkBtn.setAttribute("data-variant", !isDark ? "soft" : "ghost");
+        });
+
+        // ---- Toolbar scroll shadow (fallback) ----
+
+        if (!CSS.supports("container-type", "scroll-state")) {
+          var toolbar = document.querySelector('[data-site="toolbar"]');
+          if (toolbar) {
+            var sentinel = document.createElement("div");
+            sentinel.setAttribute("aria-hidden", "true");
+            sentinel.style.cssText =
+              "height:1px;margin:0;padding:0;border:0;position:absolute;top:0;left:0;right:0;pointer-events:none;";
+            document.body.prepend(sentinel);
+            new IntersectionObserver(
+              function (entries) {
+                toolbar.toggleAttribute("data-scrolled", !entries[0].isIntersecting);
+              },
+              { threshold: 1 }
+            ).observe(sentinel);
+          }
+        }
+
+        // ---- Initialize ----
+
+        state = decodeHash();
+        syncControls(state);
+        applyToPreview(state);
+      })();
+    </script>
+  </body>
+</html>

@@ -798,7 +798,7 @@ export function renderDocsIndex(origin: string): string {
 }
 
 export function renderSitemap(origin: string): string {
-  const urls = ["/", "/docs/", ...DOC_PAGES.map((page) => page.route)];
+  const urls = ["/", "/studio.html", "/docs/", ...DOC_PAGES.map((page) => page.route)];
   const items = urls.map((path) =>
     `<url><loc>${absoluteUrl(origin, path)}</loc></url>`
   ).join("");

@@ -31,8 +31,11 @@ function siteOrigin(url: URL): string {
   return `${url.protocol}//${url.host}`;
 }
 
-async function renderHomePage(origin: string): Promise<Response> {
-  const html = await Deno.readTextFile("./public/index.html");
+async function renderPage(
+  filePath: string,
+  origin: string,
+): Promise<Response> {
+  const html = await Deno.readTextFile(filePath);
 
   return textResponse(
     html.replaceAll("{{SITE_ORIGIN}}", origin),
@@ -58,7 +61,11 @@ Deno.serve(async (req: Request) => {
   }
 
   if (url.pathname === "/") {
-    return renderHomePage(origin);
+    return renderPage("./public/index.html", origin);
+  }
+
+  if (url.pathname === "/studio.html") {
+    return renderPage("./public/studio.html", origin);
   }
 
   if (url.pathname === "/docs/") {
