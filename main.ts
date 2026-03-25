@@ -43,7 +43,7 @@ async function renderPage(
   );
 }
 
-Deno.serve(async (req: Request) => {
+Deno.serve({ port: Number(Deno.env.get("PORT") || 8008) }, async (req: Request) => {
   const url = new URL(req.url);
   const origin = siteOrigin(url);
   const redirectPath = getRedirectPath(url.pathname);
