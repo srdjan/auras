@@ -10,17 +10,17 @@ Related docs:
 - [Component Architecture](./component-architecture.md)
 - [Components package README](../packages/components/README.md)
 - [Diagram package README](../packages/diagram/README.md)
+- [Theme Studio](/studio.html) - interactive brand pack builder
 
 ## Quick Start
 
 1. Run a local static server from the repo root:
 
 ```sh
-cd /Users/srdjans/Code/MetadorHome/metador.auras
 deno task dev
 ```
 
-2. Open `http://localhost:8000`.
+2. Open `http://localhost:8008`.
 
 3. Add the core stylesheet to any HTML page:
 
@@ -614,6 +614,7 @@ The demo also exercises:
 | `deno.lock`                                | Locked JSR and npm test dependencies             |
 | `main.ts`                                  | Deno Deploy entry point (static file server)     |
 | `public/index.html`                        | Interactive demo page                            |
+| `public/studio.html`                       | Theme Studio for visual brand pack creation      |
 | `docs/component-architecture.md`           | Architecture note for the layer split            |
 | `docs/user-guide.md`                       | This user guide                                  |
 
@@ -636,7 +637,7 @@ If Chrome is not installed at the default macOS path, set
 
 Then verify:
 
-1. Open `http://localhost:8000`.
+1. Open `http://localhost:8008`.
 2. Switch between `Headless core`, `Auras pack`, and `Editorial pack`.
 3. Toggle dark mode, high contrast, and reduced motion.
 4. Review the prose, static diagram, interactive diagram, combobox, splitter,
@@ -664,3 +665,9 @@ Then verify:
     states, select chevrons, progress, and meter styles.
 15. Open print preview and confirm buttons/nav are hidden and print-only rules
     apply.
+16. Navigate to `/studio.html` and drag the primary hue slider; confirm the
+    preview updates in real time.
+17. Toggle "Dark mode" in the preview header and confirm tokens adapt.
+18. Click "Export Brand Pack", enter a name, and confirm a valid CSS file
+    downloads.
+19. Copy the Studio URL, open it in a new tab, and confirm the theme restores.

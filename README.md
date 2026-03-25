@@ -721,13 +721,29 @@ Load it alongside the core:
 The included `packages/brands/auras-brand.css` stylesheet serves as both a
 working brand and a template for creating your own.
 
+### Theme Studio
+
+The interactive Theme Studio at `/studio.html` lets you build brand packs
+visually. Customize primary and secondary colors (OKLCH hue, lightness,
+chroma), typography, border radius, shadows, card styling, and gray tinting
+through live controls. Changes apply instantly to a preview panel showing
+representative content across all component types.
+
+When you are happy with the result, export a production-ready brand pack CSS
+file or share your theme via URL. The URL encodes all token values in the hash
+fragment, so every link is a complete, restorable theme.
+
+```
+/studio.html#hp=150&pl=55&pc=0.15&hs=280&sl=50&sc=0.1&rm=0.75&sh=1&gt=1
+```
+
 ## Development and deployment
 
 Run the demo site locally:
 
 ```sh
 deno task dev
-# http://localhost:8000
+# http://localhost:8008
 ```
 
 Run checks and tests:
@@ -787,6 +803,7 @@ Auras targets modern evergreen browsers. Key features and their support:
 | `packages/components/src/splitter.ts`      | Splitter runtime for `auras-splitter`                                     |
 | `packages/components/src/tree.ts`          | Tree runtime for `auras-tree`                                             |
 | `public/`                                  | Self-contained demo site, deployable as a static folder                  |
+| `public/studio.html`                       | Interactive Theme Studio for visual brand pack creation                   |
 | `main.ts`                                  | Deno Deploy entry point (static file server)                             |
 | `deno.json`                                | Deno tasks for dev server, type checking, and tests                      |
 | `deno.lock`                                | Locked JSR and npm test dependencies                                     |
