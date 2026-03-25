@@ -1,6 +1,11 @@
 const TRIGGER_SELECTOR = '[data-part="trigger"][data-value]';
 const PANEL_SELECTOR = '[data-part="panel"][data-value]';
 
+const REDUCED_MOTION_QUERY =
+  typeof matchMedia === "function"
+    ? matchMedia("(prefers-reduced-motion: no-preference)")
+    : null;
+
 type AurasActivation = "auto" | "manual";
 type SelectionOptions = {
   dispatch: boolean;
@@ -276,21 +281,33 @@ export class AurasSelectablePanelsElement extends HTMLElement {
     const previousValue = this.getAttribute("value");
     const didChange = previousValue !== entry.value;
 
-    for (const currentEntry of this._entries) {
-      const isActive = currentEntry === entry;
+    const applySelection = () => {
+      for (const currentEntry of this._entries) {
+        const isActive = currentEntry === entry;
 
-      currentEntry.trigger.tabIndex = isActive ? 0 : -1;
-      currentEntry.trigger.toggleAttribute("data-active", isActive);
-      currentEntry.panel.hidden = !isActive;
-      currentEntry.panel.toggleAttribute("data-active", isActive);
+        currentEntry.trigger.tabIndex = isActive ? 0 : -1;
+        currentEntry.trigger.toggleAttribute("data-active", isActive);
+        currentEntry.panel.hidden = !isActive;
+        currentEntry.panel.toggleAttribute("data-active", isActive);
 
-      this._applySelectionState(currentEntry, isActive);
-    }
+        this._applySelectionState(currentEntry, isActive);
+      }
 
-    if (this.getAttribute("value") !== entry.value) {
-      this._syncingValue = true;
-      this.setAttribute("value", entry.value);
-      this._syncingValue = false;
+      if (this.getAttribute("value") !== entry.value) {
+        this._syncingValue = true;
+        this.setAttribute("value", entry.value);
+        this._syncingValue = false;
+      }
+    };
+
+    const useViewTransition = didChange &&
+      typeof document.startViewTransition === "function" &&
+      (REDUCED_MOTION_QUERY?.matches ?? false);
+
+    if (useViewTransition) {
+      document.startViewTransition(applySelection);
+    } else {
+      applySelection();
     }
 
     if (options.focus) {

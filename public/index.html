@@ -181,6 +181,13 @@
         [data-site="toolbar"][data-scrolled] {
           box-shadow: 0 1px 3px rgb(0 0 0 / 0.06);
         }
+        @supports (container-type: scroll-state) {
+          @container scroll-state(stuck: top) {
+            [data-site="toolbar"] {
+              box-shadow: 0 1px 3px rgb(0 0 0 / 0.06);
+            }
+          }
+        }
         [data-site="toolbar"] button {
           font-size: var(--text-sm);
           padding-block: var(--space-1);
@@ -1324,7 +1331,7 @@
                         />
                       </div>
 
-                      <ul data-part="listbox">
+                      <ul data-part="listbox" popover>
                         <li data-part="option" data-value="tabs">Tabs</li>
                         <li data-part="option" data-value="master-detail">
                           Master-detail
@@ -2154,23 +2161,26 @@
           for (const s of sections) sectionObserver.observe(s.el);
         }
 
-        // Toolbar scroll shadow via IntersectionObserver sentinel
-        const toolbar = document.querySelector('[data-site="toolbar"]');
-        if (toolbar) {
-          const sentinel = document.createElement("div");
-          sentinel.setAttribute("aria-hidden", "true");
-          sentinel.style.cssText =
-            "height:1px;margin:0;padding:0;border:0;position:absolute;top:0;left:0;right:0;pointer-events:none;";
-          document.body.prepend(sentinel);
-          new IntersectionObserver(
-            ([entry]) => {
-              toolbar.toggleAttribute(
-                "data-scrolled",
-                !entry.isIntersecting,
-              );
-            },
-            { threshold: 1 },
-          ).observe(sentinel);
+        // Toolbar scroll shadow via IntersectionObserver sentinel (fallback for
+        // browsers without scroll-state queries; CSS handles it in Chrome 133+)
+        if (!CSS.supports("container-type", "scroll-state")) {
+          const toolbar = document.querySelector('[data-site="toolbar"]');
+          if (toolbar) {
+            const sentinel = document.createElement("div");
+            sentinel.setAttribute("aria-hidden", "true");
+            sentinel.style.cssText =
+              "height:1px;margin:0;padding:0;border:0;position:absolute;top:0;left:0;right:0;pointer-events:none;";
+            document.body.prepend(sentinel);
+            new IntersectionObserver(
+              ([entry]) => {
+                toolbar.toggleAttribute(
+                  "data-scrolled",
+                  !entry.isIntersecting,
+                );
+              },
+              { threshold: 1 },
+            ).observe(sentinel);
+          }
         }
       })();
     </script>

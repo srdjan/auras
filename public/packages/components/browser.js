@@ -18,6 +18,11 @@ const TOGGLE_SELECTOR = '[data-part="toggle"]';
 const GROUP_SELECTOR = '[data-part="group"]';
 const VALUE_INPUT_SELECTOR = 'input[data-part="value"]';
 
+const REDUCED_MOTION_QUERY =
+  typeof matchMedia === "function"
+    ? matchMedia("(prefers-reduced-motion: no-preference)")
+    : null;
+
 let generatedIdSequence = 0;
 
 function normalizeActivation(value) {
@@ -286,21 +291,33 @@ class AuraSelectablePanelsElement extends HTMLElement {
     const previousValue = this.getAttribute("value");
     const didChange = previousValue !== entry.value;
 
-    for (const currentEntry of this._entries) {
-      const isActive = currentEntry === entry;
+    const applySelection = () => {
+      for (const currentEntry of this._entries) {
+        const isActive = currentEntry === entry;
 
-      currentEntry.trigger.tabIndex = isActive ? 0 : -1;
-      currentEntry.trigger.toggleAttribute("data-active", isActive);
-      currentEntry.panel.hidden = !isActive;
-      currentEntry.panel.toggleAttribute("data-active", isActive);
+        currentEntry.trigger.tabIndex = isActive ? 0 : -1;
+        currentEntry.trigger.toggleAttribute("data-active", isActive);
+        currentEntry.panel.hidden = !isActive;
+        currentEntry.panel.toggleAttribute("data-active", isActive);
 
-      this._applySelectionState(currentEntry, isActive);
-    }
+        this._applySelectionState(currentEntry, isActive);
+      }
 
-    if (this.getAttribute("value") !== entry.value) {
-      this._syncingValue = true;
-      this.setAttribute("value", entry.value);
-      this._syncingValue = false;
+      if (this.getAttribute("value") !== entry.value) {
+        this._syncingValue = true;
+        this.setAttribute("value", entry.value);
+        this._syncingValue = false;
+      }
+    };
+
+    const useViewTransition = didChange &&
+      typeof document.startViewTransition === "function" &&
+      (REDUCED_MOTION_QUERY?.matches ?? false);
+
+    if (useViewTransition) {
+      document.startViewTransition(applySelection);
+    } else {
+      applySelection();
     }
 
     if (options.focus) {
@@ -427,6 +444,7 @@ class AurasCombobox extends HTMLElement {
     this._handleInput = this._handleInput.bind(this);
     this._handleFocusOut = this._handleFocusOut.bind(this);
     this._handleMouseDown = this._handleMouseDown.bind(this);
+    this._handlePopoverToggle = this._handlePopoverToggle.bind(this);
   }
 
   connectedCallback() {
@@ -621,11 +639,19 @@ class AurasCombobox extends HTMLElement {
 
     this._applySemantics();
 
+    this._popoverSupported = listbox.popover !== undefined &&
+      typeof listbox.showPopover === "function";
+
     this.addEventListener("click", this._handleClick);
     this.addEventListener("keydown", this._handleKeydown);
     this.addEventListener("input", this._handleInput);
-    this.addEventListener("focusout", this._handleFocusOut);
-    this.addEventListener("mousedown", this._handleMouseDown);
+
+    if (this._popoverSupported) {
+      listbox.addEventListener("toggle", this._handlePopoverToggle);
+    } else {
+      this.addEventListener("focusout", this._handleFocusOut);
+      this.addEventListener("mousedown", this._handleMouseDown);
+    }
 
     this._normalizeActivationAttribute();
 
@@ -652,8 +678,13 @@ class AurasCombobox extends HTMLElement {
     this.removeEventListener("click", this._handleClick);
     this.removeEventListener("keydown", this._handleKeydown);
     this.removeEventListener("input", this._handleInput);
-    this.removeEventListener("focusout", this._handleFocusOut);
-    this.removeEventListener("mousedown", this._handleMouseDown);
+
+    if (this._popoverSupported && this._listbox) {
+      this._listbox.removeEventListener("toggle", this._handlePopoverToggle);
+    } else {
+      this.removeEventListener("focusout", this._handleFocusOut);
+      this.removeEventListener("mousedown", this._handleMouseDown);
+    }
 
     this._input = null;
     this._toggle = null;
@@ -829,7 +860,19 @@ class AurasCombobox extends HTMLElement {
       this._restoreSelectedLabel();
     }
 
-    this._listbox.hidden = !open;
+    if (this._popoverSupported) {
+      try {
+        if (open) {
+          this._listbox.showPopover();
+        } else {
+          this._listbox.hidePopover();
+        }
+      } catch (_) {
+        /* already in target state */
+      }
+    } else {
+      this._listbox.hidden = !open;
+    }
     this._input.setAttribute("aria-expanded", String(open));
 
     if (this._toggle) {
@@ -876,7 +919,7 @@ class AurasCombobox extends HTMLElement {
   }
 
   _getQuery() {
-    if (this._listbox?.hidden ?? !this.open) {
+    if (!this.open) {
       return "";
     }
     if (!this._isQuerying) {
@@ -1100,6 +1143,18 @@ class AurasCombobox extends HTMLElement {
       }
       default:
         return;
+    }
+  }
+
+  _handlePopoverToggle(event) {
+    if (event.newState === "closed" && this.open) {
+      this._restoreSelectedLabel();
+      this._syncOpenAttribute(false);
+      this._input?.setAttribute("aria-expanded", "false");
+      if (this._toggle) {
+        this._toggle.setAttribute("aria-expanded", "false");
+      }
+      this._setActiveOption(null);
     }
   }
 

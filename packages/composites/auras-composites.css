@@ -293,6 +293,47 @@
     display: none !important;
   }
 
+  /* Popover-enhanced listbox: top-layer rendering, light dismiss, entry animation */
+  :where([data-ui~="combobox"], auras-combobox) [data-part="listbox"][popover] {
+    margin: 0;
+    inset: unset;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    :where([data-ui~="combobox"], auras-combobox)
+      [data-part="listbox"][popover]:popover-open {
+      opacity: 1;
+      transform: translateY(0);
+      transition:
+        opacity var(--transition-fast),
+        transform var(--transition-fast),
+        overlay var(--transition-fast) allow-discrete,
+        display var(--transition-fast) allow-discrete;
+    }
+    @starting-style {
+      :where([data-ui~="combobox"], auras-combobox)
+        [data-part="listbox"][popover]:popover-open {
+        opacity: 0;
+        transform: translateY(-0.25rem);
+      }
+    }
+  }
+
+  /* Anchor positioning: listbox floats relative to control, flips when clipped */
+  @supports (anchor-name: --x) {
+    :where([data-ui~="combobox"], auras-combobox) [data-part="control"] {
+      anchor-name: --combobox-control;
+    }
+    :where([data-ui~="combobox"], auras-combobox) [data-part="listbox"] {
+      position-anchor: --combobox-control;
+      inset: unset;
+      top: anchor(bottom);
+      left: anchor(left);
+      min-inline-size: anchor-size(width);
+      margin-block-start: var(--space-1);
+      position-try-fallbacks: flip-block;
+    }
+  }
+
   :where([data-ui~="combobox"], auras-combobox) [data-part="option"] {
     display: grid;
     gap: var(--space-1);
@@ -1043,5 +1084,35 @@
     padding: 0;
     border: 0;
     font-size: inherit;
+  }
+
+  /* View transitions for panel switching (tabs, master-detail) */
+  :where(
+    [data-ui~="tabs"],
+    auras-tabs,
+    [data-ui~="master-detail"],
+    auras-master-detail
+  ) [data-part="panel"][data-active] {
+    view-transition-name: auras-panel;
+  }
+
+  ::view-transition-old(auras-panel) {
+    animation: var(--transition-fast, 150ms) ease-out both auras-vt-fade-out;
+  }
+
+  ::view-transition-new(auras-panel) {
+    animation: var(--transition-fast, 150ms) ease-out both auras-vt-fade-in;
+  }
+
+  @keyframes auras-vt-fade-out {
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes auras-vt-fade-in {
+    from {
+      opacity: 0;
+    }
   }
 }

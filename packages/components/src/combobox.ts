@@ -45,6 +45,7 @@ export class AurasCombobox extends HTMLElement {
   private _isQuerying = false;
   private _syncingValue = false;
   private _syncingOpen = false;
+  private _popoverSupported = false;
 
   constructor() {
     super();
@@ -54,6 +55,7 @@ export class AurasCombobox extends HTMLElement {
     this._handleInput = this._handleInput.bind(this);
     this._handleFocusOut = this._handleFocusOut.bind(this);
     this._handleMouseDown = this._handleMouseDown.bind(this);
+    this._handlePopoverToggle = this._handlePopoverToggle.bind(this);
   }
 
   connectedCallback(): void {
@@ -255,11 +257,20 @@ export class AurasCombobox extends HTMLElement {
 
     this._applySemantics();
 
+    this._popoverSupported = "popover" in listbox &&
+      typeof (listbox as unknown as { showPopover?: unknown }).showPopover ===
+        "function";
+
     this.addEventListener("click", this._handleClick);
     this.addEventListener("keydown", this._handleKeydown);
     this.addEventListener("input", this._handleInput);
-    this.addEventListener("focusout", this._handleFocusOut);
-    this.addEventListener("mousedown", this._handleMouseDown);
+
+    if (this._popoverSupported) {
+      listbox.addEventListener("toggle", this._handlePopoverToggle as EventListener);
+    } else {
+      this.addEventListener("focusout", this._handleFocusOut);
+      this.addEventListener("mousedown", this._handleMouseDown);
+    }
 
     this._normalizeActivationAttribute();
 
@@ -286,8 +297,16 @@ export class AurasCombobox extends HTMLElement {
     this.removeEventListener("click", this._handleClick);
     this.removeEventListener("keydown", this._handleKeydown);
     this.removeEventListener("input", this._handleInput);
-    this.removeEventListener("focusout", this._handleFocusOut);
-    this.removeEventListener("mousedown", this._handleMouseDown);
+
+    if (this._popoverSupported && this._listbox) {
+      this._listbox.removeEventListener(
+        "toggle",
+        this._handlePopoverToggle as EventListener,
+      );
+    } else {
+      this.removeEventListener("focusout", this._handleFocusOut);
+      this.removeEventListener("mousedown", this._handleMouseDown);
+    }
 
     this._input = null;
     this._toggle = null;
@@ -466,7 +485,19 @@ export class AurasCombobox extends HTMLElement {
       this._restoreSelectedLabel();
     }
 
-    this._listbox.hidden = !open;
+    if (this._popoverSupported) {
+      try {
+        if (open) {
+          (this._listbox as unknown as { showPopover(): void }).showPopover();
+        } else {
+          (this._listbox as unknown as { hidePopover(): void }).hidePopover();
+        }
+      } catch (_) {
+        /* already in target state */
+      }
+    } else {
+      this._listbox.hidden = !open;
+    }
     this._input.setAttribute("aria-expanded", String(open));
 
     if (this._toggle) {
@@ -513,7 +544,7 @@ export class AurasCombobox extends HTMLElement {
   }
 
   private _getQuery(): string {
-    if (this._listbox?.hidden ?? !this.open) {
+    if (!this.open) {
       return "";
     }
     if (!this._isQuerying) {
@@ -737,6 +768,18 @@ export class AurasCombobox extends HTMLElement {
       }
       default:
         return;
+    }
+  }
+
+  private _handlePopoverToggle(event: ToggleEvent): void {
+    if (event.newState === "closed" && this.open) {
+      this._restoreSelectedLabel();
+      this._syncOpenAttribute(false);
+      this._input?.setAttribute("aria-expanded", "false");
+      if (this._toggle) {
+        this._toggle.setAttribute("aria-expanded", "false");
+      }
+      this._setActiveOption(null);
     }
   }
 
