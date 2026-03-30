@@ -93,6 +93,17 @@
           transition: background-color 0.5s ease-out, color 0.3s ease-out;
         }
 
+        /* ---- Pre-hydration: hide JS-only affordances until upgrade ---- */
+        auras-combobox:not([hydrated]) [data-part="toggle"],
+        auras-tree:not([hydrated]) [data-part="toggle"] {
+          visibility: hidden;
+        }
+
+        auras-splitter:not([hydrated]) [data-part="separator"] {
+          pointer-events: none;
+          opacity: 0.4;
+        }
+
         /* ---- Hero ---- */
         [data-site="hero"] {
           min-block-size: 100svh;
@@ -1903,6 +1914,110 @@
             </div>
           </section>
 
+          <!-- Progressive enhancement -->
+          <section
+            data-site="section"
+            data-ui="prose"
+            data-scroll-target
+            data-layout="stack"
+            data-gap="4"
+          >
+            <hgroup>
+              <p>Progressive Enhancement</p>
+              <h2>Content First, Behavior Second</h2>
+              <p>
+                Semantic HTML and CSS carry the page. Components upgrade in
+                place when JavaScript loads.
+              </p>
+            </hgroup>
+
+            <div data-layout="grid" data-gap="4" data-grid-min="sm">
+              <article
+                data-surface="card"
+                data-interactive
+                data-layout="stack"
+                data-gap="2"
+              >
+                <h3>The <code>hydrated</code> attribute</h3>
+                <p>
+                  Every <code>auras-*</code> element sets
+                  <code>hydrated</code> on its host after successful
+                  initialization. CSS can target
+                  <code>:not([hydrated])</code> to hide controls that
+                  need JavaScript.
+                </p>
+              </article>
+              <article
+                data-surface="card"
+                data-interactive
+                data-layout="stack"
+                data-gap="2"
+              >
+                <h3>Pre-hydration CSS</h3>
+                <p>
+                  This page hides combobox toggles and dims splitter
+                  handles until JavaScript runs. When the component
+                  upgrades, the <code>hydrated</code> attribute appears
+                  and CSS shows the controls.
+                </p>
+              </article>
+              <article
+                data-surface="card"
+                data-interactive
+                data-layout="stack"
+                data-gap="2"
+              >
+                <h3>Shared base class</h3>
+                <p>
+                  All components extend <code>AurasElement</code>, which
+                  handles property/attribute sync, auto-binding, lifecycle
+                  hooks, and the hydration signal.
+                </p>
+              </article>
+              <article
+                data-surface="card"
+                data-interactive
+                data-layout="stack"
+                data-gap="2"
+              >
+                <h3>Safe imperative access</h3>
+                <p>
+                  Call <code>customElements.whenDefined()</code> before
+                  using methods like <code>show()</code>. The element is
+                  ready when the promise resolves.
+                </p>
+              </article>
+            </div>
+
+            <article data-ui="example">
+              <header data-part="header">
+                <strong>Pre-hydration CSS</strong>
+                <span data-part="meta">Used on this page</span>
+              </header>
+              <div data-part="preview" data-layout="stack" data-gap="2">
+                <p>
+                  Before JavaScript loads, toggle buttons and drag handles
+                  are hidden or dimmed. After hydration, they appear
+                  automatically.
+                </p>
+              </div>
+              <pre data-part="code"><code><span data-syntax="comment">/* Hide toggle buttons that need JS */</span>
+<span data-syntax="tag">auras-combobox</span><span data-syntax="attr">:not([hydrated])</span> <span data-syntax="tag">[data-part="toggle"]</span> {
+  <span data-syntax="attr">visibility</span>: <span data-syntax="value">hidden</span>;
+}
+
+<span data-syntax="comment">/* Dim separator until interactive */</span>
+<span data-syntax="tag">auras-splitter</span><span data-syntax="attr">:not([hydrated])</span> <span data-syntax="tag">[data-part="separator"]</span> {
+  <span data-syntax="attr">pointer-events</span>: <span data-syntax="value">none</span>;
+  <span data-syntax="attr">opacity</span>: <span data-syntax="value">0.4</span>;
+}
+
+<span data-syntax="comment">/* Wait for registration before calling methods */</span>
+<span data-syntax="keyword">await</span> <span data-syntax="function">customElements.whenDefined</span>(<span data-syntax="value">"auras-tabs"</span>);
+document.<span data-syntax="function">querySelector</span>(<span data-syntax="value">"auras-tabs"</span>).<span data-syntax="function">show</span>(<span data-syntax="value">"tokens"</span>);</code></pre>
+            </article>
+          </section>
+
           <!-- Host API reference -->
           <section
             id="api"
@@ -1956,6 +2071,15 @@
                     <td>Method</td>
                     <td>
                       Move focus to the currently active trigger or node.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>hydrated</td>
+                    <td>Attribute</td>
+                    <td>
+                      Set by the base class after successful initialization.
+                      Removed on disconnect. Use in CSS for pre-hydration
+                      states.
                     </td>
                   </tr>
                   <tr>
