@@ -10,7 +10,9 @@ Related docs:
 - [Component Architecture](./component-architecture.md)
 - [Components package README](../packages/components/README.md)
 - [Diagram package README](../packages/diagram/README.md)
+- [Audit package README](../packages/audit/README.md)
 - [Theme Studio](/studio.html) - interactive brand pack builder
+- [Contract Lab](/lab.html) - live markup auditing
 
 ## Quick Start
 
@@ -483,6 +485,55 @@ tab semantics:
 Use `activation="manual"` when horizontal arrow-key focus should move before the
 panel changes.
 
+### Sections
+
+`auras-sections` presents one authored structure as tabs, accordion, or
+container-adaptive mode that switches between them at a breakpoint:
+
+```html
+<link rel="stylesheet" href="packages/elements/auras.css" />
+<link rel="stylesheet" href="packages/composites/auras-composites.css" />
+<script type="module" src="packages/components/browser.js"></script>
+
+<auras-sections mode="auto" morph-at="500" value="html">
+  <section data-part="section" data-value="html">
+    <button type="button" data-part="trigger">HTML</button>
+    <div data-part="panel">
+      <p>Semantic markup with data attributes.</p>
+    </div>
+  </section>
+  <section data-part="section" data-value="css">
+    <button type="button" data-part="trigger">CSS</button>
+    <div data-part="panel">
+      <p>OKLCH colors, cascade layers, and container-aware layouts.</p>
+    </div>
+  </section>
+</auras-sections>
+```
+
+Each section contains exactly one trigger and one panel as direct children.
+`mode="tabs"` uses tablist ARIA with horizontal arrow keys. `mode="accordion"`
+uses `aria-expanded` with vertical arrow keys and allows multiple open sections.
+`mode="auto"` starts as tabs and morphs to accordion when the container is
+narrower than `morph-at` pixels.
+
+### Auditing Markup
+
+The `@auras/audit` package validates authored markup against the published
+contracts. Run it in tests, the browser console, or as a CLI check:
+
+```sh
+deno task audit public/index.html
+```
+
+```ts
+import { auditAuras } from "@auras/audit";
+const diagnostics = auditAuras(document);
+```
+
+The [Contract Lab](/lab.html) provides a live editor where you can paste markup,
+pick a component preset, and see audit diagnostics in real time.
+
 ### Forms
 
 Native elements are styled automatically:
@@ -599,7 +650,10 @@ The demo also exercises:
 | `tests/auras-splitter.test.js`              | Deno behavioral coverage for `auras-splitter`     |
 | `tests/auras-diagram.test.js`               | Deno behavioral coverage for `auras-diagram`      |
 | `tests/auras-components.test.js`            | Deno behavioral coverage for Components          |
+| `tests/auras-sections.test.js`              | Deno behavioral coverage for `auras-sections`     |
 | `tests/auras-tree.test.js`                  | Deno behavioral coverage for `auras-tree`         |
+| `tests/auras-audit.test.ts`                 | Deno behavioral coverage for `@auras/audit`       |
+| `tests/auras-audit-cli.test.ts`             | CLI test for `@auras/audit`                       |
 | `packages/elements/auras.css`               | Elements layer stylesheet source                 |
 | `packages/composites/auras-composites.css`  | Composites layer stylesheet source               |
 | `packages/brands/auras-brand.css`           | Auras brand stylesheet source                     |
@@ -620,11 +674,18 @@ The demo also exercises:
 | `packages/components/src/combobox.ts`      | `auras-combobox` runtime module                   |
 | `packages/components/src/splitter.ts`      | `auras-splitter` runtime module                   |
 | `packages/components/src/tree.ts`          | `auras-tree` runtime module                       |
+| `packages/audit/mod.ts`                    | Deno-first audit package surface                  |
+| `packages/audit/browser.js`               | Browser-friendly no-build audit entrypoint        |
+| `packages/audit/cli.ts`                   | CLI entrypoint for `@auras/audit`                 |
+| `packages/audit/contracts.js`             | Shared contract definitions                       |
+| `packages/audit/jsr.json`                 | JSR package metadata for `@auras/audit`            |
+| `packages/audit/README.md`               | Package-level docs for `@auras/audit`              |
 | `deno.json`                                | Deno tasks for dev server, checking, and tests   |
 | `deno.lock`                                | Locked JSR and npm test dependencies             |
 | `main.ts`                                  | Deno Deploy entry point (static file server)     |
 | `public/index.html`                        | Interactive demo page                            |
 | `public/studio.html`                       | Theme Studio for visual brand pack creation      |
+| `public/lab.html`                          | Contract Lab for live markup auditing            |
 | `docs/component-architecture.md`           | Architecture note for the layer split            |
 | `docs/user-guide.md`                       | This user guide                                  |
 
@@ -639,6 +700,7 @@ deno task test
 deno task test:browser
 deno task publish:diagram:dry-run
 deno task publish:components:dry-run
+deno task publish:audit:dry-run
 deno task dev
 ```
 
@@ -675,9 +737,12 @@ Then verify:
     states, select chevrons, progress, and meter styles.
 15. Open print preview and confirm buttons/nav are hidden and print-only rules
     apply.
-16. Navigate to `/studio.html` and drag the primary hue slider; confirm the
+16. Navigate to `/lab.html`, pick a component preset, and confirm the audit runs
+    with no errors on valid markup. Edit the markup to introduce an error (e.g.
+    remove a required part) and confirm the diagnostics panel shows findings.
+17. Navigate to `/studio.html` and drag the primary hue slider; confirm the
     preview updates in real time.
-17. Toggle "Dark mode" in the preview header and confirm tokens adapt.
-18. Click "Export Brand Pack", enter a name, and confirm a valid CSS file
+18. Toggle "Dark mode" in the preview header and confirm tokens adapt.
+19. Click "Export Brand Pack", enter a name, and confirm a valid CSS file
     downloads.
-19. Copy the Studio URL, open it in a new tab, and confirm the theme restores.
+20. Copy the Studio URL, open it in a new tab, and confirm the theme restores.

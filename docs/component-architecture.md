@@ -8,6 +8,7 @@ Related docs:
 - [User Guide](./user-guide.md)
 - [Components package README](../packages/components/README.md)
 - [Diagram package README](../packages/diagram/README.md)
+- [Audit package README](../packages/audit/README.md)
 
 ## Goal
 
@@ -90,6 +91,7 @@ Examples:
 - splitter
 - tree
 - tabs
+- sections (tabs/accordion morph)
 - combobox / command palette
 
 Rules:
@@ -123,6 +125,12 @@ Recommended package boundaries:
 /packages/components/src/splitter.ts
 /packages/components/src/tree.ts
 /packages/components/src/tabs.ts
+/packages/audit/browser.js
+/packages/audit/cli.ts
+/packages/audit/contracts.js
+/packages/audit/jsr.json
+/packages/audit/README.md
+/packages/audit/mod.ts
 
 /docs/component-architecture.md
 ```
@@ -133,6 +141,7 @@ Recommended publishing shape:
 - `@auras/composites`: optional CSS-only higher-level patterns
 - `jsr:@auras/diagram`: optional Deno-first interactive diagram package
 - `jsr:@auras/components`: optional Deno-first light-DOM interactive components
+- `jsr:@auras/audit`: contract validation for authored markup (browser, Deno, CLI)
 
 Current repo structure:
 
@@ -147,6 +156,11 @@ Current repo structure:
 - `packages/components/mod.ts` is the Deno-first TypeScript package surface
 - `packages/components/browser.js` is the browser-friendly no-build Components
   entrypoint
+- `packages/audit/mod.ts` is the Deno-first TypeScript surface for the audit
+  package
+- `packages/audit/browser.js` is the browser-friendly no-build audit entrypoint
+- `packages/audit/cli.ts` is the CLI entrypoint for local or CI auditing
+- `packages/audit/contracts.js` is the shared contract definition registry
 
 ## Decision Rule
 
@@ -167,6 +181,7 @@ Examples:
 - `data-grid`: components
 - `splitter`: components
 - `tree`: components
+- `sections` (tabs/accordion morph): components
 
 ## Specialized Packages
 
@@ -222,7 +237,7 @@ Implementation detail that should stay private:
 
 The first behavioral pilot was `auras-master-detail`. The second is `auras-tabs`.
 The third is `auras-tree`. The fourth is `auras-combobox`. The fifth is
-`auras-splitter`.
+`auras-splitter`. The sixth is `auras-sections`.
 
 Why these first:
 
@@ -668,6 +683,86 @@ Host API:
 - `focusHandle(): void`
 - `auras-change`
 
+## `auras-sections` v1 Scope
+
+The sixth pilot should do exactly this:
+
+- present one authored structure as tabs or accordion, with an auto mode that
+  switches between them at a container-width breakpoint
+- coordinate one selected/expanded value across sections
+- manage roving focus between section triggers
+- apply the correct ARIA semantics for each mode (tablist for tabs, aria-expanded
+  for accordion)
+
+It should not do this in v1:
+
+- nested sections
+- lazy rendering
+- async panel loading
+- drag-to-reorder sections
+- persistence beyond initial host attributes
+
+Suggested authoring model:
+
+```html
+<auras-sections mode="auto" morph-at="500" value="html">
+  <section data-part="section" data-value="html">
+    <button type="button" data-part="trigger">HTML</button>
+    <div data-part="panel">
+      <p>Semantic markup with data attributes.</p>
+    </div>
+  </section>
+  <section data-part="section" data-value="css">
+    <button type="button" data-part="trigger">CSS</button>
+    <div data-part="panel">
+      <p>OKLCH colors, cascade layers, and container-aware layouts.</p>
+    </div>
+  </section>
+</auras-sections>
+```
+
+Required parts:
+
+- one host: `<auras-sections>`
+- one or more sections: `[data-part="section"][data-value]`
+- one trigger per section: `[data-part="trigger"]` (direct child of section)
+- one panel per section: `[data-part="panel"]` (direct child of section)
+
+Host API:
+
+- `value`
+- `mode="tabs|accordion|auto"`
+- `morph-at` (pixel breakpoint for auto mode)
+- `activation="auto|manual"`
+- `exclusive` (accordion-only: close other sections on open)
+- `show(value: string): boolean`
+- `expand(value: string): boolean`
+- `collapse(value: string): boolean`
+- `toggle(value: string): boolean`
+- `focusCurrent(): void`
+- `auras-change`
+
+## `@auras/audit` Scope
+
+The audit package validates authored markup against the contract definitions in
+`packages/audit/contracts.js`. It checks required parts, duplicate data-value
+collisions, orphaned trigger/panel pairings, and accessibility gaps.
+
+Three entry points exist: `packages/audit/browser.js` for the Contract Lab and
+browser console, `packages/audit/mod.ts` as a typed Deno import, and
+`packages/audit/cli.ts` for local or CI runs via HappyDOM.
+
+Each contract definition includes `requiredParts`, `optionalParts`,
+`accessibilityRules`, and `exampleMarkup`.
+
+Adding a new component to the audit requires:
+
+1. Add the contract definition to `packages/audit/contracts.js`.
+2. Add the `AurasContractTagName` union member in `packages/audit/mod.ts`.
+3. Add a validator function to both `packages/audit/browser.js` and
+   `packages/audit/mod.ts`.
+4. Add tests in `tests/auras-audit.test.ts`.
+
 ## Build Order
 
 Recommended order for implementation:
@@ -683,7 +778,9 @@ Recommended order for implementation:
 6. Extend the same package with local filtering and popup state in
    `auras-combobox`.
 7. Extend the same package with two-pane resize behavior in `auras-splitter`.
-8. Only then move on to listbox or grid.
+8. Add container-adaptive sections with `auras-sections`.
+9. Add contract validation with `@auras/audit` (browser, Deno, CLI).
+10. Only then move on to listbox or grid.
 
 ## Follow-On Components
 
@@ -790,6 +887,14 @@ Methods exposed on each host element.
 | `openListbox` | `openListbox(): boolean` | Open the listbox popup. |
 | `closeListbox` | `closeListbox(): boolean` | Close the listbox popup. |
 | `toggleListbox` | `toggleListbox(): boolean` | Toggle the listbox popup. |
+
+### `auras-sections` additions
+
+| Method | Signature | Description |
+|---|---|---|
+| `expand` | `expand(value: string): boolean` | Expand the section with the given value (accordion mode). |
+| `collapse` | `collapse(value: string): boolean` | Collapse the section with the given value (accordion mode). |
+| `toggle` | `toggle(value: string): boolean` | Toggle expansion of the section with the given value (accordion mode). |
 
 ### `auras-splitter` methods
 

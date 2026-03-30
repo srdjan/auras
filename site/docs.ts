@@ -91,7 +91,7 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
     sourcePath: "./packages/audit/README.md",
     title: "@auras/audit",
     description:
-      "Contract-aware audit tooling for Auras CSS that validates authored light-DOM markup in the browser, tests, and local CLI runs.",
+      "Validate authored Auras markup against light-DOM contracts in the browser, tests, or CLI.",
     category: "Package Docs",
     related: [
       { href: "/docs/user-guide/", label: "User guide" },
