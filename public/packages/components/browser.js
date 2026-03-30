@@ -17,6 +17,10 @@ const SEPARATOR_SELECTOR = '[data-part="separator"]';
 const TOGGLE_SELECTOR = '[data-part="toggle"]';
 const GROUP_SELECTOR = '[data-part="group"]';
 const VALUE_INPUT_SELECTOR = 'input[data-part="value"]';
+const SECTION_SELECTOR = '[data-part="section"][data-value]';
+const SECTIONS_TRIGGER_SELECTOR = '[data-part="trigger"]';
+const SECTIONS_PANEL_SELECTOR = '[data-part="panel"]';
+const AURAS_SECTIONS_TAG_NAME = "auras-sections";
 
 const REDUCED_MOTION_QUERY =
   typeof matchMedia === "function"
@@ -250,6 +254,8 @@ class AuraSelectablePanelsElement extends HTMLElement {
     if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
       this._select(entries[0].value, { dispatch: false, focus: false });
     }
+
+    this.setAttribute("hydrated", "");
   }
 
   _disconnect() {
@@ -260,6 +266,7 @@ class AuraSelectablePanelsElement extends HTMLElement {
 
     this._container = null;
     this._entries = [];
+    this.removeAttribute("hydrated");
   }
 
   _normalizeActivationAttribute() {
@@ -672,6 +679,8 @@ class AurasCombobox extends HTMLElement {
     }
 
     this._applyOpenState(this.open, { restoreInput: !this.open });
+
+    this.setAttribute("hydrated", "");
   }
 
   _disconnect() {
@@ -695,6 +704,7 @@ class AurasCombobox extends HTMLElement {
     this._entriesByValue = new Map();
     this._activeValue = null;
     this._isQuerying = false;
+    this.removeAttribute("hydrated");
   }
 
   _applySemantics() {
@@ -1467,6 +1477,8 @@ class AurasTree extends HTMLElement {
         this._select(firstEntry.value, { dispatch: false, focus: false });
       }
     }
+
+    this.setAttribute("hydrated", "");
   }
 
   _disconnect() {
@@ -1480,6 +1492,7 @@ class AurasTree extends HTMLElement {
     this._entriesByValue = new Map();
     this.removeAttribute("data-has-panels");
     this.removeAttribute("data-has-branches");
+    this.removeAttribute("hydrated");
   }
 
   _collectEntries(container, panelsByValue, parentValue = null, level = 1) {
@@ -2076,6 +2089,8 @@ class AurasSplitter extends HTMLElement {
 
     this._syncOrientationAttribute();
     this._applyState({ dispatch: false });
+
+    this.setAttribute("hydrated", "");
   }
 
   _disconnect() {
@@ -2091,6 +2106,7 @@ class AurasSplitter extends HTMLElement {
     this._separator = null;
     this._dragging = false;
     this.removeAttribute("data-dragging");
+    this.removeAttribute("hydrated");
   }
 
   _applySemantics() {
@@ -2343,6 +2359,662 @@ function clampSplitterPercent(value, min, max) {
   return Math.round(Math.min(max, Math.max(min, value)));
 }
 
+function normalizeSectionsMode(value) {
+  if (value === "tabs") return "tabs";
+  if (value === "accordion") return "accordion";
+  return "auto";
+}
+
+class AurasSections extends HTMLElement {
+  static observedAttributes = [
+    "value",
+    "mode",
+    "morph-at",
+    "exclusive",
+    "activation",
+  ];
+
+  constructor() {
+    super();
+
+    this._entries = [];
+    this._entriesByValue = new Map();
+    this._resizeObserver = null;
+    this._resolvedMode = null;
+    this._syncingValue = false;
+    this._syncingMode = false;
+
+    this._handleClick = this._handleClick.bind(this);
+    this._handleKeydown = this._handleKeydown.bind(this);
+  }
+
+  connectedCallback() {
+    upgradeProperty(this, "value");
+    upgradeProperty(this, "mode");
+    upgradeProperty(this, "morphAt");
+    upgradeProperty(this, "exclusive");
+    upgradeProperty(this, "activation");
+    this._connect();
+  }
+
+  disconnectedCallback() {
+    this._disconnect();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue === newValue || !this.isConnected) return;
+
+    if (name === "activation") {
+      this._normalizeActivationAttribute();
+      return;
+    }
+
+    if (name === "mode") {
+      this._normalizeModeAttribute();
+      this._setupResizeObserver();
+      const resolvedMode = this._resolveMode();
+      this._transitionMode(resolvedMode);
+      return;
+    }
+
+    if (name === "morph-at") {
+      const resolvedMode = this._resolveMode();
+      this._transitionMode(resolvedMode);
+      return;
+    }
+
+    if (name === "exclusive") {
+      if (this.exclusive && this._resolvedMode === "accordion") {
+        this._enforceExclusive();
+      }
+      return;
+    }
+
+    if (name === "value") {
+      if (this._syncingValue) return;
+      this._selectFromAttribute({ dispatch: false, focus: false });
+    }
+  }
+
+  get value() {
+    return this.getAttribute("value");
+  }
+
+  set value(val) {
+    if (val == null || val === "") {
+      this.removeAttribute("value");
+      return;
+    }
+    this.setAttribute("value", String(val));
+  }
+
+  get mode() {
+    return normalizeSectionsMode(this.getAttribute("mode"));
+  }
+
+  set mode(val) {
+    const normalized = normalizeSectionsMode(val);
+    if (normalized === "auto") {
+      this.removeAttribute("mode");
+      return;
+    }
+    this.setAttribute("mode", normalized);
+  }
+
+  get morphAt() {
+    const raw = this.getAttribute("morph-at");
+    if (raw == null || raw === "") return 0;
+    const parsed = Number(raw);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  set morphAt(val) {
+    if (val == null || val === "" || val === 0) {
+      this.removeAttribute("morph-at");
+      return;
+    }
+    this.setAttribute("morph-at", String(val));
+  }
+
+  get exclusive() {
+    return this.hasAttribute("exclusive");
+  }
+
+  set exclusive(val) {
+    this.toggleAttribute("exclusive", Boolean(val));
+  }
+
+  get activation() {
+    return normalizeActivation(this.getAttribute("activation"));
+  }
+
+  set activation(val) {
+    const normalized = normalizeActivation(val);
+    if (normalized === "auto") {
+      this.removeAttribute("activation");
+      return;
+    }
+    this.setAttribute("activation", normalized);
+  }
+
+  show(value) {
+    return this._select(value, { dispatch: true, focus: false });
+  }
+
+  focusCurrent() {
+    const activeEntry =
+      this._entries.find((e) => e.trigger.hasAttribute("data-active")) ??
+        this._entries[0];
+    activeEntry?.trigger.focus();
+  }
+
+  expand(value) {
+    if (this._resolvedMode === "tabs") return false;
+    const entry = this._entriesByValue.get(value);
+    if (!entry) return false;
+    return this._setExpanded(entry, true);
+  }
+
+  collapse(value) {
+    if (this._resolvedMode === "tabs") return false;
+    const entry = this._entriesByValue.get(value);
+    if (!entry) return false;
+    return this._setExpanded(entry, false);
+  }
+
+  toggle(value) {
+    if (this._resolvedMode === "tabs") return false;
+    const entry = this._entriesByValue.get(value);
+    if (!entry) return false;
+    return this._setExpanded(entry, !this._isExpanded(entry));
+  }
+
+  _connect() {
+    this._disconnect();
+
+    const entries = [];
+
+    for (const section of this.querySelectorAll(SECTION_SELECTOR)) {
+      if (section.parentElement !== this) continue;
+
+      const value = section.getAttribute("data-value");
+      if (!value) continue;
+
+      const trigger = section.querySelector(SECTIONS_TRIGGER_SELECTOR);
+      const panel = section.querySelector(SECTIONS_PANEL_SELECTOR);
+      if (!trigger || !panel) continue;
+
+      entries.push({ value, section, trigger, panel });
+    }
+
+    if (entries.length === 0) return;
+
+    this._entries = entries;
+    this._entriesByValue = new Map(
+      entries.map((entry) => [entry.value, entry]),
+    );
+
+    this.addEventListener("click", this._handleClick);
+    this.addEventListener("keydown", this._handleKeydown);
+
+    this._normalizeModeAttribute();
+    this._normalizeActivationAttribute();
+
+    const resolvedMode = this._resolveMode();
+    this._applyMode(resolvedMode);
+    this._setupResizeObserver();
+
+    this.setAttribute("hydrated", "");
+  }
+
+  _disconnect() {
+    this.removeEventListener("click", this._handleClick);
+    this.removeEventListener("keydown", this._handleKeydown);
+
+    this._resizeObserver?.disconnect();
+    this._resizeObserver = null;
+    this._resolvedMode = null;
+    this._entries = [];
+    this._entriesByValue = new Map();
+
+    this.removeAttribute("data-resolved-mode");
+    this.removeAttribute("hydrated");
+  }
+
+  _normalizeModeAttribute() {
+    if (this._syncingMode) return;
+    const normalized = normalizeSectionsMode(this.getAttribute("mode"));
+    this._syncingMode = true;
+    if (normalized === "auto") {
+      this.removeAttribute("mode");
+    } else {
+      this.setAttribute("mode", normalized);
+    }
+    this._syncingMode = false;
+  }
+
+  _normalizeActivationAttribute() {
+    if (this.activation === "manual") {
+      this.setAttribute("activation", "manual");
+      return;
+    }
+    this.removeAttribute("activation");
+  }
+
+  _resolveMode() {
+    const declaredMode = this.mode;
+    if (declaredMode === "tabs") return "tabs";
+    if (declaredMode === "accordion") return "accordion";
+
+    const threshold = this.morphAt || 768;
+    const width = this.getBoundingClientRect().width;
+    return width >= threshold ? "tabs" : "accordion";
+  }
+
+  _setupResizeObserver() {
+    this._resizeObserver?.disconnect();
+    this._resizeObserver = null;
+
+    if (this.mode !== "auto") return;
+
+    this._resizeObserver = new ResizeObserver((resizeEntries) => {
+      const resizeEntry = resizeEntries[0];
+      if (!resizeEntry) return;
+
+      const width = resizeEntry.contentBoxSize[0]?.inlineSize ??
+        resizeEntry.contentRect.width;
+      const threshold = this.morphAt || 768;
+      const newMode = width >= threshold ? "tabs" : "accordion";
+      this._transitionMode(newMode);
+    });
+
+    this._resizeObserver.observe(this);
+  }
+
+  _transitionMode(newMode) {
+    const previousMode = this._resolvedMode;
+    if (previousMode === newMode) return;
+
+    this._applyMode(newMode);
+
+    if (previousMode !== null) {
+      this.dispatchEvent(
+        new CustomEvent("auras-morph", {
+          detail: { mode: newMode, previousMode },
+          bubbles: true,
+        }),
+      );
+    }
+  }
+
+  _applyMode(mode) {
+    this._teardownAria();
+    this._resolvedMode = mode;
+
+    if (this.getAttribute("data-resolved-mode") !== mode) {
+      this.setAttribute("data-resolved-mode", mode);
+    }
+
+    if (mode === "tabs") {
+      this._setupTabsAria();
+      this._applyTabsSelection();
+    } else {
+      this._setupAccordionAria();
+      this._applyAccordionState();
+    }
+  }
+
+  _teardownAria() {
+    this.removeAttribute("role");
+    this.removeAttribute("aria-orientation");
+
+    for (const entry of this._entries) {
+      entry.section.removeAttribute("role");
+      entry.trigger.removeAttribute("role");
+      entry.trigger.removeAttribute("aria-selected");
+      entry.trigger.removeAttribute("aria-expanded");
+      entry.trigger.removeAttribute("aria-controls");
+      entry.panel.removeAttribute("role");
+      entry.panel.removeAttribute("aria-labelledby");
+    }
+  }
+
+  _setupTabsAria() {
+    this.setAttribute("role", "tablist");
+    this.setAttribute("aria-orientation", "horizontal");
+
+    for (const entry of this._entries) {
+      entry.section.setAttribute("role", "presentation");
+
+      const triggerId = ensureElementId(
+        entry.trigger,
+        "auras-sections-trigger",
+      );
+      const panelId = ensureElementId(entry.panel, "auras-sections-panel");
+
+      entry.trigger.setAttribute("role", "tab");
+      entry.trigger.setAttribute("aria-selected", "false");
+      entry.trigger.setAttribute("aria-controls", panelId);
+
+      entry.panel.setAttribute("role", "tabpanel");
+      entry.panel.setAttribute("aria-labelledby", triggerId);
+    }
+  }
+
+  _setupAccordionAria() {
+    for (const entry of this._entries) {
+      const panelId = ensureElementId(entry.panel, "auras-sections-panel");
+
+      entry.trigger.setAttribute("aria-expanded", "false");
+      entry.trigger.setAttribute("aria-controls", panelId);
+
+      entry.panel.setAttribute("role", "region");
+      entry.panel.setAttribute(
+        "aria-labelledby",
+        ensureElementId(entry.trigger, "auras-sections-trigger"),
+      );
+    }
+  }
+
+  _applyTabsSelection() {
+    if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
+      const firstEntry = this._entries[0];
+      if (firstEntry) {
+        this._select(firstEntry.value, { dispatch: false, focus: false });
+      }
+    }
+  }
+
+  _applyAccordionState() {
+    const currentValue = this.getAttribute("value");
+
+    for (const entry of this._entries) {
+      const shouldExpand = entry.section.hasAttribute("data-expanded") ||
+        entry.value === currentValue;
+
+      entry.panel.hidden = !shouldExpand;
+      entry.section.toggleAttribute("data-expanded", shouldExpand);
+      entry.trigger.setAttribute("aria-expanded", String(shouldExpand));
+    }
+
+    const selected = currentValue &&
+      this._selectFromAttribute({ dispatch: false, focus: false });
+
+    if (!selected) {
+      const firstEntry = this._entries[0];
+      if (firstEntry) {
+        this._selectAccordionFocus(firstEntry);
+        if (!currentValue) {
+          this._setExpanded(firstEntry, true);
+        }
+      }
+    }
+  }
+
+  _selectAccordionFocus(entry) {
+    for (const currentEntry of this._entries) {
+      const isActive = currentEntry === entry;
+      currentEntry.trigger.tabIndex = isActive ? 0 : -1;
+      currentEntry.trigger.toggleAttribute("data-active", isActive);
+    }
+
+    this._syncingValue = true;
+    if (this.getAttribute("value") !== entry.value) {
+      this.setAttribute("value", entry.value);
+    }
+    this._syncingValue = false;
+  }
+
+  _selectFromAttribute(options) {
+    const value = this.getAttribute("value");
+    if (!value) return false;
+    return this._select(value, options);
+  }
+
+  _select(value, options) {
+    const entry = this._entriesByValue.get(value);
+    if (!entry) return false;
+
+    const previousValue = this.getAttribute("value");
+    const didChange = previousValue !== entry.value;
+
+    if (this._resolvedMode === "tabs") {
+      const applySelection = () => {
+        for (const currentEntry of this._entries) {
+          const isActive = currentEntry === entry;
+
+          currentEntry.trigger.tabIndex = isActive ? 0 : -1;
+          currentEntry.trigger.toggleAttribute("data-active", isActive);
+          currentEntry.trigger.setAttribute(
+            "aria-selected",
+            String(isActive),
+          );
+          currentEntry.panel.hidden = !isActive;
+          currentEntry.panel.toggleAttribute("data-active", isActive);
+        }
+
+        this._syncingValue = true;
+        if (this.getAttribute("value") !== entry.value) {
+          this.setAttribute("value", entry.value);
+        }
+        this._syncingValue = false;
+      };
+
+      const useViewTransition = didChange &&
+        typeof document.startViewTransition === "function" &&
+        (REDUCED_MOTION_QUERY?.matches ?? false);
+
+      if (useViewTransition) {
+        document.startViewTransition(applySelection);
+      } else {
+        applySelection();
+      }
+    } else {
+      this._selectAccordionFocus(entry);
+      this._setExpanded(entry, true);
+    }
+
+    if (options.focus) {
+      entry.trigger.focus();
+    }
+
+    if (options.dispatch && didChange) {
+      this.dispatchEvent(
+        new CustomEvent("auras-change", {
+          detail: {
+            value: entry.value,
+            section: entry.section,
+            trigger: entry.trigger,
+            panel: entry.panel,
+          },
+          bubbles: true,
+        }),
+      );
+    }
+
+    return true;
+  }
+
+  _toggleExpanded(entry) {
+    this._setExpanded(entry, !this._isExpanded(entry));
+    this.dispatchEvent(
+      new CustomEvent("auras-change", {
+        detail: {
+          value: entry.value,
+          section: entry.section,
+          trigger: entry.trigger,
+          panel: entry.panel,
+        },
+        bubbles: true,
+      }),
+    );
+  }
+
+  _isExpanded(entry) {
+    return entry.section.hasAttribute("data-expanded");
+  }
+
+  _setExpanded(entry, expanded) {
+    if (this._isExpanded(entry) === expanded) return false;
+
+    entry.section.toggleAttribute("data-expanded", expanded);
+    entry.panel.hidden = !expanded;
+    entry.trigger.setAttribute("aria-expanded", String(expanded));
+
+    if (expanded && this.exclusive) {
+      for (const otherEntry of this._entries) {
+        if (otherEntry !== entry && this._isExpanded(otherEntry)) {
+          otherEntry.section.toggleAttribute("data-expanded", false);
+          otherEntry.panel.hidden = true;
+          otherEntry.trigger.setAttribute("aria-expanded", "false");
+        }
+      }
+    }
+
+    return true;
+  }
+
+  _enforceExclusive() {
+    let foundExpanded = false;
+
+    for (const entry of this._entries) {
+      if (this._isExpanded(entry)) {
+        if (foundExpanded) {
+          entry.section.toggleAttribute("data-expanded", false);
+          entry.panel.hidden = true;
+          entry.trigger.setAttribute("aria-expanded", "false");
+        } else {
+          foundExpanded = true;
+        }
+      }
+    }
+  }
+
+  _handleClick(event) {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const trigger = target.closest(SECTIONS_TRIGGER_SELECTOR);
+    if (!(trigger instanceof HTMLElement) || !this.contains(trigger)) return;
+
+    const section = trigger.closest(SECTION_SELECTOR);
+    if (
+      !(section instanceof HTMLElement) || section.parentElement !== this
+    ) {
+      return;
+    }
+
+    const entry = this._entries.find((e) => e.trigger === trigger);
+    if (!entry) return;
+
+    if (trigger instanceof HTMLAnchorElement) {
+      event.preventDefault();
+    }
+
+    if (this._resolvedMode === "tabs") {
+      this._select(entry.value, { dispatch: true, focus: false });
+    } else {
+      this._selectAccordionFocus(entry);
+      this._toggleExpanded(entry);
+    }
+  }
+
+  _handleKeydown(event) {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const trigger = target.closest(SECTIONS_TRIGGER_SELECTOR);
+    if (!(trigger instanceof HTMLElement) || !this.contains(trigger)) return;
+
+    const section = trigger.closest(SECTION_SELECTOR);
+    if (
+      !(section instanceof HTMLElement) || section.parentElement !== this
+    ) {
+      return;
+    }
+
+    const currentIndex = this._entries.findIndex((e) => e.trigger === trigger);
+    if (currentIndex < 0) return;
+
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      const entry = this._entries[currentIndex];
+      if (!entry) return;
+
+      if (this._resolvedMode === "tabs") {
+        if (this.activation === "manual") {
+          this._select(entry.value, { dispatch: true, focus: false });
+        }
+      } else {
+        this._setExpanded(entry, !this._isExpanded(entry));
+      }
+      return;
+    }
+
+    const nextIndex = this._getNextIndex(currentIndex, event.key);
+    if (nextIndex == null) return;
+
+    event.preventDefault();
+
+    const nextEntry = this._entries[nextIndex];
+    if (!nextEntry) return;
+
+    nextEntry.trigger.focus();
+
+    if (this._resolvedMode === "tabs" && this.activation === "auto") {
+      this._select(nextEntry.value, { dispatch: true, focus: false });
+    } else if (this._resolvedMode === "accordion") {
+      this._selectAccordionFocus(nextEntry);
+    }
+  }
+
+  _getNextIndex(currentIndex, key) {
+    const lastIndex = this._entries.length - 1;
+
+    if (this._resolvedMode === "tabs") {
+      const directionality = getDirectionality(this);
+
+      switch (key) {
+        case "ArrowRight":
+          return directionality === "rtl"
+            ? Math.max(0, currentIndex - 1)
+            : Math.min(lastIndex, currentIndex + 1);
+        case "ArrowLeft":
+          return directionality === "rtl"
+            ? Math.min(lastIndex, currentIndex + 1)
+            : Math.max(0, currentIndex - 1);
+        case "Home":
+          return 0;
+        case "End":
+          return lastIndex;
+        default:
+          return null;
+      }
+    }
+
+    switch (key) {
+      case "ArrowDown":
+        return Math.min(lastIndex, currentIndex + 1);
+      case "ArrowUp":
+        return Math.max(0, currentIndex - 1);
+      case "Home":
+        return 0;
+      case "End":
+        return lastIndex;
+      default:
+        return null;
+    }
+  }
+}
+
+function registerAurasSections() {
+  if (!customElements.get(AURAS_SECTIONS_TAG_NAME)) {
+    customElements.define(AURAS_SECTIONS_TAG_NAME, AurasSections);
+  }
+
+  return AurasSections;
+}
+
 function registerAurasCombobox() {
   if (!customElements.get(AURAS_COMBOBOX_TAG_NAME)) {
     customElements.define(AURAS_COMBOBOX_TAG_NAME, AurasCombobox);
@@ -2386,6 +3058,7 @@ function registerAurasTree() {
 function registerAurasComponents() {
   registerAurasCombobox();
   registerAurasMasterDetail();
+  registerAurasSections();
   registerAurasSplitter();
   registerAurasTree();
   registerAurasTabs();
@@ -2396,17 +3069,20 @@ registerAurasComponents();
 export {
   AURAS_COMBOBOX_TAG_NAME,
   AURAS_MASTER_DETAIL_TAG_NAME,
+  AURAS_SECTIONS_TAG_NAME,
   AURAS_SPLITTER_TAG_NAME,
   AURAS_TABS_TAG_NAME,
   AURAS_TREE_TAG_NAME,
   AurasCombobox,
   AurasMasterDetail,
+  AurasSections,
   AurasSplitter,
   AurasTabs,
   AurasTree,
   registerAurasCombobox,
   registerAurasComponents,
   registerAurasMasterDetail,
+  registerAurasSections,
   registerAurasSplitter,
   registerAurasTabs,
   registerAurasTree,

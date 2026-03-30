@@ -1716,6 +1716,212 @@
 &lt;/auras-diagram&gt;</code></pre>
               </article>
             </article>
+
+            <!-- Sections -->
+            <article data-surface="card" data-layout="stack" data-gap="3">
+              <h3>Sections</h3>
+              <p>
+                <code>auras-sections</code> presents content as either
+                <strong>tabs</strong> or an <strong>accordion</strong> from a
+                single markup structure. In auto mode, it morphs between the
+                two based on container width.
+              </p>
+              <article data-ui="example">
+                <div data-part="header">
+                  <span>Tabs mode</span>
+                </div>
+                <div data-part="preview">
+                  <div data-layout="stack" data-gap="3">
+                    <p>
+                      Selected:
+                      <code id="sections-tabs-out">design</code>
+                    </p>
+                    <auras-sections
+                      id="site-sections-tabs"
+                      mode="tabs"
+                      value="design"
+                    >
+                      <section data-part="section" data-value="design">
+                        <button type="button" data-part="trigger">
+                          Design
+                        </button>
+                        <div data-part="panel">
+                          <p>
+                            Semantic HTML first, token-driven styling, and
+                            attribute-based APIs keep your markup readable and
+                            your design system consistent.
+                          </p>
+                        </div>
+                      </section>
+                      <section data-part="section" data-value="develop">
+                        <button type="button" data-part="trigger">
+                          Develop
+                        </button>
+                        <div data-part="panel">
+                          <p>
+                            No build step required. Load one stylesheet and
+                            optional components. Works with any framework or
+                            none at all.
+                          </p>
+                        </div>
+                      </section>
+                      <section data-part="section" data-value="deploy">
+                        <button type="button" data-part="trigger">
+                          Deploy
+                        </button>
+                        <div data-part="panel">
+                          <p>
+                            Ship a static directory or deploy to any edge
+                            runtime. Progressive enhancement means content
+                            works before JavaScript loads.
+                          </p>
+                        </div>
+                      </section>
+                    </auras-sections>
+                  </div>
+                </div>
+                <pre
+                  data-part="code"
+                >
+<code>&lt;auras-sections mode="tabs" value="design"&gt;
+  &lt;section data-part="section" data-value="design"&gt;
+    &lt;button data-part="trigger"&gt;Design&lt;/button&gt;
+    &lt;div data-part="panel"&gt;...&lt;/div&gt;
+  &lt;/section&gt;
+  &lt;section data-part="section" data-value="develop"&gt;
+    &lt;button data-part="trigger"&gt;Develop&lt;/button&gt;
+    &lt;div data-part="panel"&gt;...&lt;/div&gt;
+  &lt;/section&gt;
+&lt;/auras-sections&gt;</code></pre>
+              </article>
+
+              <article data-ui="example">
+                <div data-part="header">
+                  <span>Accordion mode</span>
+                </div>
+                <div data-part="preview">
+                  <auras-sections
+                    id="site-sections-accordion"
+                    mode="accordion"
+                    value="tokens"
+                  >
+                    <section
+                      data-part="section"
+                      data-value="tokens"
+                      data-expanded
+                    >
+                      <button type="button" data-part="trigger">
+                        Tokens
+                      </button>
+                      <div data-part="panel">
+                        <p>
+                          Every visual value flows through CSS custom
+                          properties. Override a handful of tokens to create a
+                          completely new look without touching selectors.
+                        </p>
+                      </div>
+                    </section>
+                    <section data-part="section" data-value="layers">
+                      <button type="button" data-part="trigger">
+                        Layers
+                      </button>
+                      <div data-part="panel">
+                        <p>
+                          CSS <code>@layer</code> ordering gives you
+                          predictable specificity. Elements, composites, and
+                          utilities each live in their own layer.
+                        </p>
+                      </div>
+                    </section>
+                    <section data-part="section" data-value="brands">
+                      <button type="button" data-part="trigger">
+                        Brands
+                      </button>
+                      <div data-part="panel">
+                        <p>
+                          A brand pack is a single CSS file that overrides
+                          tokens in <code>@layer brands</code>. Swap brands at
+                          runtime with one attribute change.
+                        </p>
+                      </div>
+                    </section>
+                  </auras-sections>
+                </div>
+                <pre
+                  data-part="code"
+                >
+<code>&lt;auras-sections mode="accordion" value="tokens"&gt;
+  &lt;section data-part="section" data-value="tokens" data-expanded&gt;
+    &lt;button data-part="trigger"&gt;Tokens&lt;/button&gt;
+    &lt;div data-part="panel"&gt;...&lt;/div&gt;
+  &lt;/section&gt;
+  &lt;!-- more sections... --&gt;
+&lt;/auras-sections&gt;</code></pre>
+              </article>
+
+              <article data-ui="example">
+                <div data-part="header">
+                  <span>Auto mode (resize to see morph)</span>
+                </div>
+                <div data-part="preview">
+                  <div
+                    style="resize: horizontal; overflow: auto; padding: var(--space-3); border: 1px dashed var(--border); border-radius: var(--radius-md); min-width: 200px"
+                  >
+                    <auras-sections
+                      id="site-sections-auto"
+                      mode="auto"
+                      morph-at="500"
+                      value="html"
+                    >
+                      <section data-part="section" data-value="html">
+                        <button type="button" data-part="trigger">
+                          HTML
+                        </button>
+                        <div data-part="panel">
+                          <p>
+                            Semantic markup with data attributes. No classes
+                            to memorize, no build step required.
+                          </p>
+                        </div>
+                      </section>
+                      <section data-part="section" data-value="css">
+                        <button type="button" data-part="trigger">
+                          CSS
+                        </button>
+                        <div data-part="panel">
+                          <p>
+                            OKLCH colors, cascade layers, fluid typography,
+                            and container-aware layouts.
+                          </p>
+                        </div>
+                      </section>
+                      <section data-part="section" data-value="js">
+                        <button type="button" data-part="trigger">
+                          JS
+                        </button>
+                        <div data-part="panel">
+                          <p>
+                            Optional light-DOM components that enhance
+                            authored HTML with keyboard behavior and ARIA.
+                          </p>
+                        </div>
+                      </section>
+                    </auras-sections>
+                  </div>
+                </div>
+                <pre
+                  data-part="code"
+                >
+<code>&lt;!-- Morphs between tabs and accordion at 500px --&gt;
+&lt;auras-sections mode="auto" morph-at="500" value="html"&gt;
+  &lt;section data-part="section" data-value="html"&gt;
+    &lt;button data-part="trigger"&gt;HTML&lt;/button&gt;
+    &lt;div data-part="panel"&gt;...&lt;/div&gt;
+  &lt;/section&gt;
+  &lt;!-- more sections... --&gt;
+&lt;/auras-sections&gt;</code></pre>
+              </article>
+            </article>
           </section>
 
           <!-- Theming -->
@@ -2262,6 +2468,7 @@ document.<span data-syntax="function">querySelector</span>(<span data-syntax="va
         bindOutput("site-splitter", "splitter-out", "40");
         bindOutput("site-tree", "tree-out", "auras.css");
         bindOutput("site-diagram", "diagram-out", "input");
+        bindOutput("site-sections-tabs", "sections-tabs-out", "design");
 
         // Active nav link tracking via IntersectionObserver
         const navLinks = document.querySelectorAll(
