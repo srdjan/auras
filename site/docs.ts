@@ -35,6 +35,7 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
       },
       { href: "/docs/packages/components/", label: "@auras/components" },
       { href: "/docs/packages/diagram/", label: "@auras/diagram" },
+      { href: "/docs/packages/audit/", label: "@auras/audit" },
     ],
   },
   {
@@ -48,6 +49,7 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
       { href: "/docs/user-guide/", label: "User guide" },
       { href: "/docs/packages/components/", label: "@auras/components" },
       { href: "/docs/packages/diagram/", label: "@auras/diagram" },
+      { href: "/docs/packages/audit/", label: "@auras/audit" },
     ],
   },
   {
@@ -64,6 +66,7 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
         label: "Component architecture",
       },
       { href: "/docs/packages/diagram/", label: "@auras/diagram" },
+      { href: "/docs/packages/audit/", label: "@auras/audit" },
     ],
   },
   {
@@ -80,6 +83,24 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
         label: "Component architecture",
       },
       { href: "/docs/packages/components/", label: "@auras/components" },
+      { href: "/docs/packages/audit/", label: "@auras/audit" },
+    ],
+  },
+  {
+    route: "/docs/packages/audit/",
+    sourcePath: "./packages/audit/README.md",
+    title: "@auras/audit",
+    description:
+      "Contract-aware audit tooling for Auras CSS that validates authored light-DOM markup in the browser, tests, and local CLI runs.",
+    category: "Package Docs",
+    related: [
+      { href: "/docs/user-guide/", label: "User guide" },
+      {
+        href: "/docs/component-architecture/",
+        label: "Component architecture",
+      },
+      { href: "/docs/packages/components/", label: "@auras/components" },
+      { href: "/lab.html", label: "Contract Lab" },
     ],
   },
 ] as const;
@@ -128,6 +149,7 @@ function docsNavItems(currentPath: string): string {
     { href: "/docs/", label: "Docs" },
     { href: "/docs/user-guide/", label: "User guide" },
     { href: "/docs/component-architecture/", label: "Architecture" },
+    { href: "/lab.html", label: "Lab" },
   ];
 
   return items.map((item) => {
@@ -140,6 +162,7 @@ function footerLinks(): string {
   const links = [
     { href: "/", label: "Home" },
     { href: "/docs/", label: "Docs" },
+    { href: "/lab.html", label: "Lab" },
     { href: "https://github.com/nicholasgasior/auras", label: "GitHub" },
   ];
 
@@ -583,7 +606,7 @@ function softwareStructuredData(origin: string): unknown {
     "@type": "CollectionPage",
     name: "Auras CSS Documentation",
     description:
-      "Guides, architecture notes, and package documentation for Auras CSS.",
+      "Guides, architecture notes, package docs, and contract tooling for Auras CSS.",
     url: absoluteUrl(origin, "/docs/"),
     isPartOf: absoluteUrl(origin, "/"),
     hasPart: DOC_PAGES.map((page) => ({
@@ -754,7 +777,7 @@ export function renderDocsIndex(origin: string): string {
       path: "/docs/",
       title: "Auras CSS Documentation",
       description:
-        "Guides, architecture notes, and package documentation for Auras CSS.",
+        "Guides, architecture notes, package docs, and contract tooling for Auras CSS.",
       pageType: "website",
       structuredData: [
         softwareStructuredData(origin),
@@ -798,7 +821,13 @@ export function renderDocsIndex(origin: string): string {
 }
 
 export function renderSitemap(origin: string): string {
-  const urls = ["/", "/studio.html", "/docs/", ...DOC_PAGES.map((page) => page.route)];
+  const urls = [
+    "/",
+    "/studio.html",
+    "/lab.html",
+    "/docs/",
+    ...DOC_PAGES.map((page) => page.route),
+  ];
   const items = urls.map((path) =>
     `<url><loc>${absoluteUrl(origin, path)}</loc></url>`
   ).join("");

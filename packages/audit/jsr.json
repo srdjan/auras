@@ -1,0 +1,21 @@
+{
+  "$schema": "https://jsr.io/schema/config-file.v1.json",
+  "name": "@auras/audit",
+  "version": "0.1.0",
+  "license": "MIT",
+  "exports": {
+    ".": "./mod.ts",
+    "./cli": "./cli.ts"
+  },
+  "publish": {
+    "include": [
+      "README.md",
+      "mod.ts",
+      "cli.ts",
+      "contracts.js"
+    ]
+  },
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"]
+  }
+}

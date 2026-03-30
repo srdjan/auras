@@ -64,10 +64,15 @@ Deno.test("renderSitemap includes the homepage and documentation pages", () => {
   const sitemap = renderSitemap("https://auras.example");
 
   assertStringIncludes(sitemap, "<loc>https://auras.example/</loc>");
+  assertStringIncludes(sitemap, "<loc>https://auras.example/lab.html</loc>");
   assertStringIncludes(sitemap, "<loc>https://auras.example/docs/</loc>");
   assertStringIncludes(
     sitemap,
     "<loc>https://auras.example/docs/user-guide/</loc>",
+  );
+  assertStringIncludes(
+    sitemap,
+    "<loc>https://auras.example/docs/packages/audit/</loc>",
   );
 });
 

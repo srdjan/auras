@@ -344,125 +344,23 @@
     </main>
 
     <script type="module">
-      import { auditAuras, getAurasContract } from "/packages/audit/browser.js";
+      import {
+        AURAS_CONTRACT_TAG_NAMES,
+        auditAuras,
+        getAurasContract,
+        getAurasContracts,
+      } from "/packages/audit/browser.js";
 
-      const PRESETS = {
-        tabs: {
-          label: "Tabs",
-          markup: `<auras-tabs data-ui="tabs" value="overview" activation="manual">
-  <nav data-part="tablist" aria-label="Release views">
-    <button type="button" data-part="trigger" data-value="overview">Overview</button>
-    <button type="button" data-part="trigger" data-value="tokens">Tokens</button>
-    <button type="button" data-part="trigger" data-value="behavior">Behavior</button>
-  </nav>
-  <section data-part="panels">
-    <article data-part="panel" data-value="overview" data-surface="card">Overview panel</article>
-    <article data-part="panel" data-value="tokens" data-surface="card" hidden>Tokens panel</article>
-    <article data-part="panel" data-value="behavior" data-surface="card" hidden>Behavior panel</article>
-  </section>
-</auras-tabs>`,
-        },
-        "master-detail": {
-          label: "Master-detail",
-          markup: `<auras-master-detail data-ui="master-detail" value="elements">
-  <nav data-part="master" aria-label="Auras layers">
-    <button type="button" data-part="trigger" data-value="elements">Elements</button>
-    <button type="button" data-part="trigger" data-value="composites">Composites</button>
-    <button type="button" data-part="trigger" data-value="components">Components</button>
-  </nav>
-  <section data-part="detail">
-    <article data-part="panel" data-value="elements" data-surface="card">Elements panel</article>
-    <article data-part="panel" data-value="composites" data-surface="card" hidden>Composites panel</article>
-    <article data-part="panel" data-value="components" data-surface="card" hidden>Components panel</article>
-  </section>
-</auras-master-detail>`,
-        },
-        combobox: {
-          label: "Combobox",
-          markup: `<auras-combobox data-ui="combobox" value="tabs" activation="manual">
-  <label for="lab-search">Component</label>
-  <div data-part="control">
-    <input id="lab-search" data-part="input" type="text" placeholder="Search components" />
-    <button type="button" data-part="toggle" aria-label="Toggle options"></button>
-    <input type="hidden" data-part="value" name="component" />
-  </div>
-  <ul data-part="listbox">
-    <li data-part="option" data-value="tabs">Tabs</li>
-    <li data-part="option" data-value="tree">Tree</li>
-    <li data-part="option" data-value="diagram">Diagram</li>
-  </ul>
-  <p data-part="empty" hidden>No matches.</p>
-  <section data-part="panels">
-    <article data-part="panel" data-value="tabs" data-surface="card">Tabs panel</article>
-    <article data-part="panel" data-value="tree" data-surface="card" hidden>Tree panel</article>
-    <article data-part="panel" data-value="diagram" data-surface="card" hidden>Diagram panel</article>
-  </section>
-</auras-combobox>`,
-        },
-        tree: {
-          label: "Tree",
-          markup: `<auras-tree data-ui="tree" value="master-detail">
-  <ul data-part="tree" aria-label="Auras components">
-    <li data-part="item" data-value="elements">
-      <button type="button" data-part="node">Elements</button>
-    </li>
-    <li data-part="item" data-value="components" data-expanded>
-      <button type="button" data-part="toggle" aria-label="Toggle Components"></button>
-      <button type="button" data-part="node">Components</button>
-      <ul data-part="group">
-        <li data-part="item" data-value="master-detail">
-          <button type="button" data-part="node">Master-detail</button>
-        </li>
-        <li data-part="item" data-value="tabs">
-          <button type="button" data-part="node">Tabs</button>
-        </li>
-      </ul>
-    </li>
-  </ul>
-  <section data-part="panels">
-    <article data-part="panel" data-value="elements" data-surface="card">Elements panel</article>
-    <article data-part="panel" data-value="components" data-surface="card" hidden>Components panel</article>
-    <article data-part="panel" data-value="master-detail" data-surface="card" hidden>Master-detail panel</article>
-    <article data-part="panel" data-value="tabs" data-surface="card" hidden>Tabs panel</article>
-  </section>
-</auras-tree>`,
-        },
-        splitter: {
-          label: "Splitter",
-          markup: `<auras-splitter data-ui="splitter" value="42" min="30" max="70" step="5">
-  <section data-part="pane" data-pane="primary" data-surface="card">Primary pane</section>
-  <button type="button" data-part="separator" aria-label="Resize panes"></button>
-  <section data-part="pane" data-pane="secondary" data-surface="card">Secondary pane</section>
-</auras-splitter>`,
-        },
-        diagram: {
-          label: "Diagram",
-          markup: `<auras-diagram value="received" activation="manual" aria-label="Order flow" style="--diagram-columns: 7">
-  <div data-part="canvas">
-    <button type="button" data-part="node" data-kind="input" data-value="received" style="--diagram-column: 1 / span 2; --diagram-row: 1">
-      Received
-    </button>
-    <div data-part="connector" aria-hidden="true" style="--diagram-column: 3; --diagram-row: 1">
-      <svg viewBox="0 0 120 40" preserveAspectRatio="none">
-        <path d="M4 20 H108" />
-        <path data-marker="arrow" d="M108 12 L116 20 L108 28 Z" />
-      </svg>
-    </div>
-    <button type="button" data-part="node" data-kind="process" data-value="validate" style="--diagram-column: 4 / span 2; --diagram-row: 1">
-      Validate
-    </button>
-    <button type="button" data-part="node" data-kind="output" data-value="fulfill" style="--diagram-column: 7; --diagram-row: 1">
-      Fulfill
-    </button>
-  </div>
-  <section data-part="panels">
-    <article data-part="panel" data-value="received" data-surface="card">Received panel</article>
-    <article data-part="panel" data-value="validate" data-surface="card" hidden>Validate panel</article>
-    <article data-part="panel" data-value="fulfill" data-surface="card" hidden>Fulfill panel</article>
-  </section>
-</auras-diagram>`,
-        },
-      };
+      const PRESETS = Object.fromEntries(
+        getAurasContracts().map((contract) => [
+          contract.id,
+          {
+            label: contract.label,
+            markup: contract.exampleMarkup,
+          },
+        ]),
+      );
+      const AURAS_HOST_SELECTOR = AURAS_CONTRACT_TAG_NAMES.join(",");
 
       const editor = document.getElementById("markup-editor");
       const diagnosticsNode = document.getElementById("diagnostics");
@@ -533,9 +431,7 @@
         );
         const diagnostics = auditAuras(wrappedDoc);
         const hosts = Array.from(
-          wrappedDoc.body.querySelectorAll(
-            "auras-tabs,auras-master-detail,auras-combobox,auras-tree,auras-splitter,auras-diagram",
-          ),
+          wrappedDoc.body.querySelectorAll(AURAS_HOST_SELECTOR),
         );
 
         renderDiagnostics(diagnostics);

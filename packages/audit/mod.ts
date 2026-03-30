@@ -1,13 +1,21 @@
-export const AURAS_CONTRACT_TAG_NAMES = [
-  "auras-tabs",
-  "auras-master-detail",
-  "auras-combobox",
-  "auras-tree",
-  "auras-splitter",
-  "auras-diagram",
-] as const;
+import {
+  AURAS_CONTRACTS as RAW_AURAS_CONTRACTS,
+  AURAS_CONTRACTS_BY_TAG as RAW_AURAS_CONTRACTS_BY_TAG,
+  AURAS_CONTRACT_TAG_NAMES as RAW_AURAS_CONTRACT_TAG_NAMES,
+} from "./contracts.js";
 
-export type AurasContractTagName = typeof AURAS_CONTRACT_TAG_NAMES[number];
+export type AurasContractTagName =
+  | "auras-tabs"
+  | "auras-master-detail"
+  | "auras-combobox"
+  | "auras-tree"
+  | "auras-splitter"
+  | "auras-diagram"
+  | "auras-sections";
+
+export const AURAS_CONTRACT_TAG_NAMES =
+  RAW_AURAS_CONTRACT_TAG_NAMES as ReadonlyArray<AurasContractTagName>;
+
 export type AurasDiagnosticSeverity = "error" | "warning";
 
 export type AurasDiagnostic = {
@@ -27,9 +35,14 @@ export type AurasPartRule = {
 };
 
 export type AurasContractDefinition = {
+  id: string;
+  label: string;
   tagName: AurasContractTagName;
   summary: string;
   requiredParts: ReadonlyArray<AurasPartRule>;
+  optionalParts: ReadonlyArray<AurasPartRule>;
+  accessibilityRules: ReadonlyArray<string>;
+  exampleMarkup: string;
 };
 
 type DiagnosticInput = Omit<AurasDiagnostic, "selector" | "hostTag"> & {
@@ -47,145 +60,11 @@ type ContractValidator = (host: HTMLElement, context: AuditContext) => void;
 
 const AURAS_HOST_SELECTOR = AURAS_CONTRACT_TAG_NAMES.join(",");
 
-const CONTRACTS = {
-  "auras-tabs": {
-    tagName: "auras-tabs",
-    summary: "Tab controller with explicit tablist, triggers, and panels.",
-    requiredParts: [
-      {
-        selector: '[data-part="tablist"]',
-        min: 1,
-        max: 1,
-        description: "One tablist container",
-      },
-      {
-        selector: '[data-part="panels"]',
-        min: 1,
-        max: 1,
-        description: "One panels container",
-      },
-      {
-        selector: '[data-part="trigger"][data-value]',
-        min: 1,
-        description: "One or more tab triggers with data-value",
-      },
-      {
-        selector: '[data-part="panel"][data-value]',
-        min: 1,
-        description: "One or more panels with data-value",
-      },
-    ],
-  },
-  "auras-master-detail": {
-    tagName: "auras-master-detail",
-    summary: "Selection controller for a master list and detail panels.",
-    requiredParts: [
-      {
-        selector: '[data-part="master"]',
-        min: 1,
-        max: 1,
-        description: "One master container",
-      },
-      {
-        selector: '[data-part="detail"]',
-        min: 1,
-        max: 1,
-        description: "One detail container",
-      },
-      {
-        selector: '[data-part="trigger"][data-value]',
-        min: 1,
-        description: "One or more triggers with data-value",
-      },
-      {
-        selector: '[data-part="panel"][data-value]',
-        min: 1,
-        description: "One or more panels with data-value",
-      },
-    ],
-  },
-  "auras-combobox": {
-    tagName: "auras-combobox",
-    summary: "Combobox with authored input, local options, and optional panels.",
-    requiredParts: [
-      {
-        selector: '[data-part="input"]',
-        min: 1,
-        max: 1,
-        description: "One text input",
-      },
-      {
-        selector: '[data-part="listbox"]',
-        min: 1,
-        max: 1,
-        description: "One listbox container",
-      },
-      {
-        selector: '[data-part="option"][data-value]',
-        min: 1,
-        description: "One or more options with data-value",
-      },
-    ],
-  },
-  "auras-tree": {
-    tagName: "auras-tree",
-    summary: "Tree controller for hierarchical selection and expansion.",
-    requiredParts: [
-      {
-        selector: '[data-part="tree"]',
-        min: 1,
-        max: 1,
-        description: "One tree container",
-      },
-      {
-        selector: '[data-part="item"][data-value]',
-        min: 1,
-        description: "One or more items with data-value",
-      },
-    ],
-  },
-  "auras-splitter": {
-    tagName: "auras-splitter",
-    summary: "Two-pane splitter with explicit panes and separator.",
-    requiredParts: [
-      {
-        selector: '[data-part="pane"][data-pane="primary"]',
-        min: 1,
-        max: 1,
-        description: "One primary pane",
-      },
-      {
-        selector: '[data-part="separator"]',
-        min: 1,
-        max: 1,
-        description: "One separator",
-      },
-      {
-        selector: '[data-part="pane"][data-pane="secondary"]',
-        min: 1,
-        max: 1,
-        description: "One secondary pane",
-      },
-    ],
-  },
-  "auras-diagram": {
-    tagName: "auras-diagram",
-    summary: "Spatial diagram controller with authored nodes and optional panels.",
-    requiredParts: [
-      {
-        selector: '[data-part="canvas"]',
-        min: 1,
-        max: 1,
-        description: "One canvas container",
-      },
-      {
-        selector: '[data-part="node"][data-value]',
-        min: 1,
-        description: "One or more nodes with data-value",
-      },
-    ],
-  },
-} satisfies Record<AurasContractTagName, AurasContractDefinition>;
+const AURAS_CONTRACTS =
+  RAW_AURAS_CONTRACTS as ReadonlyArray<AurasContractDefinition>;
+
+const CONTRACTS =
+  RAW_AURAS_CONTRACTS_BY_TAG as Record<AurasContractTagName, AurasContractDefinition>;
 
 const VALIDATORS: Record<AurasContractTagName, ContractValidator> = {
   "auras-tabs": (host, context) =>
@@ -214,6 +93,7 @@ const VALIDATORS: Record<AurasContractTagName, ContractValidator> = {
   "auras-tree": validateTree,
   "auras-splitter": validateSplitter,
   "auras-diagram": validateDiagram,
+  "auras-sections": validateSections,
 };
 
 export function getAurasContract(
@@ -223,8 +103,12 @@ export function getAurasContract(
     null;
 }
 
+export function getAurasContracts(): ReadonlyArray<AurasContractDefinition> {
+  return AURAS_CONTRACTS;
+}
+
 export function auditAuras(
-  root: ParentNode,
+  root: ParentNode | Element | Document,
   options: { include?: ReadonlyArray<AurasContractTagName> } = {},
 ): AurasDiagnostic[] {
   const include = new Set(options.include ?? AURAS_CONTRACT_TAG_NAMES);
@@ -289,7 +173,7 @@ export function auditAuras(
 }
 
 function findHosts(
-  root: ParentNode,
+  root: ParentNode | Element | Document,
   include: ReadonlySet<AurasContractTagName>,
 ): HTMLElement[] {
   const hosts: HTMLElement[] = [];
@@ -299,7 +183,9 @@ function findHosts(
   }
 
   if ("querySelectorAll" in root) {
-    for (const element of root.querySelectorAll<HTMLElement>(AURAS_HOST_SELECTOR)) {
+    for (
+      const element of root.querySelectorAll<HTMLElement>(AURAS_HOST_SELECTOR)
+    ) {
       if (isIncludedHost(element, include)) {
         hosts.push(element);
       }
@@ -433,7 +319,9 @@ function validateSelectablePanels(
   const container = getOwnedElements(host, config.containerSelector)[0] ?? null;
   const panelRoot = getOwnedElements(host, config.panelRootSelector)[0] ?? null;
 
-  if (container && config.requireContainerLabel && !hasAccessibleName(container)) {
+  if (
+    container && config.requireContainerLabel && !hasAccessibleName(container)
+  ) {
     context.add({
       severity: "warning",
       code: "missing-accessible-name",
@@ -483,7 +371,9 @@ function validateCombobox(host: HTMLElement, context: AuditContext): void {
   const toggle = getOwnedElements(host, '[data-part="toggle"]')[0] ?? null;
   const panels = getOwnedElements(host, '[data-part="panel"][data-value]');
   const options = listbox
-    ? Array.from(listbox.querySelectorAll<HTMLElement>('[data-part="option"][data-value]'))
+    ? Array.from(
+      listbox.querySelectorAll<HTMLElement>('[data-part="option"][data-value]'),
+    )
     : [];
 
   if (toggle && !hasAccessibleName(toggle)) {
@@ -592,13 +482,16 @@ function validateTree(host: HTMLElement, context: AuditContext): void {
       });
     }
 
-    if (group && getDirectChildElements(group, '[data-part="item"][data-value]').length === 0) {
+    if (
+      group &&
+      getDirectChildElements(group, '[data-part="item"][data-value]').length ===
+        0
+    ) {
       context.add({
         severity: "warning",
         code: "empty-group",
         selector: describeElement(group),
-        message:
-          "auras-tree group has no direct child items.",
+        message: "auras-tree group has no direct child items.",
         fixHint: "Add child items or remove the empty group.",
       });
     }
@@ -644,5 +537,59 @@ function validateDiagram(host: HTMLElement, context: AuditContext): void {
   if (panels.length > 0) {
     reportPairing(panelValues, nodes, context, "panel", "node");
     reportPairing(nodeValues, panels, context, "node", "panel");
+  }
+}
+
+function validateSections(host: HTMLElement, context: AuditContext): void {
+  const sections = getOwnedElements(host, '[data-part="section"][data-value]');
+
+  reportDuplicateValues(sections, context, "section");
+
+  for (const section of sections) {
+    const triggers = getDirectChildElements(section, '[data-part="trigger"]');
+    if (triggers.length === 0) {
+      context.add({
+        severity: "error",
+        code: "missing-required-part",
+        selector: describeElement(section),
+        message:
+          "auras-sections section is missing a direct child [data-part=\"trigger\"].",
+        fixHint: "Add one direct child trigger to each section.",
+      });
+    }
+
+    if (triggers.length > 1) {
+      context.add({
+        severity: "error",
+        code: "duplicate-required-part",
+        selector: describeElement(section),
+        message:
+          "auras-sections section has multiple direct child triggers; expected exactly one.",
+        fixHint: "Keep a single direct child [data-part=\"trigger\"] per section.",
+      });
+    }
+
+    const panels = getDirectChildElements(section, '[data-part="panel"]');
+    if (panels.length === 0) {
+      context.add({
+        severity: "error",
+        code: "missing-required-part",
+        selector: describeElement(section),
+        message:
+          "auras-sections section is missing a direct child [data-part=\"panel\"].",
+        fixHint: "Add one direct child panel to each section.",
+      });
+    }
+
+    if (panels.length > 1) {
+      context.add({
+        severity: "error",
+        code: "duplicate-required-part",
+        selector: describeElement(section),
+        message:
+          "auras-sections section has multiple direct child panels; expected exactly one.",
+        fixHint: "Keep a single direct child [data-part=\"panel\"] per section.",
+      });
+    }
   }
 }

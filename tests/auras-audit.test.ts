@@ -18,7 +18,9 @@ Object.assign(globalThis, {
 
 await testWindow.happyDOM.whenAsyncComplete();
 
-const { auditAuras, getAurasContract } = await import("../packages/audit/mod.ts");
+const { auditAuras, getAurasContract, getAurasContracts } = await import(
+  "../packages/audit/mod.ts"
+);
 
 function renderMarkup(markup: string): Document {
   document.body.innerHTML = markup;
@@ -30,6 +32,19 @@ Deno.test("getAurasContract returns the published combobox contract", () => {
 
   assertEquals(contract?.tagName, "auras-combobox");
   assertEquals(contract?.requiredParts.length, 3);
+});
+
+Deno.test("getAurasContracts exposes the shared registry including sections", () => {
+  const contracts = getAurasContracts();
+
+  assertEquals(
+    contracts.some((contract) => contract.tagName === "auras-sections"),
+    true,
+  );
+  assertEquals(
+    contracts.find((contract) => contract.tagName === "auras-sections")?.label,
+    "Sections",
+  );
 });
 
 Deno.test("auditAuras accepts valid authored markup without findings", () => {
@@ -127,6 +142,30 @@ Deno.test("auditAuras treats unlabeled splitter separators as errors", () => {
   assertEquals(diagnostics[0]?.severity, "error");
 });
 
+Deno.test("auditAuras validates per-section structure for auras-sections", () => {
+  const diagnostics = auditAuras(
+    renderMarkup(`
+      <auras-sections mode="tabs" value="overview">
+        <section data-part="section" data-value="overview">
+          <div data-part="panel">Overview</div>
+        </section>
+        <section data-part="section" data-value="overview">
+          <button type="button" data-part="trigger">Duplicate</button>
+          <div data-part="panel">Duplicate</div>
+        </section>
+      </auras-sections>
+    `),
+  );
+
+  assertEquals(
+    diagnostics.map((item) => item.code).sort(),
+    [
+      "duplicate-data-value",
+      "missing-required-part",
+    ].sort(),
+  );
+});
+
 Deno.test("homepage live component examples pass the audit", async () => {
   const html = await Deno.readTextFile(
     new URL("../public/index.html", import.meta.url),
@@ -138,6 +177,9 @@ Deno.test("homepage live component examples pass the audit", async () => {
     extractHost(html, "auras-splitter", "site-splitter"),
     extractHost(html, "auras-tree", "site-tree"),
     extractHost(html, "auras-diagram", "site-diagram"),
+    extractHost(html, "auras-sections", "site-sections-tabs"),
+    extractHost(html, "auras-sections", "site-sections-accordion"),
+    extractHost(html, "auras-sections", "site-sections-auto"),
   ].join("\n");
   const diagnostics = auditAuras(renderMarkup(liveHosts));
 
@@ -151,6 +193,7 @@ Deno.test("lab page loads the audit package and exposes the Contract Lab title",
 
   assertMatch(html, /<title>Contract Lab - Auras CSS<\/title>/);
   assertMatch(html, /from "\/packages\/audit\/browser\.js"/);
+  assertMatch(html, /getAurasContracts/);
 });
 
 function extractHost(html: string, tagName: string, id: string): string {
