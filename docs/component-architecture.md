@@ -701,32 +701,27 @@ Only add them if they preserve the same rules:
 
 ## Progressive Enhancement and Hydration
 
-Auras components follow a progressive enhancement model inspired by Elena's
-component taxonomy. Content is accessible via semantic HTML and CSS before
-JavaScript loads. When JavaScript runs, components upgrade in place.
+Content works before JavaScript loads. Semantic HTML and CSS carry the
+structure; components upgrade in place when the script runs.
 
 ### Component Taxonomy
 
-Auras maps to Elena's three component types as follows:
+Elena defines three component types. Auras maps them as follows:
 
-- Elena "composite" (light DOM enhancer) maps to Auras Components layer. This is
-  the model all current `auras-*` elements follow: enhance authored HTML with
-  keyboard behavior, selection state, ARIA semantics, and focus management.
-- Elena "primitive" (self-rendering) is not adopted in v1. Reserved as a future
-  separate package only if a concrete use case cannot be expressed with the
-  current controller model.
-- Elena "declarative" (DSDOM pre-render) does not apply. Auras authored HTML
-  already serves this role.
+- Elena "composite" (light DOM enhancer) = Auras Components layer. All current
+  `auras-*` elements follow this model: add keyboard behavior, selection state,
+  ARIA semantics, and focus management to authored HTML.
+- Elena "primitive" (self-rendering) = not adopted. Reserved as a future separate
+  package only if a real use case cannot be expressed with the controller model.
+- Elena "declarative" (DSDOM pre-render) = not applicable. Authored HTML already
+  fills this role.
 
 ### The `hydrated` Attribute
 
 Every `auras-*` custom element sets a `hydrated` attribute on its host after
-the first successful connection. This attribute:
-
-- Signals that JavaScript has loaded and the component is interactive.
-- Enables pre-hydration CSS to hide or dim interactive affordances that do not
-  function before JavaScript runs.
-- Is removed on disconnect.
+successful initialization. The `AurasElement` base class manages this
+automatically: `onConnect` returning normally sets it; returning `false`
+(initialization failed) skips it; `disconnectedCallback` removes it.
 
 Example pre-hydration CSS:
 
@@ -748,32 +743,30 @@ const tabs = document.querySelector("auras-tabs");
 tabs.show("tokens");
 ```
 
-### What Auras Explicitly Does Not Adopt
+### What Auras Does Not Adopt
 
 - Elena's `html` tagged template rendering model.
-- Elena's SSR expansion or bundler as a core dependency.
-- Moving distribution from Deno/JSR to pnpm/Rollup.
-- Self-rendering components where the element generates its own DOM.
+- Elena's SSR expansion or bundler.
+- pnpm/Rollup distribution (Auras stays on Deno/JSR).
+- Self-rendering components that generate their own DOM.
 
 ## Authoring Checklist for New Components
 
-Before adding a new `auras-*` custom element, verify it follows these rules:
+Verify each new `auras-*` custom element follows these rules:
 
 - Light DOM only. No Shadow DOM.
-- Authored HTML remains inspectable. No hidden wrapper generation.
-- Explicit attribute reflection for all public state. Host attributes reflect
-  component state so CSS can react.
-- Explicit ARIA semantics applied on connect. Roles, labels, expanded state,
-  controls relationships.
-- Set `hydrated` after successful initialization.
+- Authored HTML stays inspectable. No hidden wrapper generation.
+- All public state reflected as host attributes so CSS can react.
+- ARIA semantics applied on connect (roles, labels, expanded, controls).
+- Extend `AurasElement` from `packages/shared/`. Hydration is automatic.
 - Stable `data-part` names as public API. Do not rename without a major version.
-- Custom events as public API. Use `auras-change` with a `detail` object.
-- Keyboard behavior as public API. Document which keys do what.
+- Use `auras-change` with a `detail` object for selection events.
+- Document keyboard behavior.
 - Safe to call after `customElements.whenDefined()` resolves.
 
 ## Imperative API Reference
 
-All interactive components expose methods on the host element.
+Methods exposed on each host element.
 
 ### Shared across selection components
 
@@ -807,8 +800,7 @@ All interactive components expose methods on the host element.
 
 ## Framework Integration
 
-Auras interactive components are standard custom elements. They work in any
-framework that supports the DOM.
+Auras components are standard custom elements. They work in any framework.
 
 ### Plain HTML
 
@@ -831,9 +823,8 @@ registerAurasDiagram();
 
 ### React
 
-Custom elements work in React 19+ with no wrapper. For React 18 and earlier,
-use a thin ref-based wrapper or a library like `@lit/react`. Auras components
-use standard DOM attributes and events, so the integration surface is small:
+Custom elements work in React 19+ with no wrapper. For React 18, use a thin
+ref-based wrapper or `@lit/react`:
 
 ```jsx
 function TabsWrapper({ value, onAurasChange, children }) {
@@ -854,5 +845,5 @@ function TabsWrapper({ value, onAurasChange, children }) {
 ### Vue, Svelte, Angular
 
 These frameworks handle custom elements natively. Use the standard HTML tag
-names and listen to `auras-change` events as you would any DOM event. No
-additional bundler, manifest, or adapter is required.
+names and listen to `auras-change` events. No bundler, manifest, or adapter
+needed.

@@ -60,13 +60,16 @@ foundation; everything else is optional and additive.
 | Elements | `packages/elements/auras.css` | Core stylesheet: reset, tokens, typography, layout, components, utilities, a11y, print |
 | Composites | `packages/composites/auras-composites.css` | CSS-only app patterns (example, master-detail, tabs, combobox, splitter, tree, diagram) |
 | Brands | `packages/brands/` | Token override packs scoped to `data-brand` |
+| Shared | `packages/shared/` | Base class (`AurasElement`) and shared utilities for all custom elements |
 | Components | `packages/components/` | Light-DOM custom elements for interactive behavior |
 | Diagram | `packages/diagram/` | Standalone spatial selection component for diagrams |
 
 Components ship as both a Deno-first module (`mod.ts`) and a browser-friendly
-no-build entrypoint (`browser.js`). See
+no-build entrypoint (`browser.js`). All custom elements extend `AurasElement`
+from the Shared package, which handles property/attribute sync, lifecycle
+hooks, and the `hydrated` host attribute. See
 [Component Architecture](./docs/component-architecture.md) for the package
-split and decision rules.
+split, decision rules, and progressive enhancement contracts.
 
 ### Included components
 
@@ -76,6 +79,14 @@ split and decision rules.
 - `auras-splitter` - two-pane splitter with keyboard and pointer resize
 - `auras-tree` - hierarchical selection controller with expansion and optional panels
 - `auras-diagram` - spatial node selection for interactive diagrams
+
+### Progressive enhancement
+
+Every component sets a `hydrated` attribute on its host after successful
+initialization. CSS can target `auras-*:not([hydrated])` to hide or dim
+interactive affordances that require JavaScript, and `auras-*[hydrated]` to
+fade in or animate panels after upgrade. Content remains accessible through
+semantic HTML before any script runs.
 
 ## Design tokens
 
@@ -718,8 +729,8 @@ Load it alongside the core:
 <body data-brand="custom"></body>
 ```
 
-The included `packages/brands/auras-brand.css` stylesheet serves as both a
-working brand and a template for creating your own.
+The included `packages/brands/auras-brand.css` stylesheet works as both a
+usable brand and a template for creating your own.
 
 ### Theme Studio
 
@@ -779,6 +790,7 @@ Auras targets modern evergreen browsers. Key features and their support:
 
 | File                                       | Purpose                                                                  |
 | ------------------------------------------ | ------------------------------------------------------------------------ |
+| `tests/auras-element.test.ts`               | Deno unit tests for the `AurasElement` base class                        |
 | `tests/auras-components.browser.test.js`    | Headless browser smoke test for the optional packages and keyboard flows |
 | `tests/auras-combobox.test.js`              | Deno behavioral coverage for `auras-combobox`                             |
 | `tests/auras-splitter.test.js`              | Deno behavioral coverage for `auras-splitter`                             |
@@ -794,6 +806,9 @@ Auras targets modern evergreen browsers. Key features and their support:
 | `packages/diagram/jsr.json`                | JSR package metadata for `@auras/diagram`                                 |
 | `packages/diagram/README.md`               | Package-level usage notes for `@auras/diagram`                            |
 | `packages/diagram/src/`                    | Diagram package runtime module                                           |
+| `packages/shared/auras-element.ts`         | `AurasElement` base class for all custom elements                        |
+| `packages/shared/utilities.ts`             | Shared utility functions (ID generation, activation, directionality)     |
+| `packages/shared/mod.ts`                   | Re-exports for the Shared package                                        |
 | `packages/components/browser.js`           | Browser-friendly no-build Components entrypoint                          |
 | `packages/components/mod.ts`               | Deno-first export surface for the Components package                     |
 | `packages/components/jsr.json`             | JSR package metadata for `@auras/components`                              |

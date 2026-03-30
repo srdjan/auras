@@ -76,6 +76,12 @@ deno task dev
 - The framework does not require JavaScript. The JS in `public/index.html` only
   powers the optional interactive layer and the demo controls. The package and
   browser sources live under `packages/diagram` and `packages/components`.
+- All custom elements extend `AurasElement` from `packages/shared/`, which
+  handles property/attribute sync, lifecycle hooks, auto-binding, and the
+  `hydrated` host attribute.
+- Every component sets `hydrated` on its host after successful initialization.
+  Use `auras-*:not([hydrated])` in CSS to hide interactive affordances that
+  need JavaScript, and `auras-*[hydrated]` to animate panels after upgrade.
 
 ## Common Patterns
 
@@ -587,6 +593,7 @@ The demo also exercises:
 
 | File                                       | Purpose                                          |
 | ------------------------------------------ | ------------------------------------------------ |
+| `tests/auras-element.test.ts`               | Unit tests for the `AurasElement` base class     |
 | `tests/auras-components.browser.test.js`    | Browser smoke coverage for the optional packages |
 | `tests/auras-combobox.test.js`              | Deno behavioral coverage for `auras-combobox`     |
 | `tests/auras-splitter.test.js`              | Deno behavioral coverage for `auras-splitter`     |
@@ -602,6 +609,9 @@ The demo also exercises:
 | `packages/diagram/jsr.json`                | JSR package metadata for `@auras/diagram`         |
 | `packages/diagram/README.md`               | Package-level usage note for `@auras/diagram`     |
 | `packages/diagram/src/`                    | Diagram package runtime module                   |
+| `packages/shared/auras-element.ts`         | `AurasElement` base class for custom elements    |
+| `packages/shared/utilities.ts`             | Shared utilities (ID gen, activation, RTL)       |
+| `packages/shared/mod.ts`                   | Shared package re-exports                        |
 | `packages/components/browser.js`           | Browser-friendly no-build Components entrypoint  |
 | `packages/components/mod.ts`               | Deno-first Components package surface            |
 | `packages/components/jsr.json`             | JSR package metadata                             |
@@ -623,7 +633,7 @@ The demo also exercises:
 Run these checks after changes:
 
 ```sh
-cd /Users/srdjans/Code/MetadorHome/metador.auras
+cd /path/to/auras
 deno task check
 deno task test
 deno task test:browser
