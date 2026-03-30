@@ -1,7 +1,9 @@
+import { AurasElement } from "../../shared/auras-element.ts";
 import {
+  clampPercent,
   ensureElementId,
-  upgradeProperty,
-} from "./shared/selectable-panels.ts";
+  parseNumericAttribute,
+} from "../../shared/utilities.ts";
 
 const PRIMARY_PANE_SELECTOR = '[data-part="pane"][data-pane="primary"]';
 const SECONDARY_PANE_SELECTOR = '[data-part="pane"][data-pane="secondary"]';
@@ -19,10 +21,27 @@ type SelectionOptions = {
   dispatch: boolean;
 };
 
+function normalizeOrientation(
+  value: string | null | undefined,
+): AurasSplitterOrientation {
+  return value === "vertical" ? "vertical" : "horizontal";
+}
+
 export const AURAS_SPLITTER_TAG_NAME = "auras-splitter";
 
-export class AurasSplitter extends HTMLElement {
-  static observedAttributes = ["value", "orientation", "min", "max", "step"];
+export class AurasSplitter extends AurasElement {
+  static override props = {
+    value: { type: "string" as const },
+    orientation: {
+      type: "string" as const,
+      normalize: normalizeOrientation,
+    },
+    min: { type: "string" as const },
+    max: { type: "string" as const },
+    step: { type: "string" as const },
+  };
+
+  declare orientation: AurasSplitterOrientation;
 
   private _primaryPane: HTMLElement | null = null;
   private _secondaryPane: HTMLElement | null = null;
@@ -30,56 +49,6 @@ export class AurasSplitter extends HTMLElement {
   private _value = 50;
   private _dragging = false;
   private _rafId = 0;
-  private _syncingValue = false;
-  private _syncingOrientation = false;
-
-  constructor() {
-    super();
-
-    this._handleMouseDown = this._handleMouseDown.bind(this);
-    this._handleMouseMove = this._handleMouseMove.bind(this);
-    this._handleMouseUp = this._handleMouseUp.bind(this);
-    this._handleKeydown = this._handleKeydown.bind(this);
-  }
-
-  connectedCallback(): void {
-    upgradeProperty(this, "value");
-    upgradeProperty(this, "orientation");
-    upgradeProperty(this, "min");
-    upgradeProperty(this, "max");
-    upgradeProperty(this, "step");
-    this._connect();
-  }
-
-  disconnectedCallback(): void {
-    this._disconnect();
-  }
-
-  attributeChangedCallback(
-    name: string,
-    oldValue: string | null,
-    newValue: string | null,
-  ): void {
-    if (oldValue === newValue || !this.isConnected) {
-      return;
-    }
-
-    if (name === "orientation") {
-      if (this._syncingOrientation) {
-        return;
-      }
-
-      this._syncOrientationAttribute();
-      this._applyState({ dispatch: false });
-      return;
-    }
-
-    if (name === "value" && this._syncingValue) {
-      return;
-    }
-
-    this._applyState({ dispatch: false });
-  }
 
   get value(): number {
     return this._value;
@@ -92,19 +61,6 @@ export class AurasSplitter extends HTMLElement {
     }
 
     this.setAttribute("value", String(value));
-  }
-
-  get orientation(): AurasSplitterOrientation {
-    return normalizeOrientation(this.getAttribute("orientation"));
-  }
-
-  set orientation(value: AurasSplitterOrientation | string | null) {
-    if (normalizeOrientation(value) === "horizontal") {
-      this.removeAttribute("orientation");
-      return;
-    }
-
-    this.setAttribute("orientation", "vertical");
   }
 
   get min(): number {
@@ -127,8 +83,8 @@ export class AurasSplitter extends HTMLElement {
     this._separator?.focus();
   }
 
-  private _connect(): void {
-    this._disconnect();
+  protected override onConnect(): void | false {
+    this._disconnectInternal();
 
     const primaryPane = this.querySelector<HTMLElement>(PRIMARY_PANE_SELECTOR);
     const secondaryPane = this.querySelector<HTMLElement>(
@@ -137,7 +93,7 @@ export class AurasSplitter extends HTMLElement {
     const separator = this.querySelector<HTMLElement>(SEPARATOR_SELECTOR);
 
     if (!primaryPane || !secondaryPane || !separator) {
-      return;
+      return false;
     }
 
     this._primaryPane = primaryPane;
@@ -152,7 +108,25 @@ export class AurasSplitter extends HTMLElement {
     this._applyState({ dispatch: false });
   }
 
-  private _disconnect(): void {
+  protected override onDisconnect(): void {
+    this._disconnectInternal();
+  }
+
+  protected override onAttributeChange(
+    name: string,
+    _oldValue: string | null,
+    _newValue: string | null,
+  ): void {
+    if (name === "orientation") {
+      this._syncOrientationAttribute();
+      this._applyState({ dispatch: false });
+      return;
+    }
+
+    this._applyState({ dispatch: false });
+  }
+
+  private _disconnectInternal(): void {
     this._stopDragging();
 
     if (this._separator) {
@@ -190,15 +164,11 @@ export class AurasSplitter extends HTMLElement {
   }
 
   private _syncOrientationAttribute(): void {
-    const orientation = this.orientation;
-
-    this._syncingOrientation = true;
-    if (orientation === "horizontal") {
-      this.removeAttribute("orientation");
+    if (this.orientation === "horizontal") {
+      this._syncAttribute("orientation", null);
     } else {
-      this.setAttribute("orientation", "vertical");
+      this._syncAttribute("orientation", "vertical");
     }
-    this._syncingOrientation = false;
   }
 
   private _applyState(options: SelectionOptions): void {
@@ -257,17 +227,11 @@ export class AurasSplitter extends HTMLElement {
     this._value = normalizedValue;
     this.style.setProperty("--splitter-primary-size", `${normalizedValue}%`);
 
-    const currentAttribute = this.getAttribute("value");
-    const nextAttribute = String(normalizedValue);
-    if (currentAttribute !== nextAttribute) {
-      this._syncingValue = true;
-      this.setAttribute("value", nextAttribute);
-      this._syncingValue = false;
-    }
+    this._syncAttribute("value", String(normalizedValue));
 
     this._separator.setAttribute("aria-valuemin", String(bounds.min));
     this._separator.setAttribute("aria-valuemax", String(bounds.max));
-    this._separator.setAttribute("aria-valuenow", nextAttribute);
+    this._separator.setAttribute("aria-valuenow", String(normalizedValue));
 
     if (options.dispatch && didChange) {
       this.dispatchEvent(
@@ -401,31 +365,4 @@ export function registerAurasSplitter(): typeof AurasSplitter {
   }
 
   return AurasSplitter;
-}
-
-function normalizeOrientation(
-  value: string | null | undefined,
-): AurasSplitterOrientation {
-  return value === "vertical" ? "vertical" : "horizontal";
-}
-
-function parseNumericAttribute(
-  value: string | null | undefined,
-  fallbackValue: number,
-): number {
-  if (value == null || value === "") {
-    return fallbackValue;
-  }
-
-  const parsedValue = Number(value);
-
-  if (!Number.isFinite(parsedValue)) {
-    return fallbackValue;
-  }
-
-  return parsedValue;
-}
-
-function clampPercent(value: number, min: number, max: number): number {
-  return Math.round(Math.min(max, Math.max(min, value)));
 }

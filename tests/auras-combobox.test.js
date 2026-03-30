@@ -276,3 +276,9 @@ Deno.test(
     assertEquals(document.activeElement, input);
   },
 );
+
+Deno.test("combobox sets hydrated attribute after connection", () => {
+  const { host } = renderCombobox('value="elements"');
+
+  assert(host.hasAttribute("hydrated"));
+});

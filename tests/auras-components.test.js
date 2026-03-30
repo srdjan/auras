@@ -393,3 +393,15 @@ Deno.test("tabs focusCurrent focuses the active trigger", () => {
 
   assertEquals(document.activeElement, triggers[2]);
 });
+
+Deno.test("master-detail sets hydrated attribute after connection", () => {
+  const { host } = renderMasterDetail('value="elements"');
+
+  assert(host.hasAttribute("hydrated"));
+});
+
+Deno.test("tabs sets hydrated attribute after connection", () => {
+  const { host } = renderTabs('value="overview"');
+
+  assert(host.hasAttribute("hydrated"));
+});

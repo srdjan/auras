@@ -1,3 +1,10 @@
+import { AurasElement } from "../../../shared/auras-element.ts";
+import {
+  ensureElementId,
+  isActivationKey,
+  normalizeActivation,
+} from "../../../shared/utilities.ts";
+
 const TRIGGER_SELECTOR = '[data-part="trigger"][data-value]';
 const PANEL_SELECTOR = '[data-part="panel"][data-value]';
 
@@ -6,7 +13,6 @@ const REDUCED_MOTION_QUERY =
     ? matchMedia("(prefers-reduced-motion: no-preference)")
     : null;
 
-type AurasActivation = "auto" | "manual";
 type SelectionOptions = {
   dispatch: boolean;
   focus: boolean;
@@ -18,121 +24,20 @@ export type AurasSelectableEntry = {
   panel: HTMLElement;
 };
 
-let generatedIdSequence = 0;
+export class AurasSelectablePanelsElement extends AurasElement {
+  static override props = {
+    value: { type: "string" as const },
+    activation: {
+      type: "string" as const,
+      normalize: normalizeActivation,
+    },
+  };
 
-export function normalizeActivation(
-  value: string | null | undefined,
-): AurasActivation {
-  return value === "manual" ? "manual" : "auto";
-}
-
-export function getDirectionality(node: Element): "ltr" | "rtl" {
-  if (node.closest('[dir="rtl"]') || document.documentElement.dir === "rtl") {
-    return "rtl";
-  }
-
-  return "ltr";
-}
-
-export function ensureElementId(element: HTMLElement, prefix: string): string {
-  if (element.id) {
-    return element.id;
-  }
-
-  generatedIdSequence += 1;
-  element.id = `${prefix}-${generatedIdSequence}`;
-  return element.id;
-}
-
-export function upgradeProperty<T extends object, K extends keyof T>(
-  node: T,
-  name: K,
-): void {
-  if (!Object.prototype.hasOwnProperty.call(node, name)) {
-    return;
-  }
-
-  const value = node[name];
-  delete node[name];
-  node[name] = value;
-}
-
-export class AurasSelectablePanelsElement extends HTMLElement {
-  static observedAttributes = ["value", "activation"];
+  declare value: string | null;
+  declare activation: "auto" | "manual";
 
   protected _container: HTMLElement | null = null;
   protected _entries: AurasSelectableEntry[] = [];
-  protected _syncingValue = false;
-
-  constructor() {
-    super();
-
-    this._handleClick = this._handleClick.bind(this);
-    this._handleKeydown = this._handleKeydown.bind(this);
-  }
-
-  connectedCallback(): void {
-    upgradeProperty(this, "value");
-    upgradeProperty(this, "activation");
-    this._connect();
-  }
-
-  disconnectedCallback(): void {
-    this._disconnect();
-  }
-
-  attributeChangedCallback(
-    name: string,
-    oldValue: string | null,
-    newValue: string | null,
-  ): void {
-    if (oldValue === newValue || !this.isConnected) {
-      return;
-    }
-
-    if (name === "activation") {
-      this._normalizeActivationAttribute();
-      return;
-    }
-
-    if (this._syncingValue) {
-      return;
-    }
-
-    if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
-      const firstEntry = this._entries[0];
-      if (firstEntry) {
-        this._select(firstEntry.value, { dispatch: false, focus: false });
-      }
-    }
-  }
-
-  get value(): string | null {
-    return this.getAttribute("value");
-  }
-
-  set value(value: string | null) {
-    if (value == null || value === "") {
-      this.removeAttribute("value");
-      return;
-    }
-
-    this.setAttribute("value", String(value));
-  }
-
-  get activation(): AurasActivation {
-    return normalizeActivation(this.getAttribute("activation"));
-  }
-
-  set activation(value: AurasActivation | string | null) {
-    const normalizedValue = normalizeActivation(value);
-    if (normalizedValue === "auto") {
-      this.removeAttribute("activation");
-      return;
-    }
-
-    this.setAttribute("activation", normalizedValue);
-  }
 
   show(value: string): boolean {
     return this._select(value, { dispatch: true, focus: false });
@@ -147,36 +52,8 @@ export class AurasSelectablePanelsElement extends HTMLElement {
     activeEntry?.trigger.focus();
   }
 
-  protected _getContainerSelector(): string | null {
-    return null;
-  }
-
-  protected _getPanelRootSelector(): string | null {
-    return null;
-  }
-
-  protected _getPanelIdPrefix(): string {
-    return "auras-panel";
-  }
-
-  protected _setContainerSemantics(_container: HTMLElement): void {}
-
-  protected _applyEntrySemantics(_entry: AurasSelectableEntry): void {}
-
-  protected _applySelectionState(
-    _entry: AurasSelectableEntry,
-    _isActive: boolean,
-  ): void {}
-
-  protected _getNextIndex(
-    _currentIndex: number,
-    _key: string,
-  ): number | null {
-    return null;
-  }
-
-  protected _connect(): void {
-    this._disconnect();
+  protected override onConnect(): void | false {
+    this._disconnectInternal();
 
     const containerSelector = this._getContainerSelector();
     const panelRootSelector = this._getPanelRootSelector();
@@ -188,7 +65,7 @@ export class AurasSelectablePanelsElement extends HTMLElement {
       : this;
 
     if (!container || !panelRoot) {
-      return;
+      return false;
     }
 
     const panelsByValue = new Map<string, HTMLElement>();
@@ -224,7 +101,7 @@ export class AurasSelectablePanelsElement extends HTMLElement {
     }
 
     if (entries.length === 0) {
-      return;
+      return false;
     }
 
     this._container = container;
@@ -235,14 +112,64 @@ export class AurasSelectablePanelsElement extends HTMLElement {
     container.addEventListener("click", this._handleClick);
     container.addEventListener("keydown", this._handleKeydown);
 
-    this._normalizeActivationAttribute();
+    this._normalizeNormalizedProp("activation");
 
     if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
       this._select(entries[0].value, { dispatch: false, focus: false });
     }
   }
 
-  protected _disconnect(): void {
+  protected override onDisconnect(): void {
+    this._disconnectInternal();
+  }
+
+  protected override onAttributeChange(
+    name: string,
+    _oldValue: string | null,
+    _newValue: string | null,
+  ): void {
+    if (name === "activation") {
+      this._normalizeNormalizedProp("activation");
+      return;
+    }
+
+    if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
+      const firstEntry = this._entries[0];
+      if (firstEntry) {
+        this._select(firstEntry.value, { dispatch: false, focus: false });
+      }
+    }
+  }
+
+  protected _getContainerSelector(): string | null {
+    return null;
+  }
+
+  protected _getPanelRootSelector(): string | null {
+    return null;
+  }
+
+  protected _getPanelIdPrefix(): string {
+    return "auras-panel";
+  }
+
+  protected _setContainerSemantics(_container: HTMLElement): void {}
+
+  protected _applyEntrySemantics(_entry: AurasSelectableEntry): void {}
+
+  protected _applySelectionState(
+    _entry: AurasSelectableEntry,
+    _isActive: boolean,
+  ): void {}
+
+  protected _getNextIndex(
+    _currentIndex: number,
+    _key: string,
+  ): number | null {
+    return null;
+  }
+
+  private _disconnectInternal(): void {
     if (this._container) {
       this._container.removeEventListener("click", this._handleClick);
       this._container.removeEventListener("keydown", this._handleKeydown);
@@ -250,15 +177,6 @@ export class AurasSelectablePanelsElement extends HTMLElement {
 
     this._container = null;
     this._entries = [];
-  }
-
-  protected _normalizeActivationAttribute(): void {
-    if (this.activation === "manual") {
-      this.setAttribute("activation", "manual");
-      return;
-    }
-
-    this.removeAttribute("activation");
   }
 
   protected _selectFromAttribute(options: SelectionOptions): boolean {
@@ -293,11 +211,7 @@ export class AurasSelectablePanelsElement extends HTMLElement {
         this._applySelectionState(currentEntry, isActive);
       }
 
-      if (this.getAttribute("value") !== entry.value) {
-        this._syncingValue = true;
-        this.setAttribute("value", entry.value);
-        this._syncingValue = false;
-      }
+      this._syncAttribute("value", entry.value);
     };
 
     const useViewTransition = didChange &&
@@ -342,10 +256,6 @@ export class AurasSelectablePanelsElement extends HTMLElement {
     return this._select(value, options);
   }
 
-  protected _isActivationKey(key: string): boolean {
-    return key === "Enter" || key === " ";
-  }
-
   protected _handleClick(event: Event): void {
     const target = event.target;
     if (!(target instanceof Element)) {
@@ -386,7 +296,7 @@ export class AurasSelectablePanelsElement extends HTMLElement {
       return;
     }
 
-    if (this._isActivationKey(event.key)) {
+    if (isActivationKey(event.key)) {
       if (this.activation === "manual") {
         event.preventDefault();
         this._activateTrigger(trigger, { dispatch: true, focus: false });

@@ -250,6 +250,8 @@ class AuraSelectablePanelsElement extends HTMLElement {
     if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
       this._select(entries[0].value, { dispatch: false, focus: false });
     }
+
+    this.setAttribute("hydrated", "");
   }
 
   _disconnect() {
@@ -260,6 +262,7 @@ class AuraSelectablePanelsElement extends HTMLElement {
 
     this._container = null;
     this._entries = [];
+    this.removeAttribute("hydrated");
   }
 
   _normalizeActivationAttribute() {
@@ -672,6 +675,8 @@ class AurasCombobox extends HTMLElement {
     }
 
     this._applyOpenState(this.open, { restoreInput: !this.open });
+
+    this.setAttribute("hydrated", "");
   }
 
   _disconnect() {
@@ -695,6 +700,7 @@ class AurasCombobox extends HTMLElement {
     this._entriesByValue = new Map();
     this._activeValue = null;
     this._isQuerying = false;
+    this.removeAttribute("hydrated");
   }
 
   _applySemantics() {
@@ -1467,6 +1473,8 @@ class AurasTree extends HTMLElement {
         this._select(firstEntry.value, { dispatch: false, focus: false });
       }
     }
+
+    this.setAttribute("hydrated", "");
   }
 
   _disconnect() {
@@ -1480,6 +1488,7 @@ class AurasTree extends HTMLElement {
     this._entriesByValue = new Map();
     this.removeAttribute("data-has-panels");
     this.removeAttribute("data-has-branches");
+    this.removeAttribute("hydrated");
   }
 
   _collectEntries(container, panelsByValue, parentValue = null, level = 1) {
@@ -2076,6 +2085,8 @@ class AurasSplitter extends HTMLElement {
 
     this._syncOrientationAttribute();
     this._applyState({ dispatch: false });
+
+    this.setAttribute("hydrated", "");
   }
 
   _disconnect() {
@@ -2091,6 +2102,7 @@ class AurasSplitter extends HTMLElement {
     this._separator = null;
     this._dragging = false;
     this.removeAttribute("data-dragging");
+    this.removeAttribute("hydrated");
   }
 
   _applySemantics() {

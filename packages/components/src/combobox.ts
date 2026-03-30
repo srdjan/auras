@@ -1,8 +1,8 @@
+import { AurasElement } from "../../shared/auras-element.ts";
 import {
   ensureElementId,
   normalizeActivation,
-  upgradeProperty,
-} from "./shared/selectable-panels.ts";
+} from "../../shared/utilities.ts";
 
 const INPUT_SELECTOR = '[data-part="input"]';
 const TOGGLE_SELECTOR = '[data-part="toggle"]';
@@ -11,8 +11,6 @@ const LISTBOX_SELECTOR = '[data-part="listbox"]';
 const OPTION_SELECTOR = '[data-part="option"][data-value]';
 const EMPTY_SELECTOR = '[data-part="empty"]';
 const PANEL_SELECTOR = '[data-part="panel"][data-value]';
-
-type AurasActivation = "auto" | "manual";
 
 type SelectionOptions = {
   dispatch: boolean;
@@ -31,8 +29,19 @@ type AurasComboboxEntry = {
 
 export const AURAS_COMBOBOX_TAG_NAME = "auras-combobox";
 
-export class AurasCombobox extends HTMLElement {
-  static observedAttributes = ["value", "activation", "open"];
+export class AurasCombobox extends AurasElement {
+  static override props = {
+    value: { type: "string" as const },
+    activation: {
+      type: "string" as const,
+      normalize: normalizeActivation,
+    },
+    open: { type: "boolean" as const },
+  };
+
+  declare value: string | null;
+  declare activation: "auto" | "manual";
+  declare open: boolean;
 
   private _input: HTMLInputElement | null = null;
   private _toggle: HTMLElement | null = null;
@@ -43,115 +52,7 @@ export class AurasCombobox extends HTMLElement {
   private _entriesByValue = new Map<string, AurasComboboxEntry>();
   private _activeValue: string | null = null;
   private _isQuerying = false;
-  private _syncingValue = false;
-  private _syncingOpen = false;
   private _popoverSupported = false;
-
-  constructor() {
-    super();
-
-    this._handleClick = this._handleClick.bind(this);
-    this._handleKeydown = this._handleKeydown.bind(this);
-    this._handleInput = this._handleInput.bind(this);
-    this._handleFocusOut = this._handleFocusOut.bind(this);
-    this._handleMouseDown = this._handleMouseDown.bind(this);
-    this._handlePopoverToggle = this._handlePopoverToggle.bind(this);
-  }
-
-  connectedCallback(): void {
-    upgradeProperty(this, "value");
-    upgradeProperty(this, "activation");
-    upgradeProperty(this, "open");
-    this._connect();
-  }
-
-  disconnectedCallback(): void {
-    this._disconnect();
-  }
-
-  attributeChangedCallback(
-    name: string,
-    oldValue: string | null,
-    newValue: string | null,
-  ): void {
-    if (oldValue === newValue || !this.isConnected) {
-      return;
-    }
-
-    if (name === "activation") {
-      this._normalizeActivationAttribute();
-      return;
-    }
-
-    if (name === "open") {
-      if (this._syncingOpen) {
-        return;
-      }
-
-      this._applyOpenState(this.hasAttribute("open"), {
-        restoreInput: !this.hasAttribute("open"),
-      });
-      return;
-    }
-
-    if (this._syncingValue) {
-      return;
-    }
-
-    if (
-      !this._selectFromAttribute({
-        dispatch: false,
-        closeListbox: false,
-        focusInput: false,
-        syncInput: true,
-      })
-    ) {
-      const firstEntry = this._entries[0];
-      if (firstEntry) {
-        this._select(firstEntry.value, {
-          dispatch: false,
-          closeListbox: false,
-          focusInput: false,
-          syncInput: true,
-        });
-      }
-    }
-  }
-
-  get value(): string | null {
-    return this.getAttribute("value");
-  }
-
-  set value(value: string | null) {
-    if (value == null || value === "") {
-      this.removeAttribute("value");
-      return;
-    }
-
-    this.setAttribute("value", String(value));
-  }
-
-  get activation(): AurasActivation {
-    return normalizeActivation(this.getAttribute("activation"));
-  }
-
-  set activation(value: AurasActivation | string | null) {
-    const normalizedValue = normalizeActivation(value);
-    if (normalizedValue === "auto") {
-      this.removeAttribute("activation");
-      return;
-    }
-
-    this.setAttribute("activation", normalizedValue);
-  }
-
-  get open(): boolean {
-    return this.hasAttribute("open");
-  }
-
-  set open(value: boolean) {
-    this.toggleAttribute("open", Boolean(value));
-  }
 
   show(value: string): boolean {
     return this._select(value, {
@@ -172,7 +73,7 @@ export class AurasCombobox extends HTMLElement {
     }
 
     this._applyOpenState(true, { restoreInput: false });
-    this._syncOpenAttribute(true);
+    this._syncToggleAttribute("open", true);
     return true;
   }
 
@@ -182,7 +83,7 @@ export class AurasCombobox extends HTMLElement {
     }
 
     this._applyOpenState(false, { restoreInput: true });
-    this._syncOpenAttribute(false);
+    this._syncToggleAttribute("open", false);
     return true;
   }
 
@@ -190,14 +91,14 @@ export class AurasCombobox extends HTMLElement {
     return this.open ? this.closeListbox() : this.openListbox();
   }
 
-  private _connect(): void {
-    this._disconnect();
+  protected override onConnect(): void | false {
+    this._disconnectInternal();
 
     const input = this.querySelector<HTMLInputElement>(INPUT_SELECTOR);
     const listbox = this.querySelector<HTMLElement>(LISTBOX_SELECTOR);
 
     if (!input || !listbox) {
-      return;
+      return false;
     }
 
     const toggle = this.querySelector<HTMLElement>(TOGGLE_SELECTOR);
@@ -240,7 +141,7 @@ export class AurasCombobox extends HTMLElement {
     }
 
     if (entries.length === 0) {
-      return;
+      return false;
     }
 
     this._input = input;
@@ -272,7 +173,7 @@ export class AurasCombobox extends HTMLElement {
       this.addEventListener("mousedown", this._handleMouseDown);
     }
 
-    this._normalizeActivationAttribute();
+    this._normalizeNormalizedProp("activation");
 
     if (
       !this._selectFromAttribute({
@@ -293,7 +194,48 @@ export class AurasCombobox extends HTMLElement {
     this._applyOpenState(this.open, { restoreInput: !this.open });
   }
 
-  private _disconnect(): void {
+  protected override onDisconnect(): void {
+    this._disconnectInternal();
+  }
+
+  protected override onAttributeChange(
+    name: string,
+    _oldValue: string | null,
+    _newValue: string | null,
+  ): void {
+    if (name === "activation") {
+      this._normalizeNormalizedProp("activation");
+      return;
+    }
+
+    if (name === "open") {
+      this._applyOpenState(this.hasAttribute("open"), {
+        restoreInput: !this.hasAttribute("open"),
+      });
+      return;
+    }
+
+    if (
+      !this._selectFromAttribute({
+        dispatch: false,
+        closeListbox: false,
+        focusInput: false,
+        syncInput: true,
+      })
+    ) {
+      const firstEntry = this._entries[0];
+      if (firstEntry) {
+        this._select(firstEntry.value, {
+          dispatch: false,
+          closeListbox: false,
+          focusInput: false,
+          syncInput: true,
+        });
+      }
+    }
+  }
+
+  private _disconnectInternal(): void {
     this.removeEventListener("click", this._handleClick);
     this.removeEventListener("keydown", this._handleKeydown);
     this.removeEventListener("input", this._handleInput);
@@ -354,15 +296,6 @@ export class AurasCombobox extends HTMLElement {
     }
   }
 
-  private _normalizeActivationAttribute(): void {
-    if (this.activation === "manual") {
-      this.setAttribute("activation", "manual");
-      return;
-    }
-
-    this.removeAttribute("activation");
-  }
-
   private _selectFromAttribute(options: SelectionOptions): boolean {
     const value = this.getAttribute("value");
     if (!value) {
@@ -393,11 +326,7 @@ export class AurasCombobox extends HTMLElement {
       }
     }
 
-    if (this.getAttribute("value") !== entry.value) {
-      this._syncingValue = true;
-      this.setAttribute("value", entry.value);
-      this._syncingValue = false;
-    }
+    this._syncAttribute("value", entry.value);
 
     if (this._valueInput) {
       this._valueInput.value = entry.value;
@@ -461,16 +390,6 @@ export class AurasCombobox extends HTMLElement {
       this._input.value = "";
     }
     this._isQuerying = false;
-  }
-
-  private _syncOpenAttribute(open: boolean): void {
-    if (this.open === open) {
-      return;
-    }
-
-    this._syncingOpen = true;
-    this.toggleAttribute("open", open);
-    this._syncingOpen = false;
   }
 
   private _applyOpenState(
@@ -774,7 +693,7 @@ export class AurasCombobox extends HTMLElement {
   private _handlePopoverToggle(event: ToggleEvent): void {
     if (event.newState === "closed" && this.open) {
       this._restoreSelectedLabel();
-      this._syncOpenAttribute(false);
+      this._syncToggleAttribute("open", false);
       this._input?.setAttribute("aria-expanded", "false");
       if (this._toggle) {
         this._toggle.setAttribute("aria-expanded", "false");

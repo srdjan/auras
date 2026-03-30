@@ -698,3 +698,161 @@ Only add them if they preserve the same rules:
 - authored HTML remains visible
 - stable `data-part` hooks
 - CSS and behavior remain separable
+
+## Progressive Enhancement and Hydration
+
+Auras components follow a progressive enhancement model inspired by Elena's
+component taxonomy. Content is accessible via semantic HTML and CSS before
+JavaScript loads. When JavaScript runs, components upgrade in place.
+
+### Component Taxonomy
+
+Auras maps to Elena's three component types as follows:
+
+- Elena "composite" (light DOM enhancer) maps to Auras Components layer. This is
+  the model all current `auras-*` elements follow: enhance authored HTML with
+  keyboard behavior, selection state, ARIA semantics, and focus management.
+- Elena "primitive" (self-rendering) is not adopted in v1. Reserved as a future
+  separate package only if a concrete use case cannot be expressed with the
+  current controller model.
+- Elena "declarative" (DSDOM pre-render) does not apply. Auras authored HTML
+  already serves this role.
+
+### The `hydrated` Attribute
+
+Every `auras-*` custom element sets a `hydrated` attribute on its host after
+the first successful connection. This attribute:
+
+- Signals that JavaScript has loaded and the component is interactive.
+- Enables pre-hydration CSS to hide or dim interactive affordances that do not
+  function before JavaScript runs.
+- Is removed on disconnect.
+
+Example pre-hydration CSS:
+
+```css
+/* Hide toggle buttons that need JS to function */
+auras-combobox:not([hydrated]) [data-part="toggle"] { display: none; }
+auras-tree:not([hydrated]) [data-part="toggle"] { opacity: 0.4; pointer-events: none; }
+
+/* Fade panels in after hydration */
+auras-tabs[hydrated] [data-part="panel"] { animation: fade-in 150ms ease; }
+```
+
+For imperative calls made before registration, use `customElements.whenDefined`
+to wait for the element to become available:
+
+```js
+await customElements.whenDefined("auras-tabs");
+const tabs = document.querySelector("auras-tabs");
+tabs.show("tokens");
+```
+
+### What Auras Explicitly Does Not Adopt
+
+- Elena's `html` tagged template rendering model.
+- Elena's SSR expansion or bundler as a core dependency.
+- Moving distribution from Deno/JSR to pnpm/Rollup.
+- Self-rendering components where the element generates its own DOM.
+
+## Authoring Checklist for New Components
+
+Before adding a new `auras-*` custom element, verify it follows these rules:
+
+- Light DOM only. No Shadow DOM.
+- Authored HTML remains inspectable. No hidden wrapper generation.
+- Explicit attribute reflection for all public state. Host attributes reflect
+  component state so CSS can react.
+- Explicit ARIA semantics applied on connect. Roles, labels, expanded state,
+  controls relationships.
+- Set `hydrated` after successful initialization.
+- Stable `data-part` names as public API. Do not rename without a major version.
+- Custom events as public API. Use `auras-change` with a `detail` object.
+- Keyboard behavior as public API. Document which keys do what.
+- Safe to call after `customElements.whenDefined()` resolves.
+
+## Imperative API Reference
+
+All interactive components expose methods on the host element.
+
+### Shared across selection components
+
+| Method | Signature | Description |
+|---|---|---|
+| `show` | `show(value: string): boolean` | Select the item with the given value. Returns false if not found. |
+| `focusCurrent` | `focusCurrent(): void` | Focus the currently active trigger or input. |
+
+### `auras-tree` additions
+
+| Method | Signature | Description |
+|---|---|---|
+| `expand` | `expand(value: string): boolean` | Expand the branch with the given value. |
+| `collapse` | `collapse(value: string): boolean` | Collapse the branch with the given value. |
+| `toggle` | `toggle(value: string): boolean` | Toggle expansion of the branch with the given value. |
+
+### `auras-combobox` additions
+
+| Method | Signature | Description |
+|---|---|---|
+| `openListbox` | `openListbox(): boolean` | Open the listbox popup. |
+| `closeListbox` | `closeListbox(): boolean` | Close the listbox popup. |
+| `toggleListbox` | `toggleListbox(): boolean` | Toggle the listbox popup. |
+
+### `auras-splitter` methods
+
+| Method | Signature | Description |
+|---|---|---|
+| `setPosition` | `setPosition(value: number): boolean` | Set the split position as a percentage. Clamped to min/max. |
+| `focusHandle` | `focusHandle(): void` | Focus the separator handle. |
+
+## Framework Integration
+
+Auras interactive components are standard custom elements. They work in any
+framework that supports the DOM.
+
+### Plain HTML
+
+```html
+<link rel="stylesheet" href="packages/elements/auras.css">
+<link rel="stylesheet" href="packages/composites/auras-composites.css">
+<script type="module" src="packages/components/browser.js"></script>
+<script type="module" src="packages/diagram/browser.js"></script>
+```
+
+### Deno / TypeScript modules
+
+```ts
+import { registerAurasComponents } from "jsr:@auras/components";
+import { registerAurasDiagram } from "jsr:@auras/diagram";
+
+registerAurasComponents();
+registerAurasDiagram();
+```
+
+### React
+
+Custom elements work in React 19+ with no wrapper. For React 18 and earlier,
+use a thin ref-based wrapper or a library like `@lit/react`. Auras components
+use standard DOM attributes and events, so the integration surface is small:
+
+```jsx
+function TabsWrapper({ value, onAurasChange, children }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const handler = (e) => onAurasChange?.(e.detail);
+    el.addEventListener("auras-change", handler);
+    return () => el.removeEventListener("auras-change", handler);
+  }, [onAurasChange]);
+
+  return <auras-tabs ref={ref} value={value}>{children}</auras-tabs>;
+}
+```
+
+### Vue, Svelte, Angular
+
+These frameworks handle custom elements natively. Use the standard HTML tag
+names and listen to `auras-change` events as you would any DOM event. No
+additional bundler, manifest, or adapter is required.

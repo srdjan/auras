@@ -6,8 +6,8 @@
     "dev": "deno run --allow-net --allow-read --allow-env=PORT main.ts",
     "serve": "deno run --allow-net --allow-read main.ts",
     "deploy": "deployctl deploy --prod --entrypoint=main.ts",
-    "check": "deno check main.ts site/docs.ts tests/public-demo.test.js tests/site-seo.test.ts tests/auras-components.test.js tests/auras-combobox.test.js tests/auras-splitter.test.js tests/auras-tree.test.js tests/auras-diagram.test.js tests/auras-components.browser.test.js packages/components/browser.js packages/components/mod.ts packages/diagram/browser.js packages/diagram/mod.ts",
-    "test": "deno test --allow-read=public/index.html --allow-env=WS_NO_BUFFER_UTIL,WS_NO_UTF_8_VALIDATE tests/public-demo.test.js tests/site-seo.test.ts tests/auras-components.test.js tests/auras-combobox.test.js tests/auras-splitter.test.js tests/auras-tree.test.js tests/auras-diagram.test.js",
+    "check": "deno check main.ts site/docs.ts tests/public-demo.test.js tests/site-seo.test.ts tests/auras-element.test.ts tests/auras-components.test.js tests/auras-combobox.test.js tests/auras-splitter.test.js tests/auras-tree.test.js tests/auras-diagram.test.js tests/auras-components.browser.test.js packages/components/browser.js packages/components/mod.ts packages/diagram/browser.js packages/diagram/mod.ts packages/shared/mod.ts",
+    "test": "deno test --allow-read=public/index.html --allow-env=WS_NO_BUFFER_UTIL,WS_NO_UTF_8_VALIDATE tests/public-demo.test.js tests/site-seo.test.ts tests/auras-element.test.ts tests/auras-components.test.js tests/auras-combobox.test.js tests/auras-splitter.test.js tests/auras-tree.test.js tests/auras-diagram.test.js",
     "test:browser": "deno test --allow-env --allow-read --allow-write --allow-net --allow-run --allow-sys tests/auras-components.browser.test.js",
     "publish:components:dry-run": "deno publish --dry-run --allow-dirty --config packages/components/jsr.json",
     "publish:diagram:dry-run": "deno publish --dry-run --allow-dirty --config packages/diagram/jsr.json"

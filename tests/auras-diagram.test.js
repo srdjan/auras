@@ -272,3 +272,9 @@ Deno.test("diagram works without linked panels", () => {
   assert(nodes[1].hasAttribute("data-active"));
   assertEquals(changes, [{ value: "validate", panel: null }]);
 });
+
+Deno.test("diagram sets hydrated attribute after connection", () => {
+  const { host } = renderDiagram('value="received"');
+
+  assert(host.hasAttribute("hydrated"));
+});

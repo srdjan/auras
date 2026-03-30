@@ -298,3 +298,9 @@ Deno.test("tree focusCurrent and invalid activation normalization work", () => {
 
   assertEquals(document.activeElement, getNode("tree"));
 });
+
+Deno.test("tree sets hydrated attribute after connection", () => {
+  const { host } = renderTree('value="elements"');
+
+  assert(host.hasAttribute("hydrated"));
+});

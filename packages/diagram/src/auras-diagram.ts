@@ -1,15 +1,22 @@
+import { AurasElement } from "../../shared/auras-element.ts";
+import {
+  ensureElementId,
+  getDirectionality,
+  isActivationKey,
+  isNativeInteractiveElement,
+  normalizeActivation,
+} from "../../shared/utilities.ts";
+
 const CANVAS_SELECTOR = '[data-part="canvas"]';
 const NODE_SELECTOR = '[data-part="node"][data-value]';
 const PANEL_SELECTOR = '[data-part="panel"][data-value]';
 
-type AurasActivation = "auto" | "manual";
+type DiagramDirection = "up" | "down" | "left" | "right";
 
 type SelectionOptions = {
   dispatch: boolean;
   focus: boolean;
 };
-
-type DiagramDirection = "up" | "down" | "left" | "right";
 
 type DiagramLayout = {
   columnStart: number;
@@ -23,43 +30,6 @@ export type AurasDiagramEntry = {
   panel: HTMLElement | null;
   layout: DiagramLayout;
 };
-
-let generatedIdSequence = 0;
-
-function normalizeActivation(value: string | null | undefined): AurasActivation {
-  return value === "manual" ? "manual" : "auto";
-}
-
-function getDirectionality(node: Element): "ltr" | "rtl" {
-  if (node.closest('[dir="rtl"]') || document.documentElement.dir === "rtl") {
-    return "rtl";
-  }
-
-  return "ltr";
-}
-
-function ensureElementId(element: HTMLElement, prefix: string): string {
-  if (element.id) {
-    return element.id;
-  }
-
-  generatedIdSequence += 1;
-  element.id = `${prefix}-${generatedIdSequence}`;
-  return element.id;
-}
-
-function upgradeProperty<T extends object, K extends keyof T>(
-  node: T,
-  name: K,
-): void {
-  if (!Object.prototype.hasOwnProperty.call(node, name)) {
-    return;
-  }
-
-  const value = node[name];
-  delete node[name];
-  node[name] = value;
-}
 
 function parseGridStartValue(value: string | null): number | null {
   if (!value) {
@@ -205,94 +175,22 @@ function getNextDiagramIndex(
   return bestIndex;
 }
 
-function isNativeInteractiveElement(node: HTMLElement): boolean {
-  return (
-    node instanceof HTMLButtonElement ||
-    node instanceof HTMLAnchorElement ||
-    node instanceof HTMLInputElement ||
-    node instanceof HTMLSelectElement ||
-    node instanceof HTMLTextAreaElement
-  );
-}
-
 export const AURAS_DIAGRAM_TAG_NAME = "auras-diagram";
 
-export class AurasDiagram extends HTMLElement {
-  static observedAttributes = ["value", "activation"];
+export class AurasDiagram extends AurasElement {
+  static override props = {
+    value: { type: "string" as const },
+    activation: {
+      type: "string" as const,
+      normalize: normalizeActivation,
+    },
+  };
+
+  declare value: string | null;
+  declare activation: "auto" | "manual";
 
   private _canvas: HTMLElement | null = null;
   private _entries: AurasDiagramEntry[] = [];
-  private _syncingValue = false;
-
-  constructor() {
-    super();
-
-    this._handleClick = this._handleClick.bind(this);
-    this._handleKeydown = this._handleKeydown.bind(this);
-  }
-
-  connectedCallback(): void {
-    upgradeProperty(this, "value");
-    upgradeProperty(this, "activation");
-    this._connect();
-  }
-
-  disconnectedCallback(): void {
-    this._disconnect();
-  }
-
-  attributeChangedCallback(
-    name: string,
-    oldValue: string | null,
-    newValue: string | null,
-  ): void {
-    if (oldValue === newValue || !this.isConnected) {
-      return;
-    }
-
-    if (name === "activation") {
-      this._normalizeActivationAttribute();
-      return;
-    }
-
-    if (this._syncingValue) {
-      return;
-    }
-
-    if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
-      const firstEntry = this._entries[0];
-      if (firstEntry) {
-        this._select(firstEntry.value, { dispatch: false, focus: false });
-      }
-    }
-  }
-
-  get value(): string | null {
-    return this.getAttribute("value");
-  }
-
-  set value(value: string | null) {
-    if (value == null || value === "") {
-      this.removeAttribute("value");
-      return;
-    }
-
-    this.setAttribute("value", String(value));
-  }
-
-  get activation(): AurasActivation {
-    return normalizeActivation(this.getAttribute("activation"));
-  }
-
-  set activation(value: AurasActivation | string | null) {
-    const normalizedValue = normalizeActivation(value);
-    if (normalizedValue === "auto") {
-      this.removeAttribute("activation");
-      return;
-    }
-
-    this.setAttribute("activation", normalizedValue);
-  }
 
   show(value: string): boolean {
     return this._select(value, { dispatch: true, focus: false });
@@ -306,12 +204,13 @@ export class AurasDiagram extends HTMLElement {
     activeEntry?.node.focus();
   }
 
-  private _connect(): void {
-    this._disconnect();
+  protected override onConnect(): void | false {
+    this._disconnectInternal();
+
 
     const canvas = this.querySelector<HTMLElement>(CANVAS_SELECTOR);
     if (!canvas) {
-      return;
+      return false;
     }
 
     const panelsByValue = new Map<string, HTMLElement>();
@@ -344,7 +243,7 @@ export class AurasDiagram extends HTMLElement {
     }
 
     if (entries.length === 0) {
-      return;
+      return false;
     }
 
     this._canvas = canvas;
@@ -362,14 +261,36 @@ export class AurasDiagram extends HTMLElement {
     canvas.addEventListener("click", this._handleClick);
     canvas.addEventListener("keydown", this._handleKeydown);
 
-    this._normalizeActivationAttribute();
+    this._normalizeNormalizedProp("activation");
 
     if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
       this._select(entries[0].value, { dispatch: false, focus: false });
     }
   }
 
-  private _disconnect(): void {
+  protected override onDisconnect(): void {
+    this._disconnectInternal();
+  }
+
+  protected override onAttributeChange(
+    name: string,
+    _oldValue: string | null,
+    _newValue: string | null,
+  ): void {
+    if (name === "activation") {
+      this._normalizeNormalizedProp("activation");
+      return;
+    }
+
+    if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
+      const firstEntry = this._entries[0];
+      if (firstEntry) {
+        this._select(firstEntry.value, { dispatch: false, focus: false });
+      }
+    }
+  }
+
+  private _disconnectInternal(): void {
     if (this._canvas) {
       this._canvas.removeEventListener("click", this._handleClick);
       this._canvas.removeEventListener("keydown", this._handleKeydown);
@@ -378,15 +299,6 @@ export class AurasDiagram extends HTMLElement {
     this._canvas = null;
     this._entries = [];
     this.removeAttribute("data-has-panels");
-  }
-
-  private _normalizeActivationAttribute(): void {
-    if (this.activation === "manual") {
-      this.setAttribute("activation", "manual");
-      return;
-    }
-
-    this.removeAttribute("activation");
   }
 
   private _selectFromAttribute(options: SelectionOptions): boolean {
@@ -454,11 +366,7 @@ export class AurasDiagram extends HTMLElement {
       }
     }
 
-    if (this.getAttribute("value") !== entry.value) {
-      this._syncingValue = true;
-      this.setAttribute("value", entry.value);
-      this._syncingValue = false;
-    }
+    this._syncAttribute("value", entry.value);
 
     if (options.focus) {
       entry.node.focus();
@@ -480,17 +388,16 @@ export class AurasDiagram extends HTMLElement {
     return true;
   }
 
-  private _activateNode(node: HTMLElement, options: SelectionOptions): boolean {
+  private _activateNode(
+    node: HTMLElement,
+    options: SelectionOptions,
+  ): boolean {
     const value = node.getAttribute("data-value");
     if (!value) {
       return false;
     }
 
     return this._select(value, options);
-  }
-
-  private _isActivationKey(key: string): boolean {
-    return key === "Enter" || key === " ";
   }
 
   private _handleClick(event: Event): void {
@@ -529,7 +436,7 @@ export class AurasDiagram extends HTMLElement {
       return;
     }
 
-    if (this._isActivationKey(event.key)) {
+    if (isActivationKey(event.key)) {
       if (this.activation === "manual") {
         event.preventDefault();
         this._activateNode(node, { dispatch: true, focus: false });

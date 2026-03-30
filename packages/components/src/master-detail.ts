@@ -1,8 +1,8 @@
 import {
   type AurasSelectableEntry,
   AurasSelectablePanelsElement,
-  getDirectionality,
 } from "./shared/selectable-panels.ts";
+import { getDirectionality } from "../../shared/utilities.ts";
 
 const MASTER_SELECTOR = '[data-part="master"]';
 const DETAIL_SELECTOR = '[data-part="detail"]';

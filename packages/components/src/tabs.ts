@@ -1,9 +1,11 @@
 import {
   type AurasSelectableEntry,
   AurasSelectablePanelsElement,
+} from "./shared/selectable-panels.ts";
+import {
   ensureElementId,
   getDirectionality,
-} from "./shared/selectable-panels.ts";
+} from "../../shared/utilities.ts";
 
 const TABLIST_SELECTOR = '[data-part="tablist"]';
 const PANELS_SELECTOR = '[data-part="panels"]';

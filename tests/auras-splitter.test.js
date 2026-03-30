@@ -195,3 +195,9 @@ Deno.test("splitter methods clamp values and focus the separator", () => {
 
   assertEquals(document.activeElement, separator);
 });
+
+Deno.test("splitter sets hydrated attribute after connection", () => {
+  const { host } = renderSplitter('value="50"');
+
+  assert(host.hasAttribute("hydrated"));
+});
