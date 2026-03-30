@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en" data-smooth>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contract Lab - Auras CSS</title>
+    <meta
+      name="description"
+      content="Validate authored Auras markup against the published light-DOM contracts, inspect diagnostics, and preview the result with the real no-build assets."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="canonical" href="{{SITE_ORIGIN}}/lab.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Auras CSS" />
+    <meta property="og:title" content="Contract Lab - Auras CSS" />
+    <meta
+      property="og:description"
+      content="Audit Auras markup contracts, inspect diagnostics, and iterate in a live preview."
+    />
+    <meta property="og:url" content="{{SITE_ORIGIN}}/lab.html" />
+    <meta
+      property="og:image"
+      content="{{SITE_ORIGIN}}/auras-banner-dark.jpg"
+    />
+    <meta property="og:image:width" content="600" />
+    <meta property="og:image:height" content="327" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Contract Lab - Auras CSS" />
+    <meta
+      name="twitter:description"
+      content="Validate Auras markup contracts and inspect a live preview."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/packages/elements/auras.css" />
+    <link rel="stylesheet" href="/packages/composites/auras-composites.css" />
+    <link
+      id="brand-pack-auras"
+      rel="stylesheet"
+      href="/packages/brands/auras-brand.css"
+    />
+    <style>
+      @layer site {
+        body {
+          margin: 0;
+          transition: background-color 0.5s ease-out, color 0.3s ease-out;
+        }
+
+        [data-site="toolbar"] {
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          background-color: color-mix(in oklch, var(--bg) 80%, transparent);
+          border-block-end: 1px solid
+            color-mix(in oklch, var(--border) 30%, transparent);
+          padding-inline: var(--space-4);
+          transition:
+            box-shadow var(--transition-base),
+            background-color 0.5s ease-out;
+        }
+
+        [data-site="toolbar"] nav a {
+          text-decoration: none;
+          color: var(--text-muted);
+          font-size: var(--text-sm);
+          transition: color var(--transition-fast);
+        }
+
+        [data-site="toolbar"] nav a:hover,
+        [data-site="toolbar"] nav a[aria-current="page"] {
+          color: var(--text);
+        }
+
+        [data-site="toolbar-inner"] {
+          max-inline-size: 88rem;
+          margin-inline: auto;
+          inline-size: 100%;
+        }
+
+        [data-site="toolbar-wordmark"] {
+          font-family: "Outfit", var(--font-sans);
+          font-weight: 700;
+          letter-spacing: -0.03em;
+        }
+
+        [data-lab="shell"] {
+          display: grid;
+          grid-template-columns: minmax(20rem, 28rem) minmax(0, 1fr);
+          block-size: calc(100svh - 3rem);
+          overflow: hidden;
+        }
+
+        [data-lab="editor-pane"] {
+          border-inline-end: 1px solid var(--border);
+          overflow-y: auto;
+          padding: var(--space-4);
+          display: grid;
+          align-content: start;
+          gap: var(--space-4);
+          background:
+            linear-gradient(
+              180deg,
+              color-mix(in oklch, var(--surface) 88%, transparent),
+              transparent
+            ),
+            var(--bg);
+        }
+
+        [data-lab="preview-pane"] {
+          overflow: hidden;
+          display: grid;
+          grid-template-rows: auto minmax(0, 1fr);
+        }
+
+        [data-lab="intro"] h1,
+        [data-lab="preview-header"] h2 {
+          font-family: "Outfit", var(--font-sans);
+          margin: 0;
+          letter-spacing: -0.03em;
+        }
+
+        [data-lab="intro"] p {
+          margin: 0;
+          color: var(--text-muted);
+        }
+
+        [data-lab="preset-list"] {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-2);
+        }
+
+        [data-lab="preset-list"] button,
+        [data-lab="actions"] button {
+          min-block-size: auto;
+          font-size: var(--text-sm);
+        }
+
+        [data-lab="editor"] {
+          inline-size: 100%;
+          min-block-size: 22rem;
+          resize: vertical;
+          font-family: var(--font-mono);
+          font-size: 0.875rem;
+          line-height: 1.5;
+          border-radius: var(--radius-md);
+          border: 1px solid var(--border);
+          background: color-mix(in oklch, var(--surface) 92%, var(--bg));
+          color: var(--text);
+          padding: var(--space-4);
+        }
+
+        [data-lab="actions"] {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-2);
+        }
+
+        [data-lab="summary"] {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-2);
+        }
+
+        [data-lab="badge"] {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.4rem;
+          border: 1px solid var(--border);
+          border-radius: 999px;
+          padding: 0.35rem 0.7rem;
+          font-size: var(--text-xs);
+          background: var(--surface);
+          color: var(--text-muted);
+        }
+
+        [data-lab="diagnostics"] {
+          display: grid;
+          gap: var(--space-2);
+        }
+
+        [data-lab="diagnostic"] {
+          display: grid;
+          gap: 0.3rem;
+          inline-size: 100%;
+          text-align: start;
+          border: 1px solid var(--border);
+          border-radius: var(--radius-md);
+          padding: var(--space-3);
+          background: var(--surface);
+          color: inherit;
+        }
+
+        [data-lab="diagnostic"][data-severity="error"] {
+          border-color: color-mix(in oklch, var(--color-danger) 40%, var(--border));
+          box-shadow: inset 0 0 0 1px
+            color-mix(in oklch, var(--color-danger) 16%, transparent);
+        }
+
+        [data-lab="diagnostic"] strong {
+          font-size: var(--text-sm);
+        }
+
+        [data-lab="diagnostic"] p,
+        [data-lab="diagnostic"] code {
+          margin: 0;
+          font-size: var(--text-xs);
+        }
+
+        [data-lab="preview-header"] {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: var(--space-3);
+          padding: var(--space-4) var(--space-5);
+          border-block-end: 1px solid var(--border);
+        }
+
+        [data-lab="contracts"] {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-2);
+          justify-content: flex-end;
+        }
+
+        [data-lab="frame"] {
+          inline-size: 100%;
+          block-size: 100%;
+          border: 0;
+          background: var(--surface);
+        }
+
+        @media (max-width: 64rem) {
+          [data-lab="shell"] {
+            grid-template-columns: 1fr;
+            block-size: auto;
+          }
+
+          [data-lab="editor-pane"] {
+            border-inline-end: 0;
+            border-block-end: 1px solid var(--border);
+          }
+
+          [data-lab="preview-pane"] {
+            min-block-size: 42rem;
+          }
+        }
+      }
+    </style>
+  </head>
+  <body data-brand="auras">
+    <header data-site="toolbar">
+      <div
+        data-layout="row"
+        data-align="center"
+        data-justify="between"
+        data-gap="2"
+        data-site="toolbar-inner"
+      >
+        <a href="/" style="text-decoration: none; color: inherit">
+          <strong data-site="toolbar-wordmark">Auras</strong>
+        </a>
+        <nav data-nav="inline" data-hide="mobile" aria-label="Site navigation">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/#components">Components</a></li>
+            <li><a href="/studio.html">Studio</a></li>
+            <li><a href="/lab.html" aria-current="page">Lab</a></li>
+          </ul>
+        </nav>
+        <div data-layout="cluster" data-gap="2" data-align="center">
+          <a
+            href="https://github.com/nicholasgasior/auras"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-variant="ghost"
+            role="button"
+          >
+            GitHub
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main data-lab="shell">
+      <aside data-lab="editor-pane">
+        <section data-lab="intro" data-layout="stack" data-gap="2">
+          <h1>Contract Lab</h1>
+          <p>
+            Paste authored Auras markup, preview it with the real assets, and
+            audit it against the published light-DOM contracts.
+          </p>
+        </section>
+
+        <section data-layout="stack" data-gap="2">
+          <strong>Presets</strong>
+          <div data-lab="preset-list" id="preset-list"></div>
+        </section>
+
+        <section data-layout="stack" data-gap="2">
+          <label for="markup-editor"><strong>Markup</strong></label>
+          <textarea
+            id="markup-editor"
+            data-lab="editor"
+            spellcheck="false"
+          ></textarea>
+        </section>
+
+        <div data-lab="actions">
+          <button id="copy-markup" type="button" data-variant="solid">
+            Copy Markup
+          </button>
+          <button id="reset-preset" type="button" data-variant="ghost">
+            Reset Preset
+          </button>
+        </div>
+
+        <section data-layout="stack" data-gap="2">
+          <div data-lab="summary" id="diagnostic-summary"></div>
+          <div data-lab="diagnostics" id="diagnostics"></div>
+        </section>
+      </aside>
+
+      <section data-lab="preview-pane">
+        <header data-lab="preview-header">
+          <div data-layout="stack" data-gap="1">
+            <h2>Live Preview</h2>
+            <p id="preview-caption" style="margin: 0; color: var(--text-muted)">
+              No contracts detected yet.
+            </p>
+          </div>
+          <div data-lab="contracts" id="contract-badges"></div>
+        </header>
+        <iframe
+          id="preview-frame"
+          title="Auras contract preview"
+          data-lab="frame"
+        ></iframe>
+      </section>
+    </main>
+
+    <script type="module">
+      import { auditAuras, getAurasContract } from "/packages/audit/browser.js";
+
+      const PRESETS = {
+        tabs: {
+          label: "Tabs",
+          markup: `<auras-tabs data-ui="tabs" value="overview" activation="manual">
+  <nav data-part="tablist" aria-label="Release views">
+    <button type="button" data-part="trigger" data-value="overview">Overview</button>
+    <button type="button" data-part="trigger" data-value="tokens">Tokens</button>
+    <button type="button" data-part="trigger" data-value="behavior">Behavior</button>
+  </nav>
+  <section data-part="panels">
+    <article data-part="panel" data-value="overview" data-surface="card">Overview panel</article>
+    <article data-part="panel" data-value="tokens" data-surface="card" hidden>Tokens panel</article>
+    <article data-part="panel" data-value="behavior" data-surface="card" hidden>Behavior panel</article>
+  </section>
+</auras-tabs>`,
+        },
+        "master-detail": {
+          label: "Master-detail",
+          markup: `<auras-master-detail data-ui="master-detail" value="elements">
+  <nav data-part="master" aria-label="Auras layers">
+    <button type="button" data-part="trigger" data-value="elements">Elements</button>
+    <button type="button" data-part="trigger" data-value="composites">Composites</button>
+    <button type="button" data-part="trigger" data-value="components">Components</button>
+  </nav>
+  <section data-part="detail">
+    <article data-part="panel" data-value="elements" data-surface="card">Elements panel</article>
+    <article data-part="panel" data-value="composites" data-surface="card" hidden>Composites panel</article>
+    <article data-part="panel" data-value="components" data-surface="card" hidden>Components panel</article>
+  </section>
+</auras-master-detail>`,
+        },
+        combobox: {
+          label: "Combobox",
+          markup: `<auras-combobox data-ui="combobox" value="tabs" activation="manual">
+  <label for="lab-search">Component</label>
+  <div data-part="control">
+    <input id="lab-search" data-part="input" type="text" placeholder="Search components" />
+    <button type="button" data-part="toggle" aria-label="Toggle options"></button>
+    <input type="hidden" data-part="value" name="component" />
+  </div>
+  <ul data-part="listbox">
+    <li data-part="option" data-value="tabs">Tabs</li>
+    <li data-part="option" data-value="tree">Tree</li>
+    <li data-part="option" data-value="diagram">Diagram</li>
+  </ul>
+  <p data-part="empty" hidden>No matches.</p>
+  <section data-part="panels">
+    <article data-part="panel" data-value="tabs" data-surface="card">Tabs panel</article>
+    <article data-part="panel" data-value="tree" data-surface="card" hidden>Tree panel</article>
+    <article data-part="panel" data-value="diagram" data-surface="card" hidden>Diagram panel</article>
+  </section>
+</auras-combobox>`,
+        },
+        tree: {
+          label: "Tree",
+          markup: `<auras-tree data-ui="tree" value="master-detail">
+  <ul data-part="tree" aria-label="Auras components">
+    <li data-part="item" data-value="elements">
+      <button type="button" data-part="node">Elements</button>
+    </li>
+    <li data-part="item" data-value="components" data-expanded>
+      <button type="button" data-part="toggle" aria-label="Toggle Components"></button>
+      <button type="button" data-part="node">Components</button>
+      <ul data-part="group">
+        <li data-part="item" data-value="master-detail">
+          <button type="button" data-part="node">Master-detail</button>
+        </li>
+        <li data-part="item" data-value="tabs">
+          <button type="button" data-part="node">Tabs</button>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <section data-part="panels">
+    <article data-part="panel" data-value="elements" data-surface="card">Elements panel</article>
+    <article data-part="panel" data-value="components" data-surface="card" hidden>Components panel</article>
+    <article data-part="panel" data-value="master-detail" data-surface="card" hidden>Master-detail panel</article>
+    <article data-part="panel" data-value="tabs" data-surface="card" hidden>Tabs panel</article>
+  </section>
+</auras-tree>`,
+        },
+        splitter: {
+          label: "Splitter",
+          markup: `<auras-splitter data-ui="splitter" value="42" min="30" max="70" step="5">
+  <section data-part="pane" data-pane="primary" data-surface="card">Primary pane</section>
+  <button type="button" data-part="separator" aria-label="Resize panes"></button>
+  <section data-part="pane" data-pane="secondary" data-surface="card">Secondary pane</section>
+</auras-splitter>`,
+        },
+        diagram: {
+          label: "Diagram",
+          markup: `<auras-diagram value="received" activation="manual" aria-label="Order flow" style="--diagram-columns: 7">
+  <div data-part="canvas">
+    <button type="button" data-part="node" data-kind="input" data-value="received" style="--diagram-column: 1 / span 2; --diagram-row: 1">
+      Received
+    </button>
+    <div data-part="connector" aria-hidden="true" style="--diagram-column: 3; --diagram-row: 1">
+      <svg viewBox="0 0 120 40" preserveAspectRatio="none">
+        <path d="M4 20 H108" />
+        <path data-marker="arrow" d="M108 12 L116 20 L108 28 Z" />
+      </svg>
+    </div>
+    <button type="button" data-part="node" data-kind="process" data-value="validate" style="--diagram-column: 4 / span 2; --diagram-row: 1">
+      Validate
+    </button>
+    <button type="button" data-part="node" data-kind="output" data-value="fulfill" style="--diagram-column: 7; --diagram-row: 1">
+      Fulfill
+    </button>
+  </div>
+  <section data-part="panels">
+    <article data-part="panel" data-value="received" data-surface="card">Received panel</article>
+    <article data-part="panel" data-value="validate" data-surface="card" hidden>Validate panel</article>
+    <article data-part="panel" data-value="fulfill" data-surface="card" hidden>Fulfill panel</article>
+  </section>
+</auras-diagram>`,
+        },
+      };
+
+      const editor = document.getElementById("markup-editor");
+      const diagnosticsNode = document.getElementById("diagnostics");
+      const summaryNode = document.getElementById("diagnostic-summary");
+      const contractBadgesNode = document.getElementById("contract-badges");
+      const previewCaptionNode = document.getElementById("preview-caption");
+      const previewFrame = document.getElementById("preview-frame");
+      const presetListNode = document.getElementById("preset-list");
+      const copyButton = document.getElementById("copy-markup");
+      const resetButton = document.getElementById("reset-preset");
+
+      let currentPresetId = "combobox";
+      let pendingSelector = null;
+
+      for (const [id, preset] of Object.entries(PRESETS)) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = preset.label;
+        button.dataset.preset = id;
+        button.dataset.variant = id === currentPresetId ? "solid" : "ghost";
+        button.addEventListener("click", () => loadPreset(id));
+        presetListNode.append(button);
+      }
+
+      let debounceTimer = 0;
+      editor.addEventListener("input", () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(renderLab, 150);
+      });
+
+      copyButton.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(editor.value);
+        copyButton.textContent = "Copied";
+        window.setTimeout(() => {
+          copyButton.textContent = "Copy Markup";
+        }, 1200);
+      });
+
+      resetButton.addEventListener("click", () => {
+        loadPreset(currentPresetId);
+      });
+
+      previewFrame.addEventListener("load", () => {
+        if (pendingSelector) {
+          highlightSelectorInPreview(pendingSelector);
+          pendingSelector = null;
+        }
+      });
+
+      loadPreset(currentPresetId);
+
+      function loadPreset(presetId) {
+        currentPresetId = presetId;
+        editor.value = PRESETS[presetId].markup;
+        for (const button of presetListNode.querySelectorAll("button")) {
+          button.dataset.variant = button.dataset.preset === presetId
+            ? "solid"
+            : "ghost";
+        }
+        renderLab();
+      }
+
+      function renderLab() {
+        const markup = editor.value.trim();
+        const wrappedDoc = new DOMParser().parseFromString(
+          `<!DOCTYPE html><html><body>${markup}</body></html>`,
+          "text/html",
+        );
+        const diagnostics = auditAuras(wrappedDoc);
+        const hosts = Array.from(
+          wrappedDoc.body.querySelectorAll(
+            "auras-tabs,auras-master-detail,auras-combobox,auras-tree,auras-splitter,auras-diagram",
+          ),
+        );
+
+        renderDiagnostics(diagnostics);
+        renderDetectedContracts(hosts);
+        previewFrame.srcdoc = renderPreviewDocument(markup);
+      }
+
+      function renderDiagnostics(diagnostics) {
+        const errorCount = diagnostics.filter((item) => item.severity === "error")
+          .length;
+        const warningCount = diagnostics.length - errorCount;
+
+        summaryNode.replaceChildren();
+        for (
+          const [label, value] of [
+            ["Errors", errorCount],
+            ["Warnings", warningCount],
+            ["Findings", diagnostics.length],
+          ]
+        ) {
+          const badge = document.createElement("span");
+          badge.dataset.lab = "badge";
+          const strong = document.createElement("strong");
+          strong.textContent = String(value);
+          badge.append(strong, ` ${label}`);
+          summaryNode.append(badge);
+        }
+
+        diagnosticsNode.replaceChildren();
+        if (diagnostics.length === 0) {
+          const empty = document.createElement("p");
+          empty.textContent = "No findings. This markup satisfies the current Auras contract checks.";
+          empty.style.margin = "0";
+          empty.style.color = "var(--text-muted)";
+          diagnosticsNode.append(empty);
+          return;
+        }
+
+        for (const diagnostic of diagnostics) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.dataset.lab = "diagnostic";
+          button.dataset.severity = diagnostic.severity;
+
+          const title = document.createElement("strong");
+          title.textContent = `${diagnostic.hostTag} \u00b7 ${diagnostic.code}`;
+
+          const message = document.createElement("p");
+          message.textContent = diagnostic.message;
+
+          const selector = document.createElement("code");
+          selector.textContent = diagnostic.selector;
+
+          button.append(title, message, selector);
+
+          if (diagnostic.fixHint) {
+            const hint = document.createElement("p");
+            hint.textContent = diagnostic.fixHint;
+            button.append(hint);
+          }
+
+          button.addEventListener("click", () => {
+            pendingSelector = diagnostic.selector;
+            highlightSelectorInPreview(diagnostic.selector);
+          });
+          diagnosticsNode.append(button);
+        }
+      }
+
+      function renderDetectedContracts(hosts) {
+        contractBadgesNode.replaceChildren();
+
+        if (hosts.length === 0) {
+          previewCaptionNode.textContent =
+            "Paste one or more Auras hosts to see detected contracts.";
+          return;
+        }
+
+        const uniqueTags = [...new Set(hosts.map((host) => host.localName))];
+        previewCaptionNode.textContent =
+          `${hosts.length} host${hosts.length === 1 ? "" : "s"} detected in the current snippet.`;
+
+        for (const tag of uniqueTags) {
+          const contract = getAurasContract(tag);
+          const badge = document.createElement("span");
+          badge.dataset.lab = "badge";
+          badge.textContent = contract ? `${tag}: ${contract.summary}` : tag;
+          contractBadgesNode.append(badge);
+        }
+      }
+
+      function highlightSelectorInPreview(selector) {
+        const previewDocument = previewFrame.contentDocument;
+        if (!previewDocument) {
+          return;
+        }
+
+        const previous = previewDocument.querySelector("[data-audit-highlight]");
+        if (previous && "removeAttribute" in previous) {
+          previous.removeAttribute("data-audit-highlight");
+        }
+
+        const target = previewDocument.querySelector(selector);
+        if (
+          !target ||
+          !("setAttribute" in target) ||
+          !("scrollIntoView" in target)
+        ) {
+          return;
+        }
+
+        target.setAttribute("data-audit-highlight", "");
+        target.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+
+      function renderPreviewDocument(markup) {
+        return `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/packages/elements/auras.css" />
+    <link rel="stylesheet" href="/packages/composites/auras-composites.css" />
+    <link rel="stylesheet" href="/packages/brands/auras-brand.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: var(--space-6);
+      }
+
+      main {
+        max-inline-size: 72rem;
+        margin-inline: auto;
+      }
+
+      [data-audit-highlight] {
+        outline: 3px solid color-mix(in oklch, var(--primary) 55%, white);
+        outline-offset: 3px;
+      }
+    </style>
+    <script type="module" src="/packages/components/browser.js"><\/script>
+    <script type="module" src="/packages/diagram/browser.js"><\/script>
+  </head>
+  <body data-brand="auras">
+    <main data-layout="stack" data-gap="4">${markup}</main>
+  </body>
+</html>`;
+      }
+    </script>
+  </body>
+</html>
