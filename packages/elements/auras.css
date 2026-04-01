@@ -82,7 +82,7 @@
     --text-xs: clamp(0.6875rem, 0.6rem + 0.15vw, 0.75rem);
     --text-sm: clamp(0.8125rem, 0.75rem + 0.15vw, 0.875rem);
     --text-base: clamp(0.9375rem, 0.85rem + 0.2vw, 1rem);
-    --text-md: clamp(1.0625rem, 0.85rem + 0.4vw, 1.25rem);
+    --text-md: clamp(1.0625rem, 0.9rem + 0.25vw, 1.125rem);
     --text-lg: clamp(1.125rem, 0.95rem + 0.4vw, 1.25rem);
     --text-xl: clamp(1.25rem, 1rem + 0.6vw, 1.5rem);
     --text-2xl: clamp(1.5rem, 1.1rem + 0.8vw, 1.875rem);
@@ -95,6 +95,7 @@
     --leading-normal: 1.5;
     --leading-relaxed: 1.625;
     --leading-display: 1.1;
+    --leading-dense: 1.15;
 
     /* OKLCH base hues */
     --hue-primary: 260;
@@ -470,7 +471,7 @@
   h2 {
     font-size: var(--text-2xl);
     font-weight: 700;
-    line-height: 1.15;
+    line-height: var(--leading-dense);
     letter-spacing: -0.015em;
   }
   h3 {

@@ -358,8 +358,8 @@ function docsPageStyles(): string {
 
     [data-site="page-header"] h1 {
       margin: 0;
-      font-size: clamp(2.25rem, 5vw, 3.5rem);
-      letter-spacing: -0.04em;
+      font-size: var(--text-4xl);
+      letter-spacing: -0.03em;
     }
 
     [data-site="page-header"] p:first-child {
