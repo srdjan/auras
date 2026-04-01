@@ -82,16 +82,19 @@
     --text-xs: clamp(0.6875rem, 0.6rem + 0.15vw, 0.75rem);
     --text-sm: clamp(0.8125rem, 0.75rem + 0.15vw, 0.875rem);
     --text-base: clamp(0.9375rem, 0.85rem + 0.2vw, 1rem);
-    --text-md: clamp(1rem, 0.9rem + 0.25vw, 1.125rem);
+    --text-md: clamp(1.0625rem, 0.85rem + 0.4vw, 1.25rem);
     --text-lg: clamp(1.125rem, 0.95rem + 0.4vw, 1.25rem);
     --text-xl: clamp(1.25rem, 1rem + 0.6vw, 1.5rem);
     --text-2xl: clamp(1.5rem, 1.1rem + 0.8vw, 1.875rem);
     --text-3xl: clamp(1.875rem, 1.3rem + 1.2vw, 2.25rem);
+    --text-4xl: clamp(2.25rem, 1.75rem + 1.25vw, 2.75rem);
 
     /* Line heights */
     --leading-tight: 1.25;
+    --leading-snug: 1.35;
     --leading-normal: 1.5;
     --leading-relaxed: 1.625;
+    --leading-display: 1.1;
 
     /* OKLCH base hues */
     --hue-primary: 260;
@@ -448,7 +451,6 @@
   h5,
   h6 {
     font-weight: 600;
-    line-height: var(--leading-tight);
     margin-block: 0.5em 0.25em;
     text-wrap: balance; /* avoid awkward line breaks */
   }
@@ -462,19 +464,34 @@
   h1 {
     font-size: var(--text-3xl);
     font-weight: 700;
+    line-height: var(--leading-display);
     letter-spacing: -0.02em;
   }
   h2 {
     font-size: var(--text-2xl);
     font-weight: 700;
+    line-height: 1.15;
     letter-spacing: -0.015em;
   }
   h3 {
     font-size: var(--text-xl);
+    line-height: var(--leading-tight);
     letter-spacing: -0.01em;
   }
   h4 {
     font-size: var(--text-lg);
+    line-height: var(--leading-snug);
+  }
+  h5 {
+    font-size: var(--text-md);
+    line-height: var(--leading-snug);
+  }
+  h6 {
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    font-weight: 700;
   }
 
   ul,

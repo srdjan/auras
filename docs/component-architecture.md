@@ -73,6 +73,10 @@ Rules:
 - still no JavaScript requirement
 - prefer `data-ui`, `data-layout`, `data-surface`, and `data-part`
 - no hidden DOM generation
+- containment is internal-only and should live on the composite root, not as a
+  generic author utility
+- only use containment when the composite is already a bounded box with no
+  required overflow or overlay behavior
 
 ### 3. Components
 
@@ -100,6 +104,39 @@ Rules:
 - no shadow DOM
 - authored HTML remains inspectable and styleable
 - internal structure must not be a hidden contract
+- containment must not break authored overflow, popovers, anchor-positioned UI,
+  or sticky/fixed descendants
+
+## Containment Rule
+
+Use CSS containment in Auras as a structural optimization, not a styling API.
+
+- Do not add a public containment attribute or token.
+- Do not apply containment broadly in the Elements layer.
+- Prefer `contain: content` on composite or component roots whose authored
+  contract already reads as a self-contained box.
+- Use `contain: inline-size` only when the component already has an explicit
+  inline sizing or scrolling contract.
+- Avoid `contain: strict` as a framework default.
+- Treat query containers and contained roots as one review surface so we do not
+  stack isolation features accidentally.
+
+Good candidates:
+
+- documentation examples
+- bounded tiles or cards in repeated composite layouts
+- diagram-like shells with explicit width and overflow behavior
+
+Use with care:
+
+- tabs, master-detail, tree, and sections roots
+- anything that may later host overlays or intentional overflow
+
+Probably avoid:
+
+- generic layout primitives
+- anything with popovers, anchored overlays, `position: fixed`, or visible
+  overflow as part of the contract
 
 ## Package Split
 

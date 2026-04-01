@@ -84,6 +84,38 @@ deno task dev
 - Every component sets `hydrated` on its host after successful initialization.
   Use `auras-*:not([hydrated])` in CSS to hide interactive affordances that
   need JavaScript, and `auras-*[hydrated]` to animate panels after upgrade.
+- CSS containment is an internal optimization, not a general utility. Auras
+  applies it only at bounded composite roots where the authored contract is
+  already "this is a self-contained box".
+- The framework does not expose a `data-contain` attribute or similar utility.
+  If containment would clip popovers, anchored UI, sticky/fixed children, or
+  intentional overflow, it is not an Auras default.
+
+## Containment
+
+Use containment in Auras the same way you use stronger structure everywhere
+else: sparingly, explicitly, and only where the boundary is obvious in the
+authored HTML.
+
+- Prefer `contain: content` on bounded composite shells whose children should
+  stay inside the box anyway.
+- Keep containment off generic Elements-layer primitives such as
+  `data-layout="grid"` or `data-surface="card"`.
+- Avoid `contain: paint`, `contain: size`, `contain: inline-size`, or
+  `contain: strict` unless the component already has an explicit overflow and
+  sizing contract.
+- Review container-query roots and containment together. Query containers
+  already introduce some isolation, so adding more containment should be
+  deliberate.
+
+Current examples in this repo:
+
+- `data-ui="example"` uses `contain: content` because it is a bounded docs box
+  with local preview and code regions.
+- `data-ui="diagram"` keeps `contain: inline-size` because the component already
+  defines a minimum inline size and horizontal scrolling contract.
+- `auras-combobox` does not use containment on its root because the listbox may
+  render in the top layer with `popover` and anchor positioning.
 
 ## Common Patterns
 
@@ -194,6 +226,10 @@ source code. Load `auras-composites.css` alongside the base stylesheet.
 The header is optional. Token hooks: `--example-border-color`,
 `--example-radius`, `--example-preview-padding`, `--example-code-bg`,
 `--example-code-padding`, `--example-code-font-size`.
+
+This composite is intentionally contained with `contain: content`: the preview
+and code panes are meant to behave like a single bounded documentation card, so
+changes inside it can stay local without exposing a new author-facing utility.
 
 ### Syntax highlighting
 
