@@ -41,9 +41,9 @@ Auras uses CSS `@layer` ordering to keep specificity predictable:
 reset > tokens > brands > defaults > layouts > components > utilities > print
 ```
 
-**Elements layer** (`packages/elements/auras.css`) ships with near-neutral colors
-(chroma 0.03), transparent bordered buttons, and no card shadows. It provides
-structure without forcing a visual language.
+**Elements layer** (`packages/elements/auras.css`) ships with near-neutral
+colors (chroma 0.03), transparent bordered buttons, and no card shadows. It
+provides structure without forcing a visual language.
 
 **Brand packs** (e.g. `packages/brands/auras-brand.css`) live in the `brands`
 layer and override token values when a `data-brand` attribute is present. This
@@ -55,19 +55,19 @@ framework.
 The framework is split into independent layers. The Elements layer is the
 foundation; everything else is optional and additive.
 
-| Package | Path | Purpose |
-| --- | --- | --- |
-| Elements | `packages/elements/auras.css` | Core stylesheet: reset, tokens, typography, layout, components, utilities, a11y, print |
+| Package    | Path                                       | Purpose                                                                                 |
+| ---------- | ------------------------------------------ | --------------------------------------------------------------------------------------- |
+| Elements   | `packages/elements/auras.css`              | Core stylesheet: reset, tokens, typography, layout, components, utilities, a11y, print  |
 | Composites | `packages/composites/auras-composites.css` | CSS-only app patterns (example, master-detail, tabs, combobox, splitter, tree, diagram) |
-| Brands | `packages/brands/` | Token override packs scoped to `data-brand` |
-| Shared | `packages/shared/` | Base class (`AurasElement`) and shared utilities for all custom elements |
-| Components | `packages/components/` | Light-DOM custom elements for interactive behavior |
-| Diagram | `packages/diagram/` | Standalone spatial selection component for diagrams |
+| Brands     | `packages/brands/`                         | Token override packs scoped to `data-brand`                                             |
+| Shared     | `packages/shared/`                         | Base class (`AurasElement`) and shared utilities for all custom elements                |
+| Components | `packages/components/`                     | Light-DOM custom elements for interactive behavior                                      |
+| Diagram    | `packages/diagram/`                        | Standalone spatial selection component for diagrams                                     |
 
 Components ship as both a Deno-first module (`mod.ts`) and a browser-friendly
 no-build entrypoint (`browser.js`). All custom elements extend `AurasElement`
-from the Shared package, which handles property/attribute sync, lifecycle
-hooks, and the `hydrated` host attribute. See
+from the Shared package, which handles property/attribute sync, lifecycle hooks,
+and the `hydrated` host attribute. See
 [Component Architecture](./docs/component-architecture.md) for the package
 split, decision rules, and progressive enhancement contracts.
 
@@ -75,18 +75,38 @@ split, decision rules, and progressive enhancement contracts.
 
 - `auras-master-detail` - selection controller for master-detail views
 - `auras-tabs` - tab controller with horizontal arrow-key navigation
-- `auras-combobox` - local-option combobox with filtering and optional linked panels
+- `auras-combobox` - local-option combobox with filtering and optional linked
+  panels
 - `auras-splitter` - two-pane splitter with keyboard and pointer resize
-- `auras-tree` - hierarchical selection controller with expansion and optional panels
+- `auras-tree` - hierarchical selection controller with expansion and optional
+  panels
 - `auras-diagram` - spatial node selection for interactive diagrams
 
 ### Progressive enhancement
 
 Every component sets a `hydrated` attribute on its host after successful
 initialization. CSS can target `auras-*:not([hydrated])` to hide or dim
-interactive affordances that require JavaScript, and `auras-*[hydrated]` to
-fade in or animate panels after upgrade. Content remains accessible through
-semantic HTML before any script runs.
+interactive affordances that require JavaScript, and `auras-*[hydrated]` to fade
+in or animate panels after upgrade. Content remains accessible through semantic
+HTML before any script runs.
+
+### Native platform first
+
+Auras prefers platform primitives over custom abstractions when the browser
+already solves the problem:
+
+- Floating UI should start with `popover` and CSS anchor positioning. The
+  combobox pattern already uses this for top-layer listboxes without portals or
+  geometry code.
+- Modal UI should start with native `<dialog>`. Auras styles it, but does not
+  wrap it in an `auras-dialog` component.
+- Plain form choice should stay on native `<select>`, with
+  `appearance: base-select` and `field-sizing: content` applied as progressively
+  enhanced upgrades.
+- `auras-combobox` is for filtering, active-option state, and linked-panel
+  coordination, not as a blanket replacement for every select input.
+- View transitions, scroll-driven animations, and scroll-state queries are
+  treated as motion-safe polish, never as required behavior.
 
 ## Design tokens
 
@@ -307,7 +327,9 @@ source code. Part of the Composites layer.
   <div data-part="preview">
     <!-- live demo here -->
   </div>
-  <pre data-part="code"><code>&lt;auras-tabs&gt;...&lt;/auras-tabs&gt;</code></pre>
+  <pre
+    data-part="code"
+  ><code>&lt;auras-tabs&gt;...&lt;/auras-tabs&gt;</code></pre>
 </article>
 ```
 
@@ -335,13 +357,13 @@ automatically with brand packs. Dark mode bumps lightness by 15%.
 
 `<pre>` blocks are styled with customizable tokens:
 
-| Token | Default |
-| --- | --- |
-| `--code-block-bg` | `var(--surface-raised)` |
-| `--code-block-border-color` | `var(--border)` |
-| `--code-block-padding` | `var(--space-3)` |
-| `--code-block-radius` | `var(--radius-lg)` |
-| `--code-block-font-size` | `var(--text-sm)` |
+| Token                       | Default                 |
+| --------------------------- | ----------------------- |
+| `--code-block-bg`           | `var(--surface-raised)` |
+| `--code-block-border-color` | `var(--border)`         |
+| `--code-block-padding`      | `var(--space-3)`        |
+| `--code-block-radius`       | `var(--radius-lg)`      |
+| `--code-block-font-size`    | `var(--text-sm)`        |
 
 ### Diagram composite
 
@@ -729,16 +751,16 @@ Load it alongside the core:
 <body data-brand="custom"></body>
 ```
 
-The included `packages/brands/auras-brand.css` stylesheet works as both a
-usable brand and a template for creating your own.
+The included `packages/brands/auras-brand.css` stylesheet works as both a usable
+brand and a template for creating your own.
 
 ### Theme Studio
 
 The interactive Theme Studio at `/studio.html` lets you build brand packs
-visually. Customize primary and secondary colors (OKLCH hue, lightness,
-chroma), typography, border radius, shadows, card styling, and gray tinting
-through live controls. Changes apply instantly to a preview panel showing
-representative content across all component types.
+visually. Customize primary and secondary colors (OKLCH hue, lightness, chroma),
+typography, border radius, shadows, card styling, and gray tinting through live
+controls. Changes apply instantly to a preview panel showing representative
+content across all component types.
 
 When you are happy with the result, export a production-ready brand pack CSS
 file or share your theme via URL. The URL encodes all token values in the hash
@@ -786,44 +808,54 @@ Auras targets modern evergreen browsers. Key features and their support:
 - `text-wrap: balance` - Chrome 114+, Firefox 121+, Safari 17.5+
 - `@property` - Chrome 85+, Firefox 128+, Safari 15.4+
 
+Newer platform features are layered in as progressive enhancements. Unsupported
+browsers keep the semantic HTML and base styling:
+
+- `popover` and `<dialog>` are part of the native overlay story.
+- Anchor positioning powers floating listboxes where available.
+- `appearance: base-select` and `field-sizing: content` upgrade native forms.
+- Scroll-state queries, view transitions, and scroll-driven animations are
+  guarded with `@supports` and reduced-motion checks.
+- Masonry layout is enhancement-only and falls back to regular grid behavior.
+
 ## Files
 
-| File                                       | Purpose                                                                  |
-| ------------------------------------------ | ------------------------------------------------------------------------ |
+| File                                        | Purpose                                                                  |
+| ------------------------------------------- | ------------------------------------------------------------------------ |
 | `tests/auras-element.test.ts`               | Deno unit tests for the `AurasElement` base class                        |
 | `tests/auras-components.browser.test.js`    | Headless browser smoke test for the optional packages and keyboard flows |
-| `tests/auras-combobox.test.js`              | Deno behavioral coverage for `auras-combobox`                             |
-| `tests/auras-splitter.test.js`              | Deno behavioral coverage for `auras-splitter`                             |
-| `tests/auras-diagram.test.js`               | Deno behavioral coverage for `auras-diagram`                              |
+| `tests/auras-combobox.test.js`              | Deno behavioral coverage for `auras-combobox`                            |
+| `tests/auras-splitter.test.js`              | Deno behavioral coverage for `auras-splitter`                            |
+| `tests/auras-diagram.test.js`               | Deno behavioral coverage for `auras-diagram`                             |
 | `tests/auras-components.test.js`            | Deno behavioral coverage for the Components package                      |
-| `tests/auras-tree.test.js`                  | Deno behavioral coverage for `auras-tree`                                 |
+| `tests/auras-tree.test.js`                  | Deno behavioral coverage for `auras-tree`                                |
 | `packages/elements/auras.css`               | Elements layer stylesheet source                                         |
 | `packages/composites/auras-composites.css`  | Composites layer stylesheet source                                       |
-| `packages/brands/auras-brand.css`           | Auras brand stylesheet source                                             |
+| `packages/brands/auras-brand.css`           | Auras brand stylesheet source                                            |
 | `packages/brands/auras-brand-editorial.css` | Editorial brand stylesheet source                                        |
-| `packages/diagram/browser.js`              | Browser-friendly no-build diagram entrypoint                             |
-| `packages/diagram/mod.ts`                  | Deno-first export surface for the diagram package                        |
-| `packages/diagram/jsr.json`                | JSR package metadata for `@auras/diagram`                                 |
-| `packages/diagram/README.md`               | Package-level usage notes for `@auras/diagram`                            |
-| `packages/diagram/src/`                    | Diagram package runtime module                                           |
-| `packages/shared/auras-element.ts`         | `AurasElement` base class for all custom elements                        |
-| `packages/shared/utilities.ts`             | Shared utility functions (ID generation, activation, directionality)     |
-| `packages/shared/mod.ts`                   | Re-exports for the Shared package                                        |
-| `packages/components/browser.js`           | Browser-friendly no-build Components entrypoint                          |
-| `packages/components/mod.ts`               | Deno-first export surface for the Components package                     |
-| `packages/components/jsr.json`             | JSR package metadata for `@auras/components`                              |
-| `packages/components/README.md`            | Package-level usage notes                                                |
-| `packages/components/src/`                 | Shared logic plus per-component runtime modules                          |
-| `packages/components/src/combobox.ts`      | Combobox runtime for `auras-combobox`                                     |
-| `packages/components/src/splitter.ts`      | Splitter runtime for `auras-splitter`                                     |
-| `packages/components/src/tree.ts`          | Tree runtime for `auras-tree`                                             |
-| `public/`                                  | Self-contained demo site, deployable as a static folder                  |
-| `public/studio.html`                       | Interactive Theme Studio for visual brand pack creation                   |
-| `main.ts`                                  | Deno Deploy entry point (static file server)                             |
-| `deno.json`                                | Deno tasks for dev server, type checking, and tests                      |
-| `deno.lock`                                | Locked JSR and npm test dependencies                                     |
-| `docs/component-architecture.md`           | Architecture note and layer decision rules                               |
-| `docs/user-guide.md`                       | User guide with patterns, verification steps, and file map               |
+| `packages/diagram/browser.js`               | Browser-friendly no-build diagram entrypoint                             |
+| `packages/diagram/mod.ts`                   | Deno-first export surface for the diagram package                        |
+| `packages/diagram/jsr.json`                 | JSR package metadata for `@auras/diagram`                                |
+| `packages/diagram/README.md`                | Package-level usage notes for `@auras/diagram`                           |
+| `packages/diagram/src/`                     | Diagram package runtime module                                           |
+| `packages/shared/auras-element.ts`          | `AurasElement` base class for all custom elements                        |
+| `packages/shared/utilities.ts`              | Shared utility functions (ID generation, activation, directionality)     |
+| `packages/shared/mod.ts`                    | Re-exports for the Shared package                                        |
+| `packages/components/browser.js`            | Browser-friendly no-build Components entrypoint                          |
+| `packages/components/mod.ts`                | Deno-first export surface for the Components package                     |
+| `packages/components/jsr.json`              | JSR package metadata for `@auras/components`                             |
+| `packages/components/README.md`             | Package-level usage notes                                                |
+| `packages/components/src/`                  | Shared logic plus per-component runtime modules                          |
+| `packages/components/src/combobox.ts`       | Combobox runtime for `auras-combobox`                                    |
+| `packages/components/src/splitter.ts`       | Splitter runtime for `auras-splitter`                                    |
+| `packages/components/src/tree.ts`           | Tree runtime for `auras-tree`                                            |
+| `public/`                                   | Self-contained demo site, deployable as a static folder                  |
+| `public/studio.html`                        | Interactive Theme Studio for visual brand pack creation                  |
+| `main.ts`                                   | Deno Deploy entry point (static file server)                             |
+| `deno.json`                                 | Deno tasks for dev server, type checking, and tests                      |
+| `deno.lock`                                 | Locked JSR and npm test dependencies                                     |
+| `docs/component-architecture.md`            | Architecture note and layer decision rules                               |
+| `docs/user-guide.md`                        | User guide with patterns, verification steps, and file map               |
 
 ## License
 

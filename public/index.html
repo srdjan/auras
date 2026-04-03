@@ -66,25 +66,25 @@
       href="/packages/brands/auras-brand.css"
     />
     <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "SoftwareSourceCode",
-        "name": "Auras CSS",
-        "description": "A headless-first CSS framework for semantic HTML, token-driven styling, brand packs, and optional light-DOM components.",
-        "url": "{{SITE_ORIGIN}}/",
-        "codeRepository": "https://github.com/nicholasgasior/auras",
-        "programmingLanguage": [
-          "CSS",
-          "HTML",
-          "TypeScript",
-          "JavaScript"
-        ],
-        "author": {
-          "@type": "Organization",
-          "name": "Auras CSS"
-        },
-        "license": "https://opensource.org/licenses/MIT"
-      }
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareSourceCode",
+      "name": "Auras CSS",
+      "description": "A headless-first CSS framework for semantic HTML, token-driven styling, brand packs, and optional light-DOM components.",
+      "url": "{{SITE_ORIGIN}}/",
+      "codeRepository": "https://github.com/nicholasgasior/auras",
+      "programmingLanguage": [
+        "CSS",
+        "HTML",
+        "TypeScript",
+        "JavaScript"
+      ],
+      "author": {
+        "@type": "Organization",
+        "name": "Auras CSS"
+      },
+      "license": "https://opensource.org/licenses/MIT"
+    }
     </script>
     <style>
       @layer site {
@@ -149,8 +149,7 @@
           padding: 4px;
           background-color: var(--surface-raised);
           border-radius: calc(var(--button-radius, var(--radius-md)) + 4px);
-          border: 1px solid
-            color-mix(in oklch, var(--border) 50%, transparent);
+          border: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
           gap: 2px;
         }
         [data-site="brand-switcher"] button {
@@ -479,8 +478,16 @@
             aria-label="GitHub repository"
             data-site="github-link"
           >
-            <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"
+              />
             </svg>
           </a>
         </div>
@@ -801,8 +808,9 @@
                   <dialog id="site-dialog">
                     <h3>Dialog</h3>
                     <p>
-                      Native dialogs inherit active tokens, lock page scroll,
-                      and use a motion-safe entry transition.
+                      Native <code>&lt;dialog&gt;</code> inherits active tokens,
+                      locks page scroll, traps focus, and keeps the modal
+                      behavior in the platform instead of a wrapper component.
                     </p>
                     <div
                       data-layout="cluster"
@@ -984,7 +992,9 @@
               <h2>Forms</h2>
               <p>
                 Text fields, selects, checkboxes, switches, ranges, progress
-                bars, and validation - all styled through the base layer.
+                bars, and validation stay native, with modern CSS upgrades like
+                customizable selects and auto-growing textareas layered in when
+                the browser supports them.
               </p>
             </hgroup>
 
@@ -1306,7 +1316,9 @@
               <p>
                 <code>auras-combobox</code> adds filtering, active option state,
                 keyboard selection, and optional linked panels to a native input
-                and list.
+                and list. It complements native <code>&lt;select&gt;</code>
+                rather than replacing it, and uses <code>popover</code> plus
+                anchor positioning where available.
               </p>
               <article data-ui="example">
                 <div data-part="preview">
@@ -1373,7 +1385,7 @@
     &lt;button data-part="toggle" aria-label="Toggle"&gt;&lt;/button&gt;
     &lt;input type="hidden" data-part="value" name="search" /&gt;
   &lt;/div&gt;
-  &lt;ul data-part="listbox"&gt;
+  &lt;ul data-part="listbox" popover&gt;
     &lt;li data-part="option" data-value="tabs"&gt;Tabs&lt;/li&gt;
   &lt;/ul&gt;
   &lt;p data-part="empty" hidden&gt;No matches.&lt;/p&gt;
@@ -1385,8 +1397,8 @@
             <article data-surface="card" data-layout="stack" data-gap="3">
               <h3>Splitter</h3>
               <p>
-                <code>auras-splitter</code> adds keyboard resizing, pointer drag,
-                and percent-based layout state to a two-pane layout.
+                <code>auras-splitter</code> adds keyboard resizing, pointer
+                drag, and percent-based layout state to a two-pane layout.
               </p>
               <article data-ui="example">
                 <div data-part="preview">
@@ -1724,8 +1736,8 @@
               <p>
                 <code>auras-sections</code> presents content as either
                 <strong>tabs</strong> or an <strong>accordion</strong> from a
-                single markup structure. In auto mode, it morphs between the
-                two based on container width.
+                single markup structure. In auto mode, it morphs between the two
+                based on container width.
               </p>
               <article data-ui="example">
                 <div data-part="header">
@@ -1773,8 +1785,8 @@
                         <div data-part="panel">
                           <p>
                             Ship a static directory or deploy to any edge
-                            runtime. Progressive enhancement means content
-                            works before JavaScript loads.
+                            runtime. Progressive enhancement means content works
+                            before JavaScript loads.
                           </p>
                         </div>
                       </section>
@@ -1828,9 +1840,9 @@
                       </button>
                       <div data-part="panel">
                         <p>
-                          CSS <code>@layer</code> ordering gives you
-                          predictable specificity. Elements, composites, and
-                          utilities each live in their own layer.
+                          CSS <code>@layer</code> ordering gives you predictable
+                          specificity. Elements, composites, and utilities each
+                          live in their own layer.
                         </p>
                       </div>
                     </section>
@@ -1880,8 +1892,8 @@
                         </button>
                         <div data-part="panel">
                           <p>
-                            Semantic markup with data attributes. No classes
-                            to memorize, no build step required.
+                            Semantic markup with data attributes. No classes to
+                            memorize, no build step required.
                           </p>
                         </div>
                       </section>
@@ -1891,8 +1903,8 @@
                         </button>
                         <div data-part="panel">
                           <p>
-                            OKLCH colors, cascade layers, fluid typography,
-                            and container-aware layouts.
+                            OKLCH colors, cascade layers, fluid typography, and
+                            container-aware layouts.
                           </p>
                         </div>
                       </section>
@@ -1902,8 +1914,8 @@
                         </button>
                         <div data-part="panel">
                           <p>
-                            Optional light-DOM components that enhance
-                            authored HTML with keyboard behavior and ARIA.
+                            Optional light-DOM components that enhance authored
+                            HTML with keyboard behavior and ARIA.
                           </p>
                         </div>
                       </section>
@@ -1974,7 +1986,10 @@
 
             <p>
               Want to create your own brand pack visually?
-              <a href="/studio.html" role="button" data-variant="solid"
+              <a
+                href="/studio.html"
+                role="button"
+                data-variant="solid"
                 style="display: inline-block; margin-inline-start: var(--space-2); vertical-align: middle"
               >Open Theme Studio</a>
             </p>
@@ -2150,8 +2165,8 @@
                   Every <code>auras-*</code> element sets
                   <code>hydrated</code> on its host after successful
                   initialization. CSS can target
-                  <code>:not([hydrated])</code> to hide controls that
-                  need JavaScript.
+                  <code>:not([hydrated])</code> to hide controls that need
+                  JavaScript.
                 </p>
               </article>
               <article
@@ -2162,10 +2177,9 @@
               >
                 <h3>Pre-hydration CSS</h3>
                 <p>
-                  This page hides combobox toggles and dims splitter
-                  handles until JavaScript runs. When the component
-                  upgrades, the <code>hydrated</code> attribute appears
-                  and CSS shows the controls.
+                  This page hides combobox toggles and dims splitter handles
+                  until JavaScript runs. When the component upgrades, the <code
+                  >hydrated</code> attribute appears and CSS shows the controls.
                 </p>
               </article>
               <article
@@ -2176,9 +2190,9 @@
               >
                 <h3>Shared base class</h3>
                 <p>
-                  All components extend <code>AurasElement</code>, which
-                  handles property/attribute sync, auto-binding, lifecycle
-                  hooks, and the hydration signal.
+                  All components extend <code>AurasElement</code>, which handles
+                  property/attribute sync, auto-binding, lifecycle hooks, and
+                  the hydration signal.
                 </p>
               </article>
               <article
@@ -2189,9 +2203,9 @@
               >
                 <h3>Safe imperative access</h3>
                 <p>
-                  Call <code>customElements.whenDefined()</code> before
-                  using methods like <code>show()</code>. The element is
-                  ready when the promise resolves.
+                  Call <code>customElements.whenDefined()</code> before using
+                  methods like <code>show()</code>. The element is ready when
+                  the promise resolves.
                 </p>
               </article>
             </div>
@@ -2203,12 +2217,13 @@
               </header>
               <div data-part="preview" data-layout="stack" data-gap="2">
                 <p>
-                  Before JavaScript loads, toggle buttons and drag handles
-                  are hidden or dimmed. After hydration, they appear
-                  automatically.
+                  Before JavaScript loads, toggle buttons and drag handles are
+                  hidden or dimmed. After hydration, they appear automatically.
                 </p>
               </div>
-              <pre data-part="code"><code><span data-syntax="comment">/* Hide toggle buttons that need JS */</span>
+              <pre
+                data-part="code"
+              ><code><span data-syntax="comment">/* Hide toggle buttons that need JS */</span>
 <span data-syntax="tag">auras-combobox</span><span data-syntax="attr">:not([hydrated])</span> <span data-syntax="tag">[data-part="toggle"]</span> {
   <span data-syntax="attr">visibility</span>: <span data-syntax="value">hidden</span>;
 }

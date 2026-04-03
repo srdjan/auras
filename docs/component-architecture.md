@@ -178,7 +178,8 @@ Recommended publishing shape:
 - `@auras/composites`: optional CSS-only higher-level patterns
 - `jsr:@auras/diagram`: optional Deno-first interactive diagram package
 - `jsr:@auras/components`: optional Deno-first light-DOM interactive components
-- `jsr:@auras/audit`: contract validation for authored markup (browser, Deno, CLI)
+- `jsr:@auras/audit`: contract validation for authored markup (browser, Deno,
+  CLI)
 
 Current repo structure:
 
@@ -207,6 +208,11 @@ Use this test before adding a component:
 - If the problem requires interaction state or non-trivial keyboard behavior, it
   belongs in components.
 
+Before either of those, apply one more filter:
+
+- If the browser already provides a semantic primitive, Auras should style and
+  document that primitive before inventing a wrapper API.
+
 Examples:
 
 - `card`: composites
@@ -219,6 +225,21 @@ Examples:
 - `splitter`: components
 - `tree`: components
 - `sections` (tabs/accordion morph): components
+
+## Native-First Rule
+
+Modern platform features should reduce Auras surface area, not expand it.
+
+- Use `popover` and CSS anchor positioning for authored floating UI before
+  reaching for a generic overlay component.
+- Use native `<dialog>` for modal behavior instead of introducing an
+  `auras-dialog`.
+- Keep standard form choice on `<select>` and use `auras-combobox` only when
+  search, filtering, or linked-panel behavior is materially required.
+- Treat view transitions, scroll-driven animations, and scroll-state queries as
+  opt-in enhancements layered onto existing contracts.
+- Do not create Auras APIs around speculative or unshipped features such as
+  `focusgroup` or CSS `if()`.
 
 ## Specialized Packages
 
@@ -272,9 +293,9 @@ Implementation detail that should stay private:
 
 ## Pilot Components
 
-The first behavioral pilot was `auras-master-detail`. The second is `auras-tabs`.
-The third is `auras-tree`. The fourth is `auras-combobox`. The fifth is
-`auras-splitter`. The sixth is `auras-sections`.
+The first behavioral pilot was `auras-master-detail`. The second is
+`auras-tabs`. The third is `auras-tree`. The fourth is `auras-combobox`. The
+fifth is `auras-splitter`. The sixth is `auras-sections`.
 
 Why these first:
 
@@ -728,8 +749,8 @@ The sixth pilot should do exactly this:
   switches between them at a container-width breakpoint
 - coordinate one selected/expanded value across sections
 - manage roving focus between section triggers
-- apply the correct ARIA semantics for each mode (tablist for tabs, aria-expanded
-  for accordion)
+- apply the correct ARIA semantics for each mode (tablist for tabs,
+  aria-expanded for accordion)
 
 It should not do this in v1:
 
@@ -845,8 +866,9 @@ Elena defines three component types. Auras maps them as follows:
 - Elena "composite" (light DOM enhancer) = Auras Components layer. All current
   `auras-*` elements follow this model: add keyboard behavior, selection state,
   ARIA semantics, and focus management to authored HTML.
-- Elena "primitive" (self-rendering) = not adopted. Reserved as a future separate
-  package only if a real use case cannot be expressed with the controller model.
+- Elena "primitive" (self-rendering) = not adopted. Reserved as a future
+  separate package only if a real use case cannot be expressed with the
+  controller model.
 - Elena "declarative" (DSDOM pre-render) = not applicable. Authored HTML already
   fills this role.
 
@@ -861,11 +883,18 @@ Example pre-hydration CSS:
 
 ```css
 /* Hide toggle buttons that need JS to function */
-auras-combobox:not([hydrated]) [data-part="toggle"] { display: none; }
-auras-tree:not([hydrated]) [data-part="toggle"] { opacity: 0.4; pointer-events: none; }
+auras-combobox:not([hydrated]) [data-part="toggle"] {
+  display: none;
+}
+auras-tree:not([hydrated]) [data-part="toggle"] {
+  opacity: 0.4;
+  pointer-events: none;
+}
 
 /* Fade panels in after hydration */
-auras-tabs[hydrated] [data-part="panel"] { animation: fade-in 150ms ease; }
+auras-tabs[hydrated] [data-part="panel"] {
+  animation: fade-in 150ms ease;
+}
 ```
 
 For imperative calls made before registration, use `customElements.whenDefined`
@@ -904,41 +933,41 @@ Methods exposed on each host element.
 
 ### Shared across selection components
 
-| Method | Signature | Description |
-|---|---|---|
-| `show` | `show(value: string): boolean` | Select the item with the given value. Returns false if not found. |
-| `focusCurrent` | `focusCurrent(): void` | Focus the currently active trigger or input. |
+| Method         | Signature                      | Description                                                       |
+| -------------- | ------------------------------ | ----------------------------------------------------------------- |
+| `show`         | `show(value: string): boolean` | Select the item with the given value. Returns false if not found. |
+| `focusCurrent` | `focusCurrent(): void`         | Focus the currently active trigger or input.                      |
 
 ### `auras-tree` additions
 
-| Method | Signature | Description |
-|---|---|---|
-| `expand` | `expand(value: string): boolean` | Expand the branch with the given value. |
-| `collapse` | `collapse(value: string): boolean` | Collapse the branch with the given value. |
-| `toggle` | `toggle(value: string): boolean` | Toggle expansion of the branch with the given value. |
+| Method     | Signature                          | Description                                          |
+| ---------- | ---------------------------------- | ---------------------------------------------------- |
+| `expand`   | `expand(value: string): boolean`   | Expand the branch with the given value.              |
+| `collapse` | `collapse(value: string): boolean` | Collapse the branch with the given value.            |
+| `toggle`   | `toggle(value: string): boolean`   | Toggle expansion of the branch with the given value. |
 
 ### `auras-combobox` additions
 
-| Method | Signature | Description |
-|---|---|---|
-| `openListbox` | `openListbox(): boolean` | Open the listbox popup. |
-| `closeListbox` | `closeListbox(): boolean` | Close the listbox popup. |
+| Method          | Signature                  | Description               |
+| --------------- | -------------------------- | ------------------------- |
+| `openListbox`   | `openListbox(): boolean`   | Open the listbox popup.   |
+| `closeListbox`  | `closeListbox(): boolean`  | Close the listbox popup.  |
 | `toggleListbox` | `toggleListbox(): boolean` | Toggle the listbox popup. |
 
 ### `auras-sections` additions
 
-| Method | Signature | Description |
-|---|---|---|
-| `expand` | `expand(value: string): boolean` | Expand the section with the given value (accordion mode). |
-| `collapse` | `collapse(value: string): boolean` | Collapse the section with the given value (accordion mode). |
-| `toggle` | `toggle(value: string): boolean` | Toggle expansion of the section with the given value (accordion mode). |
+| Method     | Signature                          | Description                                                            |
+| ---------- | ---------------------------------- | ---------------------------------------------------------------------- |
+| `expand`   | `expand(value: string): boolean`   | Expand the section with the given value (accordion mode).              |
+| `collapse` | `collapse(value: string): boolean` | Collapse the section with the given value (accordion mode).            |
+| `toggle`   | `toggle(value: string): boolean`   | Toggle expansion of the section with the given value (accordion mode). |
 
 ### `auras-splitter` methods
 
-| Method | Signature | Description |
-|---|---|---|
+| Method        | Signature                             | Description                                                 |
+| ------------- | ------------------------------------- | ----------------------------------------------------------- |
 | `setPosition` | `setPosition(value: number): boolean` | Set the split position as a percentage. Clamped to min/max. |
-| `focusHandle` | `focusHandle(): void` | Focus the separator handle. |
+| `focusHandle` | `focusHandle(): void`                 | Focus the separator handle.                                 |
 
 ## Framework Integration
 

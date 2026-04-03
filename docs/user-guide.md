@@ -82,14 +82,71 @@ deno task dev
   handles property/attribute sync, lifecycle hooks, auto-binding, and the
   `hydrated` host attribute.
 - Every component sets `hydrated` on its host after successful initialization.
-  Use `auras-*:not([hydrated])` in CSS to hide interactive affordances that
-  need JavaScript, and `auras-*[hydrated]` to animate panels after upgrade.
+  Use `auras-*:not([hydrated])` in CSS to hide interactive affordances that need
+  JavaScript, and `auras-*[hydrated]` to animate panels after upgrade.
 - CSS containment is an internal optimization, not a general utility. Auras
   applies it only at bounded composite roots where the authored contract is
   already "this is a self-contained box".
 - The framework does not expose a `data-contain` attribute or similar utility.
   If containment would clip popovers, anchored UI, sticky/fixed children, or
   intentional overflow, it is not an Auras default.
+
+## Native Platform Features
+
+Auras is not trying to out-abstract the platform. When modern HTML or CSS can
+carry the behavior directly, Auras prefers to style and document that path
+instead of introducing a new wrapper component.
+
+### Floating UI
+
+Use native `popover` plus CSS anchor positioning for dropdowns, menus, and other
+non-modal overlays when authored HTML already describes the relationship.
+
+- Keep the trigger and panel in the light DOM.
+- Let CSS handle placement and sizing.
+- Reserve JavaScript for state that the platform does not model on its own.
+
+The current combobox pattern follows this rule: the listbox renders in the top
+layer with `popover`, anchors to the authored control when the browser supports
+anchor positioning, and falls back to the inline listbox contract when it does
+not.
+
+### Dialogs
+
+Use native `<dialog>` for modal interactions.
+
+- Auras styles the element and its `::backdrop`.
+- Opening remains the standard `.showModal()` call.
+- Focus trapping, escape handling, and page inertness stay native.
+
+Auras intentionally does not ship an `auras-dialog` component because the
+platform already covers the behavior well.
+
+### Native Forms First
+
+Prefer native form controls whenever the authored HTML already matches the
+interaction.
+
+- Standard choice inputs should stay on `<select>`.
+- Auto-growing long-text input should stay on `<textarea>`.
+- Auras upgrades these with `appearance: base-select` and
+  `field-sizing: content` when the browser supports them.
+
+Use `auras-combobox` only when you need search, active-option state, manual or
+automatic activation, or linked-panel coordination. It complements native forms
+instead of replacing them.
+
+### Motion And Scroll
+
+Motion features in Auras are optional enhancements, not structural dependencies.
+
+- Use scroll-state queries for sticky affordances, scroll shadows, and snapped
+  item treatment where CSS can derive the state directly.
+- Use view transitions for panel swaps and route-level polish.
+- Use scroll-driven animations only for decorative effects.
+
+Guard these features with `@supports`, and keep reduced-motion behavior as the
+default accessibility boundary.
 
 ## Containment
 
@@ -330,8 +387,8 @@ separate optional `auras-diagram` package:
 
 ### Master-detail
 
-`auras-master-detail` pairs with the Composites stylesheet for a selection-driven
-layout:
+`auras-master-detail` pairs with the Composites stylesheet for a
+selection-driven layout:
 
 ```html
 <link rel="stylesheet" href="packages/elements/auras.css" />
@@ -489,8 +546,8 @@ through the visible hierarchy before `Enter` or `Space` commits the selection.
 
 ### Tabs
 
-`auras-tabs` uses the same host contract as `auras-master-detail`, but with honest
-tab semantics:
+`auras-tabs` uses the same host contract as `auras-master-detail`, but with
+honest tab semantics:
 
 ```html
 <link rel="stylesheet" href="packages/elements/auras.css" />
@@ -667,63 +724,65 @@ The demo also exercises:
 - Long-form prose styling
 - Static diagram composites for documentation flows
 - Card, notice, and accordion surfaces
+- Native `<dialog>` styling plus the Auras backdrop tokens
+- Native `<select>` and auto-growing `<textarea>` enhancements
 - Master-detail and tabs composites plus the matching Components
-- Button variants, busy states, and dialog styling
+- Button variants and busy states
 - Form validation states
 - Switch, progress, and meter styling
 - Status colors
 - Aspect ratios and object fit
-- Sticky regions and smooth scrolling
+- Sticky regions, smooth scrolling, and scroll-state-driven affordances
 - Print behavior
 
 ## File Map
 
-| File                                       | Purpose                                          |
-| ------------------------------------------ | ------------------------------------------------ |
+| File                                        | Purpose                                          |
+| ------------------------------------------- | ------------------------------------------------ |
 | `tests/auras-element.test.ts`               | Unit tests for the `AurasElement` base class     |
 | `tests/auras-components.browser.test.js`    | Browser smoke coverage for the optional packages |
-| `tests/auras-combobox.test.js`              | Deno behavioral coverage for `auras-combobox`     |
-| `tests/auras-splitter.test.js`              | Deno behavioral coverage for `auras-splitter`     |
-| `tests/auras-diagram.test.js`               | Deno behavioral coverage for `auras-diagram`      |
+| `tests/auras-combobox.test.js`              | Deno behavioral coverage for `auras-combobox`    |
+| `tests/auras-splitter.test.js`              | Deno behavioral coverage for `auras-splitter`    |
+| `tests/auras-diagram.test.js`               | Deno behavioral coverage for `auras-diagram`     |
 | `tests/auras-components.test.js`            | Deno behavioral coverage for Components          |
-| `tests/auras-sections.test.js`              | Deno behavioral coverage for `auras-sections`     |
-| `tests/auras-tree.test.js`                  | Deno behavioral coverage for `auras-tree`         |
-| `tests/auras-audit.test.ts`                 | Deno behavioral coverage for `@auras/audit`       |
-| `tests/auras-audit-cli.test.ts`             | CLI test for `@auras/audit`                       |
+| `tests/auras-sections.test.js`              | Deno behavioral coverage for `auras-sections`    |
+| `tests/auras-tree.test.js`                  | Deno behavioral coverage for `auras-tree`        |
+| `tests/auras-audit.test.ts`                 | Deno behavioral coverage for `@auras/audit`      |
+| `tests/auras-audit-cli.test.ts`             | CLI test for `@auras/audit`                      |
 | `packages/elements/auras.css`               | Elements layer stylesheet source                 |
 | `packages/composites/auras-composites.css`  | Composites layer stylesheet source               |
-| `packages/brands/auras-brand.css`           | Auras brand stylesheet source                     |
+| `packages/brands/auras-brand.css`           | Auras brand stylesheet source                    |
 | `packages/brands/auras-brand-editorial.css` | Editorial brand stylesheet source                |
-| `packages/diagram/browser.js`              | Browser-friendly no-build diagram entrypoint     |
-| `packages/diagram/mod.ts`                  | Deno-first diagram package surface               |
-| `packages/diagram/jsr.json`                | JSR package metadata for `@auras/diagram`         |
-| `packages/diagram/README.md`               | Package-level usage note for `@auras/diagram`     |
-| `packages/diagram/src/`                    | Diagram package runtime module                   |
-| `packages/shared/auras-element.ts`         | `AurasElement` base class for custom elements    |
-| `packages/shared/utilities.ts`             | Shared utilities (ID gen, activation, RTL)       |
-| `packages/shared/mod.ts`                   | Shared package re-exports                        |
-| `packages/components/browser.js`           | Browser-friendly no-build Components entrypoint  |
-| `packages/components/mod.ts`               | Deno-first Components package surface            |
-| `packages/components/jsr.json`             | JSR package metadata                             |
-| `packages/components/README.md`            | Package-level usage note                         |
-| `packages/components/src/`                 | Shared logic plus per-component modules          |
-| `packages/components/src/combobox.ts`      | `auras-combobox` runtime module                   |
-| `packages/components/src/splitter.ts`      | `auras-splitter` runtime module                   |
-| `packages/components/src/tree.ts`          | `auras-tree` runtime module                       |
-| `packages/audit/mod.ts`                    | Deno-first audit package surface                  |
-| `packages/audit/browser.js`               | Browser-friendly no-build audit entrypoint        |
-| `packages/audit/cli.ts`                   | CLI entrypoint for `@auras/audit`                 |
-| `packages/audit/contracts.js`             | Shared contract definitions                       |
-| `packages/audit/jsr.json`                 | JSR package metadata for `@auras/audit`            |
-| `packages/audit/README.md`               | Package-level docs for `@auras/audit`              |
-| `deno.json`                                | Deno tasks for dev server, checking, and tests   |
-| `deno.lock`                                | Locked JSR and npm test dependencies             |
-| `main.ts`                                  | Deno Deploy entry point (static file server)     |
-| `public/index.html`                        | Interactive demo page                            |
-| `public/studio.html`                       | Theme Studio for visual brand pack creation      |
-| `public/lab.html`                          | Contract Lab for live markup auditing            |
-| `docs/component-architecture.md`           | Architecture note for the layer split            |
-| `docs/user-guide.md`                       | This user guide                                  |
+| `packages/diagram/browser.js`               | Browser-friendly no-build diagram entrypoint     |
+| `packages/diagram/mod.ts`                   | Deno-first diagram package surface               |
+| `packages/diagram/jsr.json`                 | JSR package metadata for `@auras/diagram`        |
+| `packages/diagram/README.md`                | Package-level usage note for `@auras/diagram`    |
+| `packages/diagram/src/`                     | Diagram package runtime module                   |
+| `packages/shared/auras-element.ts`          | `AurasElement` base class for custom elements    |
+| `packages/shared/utilities.ts`              | Shared utilities (ID gen, activation, RTL)       |
+| `packages/shared/mod.ts`                    | Shared package re-exports                        |
+| `packages/components/browser.js`            | Browser-friendly no-build Components entrypoint  |
+| `packages/components/mod.ts`                | Deno-first Components package surface            |
+| `packages/components/jsr.json`              | JSR package metadata                             |
+| `packages/components/README.md`             | Package-level usage note                         |
+| `packages/components/src/`                  | Shared logic plus per-component modules          |
+| `packages/components/src/combobox.ts`       | `auras-combobox` runtime module                  |
+| `packages/components/src/splitter.ts`       | `auras-splitter` runtime module                  |
+| `packages/components/src/tree.ts`           | `auras-tree` runtime module                      |
+| `packages/audit/mod.ts`                     | Deno-first audit package surface                 |
+| `packages/audit/browser.js`                 | Browser-friendly no-build audit entrypoint       |
+| `packages/audit/cli.ts`                     | CLI entrypoint for `@auras/audit`                |
+| `packages/audit/contracts.js`               | Shared contract definitions                      |
+| `packages/audit/jsr.json`                   | JSR package metadata for `@auras/audit`          |
+| `packages/audit/README.md`                  | Package-level docs for `@auras/audit`            |
+| `deno.json`                                 | Deno tasks for dev server, checking, and tests   |
+| `deno.lock`                                 | Locked JSR and npm test dependencies             |
+| `main.ts`                                   | Deno Deploy entry point (static file server)     |
+| `public/index.html`                         | Interactive demo page                            |
+| `public/studio.html`                        | Theme Studio for visual brand pack creation      |
+| `public/lab.html`                           | Contract Lab for live markup auditing            |
+| `docs/component-architecture.md`            | Architecture note for the layer split            |
+| `docs/user-guide.md`                        | This user guide                                  |
 
 ## Verification
 
