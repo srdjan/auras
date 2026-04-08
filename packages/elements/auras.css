@@ -1071,6 +1071,24 @@
       grid-template-rows: masonry;
     }
   }
+  /* Subgrid row alignment */
+  :where([data-layout~="subgrid"]) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span var(--subgrid-span, 3);
+  }
+
+  /* Subgrid span presets */
+  :where([data-subgrid-span="2"]) {
+    --subgrid-span: 2;
+  }
+  :where([data-subgrid-span="4"]) {
+    --subgrid-span: 4;
+  }
+  :where([data-subgrid-span="5"]) {
+    --subgrid-span: 5;
+  }
+
   /* New orthogonal alignment API */
   :where([data-align="start"]) {
     align-items: flex-start;

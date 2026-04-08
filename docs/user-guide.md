@@ -204,12 +204,62 @@ Use `data-layout` for page structure:
 
 Useful values:
 
-- `data-layout="row" | "col" | "stack" | "cluster" | "grid" | "container"`
+- `data-layout="row" | "col" | "stack" | "cluster" | "grid" | "subgrid" | "container"`
 - `data-align="start" | "center" | "end" | "stretch"`
 - `data-justify="start" | "center" | "end" | "between" | "around" | "evenly"`
 - `data-gap="1" | "2" | "3" | "4" | "6" | "8"`
 - `data-grid-min="sm" | "md" | "lg"`
+- `data-subgrid-span="2" | "3" | "4" | "5"`
 - `data-stack="mobile"` to collapse a row into a column on small screens
+
+### Subgrid
+
+Use `data-layout="subgrid"` on children of a `data-layout="grid"` container
+when their internal rows need to align across siblings. This is the solution for
+card grids where titles, descriptions, and actions should line up regardless of
+content length:
+
+```html
+<div data-layout="grid" data-grid-min="md" data-gap="4">
+  <article data-layout="subgrid" data-surface="card">
+    <h3>Short title</h3>
+    <p>A longer description that wraps to multiple lines.</p>
+    <footer><button>Action</button></footer>
+  </article>
+  <article data-layout="subgrid" data-surface="card">
+    <h3>A much longer title that wraps</h3>
+    <p>Short text.</p>
+    <footer><button>Action</button></footer>
+  </article>
+</div>
+```
+
+Each subgrid child spans 3 parent rows by default (title + body + actions). The
+parent's implicit auto rows size based on the tallest content in each row band
+across all cards, producing consistent alignment.
+
+Override the span count with `data-subgrid-span` or the `--subgrid-span`
+custom property:
+
+```html
+<article data-layout="subgrid" data-subgrid-span="4">...</article>
+<article data-layout="subgrid" style="--subgrid-span: 6">...</article>
+```
+
+All cards in the same row band must use the same span value. Gap is inherited
+from the parent grid; add `data-gap` to the subgrid child to override.
+
+For column subgrid (rarer, used in form or table alignment), apply the CSS
+directly:
+
+```html
+<form style="display: grid; grid-template-columns: auto 1fr; gap: var(--space-3)">
+  <fieldset style="display: grid; grid-template-columns: subgrid; grid-column: 1 / -1">
+    <label>Name</label>
+    <input type="text">
+  </fieldset>
+</form>
+```
 
 ### Surfaces and Actions
 

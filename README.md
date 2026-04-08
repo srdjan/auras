@@ -202,6 +202,8 @@ Layout is controlled through `data-layout` and orthogonal modifier attributes.
 <!-- alias for row -->
 <div data-layout="grid">...</div>
 <!-- auto-fit grid -->
+<div data-layout="subgrid">...</div>
+<!-- row-subgrid (inherits parent grid rows) -->
 <div data-layout="container">...</div>
 <!-- centered max-width block -->
 ```
@@ -243,6 +245,42 @@ Or set the column minimum directly:
 ```html
 <div data-layout="grid" style="--grid-min: 200px"></div>
 ```
+
+### Subgrid (cross-item alignment)
+
+When cards or repeated items in a grid need their internal rows to align across
+items, use `data-layout="subgrid"` instead of `data-layout="stack"`:
+
+```html
+<div data-layout="grid" data-grid-min="md" data-gap="4">
+  <article data-layout="subgrid" data-surface="card">
+    <h3>Short title</h3>
+    <p>Description...</p>
+    <footer><button>Action</button></footer>
+  </article>
+  <article data-layout="subgrid" data-surface="card">
+    <h3>A much longer title that wraps to two lines</h3>
+    <p>Shorter text.</p>
+    <footer><button>Action</button></footer>
+  </article>
+</div>
+```
+
+The default spans 3 rows (title + body + actions). Override with
+`data-subgrid-span` or the `--subgrid-span` property:
+
+```html
+<article data-layout="subgrid" data-subgrid-span="4">...</article>
+<article data-layout="subgrid" style="--subgrid-span: 5">...</article>
+```
+
+| Attribute           | Values              | Default |
+| ------------------- | ------------------- | ------- |
+| `data-subgrid-span` | `2`, `3`, `4`, `5`  | `3`     |
+
+All cards in the same row band must use the same span value for alignment to
+work correctly. Gap is inherited from the parent grid; override with `data-gap`
+on the subgrid child if needed.
 
 ### Responsive stacking
 
