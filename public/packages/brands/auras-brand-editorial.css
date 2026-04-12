@@ -46,6 +46,12 @@
     --card-border-color: var(--border-strong);
     --card-shadow: none;
     --page-padding-block: var(--space-6);
+
+    /* Serif optical compensation and reading rhythm */
+    --text-base: clamp(1rem, 0.9rem + 0.2vw, 1.0625rem); /* serifs render ~6% smaller optically */
+    --leading-normal: 1.625; /* body: 1.5 is tight for ascenders/descenders */
+    --leading-relaxed: 1.75; /* prose lead paragraph */
+    --leading-display: 1.15; /* serif h1: capitals need more clearance than sans */
   }
 
   @supports (color: color-mix(in oklch, black, white)) {
