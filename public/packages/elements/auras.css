@@ -534,93 +534,68 @@
   }
 
   /* Forms */
-  :where(button, input[type="button"], input[type="submit"], [role="button"]) {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
-    min-block-size: var(--button-min-block-size);
-    font-weight: 500;
-    background-color: var(--button-bg);
-    color: var(--button-color);
-    border: var(--button-border-width) solid var(--button-border-color);
-    padding: var(--button-padding-block) var(--button-padding-inline);
-    border-radius: var(--button-radius);
-    box-shadow: var(--button-shadow);
-    cursor: pointer;
-    text-decoration: none;
-    transition:
-      background-color var(--transition-fast),
-      border-color var(--transition-fast),
-      color var(--transition-fast),
-      box-shadow var(--transition-fast);
-  }
-  :where(
-    button,
-    input[type="button"],
-    input[type="submit"],
-    [role="button"]
-  ):hover {
-    background-color: var(--button-hover-bg);
-    border-color: var(--button-hover-border-color);
-  }
-  :where(
-    button,
-    input[type="button"],
-    input[type="submit"],
-    [role="button"]
-  )[data-variant="solid"] {
-    --button-bg: var(--button-solid-bg);
-    --button-color: var(--button-solid-color);
-    --button-border-color: transparent;
-    --button-hover-bg: var(--primary-hover);
-    --button-hover-border-color: transparent;
-    --button-shadow: var(--shadow-sm);
-  }
-  :where(
-    button,
-    input[type="button"],
-    input[type="submit"],
-    [role="button"]
-  )[data-variant="solid"]:hover {
-    box-shadow: var(--shadow-md);
-  }
-  :where(
-    button,
-    input[type="button"],
-    input[type="submit"],
-    [role="button"]
-  )[data-variant="soft"] {
-    --button-bg: var(--button-soft-bg);
-    --button-color: var(--button-soft-color);
-    --button-border-color: transparent;
-    --button-hover-border-color: transparent;
+  @scope (:where(button, input[type="button"], input[type="submit"], [role="button"])) {
+    :scope {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      min-block-size: var(--button-min-block-size);
+      font-weight: 500;
+      background-color: var(--button-bg);
+      color: var(--button-color);
+      border: var(--button-border-width) solid var(--button-border-color);
+      padding: var(--button-padding-block) var(--button-padding-inline);
+      border-radius: var(--button-radius);
+      box-shadow: var(--button-shadow);
+      cursor: pointer;
+      text-decoration: none;
+      transition:
+        background-color var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast),
+        box-shadow var(--transition-fast);
+    }
+    :scope:hover {
+      background-color: var(--button-hover-bg);
+      border-color: var(--button-hover-border-color);
+    }
+    :scope[data-variant="solid"] {
+      --button-bg: var(--button-solid-bg);
+      --button-color: var(--button-solid-color);
+      --button-border-color: transparent;
+      --button-hover-bg: var(--primary-hover);
+      --button-hover-border-color: transparent;
+      --button-shadow: var(--shadow-sm);
+    }
+    :scope[data-variant="solid"]:hover {
+      box-shadow: var(--shadow-md);
+    }
+    :scope[data-variant="soft"] {
+      --button-bg: var(--button-soft-bg);
+      --button-color: var(--button-soft-color);
+      --button-border-color: transparent;
+      --button-hover-border-color: transparent;
+    }
+    @supports (color: color-mix(in oklch, black, white)) {
+      :scope[data-variant="soft"] {
+        --button-hover-bg: color-mix(in oklch, var(--primary) 28%, white);
+      }
+    }
+    :scope[data-variant="ghost"] {
+      --button-border-color: transparent;
+    }
   }
   @supports (color: color-mix(in oklch, black, white)) {
-    :where(
-      button,
-      input[type="button"],
-      input[type="submit"],
-      [role="button"]
-    )[data-variant="soft"] {
-      --button-hover-bg: color-mix(in oklch, var(--primary) 28%, white);
-    }
-    [data-theme~="dark"] :where(
-      button,
-      input[type="button"],
-      input[type="submit"],
-      [role="button"]
-    )[data-variant="soft"] {
+    [data-theme~="dark"]
+      :where(
+        button,
+        input[type="button"],
+        input[type="submit"],
+        [role="button"]
+      )[data-variant="soft"] {
       --button-hover-bg: color-mix(in oklch, var(--primary) 40%, var(--gray-10));
     }
-  }
-  :where(
-    button,
-    input[type="button"],
-    input[type="submit"],
-    [role="button"]
-  )[data-variant="ghost"] {
-    --button-border-color: transparent;
   }
   button:disabled,
   input[type="button"]:disabled,
