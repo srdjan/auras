@@ -1,168 +1,165 @@
 /* Optional Auras composites layer. Load this after auras.css when you want
    higher-level CSS patterns without pulling in behavior. */
 @layer composites {
-  :where([data-ui~="master-detail"], auras-master-detail) {
-    --master-detail-gap: var(--space-4);
-    --master-detail-master-width: 18rem;
-    --master-detail-master-padding: var(--space-2);
-    --master-detail-master-bg: var(--surface);
-    --master-detail-master-border-color: var(--border);
-    --master-detail-master-shadow: var(--shadow-sm);
-    --master-detail-trigger-radius: var(--radius-md);
-    --master-detail-trigger-padding: var(--space-3);
-    --master-detail-trigger-border-color: transparent;
-    --master-detail-trigger-bg: transparent;
-    --master-detail-trigger-bg-hover: var(--surface-raised);
-    --master-detail-trigger-bg-active: var(--primary-subtle);
-    --master-detail-trigger-border-color-active: color-mix(
-      in oklch,
-      var(--primary) 38%,
-      var(--border)
-    );
+  @scope (:where([data-ui~="master-detail"], auras-master-detail))
+    to ([data-ui], auras-master-detail, auras-tabs, auras-tree, auras-combobox, auras-splitter, auras-diagram, auras-sections) {
+    :scope {
+      --master-detail-gap: var(--space-4);
+      --master-detail-master-width: 18rem;
+      --master-detail-master-padding: var(--space-2);
+      --master-detail-master-bg: var(--surface);
+      --master-detail-master-border-color: var(--border);
+      --master-detail-master-shadow: var(--shadow-sm);
+      --master-detail-trigger-radius: var(--radius-md);
+      --master-detail-trigger-padding: var(--space-3);
+      --master-detail-trigger-border-color: transparent;
+      --master-detail-trigger-bg: transparent;
+      --master-detail-trigger-bg-hover: var(--surface-raised);
+      --master-detail-trigger-bg-active: var(--primary-subtle);
+      --master-detail-trigger-border-color-active: color-mix(
+        in oklch,
+        var(--primary) 38%,
+        var(--border)
+      );
 
-    display: grid;
-    gap: var(--master-detail-gap);
-    align-items: start;
-  }
+      display: grid;
+      gap: var(--master-detail-gap);
+      align-items: start;
+    }
 
-  @media (min-width: 48rem) {
-    :where([data-ui~="master-detail"], auras-master-detail) {
-      grid-template-columns:
-        minmax(15rem, var(--master-detail-master-width))
-        minmax(0, 1fr);
+    @media (min-width: 48rem) {
+      :scope {
+        grid-template-columns:
+          minmax(15rem, var(--master-detail-master-width))
+          minmax(0, 1fr);
+      }
+    }
+
+    [data-part="master"] {
+      display: grid;
+      gap: var(--space-1);
+      align-content: start;
+      padding: var(--master-detail-master-padding);
+      background-color: var(--master-detail-master-bg);
+      border: 1px solid var(--master-detail-master-border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--master-detail-master-shadow);
+    }
+
+    :where(button, a)[data-part="trigger"] {
+      inline-size: 100%;
+      min-block-size: auto;
+      justify-content: flex-start;
+      align-items: flex-start;
+      flex-direction: column;
+      gap: var(--space-1);
+      text-align: left;
+      background-color: var(--master-detail-trigger-bg);
+      border: 1px solid var(--master-detail-trigger-border-color);
+      border-radius: var(--master-detail-trigger-radius);
+      padding: var(--master-detail-trigger-padding);
+      box-shadow: none;
+    }
+
+    :where(button, a)[data-part="trigger"]:hover {
+      background-color: var(--master-detail-trigger-bg-hover);
+    }
+
+    [data-part="trigger"][data-active] {
+      background-color: var(--master-detail-trigger-bg-active);
+      border-color: var(--master-detail-trigger-border-color-active);
+    }
+
+    [data-part="trigger"] > :where(p, small) {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+      line-height: var(--leading-normal);
+    }
+
+    [data-part="trigger"][data-active] > :where(p, small) {
+      color: var(--text);
+    }
+
+    [data-part="detail"] {
+      display: grid;
+      min-inline-size: 0;
+    }
+
+    [data-part="panel"] {
+      display: grid;
+      gap: var(--space-3);
+      min-inline-size: 0;
+    }
+
+    [data-part="panel"][hidden] {
+      display: none !important;
     }
   }
 
-  :where([data-ui~="master-detail"], auras-master-detail) [data-part="master"] {
-    display: grid;
-    gap: var(--space-1);
-    align-content: start;
-    padding: var(--master-detail-master-padding);
-    background-color: var(--master-detail-master-bg);
-    border: 1px solid var(--master-detail-master-border-color);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--master-detail-master-shadow);
-  }
+  @scope (:where([data-ui~="tabs"], auras-tabs))
+    to ([data-ui], auras-master-detail, auras-tabs, auras-tree, auras-combobox, auras-splitter, auras-diagram, auras-sections) {
+    :scope {
+      --tabs-gap: var(--space-4);
+      --tabs-list-gap: var(--space-2);
+      --tabs-list-padding: var(--space-2);
+      --tabs-rule-color: var(--border);
+      --tabs-trigger-bg: transparent;
+      --tabs-trigger-bg-hover: var(--surface-raised);
+      --tabs-trigger-bg-active: var(--primary-subtle);
+      --tabs-trigger-border-color: transparent;
+      --tabs-trigger-border-color-active: color-mix(
+        in oklch,
+        var(--primary) 38%,
+        var(--border)
+      );
 
-  :where([data-ui~="master-detail"], auras-master-detail)
+      display: grid;
+      gap: var(--tabs-gap);
+    }
+
+    [data-part="tablist"] {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--tabs-list-gap);
+      align-items: center;
+      padding-block-end: var(--tabs-list-padding);
+      border-block-end: 1px solid var(--tabs-rule-color);
+    }
+
     :where(button, a)[data-part="trigger"] {
-    inline-size: 100%;
-    min-block-size: auto;
-    justify-content: flex-start;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: var(--space-1);
-    text-align: left;
-    background-color: var(--master-detail-trigger-bg);
-    border: 1px solid var(--master-detail-trigger-border-color);
-    border-radius: var(--master-detail-trigger-radius);
-    padding: var(--master-detail-trigger-padding);
-    box-shadow: none;
-  }
+      min-block-size: auto;
+      box-shadow: none;
+      border: 1px solid var(--tabs-trigger-border-color);
+      border-radius: var(--radius-full);
+      background-color: var(--tabs-trigger-bg);
+      padding-inline: var(--space-3);
+      padding-block: var(--space-2);
+    }
 
-  :where([data-ui~="master-detail"], auras-master-detail)
     :where(button, a)[data-part="trigger"]:hover {
-    background-color: var(--master-detail-trigger-bg-hover);
-  }
+      background-color: var(--tabs-trigger-bg-hover);
+    }
 
-  :where([data-ui~="master-detail"], auras-master-detail)
     [data-part="trigger"][data-active] {
-    background-color: var(--master-detail-trigger-bg-active);
-    border-color: var(--master-detail-trigger-border-color-active);
-  }
+      background-color: var(--tabs-trigger-bg-active);
+      border-color: var(--tabs-trigger-border-color-active);
+    }
 
-  :where([data-ui~="master-detail"], auras-master-detail)
-    [data-part="trigger"]
-    > :where(p, small) {
-    margin: 0;
-    color: var(--text-muted);
-    font-size: var(--text-sm);
-    line-height: var(--leading-normal);
-  }
+    [data-part="panels"] {
+      display: grid;
+      min-inline-size: 0;
+    }
 
-  :where([data-ui~="master-detail"], auras-master-detail)
-    [data-part="trigger"][data-active]
-    > :where(p, small) {
-    color: var(--text);
-  }
+    [data-part="panel"] {
+      display: grid;
+      gap: var(--space-3);
+      min-inline-size: 0;
+    }
 
-  :where([data-ui~="master-detail"], auras-master-detail) [data-part="detail"] {
-    display: grid;
-    min-inline-size: 0;
-  }
-
-  :where([data-ui~="master-detail"], auras-master-detail) [data-part="panel"] {
-    display: grid;
-    gap: var(--space-3);
-    min-inline-size: 0;
-  }
-
-  :where([data-ui~="master-detail"], auras-master-detail)
     [data-part="panel"][hidden] {
-    display: none !important;
-  }
-
-  :where([data-ui~="tabs"], auras-tabs) {
-    --tabs-gap: var(--space-4);
-    --tabs-list-gap: var(--space-2);
-    --tabs-list-padding: var(--space-2);
-    --tabs-rule-color: var(--border);
-    --tabs-trigger-bg: transparent;
-    --tabs-trigger-bg-hover: var(--surface-raised);
-    --tabs-trigger-bg-active: var(--primary-subtle);
-    --tabs-trigger-border-color: transparent;
-    --tabs-trigger-border-color-active: color-mix(
-      in oklch,
-      var(--primary) 38%,
-      var(--border)
-    );
-
-    display: grid;
-    gap: var(--tabs-gap);
-  }
-
-  :where([data-ui~="tabs"], auras-tabs) [data-part="tablist"] {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--tabs-list-gap);
-    align-items: center;
-    padding-block-end: var(--tabs-list-padding);
-    border-block-end: 1px solid var(--tabs-rule-color);
-  }
-
-  :where([data-ui~="tabs"], auras-tabs) :where(button, a)[data-part="trigger"] {
-    min-block-size: auto;
-    box-shadow: none;
-    border: 1px solid var(--tabs-trigger-border-color);
-    border-radius: var(--radius-full);
-    background-color: var(--tabs-trigger-bg);
-    padding-inline: var(--space-3);
-    padding-block: var(--space-2);
-  }
-
-  :where([data-ui~="tabs"], auras-tabs)
-    :where(button, a)[data-part="trigger"]:hover {
-    background-color: var(--tabs-trigger-bg-hover);
-  }
-
-  :where([data-ui~="tabs"], auras-tabs) [data-part="trigger"][data-active] {
-    background-color: var(--tabs-trigger-bg-active);
-    border-color: var(--tabs-trigger-border-color-active);
-  }
-
-  :where([data-ui~="tabs"], auras-tabs) [data-part="panels"] {
-    display: grid;
-    min-inline-size: 0;
-  }
-
-  :where([data-ui~="tabs"], auras-tabs) [data-part="panel"] {
-    display: grid;
-    gap: var(--space-3);
-    min-inline-size: 0;
-  }
-
-  :where([data-ui~="tabs"], auras-tabs) [data-part="panel"][hidden] {
-    display: none !important;
+      display: none !important;
+    }
   }
 
   /* ---- Sections (morphing tabs / accordion) ---- */

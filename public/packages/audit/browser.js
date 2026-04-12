@@ -1,153 +1,14 @@
-const AURAS_CONTRACT_TAG_NAMES = [
-  "auras-tabs",
-  "auras-master-detail",
-  "auras-combobox",
-  "auras-tree",
-  "auras-splitter",
-  "auras-diagram",
-];
+import {
+  AURAS_CONTRACTS,
+  AURAS_CONTRACTS_BY_TAG,
+  AURAS_CONTRACT_TAG_NAMES,
+} from "./contracts.js";
+
+export { AURAS_CONTRACT_TAG_NAMES } from "./contracts.js";
 
 const AURAS_HOST_SELECTOR = AURAS_CONTRACT_TAG_NAMES.join(",");
 
-const CONTRACTS = {
-  "auras-tabs": {
-    tagName: "auras-tabs",
-    summary: "Tab controller with explicit tablist, triggers, and panels.",
-    requiredParts: [
-      {
-        selector: '[data-part="tablist"]',
-        min: 1,
-        max: 1,
-        description: "One tablist container",
-      },
-      {
-        selector: '[data-part="panels"]',
-        min: 1,
-        max: 1,
-        description: "One panels container",
-      },
-      {
-        selector: '[data-part="trigger"][data-value]',
-        min: 1,
-        description: "One or more tab triggers with data-value",
-      },
-      {
-        selector: '[data-part="panel"][data-value]',
-        min: 1,
-        description: "One or more panels with data-value",
-      },
-    ],
-  },
-  "auras-master-detail": {
-    tagName: "auras-master-detail",
-    summary: "Selection controller for a master list and detail panels.",
-    requiredParts: [
-      {
-        selector: '[data-part="master"]',
-        min: 1,
-        max: 1,
-        description: "One master container",
-      },
-      {
-        selector: '[data-part="detail"]',
-        min: 1,
-        max: 1,
-        description: "One detail container",
-      },
-      {
-        selector: '[data-part="trigger"][data-value]',
-        min: 1,
-        description: "One or more triggers with data-value",
-      },
-      {
-        selector: '[data-part="panel"][data-value]',
-        min: 1,
-        description: "One or more panels with data-value",
-      },
-    ],
-  },
-  "auras-combobox": {
-    tagName: "auras-combobox",
-    summary: "Combobox with authored input, local options, and optional panels.",
-    requiredParts: [
-      {
-        selector: '[data-part="input"]',
-        min: 1,
-        max: 1,
-        description: "One text input",
-      },
-      {
-        selector: '[data-part="listbox"]',
-        min: 1,
-        max: 1,
-        description: "One listbox container",
-      },
-      {
-        selector: '[data-part="option"][data-value]',
-        min: 1,
-        description: "One or more options with data-value",
-      },
-    ],
-  },
-  "auras-tree": {
-    tagName: "auras-tree",
-    summary: "Tree controller for hierarchical selection and expansion.",
-    requiredParts: [
-      {
-        selector: '[data-part="tree"]',
-        min: 1,
-        max: 1,
-        description: "One tree container",
-      },
-      {
-        selector: '[data-part="item"][data-value]',
-        min: 1,
-        description: "One or more items with data-value",
-      },
-    ],
-  },
-  "auras-splitter": {
-    tagName: "auras-splitter",
-    summary: "Two-pane splitter with explicit panes and separator.",
-    requiredParts: [
-      {
-        selector: '[data-part="pane"][data-pane="primary"]',
-        min: 1,
-        max: 1,
-        description: "One primary pane",
-      },
-      {
-        selector: '[data-part="separator"]',
-        min: 1,
-        max: 1,
-        description: "One separator",
-      },
-      {
-        selector: '[data-part="pane"][data-pane="secondary"]',
-        min: 1,
-        max: 1,
-        description: "One secondary pane",
-      },
-    ],
-  },
-  "auras-diagram": {
-    tagName: "auras-diagram",
-    summary: "Spatial diagram controller with authored nodes and optional panels.",
-    requiredParts: [
-      {
-        selector: '[data-part="canvas"]',
-        min: 1,
-        max: 1,
-        description: "One canvas container",
-      },
-      {
-        selector: '[data-part="node"][data-value]',
-        min: 1,
-        description: "One or more nodes with data-value",
-      },
-    ],
-  },
-};
+const CONTRACTS = AURAS_CONTRACTS_BY_TAG;
 
 const VALIDATORS = {
   "auras-tabs": (host, context) =>
@@ -176,10 +37,15 @@ const VALIDATORS = {
   "auras-tree": validateTree,
   "auras-splitter": validateSplitter,
   "auras-diagram": validateDiagram,
+  "auras-sections": validateSections,
 };
 
 export function getAurasContract(tagName) {
   return CONTRACTS[tagName] ?? null;
+}
+
+export function getAurasContracts() {
+  return AURAS_CONTRACTS;
 }
 
 export function auditAuras(root, options = {}) {
@@ -334,7 +200,13 @@ function reportDuplicateValues(entries, context, kind) {
   return values;
 }
 
-function reportPairing(sourceValues, targetEntries, context, sourceLabel, targetLabel) {
+function reportPairing(
+  sourceValues,
+  targetEntries,
+  context,
+  sourceLabel,
+  targetLabel,
+) {
   for (const target of targetEntries) {
     const value = target.getAttribute("data-value");
     if (!value || sourceValues.has(value)) {
@@ -570,10 +442,65 @@ function validateDiagram(host, context) {
   }
 }
 
+function validateSections(host, context) {
+  const sections = getOwnedElements(host, '[data-part="section"][data-value]');
+
+  reportDuplicateValues(sections, context, "section");
+
+  for (const section of sections) {
+    const triggers = getDirectChildElements(section, '[data-part="trigger"]');
+    if (triggers.length === 0) {
+      context.add({
+        severity: "error",
+        code: "missing-required-part",
+        selector: describeElement(section),
+        message:
+          'auras-sections section is missing a direct child [data-part="trigger"].',
+        fixHint: "Add one direct child trigger to each section.",
+      });
+    }
+
+    if (triggers.length > 1) {
+      context.add({
+        severity: "error",
+        code: "duplicate-required-part",
+        selector: describeElement(section),
+        message:
+          "auras-sections section has multiple direct child triggers; expected exactly one.",
+        fixHint: 'Keep a single direct child [data-part="trigger"] per section.',
+      });
+    }
+
+    const panels = getDirectChildElements(section, '[data-part="panel"]');
+    if (panels.length === 0) {
+      context.add({
+        severity: "error",
+        code: "missing-required-part",
+        selector: describeElement(section),
+        message:
+          'auras-sections section is missing a direct child [data-part="panel"].',
+        fixHint: "Add one direct child panel to each section.",
+      });
+    }
+
+    if (panels.length > 1) {
+      context.add({
+        severity: "error",
+        code: "duplicate-required-part",
+        selector: describeElement(section),
+        message:
+          "auras-sections section has multiple direct child panels; expected exactly one.",
+        fixHint: 'Keep a single direct child [data-part="panel"] per section.',
+      });
+    }
+  }
+}
+
 if (typeof window !== "undefined") {
   window.AurasAudit = {
     AURAS_CONTRACT_TAG_NAMES,
     auditAuras,
     getAurasContract,
+    getAurasContracts,
   };
 }

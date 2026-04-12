@@ -328,6 +328,8 @@ export class AurasDiagram extends HTMLElement {
     if (!this._selectFromAttribute({ dispatch: false, focus: false })) {
       this._select(entries[0].value, { dispatch: false, focus: false });
     }
+
+    this.setAttribute("hydrated", "");
   }
 
   _disconnect() {
@@ -339,6 +341,7 @@ export class AurasDiagram extends HTMLElement {
     this._canvas = null;
     this._entries = [];
     this.removeAttribute("data-has-panels");
+    this.removeAttribute("hydrated");
   }
 
   _normalizeActivationAttribute() {
