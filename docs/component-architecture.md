@@ -46,6 +46,8 @@ Rules:
 - no JavaScript required
 - no opinionated app structure
 - keep selectors broad and predictable
+- use `@scope` when a local boundary keeps selectors readable without exposing a
+  new author-facing API
 
 ### 2. Composites
 
@@ -73,6 +75,8 @@ Rules:
 - still no JavaScript requirement
 - prefer `data-ui`, `data-layout`, `data-surface`, and `data-part`
 - no hidden DOM generation
+- scope trigger and panel rules to the composite root so repeated `[data-part]`
+  markup does not bleed across adjacent patterns
 - containment is internal-only and should live on the composite root, not as a
   generic author utility
 - only use containment when the composite is already a bounded box with no

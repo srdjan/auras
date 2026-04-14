@@ -63,6 +63,7 @@ foundation; everything else is optional and additive.
 | Shared     | `packages/shared/`                         | Base class (`AurasElement`) and shared utilities for all custom elements                |
 | Components | `packages/components/`                     | Light-DOM custom elements for interactive behavior                                      |
 | Diagram    | `packages/diagram/`                        | Standalone spatial selection component for diagrams                                     |
+| Audit      | `packages/audit/`                          | Markup contract validation for browser, Deno, and CLI workflows                         |
 
 Components ship as both a Deno-first module (`mod.ts`) and a browser-friendly
 no-build entrypoint (`browser.js`). All custom elements extend `AurasElement`
@@ -71,12 +72,19 @@ and the `hydrated` host attribute. See
 [Component Architecture](./docs/component-architecture.md) for the package
 split, decision rules, and progressive enhancement contracts.
 
+The Elements and Composites layers also use CSS `@scope` to keep selector reach
+local. Button styles are scoped to button-like elements, and composite
+`[data-part]` rules are scoped to each pattern root so nested markup does not
+pick up styles from an adjacent component.
+
 ### Included components
 
 - `auras-master-detail` - selection controller for master-detail views
 - `auras-tabs` - tab controller with horizontal arrow-key navigation
 - `auras-combobox` - local-option combobox with filtering and optional linked
   panels
+- `auras-sections` - tabs, accordion, or container-adaptive sections from one
+  authored structure
 - `auras-splitter` - two-pane splitter with keyboard and pointer resize
 - `auras-tree` - hierarchical selection controller with expansion and optional
   panels
@@ -274,9 +282,9 @@ The default spans 3 rows (title + body + actions). Override with
 <article data-layout="subgrid" style="--subgrid-span: 5">...</article>
 ```
 
-| Attribute           | Values              | Default |
-| ------------------- | ------------------- | ------- |
-| `data-subgrid-span` | `2`, `3`, `4`, `5`  | `3`     |
+| Attribute           | Values             | Default |
+| ------------------- | ------------------ | ------- |
+| `data-subgrid-span` | `2`, `3`, `4`, `5` | `3`     |
 
 All cards in the same row band must use the same span value for alignment to
 work correctly. Gap is inherited from the parent grid; override with `data-gap`
@@ -820,9 +828,9 @@ deno task dev
 Run checks and tests:
 
 ```sh
-deno task check      # type-check all packages
-deno task test       # unit tests (happy-dom)
-deno task test:browser  # headless browser smoke tests
+deno task check
+deno task test
+deno task test:browser
 ```
 
 The `main.ts` entry point serves both `deno task dev` and Deno Deploy. It maps
@@ -866,7 +874,12 @@ browsers keep the semantic HTML and base styling:
 | `tests/auras-splitter.test.js`              | Deno behavioral coverage for `auras-splitter`                            |
 | `tests/auras-diagram.test.js`               | Deno behavioral coverage for `auras-diagram`                             |
 | `tests/auras-components.test.js`            | Deno behavioral coverage for the Components package                      |
+| `tests/auras-sections.test.js`              | Deno behavioral coverage for `auras-sections`                            |
 | `tests/auras-tree.test.js`                  | Deno behavioral coverage for `auras-tree`                                |
+| `tests/auras-audit.test.ts`                 | Deno behavioral coverage for `@auras/audit`                              |
+| `tests/auras-audit-cli.test.ts`             | CLI coverage for `@auras/audit`                                          |
+| `tests/public-demo.test.js`                 | Static demo assertions for `public/index.html`                           |
+| `tests/site-seo.test.ts`                    | Documentation route, sitemap, and SEO coverage                           |
 | `packages/elements/auras.css`               | Elements layer stylesheet source                                         |
 | `packages/composites/auras-composites.css`  | Composites layer stylesheet source                                       |
 | `packages/brands/auras-brand.css`           | Auras brand stylesheet source                                            |
@@ -885,11 +898,23 @@ browsers keep the semantic HTML and base styling:
 | `packages/components/README.md`             | Package-level usage notes                                                |
 | `packages/components/src/`                  | Shared logic plus per-component runtime modules                          |
 | `packages/components/src/combobox.ts`       | Combobox runtime for `auras-combobox`                                    |
+| `packages/components/src/master-detail.ts`  | Master-detail runtime for `auras-master-detail`                          |
+| `packages/components/src/sections.ts`       | Morphing sections runtime for `auras-sections`                           |
 | `packages/components/src/splitter.ts`       | Splitter runtime for `auras-splitter`                                    |
+| `packages/components/src/tabs.ts`           | Tabs runtime for `auras-tabs`                                            |
 | `packages/components/src/tree.ts`           | Tree runtime for `auras-tree`                                            |
+| `packages/audit/browser.js`                 | Browser-friendly no-build audit entrypoint                               |
+| `packages/audit/cli.ts`                     | CLI entrypoint for `@auras/audit`                                        |
+| `packages/audit/contracts.js`               | Shared contract definitions                                              |
+| `packages/audit/mod.ts`                     | Deno-first export surface for `@auras/audit`                             |
+| `packages/audit/jsr.json`                   | JSR package metadata for `@auras/audit`                                  |
+| `packages/audit/README.md`                  | Package-level usage notes for `@auras/audit`                             |
 | `public/`                                   | Self-contained demo site, deployable as a static folder                  |
+| `public/index.html`                         | Interactive demo page                                                    |
+| `public/lab.html`                           | Contract Lab for live markup auditing                                    |
 | `public/studio.html`                        | Interactive Theme Studio for visual brand pack creation                  |
 | `main.ts`                                   | Deno Deploy entry point (static file server)                             |
+| `site/docs.ts`                              | Docs route registry, markdown rendering, and sitemap helpers             |
 | `deno.json`                                 | Deno tasks for dev server, type checking, and tests                      |
 | `deno.lock`                                 | Locked JSR and npm test dependencies                                     |
 | `docs/component-architecture.md`            | Architecture note and layer decision rules                               |

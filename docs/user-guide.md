@@ -81,6 +81,10 @@ deno task dev
 - All custom elements extend `AurasElement` from `packages/shared/`, which
   handles property/attribute sync, lifecycle hooks, auto-binding, and the
   `hydrated` host attribute.
+- The Elements and Composites layers use CSS `@scope` to keep selectors local.
+  Button rules stay attached to button-like elements, and composite
+  `[data-part]` rules stay attached to the matching root instead of leaking
+  across nearby patterns.
 - Every component sets `hydrated` on its host after successful initialization.
   Use `auras-*:not([hydrated])` in CSS to hide interactive affordances that need
   JavaScript, and `auras-*[hydrated]` to animate panels after upgrade.
@@ -214,9 +218,9 @@ Useful values:
 
 ### Subgrid
 
-Use `data-layout="subgrid"` on children of a `data-layout="grid"` container
-when their internal rows need to align across siblings. This is the solution for
-card grids where titles, descriptions, and actions should line up regardless of
+Use `data-layout="subgrid"` on children of a `data-layout="grid"` container when
+their internal rows need to align across siblings. This is the solution for card
+grids where titles, descriptions, and actions should line up regardless of
 content length:
 
 ```html
@@ -238,8 +242,8 @@ Each subgrid child spans 3 parent rows by default (title + body + actions). The
 parent's implicit auto rows size based on the tallest content in each row band
 across all cards, producing consistent alignment.
 
-Override the span count with `data-subgrid-span` or the `--subgrid-span`
-custom property:
+Override the span count with `data-subgrid-span` or the `--subgrid-span` custom
+property:
 
 ```html
 <article data-layout="subgrid" data-subgrid-span="4">...</article>
@@ -253,8 +257,12 @@ For column subgrid (rarer, used in form or table alignment), apply the CSS
 directly:
 
 ```html
-<form style="display: grid; grid-template-columns: auto 1fr; gap: var(--space-3)">
-  <fieldset style="display: grid; grid-template-columns: subgrid; grid-column: 1 / -1">
+<form
+  style="display: grid; grid-template-columns: auto 1fr; gap: var(--space-3)"
+>
+  <fieldset
+    style="display: grid; grid-template-columns: subgrid; grid-column: 1 / -1"
+  >
     <label>Name</label>
     <input type="text">
   </fieldset>
@@ -670,8 +678,15 @@ deno task audit public/index.html
 ```
 
 ```ts
-import { auditAuras } from "@auras/audit";
+import {
+  auditAuras,
+  getAurasContract,
+  getAurasContracts,
+} from "jsr:@auras/audit";
+
 const diagnostics = auditAuras(document);
+const allContracts = getAurasContracts();
+const sectionsContract = getAurasContract("auras-sections");
 ```
 
 The [Contract Lab](/lab.html) provides a live editor where you can paste markup,
@@ -799,6 +814,8 @@ The demo also exercises:
 | `tests/auras-tree.test.js`                  | Deno behavioral coverage for `auras-tree`        |
 | `tests/auras-audit.test.ts`                 | Deno behavioral coverage for `@auras/audit`      |
 | `tests/auras-audit-cli.test.ts`             | CLI test for `@auras/audit`                      |
+| `tests/public-demo.test.js`                 | Static demo assertions for `public/index.html`   |
+| `tests/site-seo.test.ts`                    | Docs route, sitemap, and SEO coverage            |
 | `packages/elements/auras.css`               | Elements layer stylesheet source                 |
 | `packages/composites/auras-composites.css`  | Composites layer stylesheet source               |
 | `packages/brands/auras-brand.css`           | Auras brand stylesheet source                    |
@@ -817,7 +834,10 @@ The demo also exercises:
 | `packages/components/README.md`             | Package-level usage note                         |
 | `packages/components/src/`                  | Shared logic plus per-component modules          |
 | `packages/components/src/combobox.ts`       | `auras-combobox` runtime module                  |
+| `packages/components/src/master-detail.ts`  | `auras-master-detail` runtime module             |
+| `packages/components/src/sections.ts`       | `auras-sections` runtime module                  |
 | `packages/components/src/splitter.ts`       | `auras-splitter` runtime module                  |
+| `packages/components/src/tabs.ts`           | `auras-tabs` runtime module                      |
 | `packages/components/src/tree.ts`           | `auras-tree` runtime module                      |
 | `packages/audit/mod.ts`                     | Deno-first audit package surface                 |
 | `packages/audit/browser.js`                 | Browser-friendly no-build audit entrypoint       |
@@ -828,6 +848,7 @@ The demo also exercises:
 | `deno.json`                                 | Deno tasks for dev server, checking, and tests   |
 | `deno.lock`                                 | Locked JSR and npm test dependencies             |
 | `main.ts`                                   | Deno Deploy entry point (static file server)     |
+| `site/docs.ts`                              | Docs route registry and markdown rendering       |
 | `public/index.html`                         | Interactive demo page                            |
 | `public/studio.html`                        | Theme Studio for visual brand pack creation      |
 | `public/lab.html`                           | Contract Lab for live markup auditing            |

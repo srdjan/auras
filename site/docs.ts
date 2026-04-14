@@ -26,7 +26,7 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
     sourcePath: "./docs/user-guide.md",
     title: "Auras CSS User Guide",
     description:
-      "Installation, layout primitives, tokens, theming, utilities, and interactive component patterns for Auras CSS.",
+      "Installation, layout primitives, tokens, theming, scoped selector boundaries, and interactive component patterns for Auras CSS.",
     category: "Guide",
     related: [
       {
@@ -43,7 +43,7 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
     sourcePath: "./docs/component-architecture.md",
     title: "Auras CSS Component Architecture",
     description:
-      "How Auras CSS is structured into Elements, Composites, and light-DOM Components, plus the public styling and behavior contract.",
+      "How Auras CSS is structured into Elements, Composites, and light-DOM Components, including scoped selector boundaries and public behavior contracts.",
     category: "Architecture",
     related: [
       { href: "/docs/user-guide/", label: "User guide" },
@@ -57,7 +57,7 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
     sourcePath: "./packages/components/README.md",
     title: "@auras/components",
     description:
-      "Light-DOM interactive components for Auras CSS, including tabs, combobox, splitter, tree, and master-detail.",
+      "Light-DOM interactive components for Auras CSS, including master-detail, tabs, tree, combobox, splitter, and sections.",
     category: "Package Docs",
     related: [
       { href: "/docs/user-guide/", label: "User guide" },
@@ -91,7 +91,7 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
     sourcePath: "./packages/audit/README.md",
     title: "@auras/audit",
     description:
-      "Validate authored Auras markup against light-DOM contracts in the browser, tests, or CLI.",
+      "Validate authored Auras markup against light-DOM contracts in the browser, Deno, tests, or CLI.",
     category: "Package Docs",
     related: [
       { href: "/docs/user-guide/", label: "User guide" },

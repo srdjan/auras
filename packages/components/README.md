@@ -1,6 +1,7 @@
 # @auras/components
 
-Light-DOM interactive components for Auras.
+Light-DOM interactive components for Auras, including shared selectable-panel
+patterns and container-adaptive sections.
 
 Related docs:
 
@@ -10,22 +11,15 @@ Related docs:
 
 Current exports:
 
-- `AurasCombobox`
-- `AurasMasterDetail`
-- `AurasSplitter`
-- `AurasTree`
-- `AurasTabs`
-- `registerAurasCombobox()`
-- `registerAurasComponents()`
-- `registerAurasMasterDetail()`
-- `registerAurasSplitter()`
-- `registerAurasTree()`
-- `registerAurasTabs()`
+- tag name constants, element classes, and register helpers for
+  `auras-combobox`, `auras-master-detail`, `auras-sections`, `auras-splitter`,
+  `auras-tabs`, and `auras-tree`
+- `registerAurasComponents()` to register the full set in one call
 
 Example:
 
 ```ts
-import { registerAurasComponents } from "@auras/components";
+import { registerAurasComponents } from "jsr:@auras/components";
 
 registerAurasComponents();
 ```

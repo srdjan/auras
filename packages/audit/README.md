@@ -13,8 +13,10 @@ upgrade. It catches:
 
 - missing or extra required parts
 - duplicate `data-value` attributes within a host
-- orphaned trigger/panel pairings (a trigger with no matching panel, or vice versa)
-- accessibility gaps defined by each contract (missing `aria-label`, unlabeled separators)
+- orphaned trigger/panel pairings (a trigger with no matching panel, or vice
+  versa)
+- accessibility gaps defined by each contract (missing `aria-label`, unlabeled
+  separators)
 
 Covered components: `auras-tabs`, `auras-master-detail`, `auras-combobox`,
 `auras-tree`, `auras-splitter`, `auras-diagram`, `auras-sections`.
@@ -24,10 +26,15 @@ Covered components: `auras-tabs`, `auras-master-detail`, `auras-combobox`,
 ### Deno / TypeScript
 
 ```ts
-import { auditAuras, getAurasContracts } from "@auras/audit";
+import {
+  auditAuras,
+  getAurasContract,
+  getAurasContracts,
+} from "jsr:@auras/audit";
 
 const diagnostics = auditAuras(document);
 const contracts = getAurasContracts();
+const sectionsContract = getAurasContract("auras-sections");
 ```
 
 ### Browser
@@ -48,6 +55,9 @@ deno task audit public/index.html
 The CLI parses the file with HappyDOM, runs the same audit, and prints
 diagnostics with exit code 1 when errors are found. Useful in CI or pre-commit
 hooks.
+
+Pass `{ include: ["auras-tabs", "auras-sections"] }` when you want to audit a
+subset of contracts.
 
 ## Contract Registry
 
