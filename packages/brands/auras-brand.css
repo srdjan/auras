@@ -1,9 +1,11 @@
 /* Sample Auras brand pack. Load this on top of auras.css to opt into a
-   branded design system while keeping the headless core unchanged. */
+   branded design system while keeping the headless core unchanged. The
+   default core ships with a compact, neutral baseline; this pack layers
+   a saturated primary and slightly richer surface treatment on top. */
 @layer brands {
   [data-brand="auras"] {
     --primary-l: 55%;
-    --primary-c: 0.15;
+    --primary-c: 0.17;
     --primary: oklch(var(--primary-l) var(--primary-c) var(--hue-primary));
     --primary-hover: oklch(
       calc(var(--primary-l) - 5%)
@@ -11,8 +13,8 @@
       var(--hue-primary)
     );
     --primary-subtle: oklch(
-      calc(var(--primary-l) + 20%)
-      0.05
+      calc(var(--primary-l) + 25%)
+      0.06
       var(--hue-primary)
     );
 
@@ -41,15 +43,12 @@
     --button-solid-bg: var(--primary);
     --button-soft-bg: var(--primary-subtle);
     --page-padding-block: var(--space-6);
+
+    /* Lift surfaces just slightly above the flat compact default */
     --card-shadow: var(--shadow-sm);
     --card-border-color: color-mix(in oklch, var(--border) 60%, transparent);
 
-    /* Radius bump */
-    --radius-md: 0.625rem;
-    --button-radius: var(--radius-md);
-    --field-radius: var(--radius-md);
-
-    /* Dialog */
+    /* Dialog backdrop blur is richer in branded mode */
     --dialog-backdrop-blur: 0.65rem;
   }
 
