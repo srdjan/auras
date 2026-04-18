@@ -152,22 +152,25 @@
     --text-muted: var(--gray-7);
     --link: color-mix(in oklch, var(--text) 68%, var(--primary));
     --link-visited: color-mix(in oklch, var(--text) 60%, var(--secondary));
-    --border: var(--gray-3);
-    --border-strong: var(--gray-5);
+    --border: var(--gray-2);
+    --border-strong: var(--gray-4);
     --focus-ring: var(--primary);
-    --focus-ring-width: 2px;
-    --focus-ring-offset: 2px;
-    --focus-ring-shadow: 0 0 0 4px color-mix(in oklch, var(--focus-ring) 22%, transparent);
+    --focus-ring-width: 3px;
+    --focus-ring-offset: 0px;
+    --focus-ring-shadow: 0 0 0 3px color-mix(in oklch, var(--focus-ring) 45%, transparent);
     --border-translucent: color-mix(in oklch, var(--text) 12%, transparent);
     --surface: white;
     --surface-raised: var(--gray-1);
 
-    /* Borders & shadows */
-    --radius-sm: 0.25rem;
+    /* Borders & shadows (two-tier radius: controls vs surfaces) */
+    --radius: 0.625rem;
+    --radius-sm: 0.375rem;
     --radius-md: 0.5rem;
-    --radius-lg: 1rem;
+    --radius-lg: 0.875rem;
+    --radius-xl: 1.125rem;
     --radius-full: 9999px;
 
+    --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-sm:
       0 1px 2px 0 rgb(0 0 0 / 0.05),
       0 1px 3px 0 rgb(0 0 0 / 0.08);
@@ -203,8 +206,9 @@
     --button-radius: var(--radius-md);
     --button-padding-block: var(--space-2);
     --button-padding-inline: var(--space-4);
-    --button-shadow: none;
-    --button-min-block-size: 2.5rem;
+    --button-font-size: var(--text-sm);
+    --button-shadow: var(--shadow-xs);
+    --button-min-block-size: 2.25rem;
     --button-solid-bg: var(--primary);
     --button-solid-color: var(--text-on-primary);
     --button-soft-bg: var(--primary-subtle);
@@ -214,15 +218,20 @@
     --field-color: var(--text);
     --field-border-color: var(--border);
     --field-border-color-invalid: var(--color-error);
-    --field-radius: var(--radius-sm);
-    --field-shadow: none;
-    --field-focus-shadow: 0 0 0 3px color-mix(in oklch, var(--focus-ring) 18%, transparent);
+    --field-radius: var(--radius-md);
+    --field-padding-block: 0.375rem;
+    --field-padding-inline: 0.75rem;
+    --field-font-size: var(--text-sm);
+    --field-min-block-size: 2.25rem;
+    --field-shadow: var(--shadow-xs);
+    --field-focus-shadow: 0 0 0 3px color-mix(in oklch, var(--focus-ring) 40%, transparent);
     --select-indicator-size: 0.45rem;
     --select-indicator-offset: var(--space-4);
 
     --card-bg: var(--surface);
     --card-border-color: var(--border);
     --card-padding: var(--space-6);
+    --card-radius: var(--radius-lg);
     --card-shadow: none;
 
     --notice-bg: var(--surface-raised);
@@ -260,6 +269,8 @@
 
     --dialog-backdrop: oklch(0% 0 0 / 0.45);
     --dialog-backdrop-blur: 0.35rem;
+    --dialog-radius: var(--radius-xl);
+    --dialog-shadow: var(--shadow-lg);
 
     --busy-spinner-size: 1em;
     --busy-spinner-border-width: 0.15em;
@@ -290,13 +301,14 @@
   [data-theme~="dark"] {
     --primary-l: 70%;
     --text-on-primary: black;
-    --bg: oklch(8% 0 0);
+    --bg: oklch(14.5% 0 0);
     --text: var(--gray-0);
     --text-muted: var(--gray-5);
-    --surface: var(--gray-12);
-    --surface-raised: var(--gray-11);
-    --border: var(--gray-7);
-    --border-strong: var(--gray-5);
+    --surface: var(--gray-11);
+    --surface-raised: var(--gray-10);
+    --border: color-mix(in oklch, white 10%, transparent);
+    --border-strong: color-mix(in oklch, white 18%, transparent);
+    --field-border-color: color-mix(in oklch, white 15%, transparent);
     --link: oklch(75% 0.15 var(--hue-primary));
     --link-visited: oklch(75% 0.1 var(--hue-secondary));
     --primary-hover: oklch(
@@ -322,7 +334,7 @@
     --shadow-xl:
       0 8px 12px -4px rgb(0 0 0 / 0.2),
       0 24px 48px -8px rgb(0 0 0 / 0.4);
-    --focus-ring-shadow: 0 0 0 4px color-mix(in oklch, var(--focus-ring) 30%, transparent);
+    --focus-ring-shadow: 0 0 0 3px color-mix(in oklch, var(--focus-ring) 50%, transparent);
     --border-translucent: color-mix(in oklch, var(--text) 15%, transparent);
 
     /* Syntax highlighting - bump lightness for dark */
@@ -353,13 +365,14 @@
     :root:not([data-theme]) {
       --primary-l: 70%;
       --text-on-primary: black;
-      --bg: oklch(8% 0 0);
+      --bg: oklch(14.5% 0 0);
       --text: var(--gray-0);
       --text-muted: var(--gray-5);
-      --surface: var(--gray-12);
-      --surface-raised: var(--gray-11);
-      --border: var(--gray-7);
-      --border-strong: var(--gray-5);
+      --surface: var(--gray-11);
+      --surface-raised: var(--gray-10);
+      --border: color-mix(in oklch, white 10%, transparent);
+      --border-strong: color-mix(in oklch, white 18%, transparent);
+      --field-border-color: color-mix(in oklch, white 15%, transparent);
       --link: oklch(75% 0.15 var(--hue-primary));
       --link-visited: oklch(75% 0.1 var(--hue-secondary));
       --primary-hover: oklch(
@@ -385,7 +398,7 @@
       --shadow-xl:
         0 8px 12px -4px rgb(0 0 0 / 0.2),
         0 24px 48px -8px rgb(0 0 0 / 0.4);
-      --focus-ring-shadow: 0 0 0 4px color-mix(in oklch, var(--focus-ring) 30%, transparent);
+      --focus-ring-shadow: 0 0 0 3px color-mix(in oklch, var(--focus-ring) 50%, transparent);
       --border-translucent: color-mix(in oklch, var(--text) 15%, transparent);
 
       /* Syntax highlighting - bump lightness for dark */
@@ -437,6 +450,8 @@
     padding-block: var(--page-padding-block);
     accent-color: var(--primary);
     caret-color: var(--primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 
     overflow-x: clip;
 
@@ -559,7 +574,9 @@
       justify-content: center;
       gap: var(--space-2);
       min-block-size: var(--button-min-block-size);
+      font-size: var(--button-font-size);
       font-weight: 500;
+      line-height: 1.25;
       background-color: var(--button-bg);
       color: var(--button-color);
       border: var(--button-border-width) solid var(--button-border-color);
@@ -584,10 +601,10 @@
       --button-border-color: transparent;
       --button-hover-bg: var(--primary-hover);
       --button-hover-border-color: transparent;
-      --button-shadow: var(--shadow-sm);
+      --button-shadow: var(--shadow-xs);
     }
     :scope[data-variant="solid"]:hover {
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-sm);
     }
     :scope[data-variant="soft"] {
       --button-bg: var(--button-soft-bg);
@@ -602,6 +619,7 @@
     }
     :scope[data-variant="ghost"] {
       --button-border-color: transparent;
+      --button-shadow: none;
     }
   }
   @supports (color: color-mix(in oklch, black, white)) {
@@ -645,8 +663,11 @@
   ) {
     background-color: var(--field-bg);
     color: var(--field-color);
+    font-size: var(--field-font-size);
+    line-height: 1.25;
+    min-block-size: var(--field-min-block-size);
     border: 1px solid var(--field-border-color);
-    padding: var(--space-2) var(--space-3);
+    padding: var(--field-padding-block) var(--field-padding-inline);
     border-radius: var(--field-radius);
     box-shadow: var(--field-shadow);
     width: 100%;
@@ -951,9 +972,9 @@
     background: var(--surface);
     color: var(--text);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--dialog-radius);
     padding: var(--space-6);
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--dialog-shadow);
     max-inline-size: min(90vw, 38rem);
     margin-block-start: max(8vh, var(--space-8));
     opacity: 0;
@@ -1046,6 +1067,24 @@
       grid-template-rows: masonry;
     }
   }
+  /* Subgrid row alignment */
+  :where([data-layout~="subgrid"]) {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span var(--subgrid-span, 3);
+  }
+
+  /* Subgrid span presets */
+  :where([data-subgrid-span="2"]) {
+    --subgrid-span: 2;
+  }
+  :where([data-subgrid-span="4"]) {
+    --subgrid-span: 4;
+  }
+  :where([data-subgrid-span="5"]) {
+    --subgrid-span: 5;
+  }
+
   /* New orthogonal alignment API */
   :where([data-align="start"]) {
     align-items: flex-start;
@@ -1108,9 +1147,26 @@
   :where([data-grid-min="lg"]) {
     --grid-min: 350px;
   }
+  /* Physical-object aliases (component-scale vocabulary) */
+  :where([data-grid-min="coin"]) {
+    --grid-min: 120px;
+  }
+  :where([data-grid-min="note"]) {
+    --grid-min: 240px;
+  }
+  :where([data-grid-min="card"]) {
+    --grid-min: 384px;
+  }
+  :where([data-grid-min="page"]) {
+    --grid-min: 600px;
+  }
+  :where([data-grid-min="wide"]) {
+    --grid-min: 970px;
+  }
 
-  /* Responsive stack: row on desktop, column on mobile */
-  @media (max-width: 640px) {
+  /* Responsive stack: row on desktop, column on mobile.
+     Uses rem so user font-size magnification shifts the breakpoint. */
+  @media (max-width: 40rem) {
     :where([data-stack="mobile"]) {
       flex-direction: column;
     }
@@ -1217,7 +1273,7 @@
   }
 
   :where([data-surface~="card"]) {
-    border-radius: var(--radius-md);
+    border-radius: var(--card-radius);
     padding: var(--card-padding);
     background-color: var(--card-bg);
     border: 1px solid var(--card-border-color);
@@ -1439,7 +1495,7 @@
     :root:not([data-theme]) [data-show-theme="dark"] { display: revert-layer; }
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 40rem) {
     [data-hide~="mobile"] {
       display: none;
     }

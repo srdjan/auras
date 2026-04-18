@@ -1,0 +1,118 @@
+/* ===== AURAS BREAKPOINTS (optional) =====
+   Responsive primitives inspired by @propjockey/breakpoint-system.
+   Exposes 0/1 flag tokens that callers compose inside calc() to avoid
+   media-query proliferation in component CSS. Pure CSS, no JS.
+
+   Usage:
+     <body data-bp="stage">     queries the viewport (rem-aware)
+     <section data-bp="node">   queries the nearest container
+
+   Flags are integers so @property registration animates token-based
+   values smoothly when a breakpoint crosses.
+*/
+
+/* Register flags as typed properties so transitions interpolate cleanly. */
+@property --bp-gte-sm {
+  syntax: "<integer>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --bp-gte-md {
+  syntax: "<integer>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --bp-gte-lg {
+  syntax: "<integer>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --bp-gte-xl {
+  syntax: "<integer>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@layer layouts {
+  /* Stage: viewport-anchored. Rem-based so user font-size shifts the
+     breakpoint ladder proportionally (accessibility: 150% magnification
+     widens each breakpoint instead of clipping layout). */
+  :where([data-bp~="stage"]) {
+    --bp-gte-sm: 0;
+    --bp-gte-md: 0;
+    --bp-gte-lg: 0;
+    --bp-gte-xl: 0;
+    --bp-lt-sm: 1;
+    --bp-lt-md: 1;
+    --bp-lt-lg: 1;
+    --bp-lt-xl: 1;
+  }
+
+  @media (min-width: 40rem) {
+    :where([data-bp~="stage"]) {
+      --bp-gte-sm: 1;
+      --bp-lt-sm: 0;
+    }
+  }
+  @media (min-width: 64rem) {
+    :where([data-bp~="stage"]) {
+      --bp-gte-md: 1;
+      --bp-lt-md: 0;
+    }
+  }
+  @media (min-width: 80rem) {
+    :where([data-bp~="stage"]) {
+      --bp-gte-lg: 1;
+      --bp-lt-lg: 0;
+    }
+  }
+  @media (min-width: 96rem) {
+    :where([data-bp~="stage"]) {
+      --bp-gte-xl: 1;
+      --bp-lt-xl: 0;
+    }
+  }
+
+  /* Node: container-anchored. The element establishes an inline-size
+     containment context; flags are resolved on its descendants (not on
+     the node itself - a container cannot query its own size without a
+     layout feedback loop). Style the node's children using the flags. */
+  :where([data-bp~="node"]) {
+    container-type: inline-size;
+  }
+  :where([data-bp~="node"]) * {
+    --bp-gte-sm: 0;
+    --bp-gte-md: 0;
+    --bp-gte-lg: 0;
+    --bp-gte-xl: 0;
+    --bp-lt-sm: 1;
+    --bp-lt-md: 1;
+    --bp-lt-lg: 1;
+    --bp-lt-xl: 1;
+  }
+
+  @container (min-width: 40rem) {
+    :where([data-bp~="node"]) * {
+      --bp-gte-sm: 1;
+      --bp-lt-sm: 0;
+    }
+  }
+  @container (min-width: 64rem) {
+    :where([data-bp~="node"]) * {
+      --bp-gte-md: 1;
+      --bp-lt-md: 0;
+    }
+  }
+  @container (min-width: 80rem) {
+    :where([data-bp~="node"]) * {
+      --bp-gte-lg: 1;
+      --bp-lt-lg: 0;
+    }
+  }
+  @container (min-width: 96rem) {
+    :where([data-bp~="node"]) * {
+      --bp-gte-xl: 1;
+      --bp-lt-xl: 0;
+    }
+  }
+}
