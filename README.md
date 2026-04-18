@@ -55,15 +55,16 @@ framework.
 The framework is split into independent layers. The Elements layer is the
 foundation; everything else is optional and additive.
 
-| Package    | Path                                       | Purpose                                                                                 |
-| ---------- | ------------------------------------------ | --------------------------------------------------------------------------------------- |
-| Elements   | `packages/elements/auras.css`              | Core stylesheet: reset, tokens, typography, layout, components, utilities, a11y, print  |
-| Composites | `packages/composites/auras-composites.css` | CSS-only app patterns (example, master-detail, tabs, combobox, splitter, tree, diagram) |
-| Brands     | `packages/brands/`                         | Token override packs scoped to `data-brand`                                             |
-| Shared     | `packages/shared/`                         | Base class (`AurasElement`) and shared utilities for all custom elements                |
-| Components | `packages/components/`                     | Light-DOM custom elements for interactive behavior                                      |
-| Diagram    | `packages/diagram/`                        | Standalone spatial selection component for diagrams                                     |
-| Audit      | `packages/audit/`                          | Markup contract validation for browser, Deno, and CLI workflows                         |
+| Package     | Path                                           | Purpose                                                                                 |
+| ----------- | ---------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Elements    | `packages/elements/auras.css`                  | Core stylesheet: reset, tokens, typography, layout, components, utilities, a11y, print  |
+| Composites  | `packages/composites/auras-composites.css`     | CSS-only app patterns (example, master-detail, tabs, combobox, splitter, tree, diagram) |
+| Breakpoints | `packages/breakpoints/auras-breakpoints.css`   | Optional responsive flag tokens for `data-bp="stage\|node"`                             |
+| Brands      | `packages/brands/`                             | Token override packs scoped to `data-brand`                                             |
+| Shared      | `packages/shared/`                             | Base class (`AurasElement`) and shared utilities for all custom elements                |
+| Components  | `packages/components/`                         | Light-DOM custom elements for interactive behavior                                      |
+| Diagram     | `packages/diagram/`                            | Standalone spatial selection component for diagrams                                     |
+| Audit       | `packages/audit/`                              | Markup contract validation for browser, Deno, and CLI workflows                         |
 
 Components ship as both a Deno-first module (`mod.ts`) and a browser-friendly
 no-build entrypoint (`browser.js`). All custom elements extend `AurasElement`
@@ -254,6 +255,17 @@ Or set the column minimum directly:
 <div data-layout="grid" style="--grid-min: 200px"></div>
 ```
 
+Physical-object aliases are available when a component-scale vocabulary
+reads more clearly than abstract sizes:
+
+| Alias  | `--grid-min` |
+| ------ | ------------ |
+| `coin` | 120px        |
+| `note` | 240px        |
+| `card` | 384px        |
+| `page` | 600px        |
+| `wide` | 970px        |
+
 ### Subgrid (cross-item alignment)
 
 When cards or repeated items in a grid need their internal rows to align across
@@ -294,9 +306,58 @@ on the subgrid child if needed.
 
 ```html
 <div data-layout="row" data-stack="mobile">
-  <!-- row on desktop, column below 640px -->
+  <!-- row on desktop, column below 40rem (~640px, scales with user font size) -->
 </div>
 ```
+
+### Responsive primitives (optional)
+
+Load `packages/breakpoints/auras-breakpoints.css` when you want named
+breakpoint flags without writing media queries inside component CSS.
+Authors compose values with `calc()` against 0/1 integer flags:
+
+```html
+<link rel="stylesheet" href="packages/elements/auras.css" />
+<link rel="stylesheet" href="packages/breakpoints/auras-breakpoints.css" />
+
+<body data-bp="stage">
+  <section data-bp="node">
+    <article data-surface="card">...</article>
+  </section>
+</body>
+```
+
+```css
+.hero {
+  padding-block: calc(
+    var(--space-6) + var(--bp-gte-md) * var(--space-4)
+  );
+  font-size: calc(
+    var(--text-lg) * var(--bp-lt-md) +
+    var(--text-2xl) * var(--bp-gte-md)
+  );
+}
+```
+
+| Attribute           | Queries           | Notes                                                                          |
+| ------------------- | ----------------- | ------------------------------------------------------------------------------ |
+| `data-bp="stage"`   | Viewport          | rem-based, respects user font size. Flags resolved on the stage root.          |
+| `data-bp="node"`    | Nearest container | Establishes `container-type: inline-size`. Flags resolved on node descendants. |
+
+| Token           | Value when active         |
+| --------------- | ------------------------- |
+| `--bp-gte-sm`   | `1` at or above `40rem`   |
+| `--bp-gte-md`   | `1` at or above `64rem`   |
+| `--bp-gte-lg`   | `1` at or above `80rem`   |
+| `--bp-gte-xl`   | `1` at or above `96rem`   |
+| `--bp-lt-sm`    | inverse of `--bp-gte-sm`  |
+| `--bp-lt-md`    | inverse of `--bp-gte-md`  |
+| `--bp-lt-lg`    | inverse of `--bp-gte-lg`  |
+| `--bp-lt-xl`    | inverse of `--bp-gte-xl`  |
+
+The flags are registered with `@property`, so values derived through
+`calc()` animate smoothly when a breakpoint crosses. This package is
+optional; the Elements layer works without it.
 
 ## Theming
 
@@ -882,6 +943,7 @@ browsers keep the semantic HTML and base styling:
 | `tests/site-seo.test.ts`                    | Documentation route, sitemap, and SEO coverage                           |
 | `packages/elements/auras.css`               | Elements layer stylesheet source                                         |
 | `packages/composites/auras-composites.css`  | Composites layer stylesheet source                                       |
+| `packages/breakpoints/auras-breakpoints.css`| Optional responsive flag tokens for `data-bp="stage\|node"`              |
 | `packages/brands/auras-brand.css`           | Auras brand stylesheet source                                            |
 | `packages/brands/auras-brand-editorial.css` | Editorial brand stylesheet source                                        |
 | `packages/diagram/browser.js`               | Browser-friendly no-build diagram entrypoint                             |

@@ -212,9 +212,67 @@ Useful values:
 - `data-align="start" | "center" | "end" | "stretch"`
 - `data-justify="start" | "center" | "end" | "between" | "around" | "evenly"`
 - `data-gap="1" | "2" | "3" | "4" | "6" | "8"`
-- `data-grid-min="sm" | "md" | "lg"`
+- `data-grid-min="sm" | "md" | "lg"` (or physical-object aliases `coin | note | card | page | wide`)
 - `data-subgrid-span="2" | "3" | "4" | "5"`
 - `data-stack="mobile"` to collapse a row into a column on small screens
+
+The `data-stack="mobile"` and `data-hide="mobile"` breakpoints use
+`40rem` rather than a fixed pixel value, so they shift proportionally
+when a user increases system font size.
+
+### Responsive primitives (optional)
+
+Load the Breakpoints package when you want named breakpoint flags
+without writing media queries inside component CSS:
+
+```html
+<link rel="stylesheet" href="packages/breakpoints/auras-breakpoints.css" />
+
+<body data-bp="stage">
+  <section data-bp="node" data-layout="stack" data-gap="4">
+    <article data-surface="card">...</article>
+  </section>
+</body>
+```
+
+`data-bp="stage"` queries the viewport; `data-bp="node"` queries the
+nearest container (the element establishes `container-type: inline-size`
+automatically). A `data-bp="node"` root cannot react to its own size -
+that would create a layout feedback loop - so flags are resolved on
+the node's descendants. Style the children using the tokens; wrap
+content in an inner element if you need the node itself to react.
+
+Both scopes expose identical flag tokens:
+
+| Token           | Value when active         |
+| --------------- | ------------------------- |
+| `--bp-gte-sm`   | `1` at or above `40rem`   |
+| `--bp-gte-md`   | `1` at or above `64rem`   |
+| `--bp-gte-lg`   | `1` at or above `80rem`   |
+| `--bp-gte-xl`   | `1` at or above `96rem`   |
+| `--bp-lt-sm`    | inverse of `--bp-gte-sm`  |
+| `--bp-lt-md`    | inverse of `--bp-gte-md`  |
+| `--bp-lt-lg`    | inverse of `--bp-gte-lg`  |
+| `--bp-lt-xl`    | inverse of `--bp-gte-xl`  |
+
+Compose with `calc()` to select values by breakpoint without writing
+a media query:
+
+```css
+.hero {
+  padding-block: calc(
+    var(--space-6) + var(--bp-gte-md) * var(--space-4)
+  );
+  font-size: calc(
+    var(--text-lg) * var(--bp-lt-md) +
+    var(--text-2xl) * var(--bp-gte-md)
+  );
+}
+```
+
+Flags are `@property`-registered integers, so values derived through
+`calc()` animate smoothly when a breakpoint crosses. The package is
+entirely optional; Elements works without it.
 
 ### Subgrid
 

@@ -1147,9 +1147,26 @@
   :where([data-grid-min="lg"]) {
     --grid-min: 350px;
   }
+  /* Physical-object aliases (component-scale vocabulary) */
+  :where([data-grid-min="coin"]) {
+    --grid-min: 120px;
+  }
+  :where([data-grid-min="note"]) {
+    --grid-min: 240px;
+  }
+  :where([data-grid-min="card"]) {
+    --grid-min: 384px;
+  }
+  :where([data-grid-min="page"]) {
+    --grid-min: 600px;
+  }
+  :where([data-grid-min="wide"]) {
+    --grid-min: 970px;
+  }
 
-  /* Responsive stack: row on desktop, column on mobile */
-  @media (max-width: 640px) {
+  /* Responsive stack: row on desktop, column on mobile.
+     Uses rem so user font-size magnification shifts the breakpoint. */
+  @media (max-width: 40rem) {
     :where([data-stack="mobile"]) {
       flex-direction: column;
     }
@@ -1478,7 +1495,7 @@
     :root:not([data-theme]) [data-show-theme="dark"] { display: revert-layer; }
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 40rem) {
     [data-hide~="mobile"] {
       display: none;
     }
