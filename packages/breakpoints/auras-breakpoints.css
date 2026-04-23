@@ -115,4 +115,25 @@
       --bp-lt-xl: 0;
     }
   }
+
+  /* ===== Fluid primitives (container-unit driven) =====
+     Opt-in with data-fluid on any descendant of a container-anchored
+     node (data-bp="node") or any ancestor that sets
+     container-type: inline-size. Values scale with the container's
+     inline size (cqi = 1% of container inline-size), not the viewport,
+     so a card shrinks in a sidebar without a single media query.
+
+     Compose tokens by space-separating: data-fluid="type pad gap". */
+  :where([data-fluid~="type"]) {
+    font-size: clamp(0.875rem, 3cqi, 1.25rem);
+  }
+  :where([data-fluid~="pad"]) {
+    padding: clamp(0.5rem, 3cqi, 2rem);
+  }
+  :where([data-fluid~="gap"]) {
+    gap: clamp(0.25rem, 2cqi, 1.5rem);
+  }
+  :where([data-fluid~="radius"]) {
+    border-radius: clamp(0.25rem, 1cqi, 1rem);
+  }
 }

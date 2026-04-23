@@ -73,6 +73,17 @@
     --space-12: 3rem;
     --space-16: 4rem;
 
+    /* Fluid spacing: clamp-based counterparts that scale with viewport (vi).
+       Use these in place of static --space-* when the goal is continuous
+       scaling rather than a discrete step. Min/max track the static scale
+       so rhythm matches at both ends. */
+    --space-fluid-xs: clamp(0.25rem, 0.15rem + 0.5vi, 0.5rem);
+    --space-fluid-sm: clamp(0.5rem, 0.3rem + 1vi, 1rem);
+    --space-fluid-md: clamp(1rem, 0.6rem + 2vi, 2rem);
+    --space-fluid-lg: clamp(1.5rem, 0.9rem + 3vi, 3rem);
+    --space-fluid-xl: clamp(2rem, 1.2rem + 4vi, 4rem);
+    --space-fluid-2xl: clamp(3rem, 1.8rem + 6vi, 6rem);
+
     /* Fonts */
     --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     --font-serif: Georgia, serif;
@@ -113,8 +124,7 @@
     );
     --primary-subtle: oklch(
       calc(var(--primary-l) + 28%)
-      0.02
-      var(--hue-primary)
+      0.02 var(--hue-primary)
     );
 
     /* Secondary */
@@ -157,7 +167,11 @@
     --focus-ring: var(--primary);
     --focus-ring-width: 3px;
     --focus-ring-offset: 0px;
-    --focus-ring-shadow: 0 0 0 3px color-mix(in oklch, var(--focus-ring) 45%, transparent);
+    --focus-ring-shadow: 0 0 0 3px color-mix(
+      in oklch,
+      var(--focus-ring) 45%,
+      transparent
+    );
     --border-translucent: color-mix(in oklch, var(--text) 12%, transparent);
     --surface: white;
     --surface-raised: var(--gray-1);
@@ -171,9 +185,7 @@
     --radius-full: 9999px;
 
     --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-sm:
-      0 1px 2px 0 rgb(0 0 0 / 0.05),
-      0 1px 3px 0 rgb(0 0 0 / 0.08);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05), 0 1px 3px 0 rgb(0 0 0 / 0.08);
     --shadow-md:
       0 2px 4px -1px rgb(0 0 0 / 0.06),
       0 4px 8px -1px rgb(0 0 0 / 0.1);
@@ -224,7 +236,11 @@
     --field-font-size: var(--text-sm);
     --field-min-block-size: 2.25rem;
     --field-shadow: var(--shadow-xs);
-    --field-focus-shadow: 0 0 0 3px color-mix(in oklch, var(--focus-ring) 40%, transparent);
+    --field-focus-shadow: 0 0 0 3px color-mix(
+      in oklch,
+      var(--focus-ring) 40%,
+      transparent
+    );
     --select-indicator-size: 0.45rem;
     --select-indicator-offset: var(--space-4);
 
@@ -318,13 +334,10 @@
     );
     --primary-subtle: oklch(
       calc(var(--primary-l) - 20%)
-      0.02
-      var(--hue-primary)
+      0.02 var(--hue-primary)
     );
     --button-soft-color: var(--gray-1);
-    --shadow-sm:
-      0 1px 2px 0 rgb(0 0 0 / 0.2),
-      0 1px 3px 0 rgb(0 0 0 / 0.25);
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2), 0 1px 3px 0 rgb(0 0 0 / 0.25);
     --shadow-md:
       0 2px 4px -1px rgb(0 0 0 / 0.2),
       0 4px 8px -1px rgb(0 0 0 / 0.3);
@@ -334,7 +347,11 @@
     --shadow-xl:
       0 8px 12px -4px rgb(0 0 0 / 0.2),
       0 24px 48px -8px rgb(0 0 0 / 0.4);
-    --focus-ring-shadow: 0 0 0 3px color-mix(in oklch, var(--focus-ring) 50%, transparent);
+    --focus-ring-shadow: 0 0 0 3px color-mix(
+      in oklch,
+      var(--focus-ring) 50%,
+      transparent
+    );
     --border-translucent: color-mix(in oklch, var(--text) 15%, transparent);
 
     /* Syntax highlighting - bump lightness for dark */
@@ -382,13 +399,10 @@
       );
       --primary-subtle: oklch(
         calc(var(--primary-l) - 20%)
-        0.02
-        var(--hue-primary)
+        0.02 var(--hue-primary)
       );
       --button-soft-color: var(--gray-1);
-      --shadow-sm:
-        0 1px 2px 0 rgb(0 0 0 / 0.2),
-        0 1px 3px 0 rgb(0 0 0 / 0.25);
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2), 0 1px 3px 0 rgb(0 0 0 / 0.25);
       --shadow-md:
         0 2px 4px -1px rgb(0 0 0 / 0.2),
         0 4px 8px -1px rgb(0 0 0 / 0.3);
@@ -398,7 +412,11 @@
       --shadow-xl:
         0 8px 12px -4px rgb(0 0 0 / 0.2),
         0 24px 48px -8px rgb(0 0 0 / 0.4);
-      --focus-ring-shadow: 0 0 0 3px color-mix(in oklch, var(--focus-ring) 50%, transparent);
+      --focus-ring-shadow: 0 0 0 3px color-mix(
+        in oklch,
+        var(--focus-ring) 50%,
+        transparent
+      );
       --border-translucent: color-mix(in oklch, var(--text) 15%, transparent);
 
       /* Syntax highlighting - bump lightness for dark */
@@ -414,6 +432,16 @@
     :root:not([data-motion]) {
       --transition-fast: 0s;
       --transition-base: 0s;
+    }
+    /* Neutralize any keyframe animation that does not read from the
+       motion tokens. Non-zero duration keeps onAnimationEnd handlers
+       firing; scroll-behavior becomes auto to prevent induced motion. */
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
     }
   }
 
@@ -567,7 +595,9 @@
   }
 
   /* Forms */
-  @scope (:where(button, input[type="button"], input[type="submit"], [role="button"])) {
+  @scope (
+    :where(button, input[type="button"], input[type="submit"], [role="button"])
+  ) {
     :scope {
       display: inline-flex;
       align-items: center;
@@ -630,7 +660,11 @@
         input[type="submit"],
         [role="button"]
       )[data-variant="soft"] {
-      --button-hover-bg: color-mix(in oklch, var(--primary) 40%, var(--gray-10));
+      --button-hover-bg: color-mix(
+        in oklch,
+        var(--primary) 40%,
+        var(--gray-10)
+      );
     }
   }
   button:disabled,
@@ -955,12 +989,25 @@
   }
 
   /* Syntax highlighting */
-  :where([data-syntax="tag"]) { color: var(--syntax-tag); }
-  :where([data-syntax="attr"]) { color: var(--syntax-attr); }
-  :where([data-syntax="value"]) { color: var(--syntax-value); }
-  :where([data-syntax="comment"]) { color: var(--syntax-comment); font-style: italic; }
-  :where([data-syntax="keyword"]) { color: var(--syntax-keyword); }
-  :where([data-syntax="function"]) { color: var(--syntax-function); }
+  :where([data-syntax="tag"]) {
+    color: var(--syntax-tag);
+  }
+  :where([data-syntax="attr"]) {
+    color: var(--syntax-attr);
+  }
+  :where([data-syntax="value"]) {
+    color: var(--syntax-value);
+  }
+  :where([data-syntax="comment"]) {
+    color: var(--syntax-comment);
+    font-style: italic;
+  }
+  :where([data-syntax="keyword"]) {
+    color: var(--syntax-keyword);
+  }
+  :where([data-syntax="function"]) {
+    color: var(--syntax-function);
+  }
 
   hr {
     border: none;
@@ -1052,18 +1099,18 @@
     display: grid;
     grid-template-columns:
       repeat(
-      auto-fit,
-      minmax(min(100%, var(--grid-min, 250px)), 1fr)
-    );
+        auto-fit,
+        minmax(min(100%, var(--grid-min, 250px)), 1fr)
+      );
   }
   @supports (grid-template-rows: masonry) {
     :where([data-layout~="masonry"]) {
       display: grid;
       grid-template-columns:
         repeat(
-        auto-fill,
-        minmax(min(100%, var(--grid-min, 250px)), 1fr)
-      );
+          auto-fill,
+          minmax(min(100%, var(--grid-min, 250px)), 1fr)
+        );
       grid-template-rows: masonry;
     }
   }
@@ -1164,6 +1211,57 @@
     --grid-min: 970px;
   }
 
+  /* ===== Intrinsic layout primitives (no breakpoints required) =====
+     These adapt through flex/grid intrinsics rather than media queries.
+     Combine with data-bp="node" + data-fluid="..." for fully
+     container-driven responsiveness. */
+
+  /* Sidebar + main. Main stays at least --sidebar-content-min wide; when
+     it cannot, the pair wraps with the sidebar on top. No media query. */
+  :where([data-layout~="sidebar"]) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap, var(--space-4));
+  }
+  :where([data-layout~="sidebar"]) > :where(:first-child) {
+    flex-basis: var(--sidebar-width, 16rem);
+    flex-grow: 1;
+  }
+  :where([data-layout~="sidebar"]) > :where(:last-child:not(:first-child)) {
+    flex-basis: 0;
+    flex-grow: 999;
+    min-inline-size: var(--sidebar-content-min, 60%);
+  }
+
+  /* Switcher: flips between row and column around an inline-size threshold.
+     Uses the calc trick from Every Layout - when the container narrows past
+     --switcher-threshold, flex-basis becomes negative so items wrap. */
+  :where([data-layout~="switcher"]) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gap, var(--space-4));
+  }
+  :where([data-layout~="switcher"]) > * {
+    flex-grow: 1;
+    flex-basis: calc((var(--switcher-threshold, 32rem) - 100%) * 999);
+  }
+
+  /* Reel: horizontal scroll strip with snap points. Children sit in a row
+     that overflows; ideal for media galleries and category rails. */
+  :where([data-layout~="reel"]) {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: var(--gap, var(--space-4));
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scroll-snap-type: inline mandatory;
+    scrollbar-gutter: stable;
+  }
+  :where([data-layout~="reel"]) > * {
+    flex: 0 0 var(--reel-item-width, 16rem);
+    scroll-snap-align: start;
+  }
+
   /* Responsive stack: row on desktop, column on mobile.
      Uses rem so user font-size magnification shifts the breakpoint. */
   @media (max-width: 40rem) {
@@ -1242,8 +1340,7 @@
     text-transform: uppercase;
   }
   :where([data-ui~="prose"])
-    hgroup
-    > p:last-of-type:last-child:not(:first-child) {
+    hgroup > p:last-of-type:last-child:not(:first-child) {
     color: var(--text-muted);
     font-size: var(--text-lg);
     line-height: var(--leading-relaxed);
@@ -1378,7 +1475,8 @@
     transition: transform var(--transition-fast);
   }
   :where([data-ui~="accordion"]) details[open] > summary {
-    border-block-end: 1px solid color-mix(in oklch, var(--accordion-border-color) 60%, transparent);
+    border-block-end: 1px solid
+      color-mix(in oklch, var(--accordion-border-color) 60%, transparent);
   }
   :where([data-ui~="accordion"]) details[open] > summary::after {
     transform: rotate(180deg);
@@ -1486,13 +1584,25 @@
   }
 
   /* Theme-aware visibility */
-  [data-show-theme="dark"] { display: none; }
-  [data-show-theme="light"] { display: revert-layer; }
-  [data-theme~="dark"] [data-show-theme="light"] { display: none; }
-  [data-theme~="dark"] [data-show-theme="dark"] { display: revert-layer; }
+  [data-show-theme="dark"] {
+    display: none;
+  }
+  [data-show-theme="light"] {
+    display: revert-layer;
+  }
+  [data-theme~="dark"] [data-show-theme="light"] {
+    display: none;
+  }
+  [data-theme~="dark"] [data-show-theme="dark"] {
+    display: revert-layer;
+  }
   @media (prefers-color-scheme: dark) {
-    :root:not([data-theme]) [data-show-theme="light"] { display: none; }
-    :root:not([data-theme]) [data-show-theme="dark"] { display: revert-layer; }
+    :root:not([data-theme]) [data-show-theme="light"] {
+      display: none;
+    }
+    :root:not([data-theme]) [data-show-theme="dark"] {
+      display: revert-layer;
+    }
   }
 
   @media (max-width: 40rem) {

@@ -24,4 +24,9 @@ import { registerAurasComponents } from "jsr:@auras/components";
 registerAurasComponents();
 ```
 
-For no-build browser usage in this repo, load `/packages/components/browser.js`.
+Authoring surface:
+
+- `mod.ts` is the typed Deno and JSR surface.
+- `src/` contains the runtime modules for each custom element.
+- `/packages/components/browser.js` is the synced no-build browser entrypoint
+  used by the demos and static export.

@@ -25,4 +25,9 @@ registerAurasDiagram();
 
 Load `/packages/composites/auras-composites.css` for the visual diagram shell.
 
-For no-build browser usage in this repo, load `/packages/diagram/browser.js`.
+Authoring surface:
+
+- `mod.ts` is the typed Deno and JSR surface.
+- `src/` contains the diagram runtime module.
+- `/packages/diagram/browser.js` is the synced no-build browser entrypoint used
+  by the demos and static export.

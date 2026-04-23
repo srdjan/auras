@@ -12,6 +12,7 @@
       "README.md",
       "mod.ts",
       "cli.ts",
+      "core.js",
       "contracts.js"
     ]
   },

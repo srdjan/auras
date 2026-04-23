@@ -41,29 +41,127 @@ async function resolveBrowserExecutable() {
   );
 }
 
-function startStaticServer(rootDir) {
-  return Deno.serve({ hostname: "127.0.0.1", port: 0 }, async (request) => {
-    const url = new URL(request.url);
-    const relativePath = decodeURIComponent(
-      url.pathname === "/" ? "/public/index.html" : url.pathname,
-    );
-    const filePath = `${rootDir}${relativePath}`;
+function delay(milliseconds) {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
 
+async function getAvailablePort() {
+  const listener = Deno.listen({ hostname: "127.0.0.1", port: 0 });
+  const { port } = listener.addr;
+  listener.close();
+  return port;
+}
+
+async function waitForDebugger(port) {
+  const versionUrl = `http://127.0.0.1:${port}/json/version`;
+
+  for (let attempt = 0; attempt < 100; attempt += 1) {
     try {
-      const file = await Deno.readFile(filePath);
-      return new Response(file, {
-        headers: {
-          "content-type": resolveContentType(filePath),
-        },
-      });
-    } catch (error) {
-      if (error instanceof Deno.errors.NotFound) {
-        return new Response("Not found", { status: 404 });
+      const response = await fetch(versionUrl);
+
+      if (response.ok) {
+        await response.body?.cancel();
+        return;
       }
 
-      return new Response(String(error), { status: 500 });
+      await response.body?.cancel();
+    } catch {
+      // Retry until Chrome exposes the DevTools endpoint.
     }
+
+    await delay(100);
+  }
+
+  throw new Error("Timed out waiting for Chrome DevTools to become available.");
+}
+
+async function launchBrowserSession(executablePath) {
+  const port = await getAvailablePort();
+  const userDataDir = await Deno.makeTempDir({
+    prefix: "auras-browser-profile-",
   });
+  const chrome = new Deno.Command(executablePath, {
+    args: [
+      `--remote-debugging-port=${port}`,
+      `--user-data-dir=${userDataDir}`,
+      "--headless=new",
+      "--no-first-run",
+      "--no-default-browser-check",
+      "--disable-background-networking",
+      "--disable-extensions",
+      "--disable-gpu",
+      "--mute-audio",
+      "about:blank",
+    ],
+    stdout: "null",
+    stderr: "null",
+  }).spawn();
+
+  try {
+    await waitForDebugger(port);
+    const browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`);
+    const context = browser.contexts()[0] ?? await browser.newContext();
+
+    return {
+      browser,
+      context,
+      async close() {
+        await browser.close().catch(() => undefined);
+        chrome.kill("SIGTERM");
+        await chrome.status.catch(() => undefined);
+        await Deno.remove(userDataDir, { recursive: true }).catch(() =>
+          undefined
+        );
+      },
+    };
+  } catch (error) {
+    chrome.kill("SIGTERM");
+    await chrome.status.catch(() => undefined);
+    await Deno.remove(userDataDir, { recursive: true }).catch(() => undefined);
+    throw error;
+  }
+}
+
+function startStaticServer(rootDir) {
+  const controller = new AbortController();
+  const server = Deno.serve(
+    {
+      hostname: "127.0.0.1",
+      port: 0,
+      signal: controller.signal,
+    },
+    async (request) => {
+      const url = new URL(request.url);
+      const relativePath = decodeURIComponent(
+        url.pathname === "/" ? "/public/index.html" : url.pathname,
+      );
+      const filePath = `${rootDir}${relativePath}`;
+
+      try {
+        const file = await Deno.readFile(filePath);
+        return new Response(file, {
+          headers: {
+            "content-type": resolveContentType(filePath),
+          },
+        });
+      } catch (error) {
+        if (error instanceof Deno.errors.NotFound) {
+          return new Response("Not found", { status: 404 });
+        }
+
+        return new Response(String(error), { status: 500 });
+      }
+    },
+  );
+
+  server.unref();
+
+  return {
+    addr: server.addr,
+    shutdown() {
+      controller.abort();
+    },
+  };
 }
 
 Deno.test(
@@ -74,13 +172,10 @@ Deno.test(
     const server = startStaticServer(rootDir);
 
     try {
-      const browser = await chromium.launch({
-        executablePath: browserExecutable,
-        headless: true,
-      });
+      const browserSession = await launchBrowserSession(browserExecutable);
 
       try {
-        const page = await browser.newPage();
+        const page = await browserSession.context.newPage();
         const origin = `http://127.0.0.1:${server.addr.port}`;
 
         await page.goto(`${origin}/public/index.html`);
@@ -206,7 +301,7 @@ Deno.test(
           "data-active",
         );
 
-        const labPage = await browser.newPage();
+        const labPage = await browserSession.context.newPage();
         await labPage.goto(`${origin}/public/lab.html`);
 
         await labPage.waitForSelector("#markup-editor");
@@ -246,10 +341,10 @@ Deno.test(
 
         await labPage.close();
       } finally {
-        await browser.close();
+        await browserSession.close();
       }
     } finally {
-      await server.shutdown();
+      server.shutdown();
     }
   },
 );
@@ -266,7 +361,9 @@ async function expectText(page, selector, expectedText) {
     );
   } catch (error) {
     throw new Error(
-      `Timed out waiting for text ${JSON.stringify(expectedText)} on ${selector}: ${error}`,
+      `Timed out waiting for text ${
+        JSON.stringify(expectedText)
+      } on ${selector}: ${error}`,
     );
   }
 }
@@ -282,7 +379,9 @@ async function expectAttribute(page, selector, attribute, expectedValue) {
     );
   } catch (error) {
     throw new Error(
-      `Timed out waiting for ${selector} to have ${attribute}=${JSON.stringify(expectedValue)}: ${error}`,
+      `Timed out waiting for ${selector} to have ${attribute}=${
+        JSON.stringify(expectedValue)
+      }: ${error}`,
     );
   }
 }
@@ -358,7 +457,9 @@ async function expectFrameAttribute(
     );
   } catch (error) {
     throw new Error(
-      `Timed out waiting for ${targetSelector} in ${frameSelector} to have ${attribute}=${JSON.stringify(expectedValue)}: ${error}`,
+      `Timed out waiting for ${targetSelector} in ${frameSelector} to have ${attribute}=${
+        JSON.stringify(expectedValue)
+      }: ${error}`,
     );
   }
 }

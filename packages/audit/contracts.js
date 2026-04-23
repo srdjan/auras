@@ -17,6 +17,7 @@
  *   optionalParts: ReadonlyArray<AurasPartRule>;
  *   accessibilityRules: ReadonlyArray<string>;
  *   exampleMarkup: string;
+ *   starterMarkup?: string;
  * }} AurasContractDefinition
  */
 

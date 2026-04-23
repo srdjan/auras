@@ -142,15 +142,51 @@ Probably avoid:
 - anything with popovers, anchored overlays, `position: fixed`, or visible
   overflow as part of the contract
 
+## Breakpoint-last responsive design
+
+Auras favors components that adapt by default. Media queries are a last resort,
+not a first instinct. Work through this cascade in order when a pattern needs to
+flex across screen sizes:
+
+1. **Fluid scalars.** Use `clamp()`-based tokens for type and spacing:
+   `--text-*` and `--space-fluid-*`. Values scale continuously, so there are no
+   visible jumps between device sizes.
+2. **Intrinsic layouts.** Use `data-layout="grid | sidebar | switcher | reel"`
+   with `minmax()` and `auto-fit`. The layout reconfigures itself by filling
+   available space - the component does not need to know a viewport width.
+3. **Container units.** Inside a `data-bp="node"` subtree, apply
+   `data-fluid="type pad gap radius"` so values scale against the component's
+   own container rather than the viewport. A card in a sidebar and the same card
+   full-width will render at visibly different sizes with no conditional CSS.
+4. **Container queries.** When a true structural shift is required (e.g. stacked
+   on narrow, side-by-side on wide), compose the `--bp-gte-*` flags from
+   `data-bp="node"` via `calc()`. Prefer container queries over viewport queries
+   so components remain portable between contexts.
+5. **Media queries.** Reserve `@media` for device capabilities (`hover`,
+   `pointer`, `display-mode`) and user preferences (`prefers-reduced-motion`,
+   `prefers-color-scheme`, `prefers-contrast`). Avoid width-based media queries
+   in component CSS - route those through `data-bp="stage"` flags instead so
+   authored styles read declaratively.
+
+Elements ships fluid tokens and intrinsic layouts by default. The Breakpoints
+package adds container units and flag tokens; it is the only public surface
+where width-based logic lives.
+
 ## Package Split
 
 Recommended package boundaries:
 
 ```text
+/packages/elements/README.md
 /packages/elements/auras.css
+/packages/composites/README.md
 /packages/composites/auras-composites.css
+/packages/brands/README.md
 /packages/brands/auras-brand.css
 /packages/brands/auras-brand-editorial.css
+/packages/breakpoints/README.md
+/packages/breakpoints/auras-breakpoints.css
+/packages/shared/README.md
 /packages/diagram/browser.js
 /packages/diagram/jsr.json
 /packages/diagram/README.md
@@ -168,10 +204,12 @@ Recommended package boundaries:
 /packages/components/src/tabs.ts
 /packages/audit/browser.js
 /packages/audit/cli.ts
+/packages/audit/core.js
 /packages/audit/contracts.js
 /packages/audit/jsr.json
 /packages/audit/README.md
 /packages/audit/mod.ts
+/scripts/sync-public-packages.ts
 
 /docs/component-architecture.md
 ```
@@ -187,10 +225,15 @@ Recommended publishing shape:
 
 Current repo structure:
 
+- `packages/` is the canonical source tree for package authoring
 - `packages/elements/auras.css` is the canonical Elements stylesheet source
 - `packages/composites/auras-composites.css` is the canonical Composites
   stylesheet source
 - `packages/brands/` contains the canonical brand stylesheet sources
+- `packages/breakpoints/auras-breakpoints.css` is the canonical breakpoint
+  helper stylesheet source
+- `packages/shared/` is internal support code, not a supported public package
+  surface
 - `packages/diagram/mod.ts` is the Deno-first TypeScript surface for the diagram
   package
 - `packages/diagram/browser.js` is the browser-friendly no-build diagram
@@ -202,7 +245,10 @@ Current repo structure:
   package
 - `packages/audit/browser.js` is the browser-friendly no-build audit entrypoint
 - `packages/audit/cli.ts` is the CLI entrypoint for local or CI auditing
+- `packages/audit/core.js` is the shared audit and repair implementation
 - `packages/audit/contracts.js` is the shared contract definition registry
+- `deno task sync:public-packages` mirrors canonical CSS files and browser
+  entrypoints into `public/packages/` for static deployment
 
 ## Decision Rule
 
@@ -808,11 +854,14 @@ Host API:
 
 The audit package validates authored markup against the contract definitions in
 `packages/audit/contracts.js`. It checks required parts, duplicate data-value
-collisions, orphaned trigger/panel pairings, and accessibility gaps.
+collisions, orphaned trigger/panel pairings, and accessibility gaps. The same
+package now also exposes deterministic authoring helpers for starter markup and
+structural repair.
 
 Three entry points exist: `packages/audit/browser.js` for the Contract Lab and
 browser console, `packages/audit/mod.ts` as a typed Deno import, and
-`packages/audit/cli.ts` for local or CI runs via HappyDOM.
+`packages/audit/cli.ts` for local or CI runs via HappyDOM. They share the same
+implementation in `packages/audit/core.js`.
 
 Each contract definition includes `requiredParts`, `optionalParts`,
 `accessibilityRules`, and `exampleMarkup`.
@@ -821,8 +870,7 @@ Adding a new component to the audit requires:
 
 1. Add the contract definition to `packages/audit/contracts.js`.
 2. Add the `AurasContractTagName` union member in `packages/audit/mod.ts`.
-3. Add a validator function to both `packages/audit/browser.js` and
-   `packages/audit/mod.ts`.
+3. Add the validator and deterministic repair logic in `packages/audit/core.js`.
 4. Add tests in `tests/auras-audit.test.ts`.
 
 ## Build Order

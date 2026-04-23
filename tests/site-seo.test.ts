@@ -1,10 +1,17 @@
 /// <reference lib="deno.ns" />
 
-import { assertEquals, assertStringIncludes } from "jsr:@std/assert@^1.0.14";
+import {
+  assert,
+  assertEquals,
+  assertStringIncludes,
+} from "jsr:@std/assert@^1.0.14";
 
 import {
+  DOC_PAGES,
   extractHeadings,
+  getDocPage,
   getRedirectPath,
+  renderDocsIndex,
   renderSitemap,
   rewriteDocLinks,
   slugifyHeading,
@@ -72,8 +79,30 @@ Deno.test("renderSitemap includes the homepage and documentation pages", () => {
   );
   assertStringIncludes(
     sitemap,
+    "<loc>https://auras.example/docs/packages/elements/</loc>",
+  );
+  assertStringIncludes(
+    sitemap,
     "<loc>https://auras.example/docs/packages/audit/</loc>",
   );
+});
+
+Deno.test("docs index exposes CSS package docs and keeps shared internal", () => {
+  assert(DOC_PAGES.some((page) => page.route === "/docs/packages/elements/"));
+  assert(DOC_PAGES.some((page) => page.route === "/docs/packages/composites/"));
+  assert(DOC_PAGES.some((page) => page.route === "/docs/packages/brands/"));
+  assert(
+    DOC_PAGES.some((page) => page.route === "/docs/packages/breakpoints/"),
+  );
+  assertEquals(getDocPage("/docs/packages/shared/"), null);
+
+  const docsIndex = renderDocsIndex("https://auras.example");
+
+  assertStringIncludes(docsIndex, 'href="/docs/packages/elements/"');
+  assertStringIncludes(docsIndex, 'href="/docs/packages/composites/"');
+  assertStringIncludes(docsIndex, 'href="/docs/packages/brands/"');
+  assertStringIncludes(docsIndex, 'href="/docs/packages/breakpoints/"');
+  assert(!docsIndex.includes("/docs/packages/shared/"));
 });
 
 Deno.test("slugifyHeading strips inline markdown noise", () => {

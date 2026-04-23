@@ -18,9 +18,13 @@ Object.assign(globalThis, {
 
 await testWindow.happyDOM.whenAsyncComplete();
 
-const { auditAuras, getAurasContract, getAurasContracts } = await import(
-  "../packages/audit/mod.ts"
-);
+const {
+  auditAuras,
+  getAurasContract,
+  getAurasContracts,
+  getAurasStarterMarkup,
+  repairAuras,
+} = await import("../packages/audit/mod.ts");
 
 function renderMarkup(markup: string): Document {
   document.body.innerHTML = markup;
@@ -47,6 +51,19 @@ Deno.test("getAurasContracts exposes the shared registry including sections", ()
   );
 });
 
+Deno.test("getAurasStarterMarkup resolves canonical starter markup by id and tag", () => {
+  const comboboxContract = getAurasContract("auras-combobox");
+
+  assertEquals(
+    getAurasStarterMarkup("combobox"),
+    comboboxContract?.exampleMarkup ?? null,
+  );
+  assertEquals(
+    getAurasStarterMarkup("auras-combobox"),
+    comboboxContract?.exampleMarkup ?? null,
+  );
+});
+
 Deno.test("auditAuras accepts valid authored markup without findings", () => {
   const diagnostics = auditAuras(
     renderMarkup(`
@@ -69,6 +86,76 @@ Deno.test("auditAuras accepts valid authored markup without findings", () => {
   );
 
   assertEquals(diagnostics, []);
+});
+
+Deno.test("repairAuras annotates canonical tabs parts and clears structural findings", () => {
+  const doc = renderMarkup(`
+    <auras-tabs value="overview">
+      <nav aria-label="Release views">
+        <button type="button" data-value="overview">Overview</button>
+        <button type="button" data-value="tokens">Tokens</button>
+      </nav>
+      <section>
+        <article data-value="overview">Overview</article>
+        <article data-value="tokens" hidden>Tokens</article>
+      </section>
+    </auras-tabs>
+  `);
+
+  const result = repairAuras(doc);
+
+  assertEquals(result.diagnostics, []);
+  assertEquals(
+    result.appliedFixes.some((fix) => fix.code === "annotated-part"),
+    true,
+  );
+  assertMatch(doc.body.innerHTML, /data-part="tablist"/);
+  assertMatch(doc.body.innerHTML, /data-part="trigger"/);
+  assertMatch(doc.body.innerHTML, /data-part="panels"/);
+  assertMatch(doc.body.innerHTML, /data-part="panel"/);
+});
+
+Deno.test("repairAuras wraps loose section content in a canonical panel", () => {
+  const doc = renderMarkup(`
+    <auras-sections mode="auto" value="overview">
+      <section data-value="overview">
+        <button type="button">Overview</button>
+        <p>Overview panel</p>
+        <p>More overview content</p>
+      </section>
+    </auras-sections>
+  `);
+
+  const result = repairAuras(doc);
+
+  assertEquals(result.diagnostics, []);
+  assertEquals(
+    result.appliedFixes.some((fix) => fix.code === "wrapped-section-content"),
+    true,
+  );
+  assertMatch(doc.body.innerHTML, /data-part="section"/);
+  assertMatch(doc.body.innerHTML, /data-part="trigger"/);
+  assertMatch(doc.body.innerHTML, /data-part="panel"/);
+});
+
+Deno.test("repairAuras leaves non-deterministic accessibility issues as diagnostics", () => {
+  const doc = renderMarkup(`
+    <auras-splitter>
+      <section data-pane="primary">Primary</section>
+      <button type="button"></button>
+      <section data-pane="secondary">Secondary</section>
+    </auras-splitter>
+  `);
+
+  const result = repairAuras(doc);
+
+  assertEquals(
+    result.appliedFixes.filter((fix) => fix.code === "annotated-part").length,
+    3,
+  );
+  assertEquals(result.diagnostics.length, 1);
+  assertEquals(result.diagnostics[0]?.code, "missing-accessible-name");
+  assertMatch(doc.body.innerHTML, /data-part="separator"/);
 });
 
 Deno.test("auditAuras reports duplicate combobox values and orphaned panels", () => {
@@ -194,6 +281,8 @@ Deno.test("lab page loads the audit package and exposes the Contract Lab title",
   assertMatch(html, /<title>Contract Lab - Auras CSS<\/title>/);
   assertMatch(html, /from "\/packages\/audit\/browser\.js"/);
   assertMatch(html, /getAurasContracts/);
+  assertMatch(html, /getAurasStarterMarkup/);
+  assertMatch(html, /repairAuras/);
 });
 
 function extractHost(html: string, tagName: string, id: string): string {

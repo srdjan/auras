@@ -53,6 +53,68 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
     ],
   },
   {
+    route: "/docs/packages/elements/",
+    sourcePath: "./packages/elements/README.md",
+    title: "Auras Elements",
+    description:
+      "Canonical Elements layer stylesheet for reset, tokens, semantic defaults, layout primitives, utilities, accessibility defaults, and print styles.",
+    category: "Package Docs",
+    related: [
+      { href: "/docs/user-guide/", label: "User guide" },
+      {
+        href: "/docs/component-architecture/",
+        label: "Component architecture",
+      },
+      { href: "/docs/packages/composites/", label: "Auras Composites" },
+      { href: "/docs/packages/brands/", label: "Auras Brand Packs" },
+    ],
+  },
+  {
+    route: "/docs/packages/composites/",
+    sourcePath: "./packages/composites/README.md",
+    title: "Auras Composites",
+    description:
+      "Canonical CSS-only app patterns for Auras CSS, layered above Elements without introducing component-owned state.",
+    category: "Package Docs",
+    related: [
+      { href: "/docs/user-guide/", label: "User guide" },
+      {
+        href: "/docs/component-architecture/",
+        label: "Component architecture",
+      },
+      { href: "/docs/packages/elements/", label: "Auras Elements" },
+      { href: "/docs/packages/components/", label: "@auras/components" },
+    ],
+  },
+  {
+    route: "/docs/packages/brands/",
+    sourcePath: "./packages/brands/README.md",
+    title: "Auras Brand Packs",
+    description:
+      "Canonical brand-pack stylesheets for token overrides layered on top of Auras CSS.",
+    category: "Package Docs",
+    related: [
+      { href: "/docs/user-guide/", label: "User guide" },
+      { href: "/docs/packages/elements/", label: "Auras Elements" },
+      { href: "/docs/packages/breakpoints/", label: "Auras Breakpoints" },
+      { href: "/studio.html", label: "Theme Studio" },
+    ],
+  },
+  {
+    route: "/docs/packages/breakpoints/",
+    sourcePath: "./packages/breakpoints/README.md",
+    title: "Auras Breakpoints",
+    description:
+      "Optional responsive flag tokens for staged or node-based layout behaviors in Auras CSS.",
+    category: "Package Docs",
+    related: [
+      { href: "/docs/user-guide/", label: "User guide" },
+      { href: "/docs/packages/elements/", label: "Auras Elements" },
+      { href: "/docs/packages/composites/", label: "Auras Composites" },
+      { href: "/docs/packages/brands/", label: "Auras Brand Packs" },
+    ],
+  },
+  {
     route: "/docs/packages/components/",
     sourcePath: "./packages/components/README.md",
     title: "@auras/components",
@@ -65,6 +127,7 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
         href: "/docs/component-architecture/",
         label: "Component architecture",
       },
+      { href: "/docs/packages/composites/", label: "Auras Composites" },
       { href: "/docs/packages/diagram/", label: "@auras/diagram" },
       { href: "/docs/packages/audit/", label: "@auras/audit" },
     ],
@@ -82,6 +145,7 @@ export const DOC_PAGES: ReadonlyArray<DocPage> = [
         href: "/docs/component-architecture/",
         label: "Component architecture",
       },
+      { href: "/docs/packages/composites/", label: "Auras Composites" },
       { href: "/docs/packages/components/", label: "@auras/components" },
       { href: "/docs/packages/audit/", label: "@auras/audit" },
     ],
