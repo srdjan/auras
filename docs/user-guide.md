@@ -8,11 +8,15 @@ step.
 Related docs:
 
 - [Component Architecture](./component-architecture.md)
+- [Elements package README](../packages/elements/README.md)
+- [Composites package README](../packages/composites/README.md)
+- [Brand packs README](../packages/brands/README.md)
+- [Breakpoints package README](../packages/breakpoints/README.md)
 - [Components package README](../packages/components/README.md)
 - [Diagram package README](../packages/diagram/README.md)
 - [Audit package README](../packages/audit/README.md)
 - [Theme Studio](/studio.html) - interactive brand pack builder
-- [Contract Lab](/lab.html) - live markup auditing
+- [Contract Lab](/lab.html) - live markup generation, repair, and auditing
 
 ## Quick Start
 
@@ -67,6 +71,8 @@ deno task dev
 - `packages/elements/auras.css` is the Elements layer. It gives you reset,
   tokens, typography, layout primitives, components, utilities, accessibility
   defaults, and print styles.
+- `packages/` is the canonical source tree. Run `deno task sync:public-packages`
+  when you need the static `public/packages/` mirror for standalone deployment.
 - Start with semantic HTML. Add `data-*` attributes only when you want layout,
   surface, variant, or utility behavior.
 - Keep branding separate from structure. The Elements layer stays neutral; brand
@@ -78,9 +84,14 @@ deno task dev
 - The framework does not require JavaScript. The JS in `public/index.html` only
   powers the optional interactive layer and the demo controls. The package and
   browser sources live under `packages/diagram` and `packages/components`.
+- `mod.ts` is the typed Deno-facing surface for each TypeScript package, `src/`
+  holds the runtime modules, and `browser.js` is the synced no-build browser
+  entrypoint used by this repo's demos.
 - All custom elements extend `AurasElement` from `packages/shared/`, which
   handles property/attribute sync, lifecycle hooks, auto-binding, and the
   `hydrated` host attribute.
+- `packages/shared/` is internal support code, not a supported public package
+  surface.
 - The Elements and Composites layers use CSS `@scope` to keep selectors local.
   Button rules stay attached to button-like elements, and composite
   `[data-part]` rules stay attached to the matching root instead of leaking
@@ -212,18 +223,19 @@ Useful values:
 - `data-align="start" | "center" | "end" | "stretch"`
 - `data-justify="start" | "center" | "end" | "between" | "around" | "evenly"`
 - `data-gap="1" | "2" | "3" | "4" | "6" | "8"`
-- `data-grid-min="sm" | "md" | "lg"` (or physical-object aliases `coin | note | card | page | wide`)
+- `data-grid-min="sm" | "md" | "lg"` (or physical-object aliases
+  `coin | note | card | page | wide`)
 - `data-subgrid-span="2" | "3" | "4" | "5"`
 - `data-stack="mobile"` to collapse a row into a column on small screens
 
-The `data-stack="mobile"` and `data-hide="mobile"` breakpoints use
-`40rem` rather than a fixed pixel value, so they shift proportionally
-when a user increases system font size.
+The `data-stack="mobile"` and `data-hide="mobile"` breakpoints use `40rem`
+rather than a fixed pixel value, so they shift proportionally when a user
+increases system font size.
 
 ### Responsive primitives (optional)
 
-Load the Breakpoints package when you want named breakpoint flags
-without writing media queries inside component CSS:
+Load the Breakpoints package when you want named breakpoint flags without
+writing media queries inside component CSS:
 
 ```html
 <link rel="stylesheet" href="packages/breakpoints/auras-breakpoints.css" />
@@ -235,44 +247,113 @@ without writing media queries inside component CSS:
 </body>
 ```
 
-`data-bp="stage"` queries the viewport; `data-bp="node"` queries the
-nearest container (the element establishes `container-type: inline-size`
-automatically). A `data-bp="node"` root cannot react to its own size -
-that would create a layout feedback loop - so flags are resolved on
-the node's descendants. Style the children using the tokens; wrap
-content in an inner element if you need the node itself to react.
+`data-bp="stage"` queries the viewport; `data-bp="node"` queries the nearest
+container (the element establishes `container-type: inline-size` automatically).
+A `data-bp="node"` root cannot react to its own size - that would create a
+layout feedback loop - so flags are resolved on the node's descendants. Style
+the children using the tokens; wrap content in an inner element if you need the
+node itself to react.
 
 Both scopes expose identical flag tokens:
 
-| Token           | Value when active         |
-| --------------- | ------------------------- |
-| `--bp-gte-sm`   | `1` at or above `40rem`   |
-| `--bp-gte-md`   | `1` at or above `64rem`   |
-| `--bp-gte-lg`   | `1` at or above `80rem`   |
-| `--bp-gte-xl`   | `1` at or above `96rem`   |
-| `--bp-lt-sm`    | inverse of `--bp-gte-sm`  |
-| `--bp-lt-md`    | inverse of `--bp-gte-md`  |
-| `--bp-lt-lg`    | inverse of `--bp-gte-lg`  |
-| `--bp-lt-xl`    | inverse of `--bp-gte-xl`  |
+| Token         | Value when active        |
+| ------------- | ------------------------ |
+| `--bp-gte-sm` | `1` at or above `40rem`  |
+| `--bp-gte-md` | `1` at or above `64rem`  |
+| `--bp-gte-lg` | `1` at or above `80rem`  |
+| `--bp-gte-xl` | `1` at or above `96rem`  |
+| `--bp-lt-sm`  | inverse of `--bp-gte-sm` |
+| `--bp-lt-md`  | inverse of `--bp-gte-md` |
+| `--bp-lt-lg`  | inverse of `--bp-gte-lg` |
+| `--bp-lt-xl`  | inverse of `--bp-gte-xl` |
 
-Compose with `calc()` to select values by breakpoint without writing
-a media query:
+Compose with `calc()` to select values by breakpoint without writing a media
+query:
 
 ```css
 .hero {
-  padding-block: calc(
-    var(--space-6) + var(--bp-gte-md) * var(--space-4)
-  );
+  padding-block: calc(var(--space-6) + var(--bp-gte-md) * var(--space-4));
   font-size: calc(
-    var(--text-lg) * var(--bp-lt-md) +
-    var(--text-2xl) * var(--bp-gte-md)
+    var(--text-lg) * var(--bp-lt-md) + var(--text-2xl) * var(--bp-gte-md)
   );
 }
 ```
 
-Flags are `@property`-registered integers, so values derived through
-`calc()` animate smoothly when a breakpoint crosses. The package is
-entirely optional; Elements works without it.
+Flags are `@property`-registered integers, so values derived through `calc()`
+animate smoothly when a breakpoint crosses. The package is entirely optional;
+Elements works without it.
+
+#### Fluid primitives (container-driven, no breakpoints)
+
+The Breakpoints package also exposes container-unit primitives that scale a
+component against its own container rather than the viewport. No media queries,
+no flags, no `calc()`:
+
+```html
+<body>
+  <main data-layout="sidebar" data-gap="4">
+    <aside data-bp="node" style="--sidebar-width: 14rem">
+      <article data-surface="card" data-fluid="type pad gap radius">
+        <h3>Compact</h3>
+        <p>Inside the narrow sidebar, cqi values shrink.</p>
+      </article>
+    </aside>
+    <section data-bp="node">
+      <article data-surface="card" data-fluid="type pad gap radius">
+        <h3>Roomy</h3>
+        <p>Same markup, wider container - renders bigger.</p>
+      </article>
+    </section>
+  </main>
+</body>
+```
+
+| Token                | Effect                    |
+| -------------------- | ------------------------- |
+| `data-fluid~=type`   | `font-size` via `cqi`     |
+| `data-fluid~=pad`    | `padding` via `cqi`       |
+| `data-fluid~=gap`    | `gap` via `cqi`           |
+| `data-fluid~=radius` | `border-radius` via `cqi` |
+
+Values resolve against the nearest `container-type: inline-size` ancestor
+(`data-bp="node"` sets this automatically). Combine any number of tokens. Use
+fluid primitives first; reach for the `--bp-*` flags only when the component
+needs a genuine structural shift beyond what intrinsic layouts achieve.
+
+#### Intrinsic layouts (no media queries)
+
+`data-layout` ships three primitives that adapt without breakpoints:
+
+```html
+<!-- Sidebar: sidebar + main; wraps automatically when main gets too narrow. -->
+<div data-layout="sidebar" data-gap="4" style="--sidebar-content-min: 60%">
+  <aside>...</aside>
+  <section>...</section>
+</div>
+
+<!-- Switcher: row above --switcher-threshold, column below. -->
+<div data-layout="switcher" data-gap="4" style="--switcher-threshold: 32rem">
+  <div>One</div>
+  <div>Two</div>
+  <div>Three</div>
+</div>
+
+<!-- Reel: overflow scroll row with snap points for galleries. -->
+<div data-layout="reel" data-gap="4" style="--reel-item-width: 14rem">
+  <figure>...</figure>
+  <figure>...</figure>
+  <figure>...</figure>
+</div>
+```
+
+Pair with `--space-fluid-*` tokens when spacing itself should scale:
+
+```css
+.hero {
+  padding-block: var(--space-fluid-xl);
+  gap: var(--space-fluid-md);
+}
+```
 
 ### Subgrid
 
@@ -740,15 +821,20 @@ import {
   auditAuras,
   getAurasContract,
   getAurasContracts,
+  getAurasStarterMarkup,
+  repairAuras,
 } from "jsr:@auras/audit";
 
 const diagnostics = auditAuras(document);
+const repaired = repairAuras(document);
 const allContracts = getAurasContracts();
 const sectionsContract = getAurasContract("auras-sections");
+const starter = getAurasStarterMarkup("sections");
 ```
 
-The [Contract Lab](/lab.html) provides a live editor where you can paste markup,
-pick a component preset, and see audit diagnostics in real time.
+The [Contract Lab](/lab.html) provides a live editor where you can generate
+canonical starter markup, paste an in-progress snippet, apply deterministic
+repairs, and inspect remaining diagnostics in real time.
 
 ### Forms
 
@@ -860,58 +946,67 @@ The demo also exercises:
 
 ## File Map
 
-| File                                        | Purpose                                          |
-| ------------------------------------------- | ------------------------------------------------ |
-| `tests/auras-element.test.ts`               | Unit tests for the `AurasElement` base class     |
-| `tests/auras-components.browser.test.js`    | Browser smoke coverage for the optional packages |
-| `tests/auras-combobox.test.js`              | Deno behavioral coverage for `auras-combobox`    |
-| `tests/auras-splitter.test.js`              | Deno behavioral coverage for `auras-splitter`    |
-| `tests/auras-diagram.test.js`               | Deno behavioral coverage for `auras-diagram`     |
-| `tests/auras-components.test.js`            | Deno behavioral coverage for Components          |
-| `tests/auras-sections.test.js`              | Deno behavioral coverage for `auras-sections`    |
-| `tests/auras-tree.test.js`                  | Deno behavioral coverage for `auras-tree`        |
-| `tests/auras-audit.test.ts`                 | Deno behavioral coverage for `@auras/audit`      |
-| `tests/auras-audit-cli.test.ts`             | CLI test for `@auras/audit`                      |
-| `tests/public-demo.test.js`                 | Static demo assertions for `public/index.html`   |
-| `tests/site-seo.test.ts`                    | Docs route, sitemap, and SEO coverage            |
-| `packages/elements/auras.css`               | Elements layer stylesheet source                 |
-| `packages/composites/auras-composites.css`  | Composites layer stylesheet source               |
-| `packages/brands/auras-brand.css`           | Auras brand stylesheet source                    |
-| `packages/brands/auras-brand-editorial.css` | Editorial brand stylesheet source                |
-| `packages/diagram/browser.js`               | Browser-friendly no-build diagram entrypoint     |
-| `packages/diagram/mod.ts`                   | Deno-first diagram package surface               |
-| `packages/diagram/jsr.json`                 | JSR package metadata for `@auras/diagram`        |
-| `packages/diagram/README.md`                | Package-level usage note for `@auras/diagram`    |
-| `packages/diagram/src/`                     | Diagram package runtime module                   |
-| `packages/shared/auras-element.ts`          | `AurasElement` base class for custom elements    |
-| `packages/shared/utilities.ts`              | Shared utilities (ID gen, activation, RTL)       |
-| `packages/shared/mod.ts`                    | Shared package re-exports                        |
-| `packages/components/browser.js`            | Browser-friendly no-build Components entrypoint  |
-| `packages/components/mod.ts`                | Deno-first Components package surface            |
-| `packages/components/jsr.json`              | JSR package metadata                             |
-| `packages/components/README.md`             | Package-level usage note                         |
-| `packages/components/src/`                  | Shared logic plus per-component modules          |
-| `packages/components/src/combobox.ts`       | `auras-combobox` runtime module                  |
-| `packages/components/src/master-detail.ts`  | `auras-master-detail` runtime module             |
-| `packages/components/src/sections.ts`       | `auras-sections` runtime module                  |
-| `packages/components/src/splitter.ts`       | `auras-splitter` runtime module                  |
-| `packages/components/src/tabs.ts`           | `auras-tabs` runtime module                      |
-| `packages/components/src/tree.ts`           | `auras-tree` runtime module                      |
-| `packages/audit/mod.ts`                     | Deno-first audit package surface                 |
-| `packages/audit/browser.js`                 | Browser-friendly no-build audit entrypoint       |
-| `packages/audit/cli.ts`                     | CLI entrypoint for `@auras/audit`                |
-| `packages/audit/contracts.js`               | Shared contract definitions                      |
-| `packages/audit/jsr.json`                   | JSR package metadata for `@auras/audit`          |
-| `packages/audit/README.md`                  | Package-level docs for `@auras/audit`            |
-| `deno.json`                                 | Deno tasks for dev server, checking, and tests   |
-| `deno.lock`                                 | Locked JSR and npm test dependencies             |
-| `main.ts`                                   | Deno Deploy entry point (static file server)     |
-| `site/docs.ts`                              | Docs route registry and markdown rendering       |
-| `public/index.html`                         | Interactive demo page                            |
-| `public/studio.html`                        | Theme Studio for visual brand pack creation      |
-| `public/lab.html`                           | Contract Lab for live markup auditing            |
-| `docs/component-architecture.md`            | Architecture note for the layer split            |
-| `docs/user-guide.md`                        | This user guide                                  |
+| File                                         | Purpose                                                       |
+| -------------------------------------------- | ------------------------------------------------------------- |
+| `tests/auras-element.test.ts`                | Unit tests for the `AurasElement` base class                  |
+| `tests/auras-components.browser.test.js`     | Browser smoke coverage for the optional packages              |
+| `tests/auras-combobox.test.js`               | Deno behavioral coverage for `auras-combobox`                 |
+| `tests/auras-splitter.test.js`               | Deno behavioral coverage for `auras-splitter`                 |
+| `tests/auras-diagram.test.js`                | Deno behavioral coverage for `auras-diagram`                  |
+| `tests/auras-components.test.js`             | Deno behavioral coverage for Components                       |
+| `tests/auras-sections.test.js`               | Deno behavioral coverage for `auras-sections`                 |
+| `tests/auras-tree.test.js`                   | Deno behavioral coverage for `auras-tree`                     |
+| `tests/auras-audit.test.ts`                  | Deno behavioral coverage for `@auras/audit`                   |
+| `tests/auras-audit-cli.test.ts`              | CLI test for `@auras/audit`                                   |
+| `tests/public-demo.test.js`                  | Static demo assertions for `public/index.html`                |
+| `tests/site-seo.test.ts`                     | Docs route, sitemap, and SEO coverage                         |
+| `tests/sync-public-packages.test.ts`         | Sync-task coverage for the static asset mirror                |
+| `packages/elements/auras.css`                | Elements layer stylesheet source                              |
+| `packages/elements/README.md`                | Package notes for the canonical Elements layer                |
+| `packages/composites/auras-composites.css`   | Composites layer stylesheet source                            |
+| `packages/composites/README.md`              | Package notes for the canonical Composites layer              |
+| `packages/breakpoints/auras-breakpoints.css` | Optional responsive flag token stylesheet                     |
+| `packages/breakpoints/README.md`             | Package notes for the breakpoint helper package               |
+| `packages/brands/auras-brand.css`            | Auras brand stylesheet source                                 |
+| `packages/brands/auras-brand-editorial.css`  | Editorial brand stylesheet source                             |
+| `packages/brands/README.md`                  | Package notes for the brand-pack source files                 |
+| `packages/diagram/browser.js`                | Browser-friendly no-build diagram entrypoint                  |
+| `packages/diagram/mod.ts`                    | Deno-first diagram package surface                            |
+| `packages/diagram/jsr.json`                  | JSR package metadata for `@auras/diagram`                     |
+| `packages/diagram/README.md`                 | Package-level usage note for `@auras/diagram`                 |
+| `packages/diagram/src/`                      | Diagram package runtime module                                |
+| `packages/shared/auras-element.ts`           | `AurasElement` base class for custom elements                 |
+| `packages/shared/utilities.ts`               | Shared utilities (ID gen, activation, RTL)                    |
+| `packages/shared/mod.ts`                     | Internal Shared re-exports                                    |
+| `packages/shared/README.md`                  | Internal-only note for the Shared modules                     |
+| `packages/components/browser.js`             | Browser-friendly no-build Components entrypoint               |
+| `packages/components/mod.ts`                 | Deno-first Components package surface                         |
+| `packages/components/jsr.json`               | JSR package metadata                                          |
+| `packages/components/README.md`              | Package-level usage note                                      |
+| `packages/components/src/`                   | Shared logic plus per-component modules                       |
+| `packages/components/src/combobox.ts`        | `auras-combobox` runtime module                               |
+| `packages/components/src/master-detail.ts`   | `auras-master-detail` runtime module                          |
+| `packages/components/src/sections.ts`        | `auras-sections` runtime module                               |
+| `packages/components/src/splitter.ts`        | `auras-splitter` runtime module                               |
+| `packages/components/src/tabs.ts`            | `auras-tabs` runtime module                                   |
+| `packages/components/src/tree.ts`            | `auras-tree` runtime module                                   |
+| `packages/audit/mod.ts`                      | Deno-first audit package surface                              |
+| `packages/audit/browser.js`                  | Browser-friendly no-build audit entrypoint                    |
+| `packages/audit/cli.ts`                      | CLI entrypoint for `@auras/audit`                             |
+| `packages/audit/core.js`                     | Shared audit and repair implementation                        |
+| `packages/audit/contracts.js`                | Shared contract definitions                                   |
+| `packages/audit/jsr.json`                    | JSR package metadata for `@auras/audit`                       |
+| `packages/audit/README.md`                   | Package-level docs for `@auras/audit`                         |
+| `deno.json`                                  | Deno tasks for dev server, checking, and tests                |
+| `deno.lock`                                  | Locked JSR and npm test dependencies                          |
+| `main.ts`                                    | Deno Deploy entry point (static file server)                  |
+| `site/docs.ts`                               | Docs route registry and markdown rendering                    |
+| `scripts/sync-public-packages.ts`            | Syncs canonical package assets into `public/`                 |
+| `public/index.html`                          | Interactive demo page                                         |
+| `public/studio.html`                         | Theme Studio for visual brand pack creation                   |
+| `public/lab.html`                            | Contract Lab for live markup generation, repair, and auditing |
+| `docs/component-architecture.md`             | Architecture note for the layer split                         |
+| `docs/user-guide.md`                         | This user guide                                               |
 
 ## Verification
 
@@ -919,6 +1014,7 @@ Run these checks after changes:
 
 ```sh
 cd /path/to/auras
+deno task sync:public-packages
 deno task check
 deno task test
 deno task test:browser

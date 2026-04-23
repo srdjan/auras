@@ -6,7 +6,7 @@
     <title>Contract Lab - Auras CSS</title>
     <meta
       name="description"
-      content="Validate authored Auras markup against the published light-DOM contracts, inspect diagnostics, and preview the result with the real no-build assets."
+      content="Generate canonical Auras starter markup, repair deterministic contract issues, inspect diagnostics, and preview the result with the real no-build assets."
     />
     <meta name="robots" content="index,follow" />
     <meta name="theme-color" content="#ffffff" />
@@ -16,7 +16,7 @@
     <meta property="og:title" content="Contract Lab - Auras CSS" />
     <meta
       property="og:description"
-      content="Audit Auras markup contracts, inspect diagnostics, and iterate in a live preview."
+      content="Generate and repair Auras markup contracts, inspect diagnostics, and iterate in a live preview."
     />
     <meta property="og:url" content="{{SITE_ORIGIN}}/lab.html" />
     <meta
@@ -29,7 +29,7 @@
     <meta name="twitter:title" content="Contract Lab - Auras CSS" />
     <meta
       name="twitter:description"
-      content="Validate Auras markup contracts and inspect a live preview."
+      content="Generate and repair Auras markup contracts in a live preview."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -183,6 +183,11 @@
           gap: var(--space-2);
         }
 
+        [data-lab="fixes"] {
+          display: grid;
+          gap: var(--space-2);
+        }
+
         [data-lab="diagnostic"] {
           display: grid;
           gap: 0.3rem;
@@ -291,8 +296,9 @@
         <section data-lab="intro" data-layout="stack" data-gap="2">
           <h1>Contract Lab</h1>
           <p>
-            Paste authored Auras markup, preview it with the real assets, and
-            audit it against the published light-DOM contracts.
+            Start from canonical Auras markup or paste an in-progress snippet,
+            repair the structural issues Auras can determine safely, and audit
+            the rest against the published light-DOM contracts.
           </p>
         </section>
 
@@ -311,13 +317,21 @@
         </section>
 
         <div data-lab="actions">
-          <button id="copy-markup" type="button" data-variant="solid">
+          <button id="generate-starter" type="button" data-variant="solid">
+            Generate Starter
+          </button>
+          <button id="repair-markup" type="button" data-variant="ghost">
+            Repair Markup
+          </button>
+          <button id="copy-markup" type="button" data-variant="ghost">
             Copy Markup
           </button>
-          <button id="reset-preset" type="button" data-variant="ghost">
-            Reset Preset
-          </button>
         </div>
+
+        <section data-layout="stack" data-gap="2">
+          <strong>Applied Fixes</strong>
+          <div data-lab="fixes" id="applied-fixes"></div>
+        </section>
 
         <section data-layout="stack" data-gap="2">
           <div data-lab="summary" id="diagnostic-summary"></div>
@@ -349,6 +363,8 @@
         auditAuras,
         getAurasContract,
         getAurasContracts,
+        getAurasStarterMarkup,
+        repairAuras,
       } from "/packages/audit/browser.js";
 
       const PRESETS = Object.fromEntries(
@@ -356,23 +372,26 @@
           contract.id,
           {
             label: contract.label,
-            markup: contract.exampleMarkup,
+            markup: getAurasStarterMarkup(contract.id) ?? contract.exampleMarkup,
           },
         ]),
       );
       const AURAS_HOST_SELECTOR = AURAS_CONTRACT_TAG_NAMES.join(",");
 
       const editor = document.getElementById("markup-editor");
+      const appliedFixesNode = document.getElementById("applied-fixes");
       const diagnosticsNode = document.getElementById("diagnostics");
       const summaryNode = document.getElementById("diagnostic-summary");
       const contractBadgesNode = document.getElementById("contract-badges");
       const previewCaptionNode = document.getElementById("preview-caption");
       const previewFrame = document.getElementById("preview-frame");
       const presetListNode = document.getElementById("preset-list");
+      const generateButton = document.getElementById("generate-starter");
+      const repairButton = document.getElementById("repair-markup");
       const copyButton = document.getElementById("copy-markup");
-      const resetButton = document.getElementById("reset-preset");
 
       let currentPresetId = "combobox";
+      let latestAppliedFixes = [];
       let pendingSelector = null;
 
       for (const [id, preset] of Object.entries(PRESETS)) {
@@ -388,7 +407,23 @@
       let debounceTimer = 0;
       editor.addEventListener("input", () => {
         clearTimeout(debounceTimer);
+        latestAppliedFixes = [];
         debounceTimer = setTimeout(renderLab, 150);
+      });
+
+      generateButton.addEventListener("click", () => {
+        loadPreset(currentPresetId);
+      });
+
+      repairButton.addEventListener("click", () => {
+        const wrappedDoc = parseMarkup(editor.value);
+        const result = repairAuras(wrappedDoc);
+        latestAppliedFixes = result.appliedFixes;
+        editor.value = wrappedDoc.body.innerHTML.trim();
+        renderLab({
+          diagnostics: result.diagnostics,
+          appliedFixes: result.appliedFixes,
+        });
       });
 
       copyButton.addEventListener("click", async () => {
@@ -397,10 +432,6 @@
         window.setTimeout(() => {
           copyButton.textContent = "Copy Markup";
         }, 1200);
-      });
-
-      resetButton.addEventListener("click", () => {
-        loadPreset(currentPresetId);
       });
 
       previewFrame.addEventListener("load", () => {
@@ -415,6 +446,7 @@
       function loadPreset(presetId) {
         currentPresetId = presetId;
         editor.value = PRESETS[presetId].markup;
+        latestAppliedFixes = [];
         for (const button of presetListNode.querySelectorAll("button")) {
           button.dataset.variant = button.dataset.preset === presetId
             ? "solid"
@@ -423,20 +455,62 @@
         renderLab();
       }
 
-      function renderLab() {
-        const markup = editor.value.trim();
-        const wrappedDoc = new DOMParser().parseFromString(
-          `<!DOCTYPE html><html><body>${markup}</body></html>`,
+      function parseMarkup(markup) {
+        return new DOMParser().parseFromString(
+          `<!DOCTYPE html><html><body>${markup.trim()}</body></html>`,
           "text/html",
         );
-        const diagnostics = auditAuras(wrappedDoc);
+      }
+
+      function renderLab(options = {}) {
+        const markup = editor.value.trim();
+        const wrappedDoc = parseMarkup(markup);
+        const diagnostics = options.diagnostics ?? auditAuras(wrappedDoc);
+        const appliedFixes = options.appliedFixes ?? latestAppliedFixes;
         const hosts = Array.from(
           wrappedDoc.body.querySelectorAll(AURAS_HOST_SELECTOR),
         );
 
+        renderAppliedFixes(appliedFixes);
         renderDiagnostics(diagnostics);
         renderDetectedContracts(hosts);
         previewFrame.srcdoc = renderPreviewDocument(markup);
+      }
+
+      function renderAppliedFixes(appliedFixes) {
+        appliedFixesNode.replaceChildren();
+
+        if (appliedFixes.length === 0) {
+          const empty = document.createElement("p");
+          empty.textContent =
+            "No automatic fixes applied yet. Generate Starter for canonical markup or Repair Markup to normalize the current snippet.";
+          empty.style.margin = "0";
+          empty.style.color = "var(--text-muted)";
+          appliedFixesNode.append(empty);
+          return;
+        }
+
+        for (const fix of appliedFixes) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.dataset.lab = "diagnostic";
+
+          const title = document.createElement("strong");
+          title.textContent = `${fix.hostTag} \u00b7 ${fix.code}`;
+
+          const message = document.createElement("p");
+          message.textContent = fix.message;
+
+          const selector = document.createElement("code");
+          selector.textContent = fix.selector;
+
+          button.append(title, message, selector);
+          button.addEventListener("click", () => {
+            pendingSelector = fix.selector;
+            highlightSelectorInPreview(fix.selector);
+          });
+          appliedFixesNode.append(button);
+        }
       }
 
       function renderDiagnostics(diagnostics) {
@@ -463,7 +537,8 @@
         diagnosticsNode.replaceChildren();
         if (diagnostics.length === 0) {
           const empty = document.createElement("p");
-          empty.textContent = "No findings. This markup satisfies the current Auras contract checks.";
+          empty.textContent =
+            "No findings. This markup satisfies the current Auras contract checks.";
           empty.style.margin = "0";
           empty.style.color = "var(--text-muted)";
           diagnosticsNode.append(empty);
@@ -506,7 +581,7 @@
 
         if (hosts.length === 0) {
           previewCaptionNode.textContent =
-            "Paste one or more Auras hosts to see detected contracts.";
+            "Generate Starter or paste one or more Auras hosts to see detected contracts.";
           return;
         }
 
